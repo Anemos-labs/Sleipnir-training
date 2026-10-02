@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-go-colorkit-01-delete",
+"ok": true
+},
+{
+"id": "fix-go-colorkit-02-const",
+"ok": true
+},
+{
+"id": "fix-go-colorkit-03-cmp",
+"ok": true
+},
+{
+"id": "fix-go-colorkit-04-arith",
+"ok": true
+},
+{
+"id": "fix-go-colorkit-05-swap",
+"ok": true
+},
+{
+"id": "fix-go-colorkit-06-delete",
+"ok": true
+},
+{
+"id": "fix-go-colorkit-07-const",
+"ok": true
+},
+{
+"id": "fix-go-colorkit-08-cmp",
+"ok": true
+}
+]

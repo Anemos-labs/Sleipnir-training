@@ -1,0 +1,98 @@
+[
+{
+"id": "recall-layered-config-01-shard-count",
+"ok": true
+},
+{
+"id": "recall-layered-config-02-batch-size",
+"ok": true
+},
+{
+"id": "recall-layered-config-03-pool-max",
+"ok": true
+},
+{
+"id": "recall-layered-config-04-batch-size",
+"ok": true
+},
+{
+"id": "recall-layered-config-05-shard-count",
+"ok": true
+},
+{
+"id": "recall-layered-config-06-queue-depth",
+"ok": true
+},
+{
+"id": "recall-layered-config-07-shard-count",
+"ok": true
+},
+{
+"id": "recall-layered-config-08-cache-ttl-s",
+"ok": true
+},
+{
+"id": "recall-layered-config-09-shard-count",
+"ok": true
+},
+{
+"id": "recall-layered-config-10-retry-limit",
+"ok": true
+},
+{
+"id": "recall-layered-config-11-http-timeout-ms",
+"ok": true
+},
+{
+"id": "recall-layered-config-12-queue-depth",
+"ok": true
+},
+{
+"id": "recall-layered-config-13-pool-max",
+"ok": true
+},
+{
+"id": "recall-layered-config-14-shard-count",
+"ok": true
+},
+{
+"id": "recall-layered-config-15-cache-ttl-s",
+"ok": true
+},
+{
+"id": "recall-layered-config-16-log-sample-rate",
+"ok": true
+},
+{
+"id": "recall-layered-config-17-pool-max",
+"ok": true
+},
+{
+"id": "recall-layered-config-18-pool-max",
+"ok": true
+},
+{
+"id": "recall-layered-config-19-queue-depth",
+"ok": true
+},
+{
+"id": "recall-layered-config-20-retry-limit",
+"ok": true
+},
+{
+"id": "recall-layered-config-21-log-sample-rate",
+"ok": true
+},
+{
+"id": "recall-layered-config-22-log-sample-rate",
+"ok": true
+},
+{
+"id": "recall-layered-config-23-pool-max",
+"ok": true
+},
+{
+"id": "recall-layered-config-24-cache-ttl-s",
+"ok": true
+}
+]
