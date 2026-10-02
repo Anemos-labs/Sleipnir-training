@@ -1,0 +1,50 @@
+[
+{
+"id": "data-seed-library-01-quick-nightshades",
+"ok": true
+},
+{
+"id": "data-seed-library-02-never-lent-stock",
+"ok": true
+},
+{
+"id": "data-seed-library-03-overdue-borrowers",
+"ok": true
+},
+{
+"id": "data-seed-library-04-germination-rate",
+"ok": true
+},
+{
+"id": "data-seed-library-05-sow-window-length",
+"ok": true
+},
+{
+"id": "data-seed-library-06-retire-list",
+"ok": true
+},
+{
+"id": "data-seed-library-07-biggest-variety-per-species",
+"ok": true
+},
+{
+"id": "data-seed-library-08-return-ratio",
+"ok": true
+},
+{
+"id": "data-seed-library-09-harvest-streaks",
+"ok": true
+},
+{
+"id": "data-seed-library-10-duplicate-packets",
+"ok": true
+},
+{
+"id": "data-seed-library-11-co-borrowers",
+"ok": true
+},
+{
+"id": "data-seed-library-12-monthly-stock-position",
+"ok": true
+}
+]

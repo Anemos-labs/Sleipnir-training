@@ -446,6 +446,10 @@ class CliSpec:
             "c": f"build/{t}",
         }[lang]
 
+    def short(self, lang: str) -> str:
+        """Just the entry file, for prompts."""
+        return {"go": "`main.go`", "rust": "`src/main.rs`", "java": "`src/Main.java`", "c": "`src/main.c`"}.get(lang, f"`{self.path(lang)}`")
+
     def how(self, lang: str) -> str:
         return {
             "python": f"`src/{self.tool}.py` (run as `python3 src/{self.tool}.py`)",
@@ -495,9 +499,10 @@ class CliCase:
     stdin: str = ""
     out: str | None = None  # expected stdout
     code: int = 0
+    fresh: bool = True  # start from an empty state directory; False continues the previous case's state (`@STATE@` in an argument is the state file path)
 
     def key(self):
-        return (tuple(self.args), self.stdin)
+        return (tuple(self.args), self.stdin, self.fresh)
 
 
 _HARNESS_HEAD = """#!/usr/bin/env bash
@@ -516,7 +521,7 @@ check() {
   out=${res%$'\\n'~*}
   if [ "$code" != "$ecode" ] || [ "$(printf '%s' "$out")" != "$(printf '%s' "$eout")" ]; then
     fail=$((fail + 1))
-    echo "FAIL [$name] args: $*"
+    echo "FAIL [$name] args: $*  (stdin: $(printf '%s' "$sin" | head -c 200 | tr '\n' '|'))"
     echo "  exit code: got $code, want $ecode"
     echo "  stdout got:"; printf '%s\\n' "$out" | sed 's/^/    | /' | head -n 12
     echo "  stdout want:"; printf '%s\\n' "$eout" | sed 's/^/    | /' | head -n 12
@@ -527,7 +532,8 @@ check() {
 
 def _cli_call(c: CliCase, i: int, out: str | None, code: int | None) -> str:
     args = " ".join(lit("bash", a) for a in c.args)
-    return f"check c{i} {code} {lit('bash', out or '')} {lit('bash', c.stdin)}" + (f" {args}" if args else "")
+    pre = "newstate\n" if c.fresh else ""
+    return pre + f"check c{i} {code} {lit('bash', out or '')} {lit('bash', c.stdin)}" + (f" {args}" if args else "")
 
 
 def cli_tests(cases: list[CliCase], want: list[tuple[str, int]]) -> dict[str, str]:
@@ -541,11 +547,16 @@ def cli_tests(cases: list[CliCase], want: list[tuple[str, int]]) -> dict[str, st
 def _cli_rec(cases: list[CliCase]) -> str:
     head = """#!/usr/bin/env bash
 CMD=("$@")
+STATE_DIR=$(mktemp -d)
+STATE="$STATE_DIR/state"
+trap 'rm -rf "$STATE_DIR"' EXIT
+newstate() { rm -rf "$STATE_DIR"/*; }
 rec() {
   local sin=$1
   shift
-  local res out code
-  res=$(printf '%s' "$sin" | "${CMD[@]}" "$@" 2>/dev/null; printf '\\n~%d' "$?")
+  local args=() a res out code
+  for a in "$@"; do args+=("${a//@STATE@/$STATE}"); done
+  res=$(printf '%s' "$sin" | "${CMD[@]}" "${args[@]}" 2>/dev/null; printf '\\n~%d' "$?")
   code=${res##*~}
   out=${res%$'\\n'~*}
   printf '%s %s\\n' "$code" "$(printf '%s' "$out" | od -An -v -tx1 | tr -d ' \\n')"
@@ -554,6 +565,8 @@ rec() {
     lines = [head]
     for c in cases:
         args = " ".join(lit("bash", a) for a in c.args)
+        if c.fresh:
+            lines.append("newstate")
         lines.append(f"rec {lit('bash', c.stdin)}" + (f" {args}" if args else ""))
     return "\n".join(lines) + "\n"
 
@@ -567,12 +580,14 @@ def record_cli(spec: CliSpec, lang: str, tree: dict[str, str], cases: list[CliCa
         raise RecordError(f"{spec.tool} [{lang}] reference solution failed:\n{r.out[-1500:]}")
     res = []
     for ln in r.out.splitlines():
-        m = re.fullmatch(r"(\d+) ([0-9a-f]*)", ln.strip())
+        m = re.fullmatch(r"(\d+) ?([0-9a-f]*)", ln.strip())
         if m:
             res.append((bytes.fromhex(m.group(2)).decode("utf-8", "replace"), int(m.group(1))))
     if len(res) < len(cases):
-        if len(cases) > 1:
-            h = len(cases) // 2
+        mid = len(cases) // 2
+        cuts = [i for i in range(1, len(cases)) if cases[i].fresh]
+        if cuts:
+            h = min(cuts, key=lambda i: abs(i - mid))
             return record_cli(spec, lang, tree, cases[:h], timeout) + record_cli(spec, lang, tree, cases[h:], timeout)
         raise RecordError(f"{spec.tool} [{lang}] recorded {len(res)} of {len(cases)}:\n{r.out[-800:]}")
     return res[-len(cases):]
@@ -610,19 +625,19 @@ def interface_section(api: Api, lang: str) -> str:
     lines.append(f"* returns {api.ret_doc}.")
     lines.append("")
     lines.append("All inputs and the result are plain strings. Invalid input is reported *inside the result text* as the "
-                 "rules below say; the function itself never throws, panics or exits.")
+                 "rules in this document say; the function itself never throws, panics or exits.")
     lines.append("")
     return "\n".join(lines)
 
 
-def run_hint(lang: str) -> str:
+def run_hint(lang: str, name: str = "name") -> str:
     return {
         "python": "Run the visible tests with `python3 -m unittest discover -s tests -v`.",
         "javascript": "Run the visible tests with `node --test test/*.test.js`.",
         "go": "Run the visible tests with `go test ./...`.",
         "rust": "Run the visible tests with `cargo test --offline`.",
         "java": "Run the visible tests with `mkdir -p build && javac -d build $(find . -name '*.java') && java -cp build TestMain`.",
-        "ruby": "Run the visible tests with `ruby -Ilib -Itest test/test_<name>.rb`.",
+        "ruby": f"Run the visible tests with `ruby -Ilib -Itest test/test_{name}.rb`.",
         "c": "Run the visible tests with `mkdir -p build && gcc -std=c11 -Wall -Wextra -Iinclude -Isrc -o build/tests $(find src tests -name '*.c') && ./build/tests`.",
         "bash": "Run the visible checks with `bash tests/run.sh COMMAND`.",
     }[lang]
@@ -694,15 +709,22 @@ def lib_task(*, api: Api, lang: str, readme: str, solutions: dict[str, str], cas
 def cli_task(*, spec: CliSpec, lang: str, readme: str, solutions: dict[str, str], cases: list[CliCase], examples: int,
              prompt: str, difficulty: int, slug: str, oracle=None, extra_start: dict[str, str] | None = None,
              tags: list[str] | None = None, notes: dict | None = None, timeout_s: int = 180) -> Task:
-    """Assemble one cli-mold task. ``oracle(case) -> (stdout, code)`` optionally cross-checks the reference."""
+    """Assemble one cli-mold task. ``oracle(case) -> (stdout, code)`` optionally cross-checks the reference; when the
+    family also ships a Python solution (``solutions["python"]``) and ``lang`` is not python, that solution is run on
+    the same cases and must agree with the port."""
     start = merged(spec.skeleton(lang), spec.stub(lang), {"README.md": readme}, extra_start or {})
     sol_tree = merged(start, {spec.path(lang): solutions[lang]})
     want = record_cli(spec, lang, sol_tree, cases)
+    refs = []
     if oracle is not None:
-        o = [oracle(c) for c in cases]
+        refs.append(("oracle", [oracle(c) for c in cases]))
+    if lang != "python" and "python" in solutions:
+        pt = merged(spec.skeleton("python"), spec.stub("python"), extra_start or {}, {spec.path("python"): solutions["python"]})
+        refs.append(("python solution", record_cli(spec, "python", pt, cases)))
+    for label, o in refs:
         for i, (g, w) in enumerate(zip(want, o)):
             if (g[0].rstrip("\n"), g[1]) != (w[0].rstrip("\n"), w[1]):
-                raise RecordError(f"{spec.tool} [{lang}] {slug}: port and oracle disagree on case {i}: {cases[i]!r}\n port:   {g!r}\n oracle: {w!r}")
+                raise RecordError(f"{spec.tool} [{lang}] {slug}: port and {label} disagree on case {i}: {cases[i]!r}\n port:   {g!r}\n ref:    {w!r}")
     # final newlines are not compared by the harness, but record them as the solution printed them
     start = merged(start, cli_tests(cases[:examples], want[:examples]))
     hidden = cli_tests(cases, want)

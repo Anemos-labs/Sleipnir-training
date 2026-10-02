@@ -125,8 +125,6 @@ def sloppy(rng, text: str, level: float = 1.0) -> str:
         if rng.random() < 0.7 * level:
             text = text.replace(k, v)
     text = re.sub(r"(?m)^([A-Z])(?=[a-z ])", lambda m: m.group(1).lower() if rng.random() < 0.8 else m.group(1), text)
-    if rng.random() < 0.6:
-        text = re.sub(r"\.(\s*)$", r"\1", text)
     return text
 
 
@@ -149,10 +147,10 @@ def prose(rng, text: str, reg: str) -> str:
 
 
 def chat(rng, intro: str, ask: str = "", data: str | None = None, reg: str | None = None, *, data_after_ask: bool = False,
-         tangent: bool | None = None, allow_open: bool = True) -> str:
+         tangent: bool | None = None, allow_open: bool = True, spec: str = "") -> str:
     """Assemble a chat message: opener, intro, verbatim data block, ask, closer. ``data`` is never altered.
 
-    ``ask`` carries format instructions and is only lightly roughened (typos never touch digits or quoted text)."""
+    ``ask`` is roughened with the register; ``spec`` (rules, precise conditions) is verbatim and sits right before the ask."""
     reg = reg or register_for(rng)
     pieces: list[str] = []
     op = rng.choice(OPENERS[reg]) if allow_open else ""
@@ -160,23 +158,40 @@ def chat(rng, intro: str, ask: str = "", data: str | None = None, reg: str | Non
     if op:
         body.append(op)
     if intro:
-        body.append(prose(rng, intro, reg))
+        ip = prose(rng, intro, reg)
+        if op and op.rstrip().endswith((",", ":")) and ip[:1].isupper():
+            w0 = re.match(r"[A-Za-z']+", ip)
+            if (w0 and w0.group(0) not in ("I", "I'm", "I've", "I'd", "I'll") and w0.group(0) not in FIRST and w0.group(0) not in LAST
+                    and not (len(w0.group(0)) > 1 and w0.group(0).isupper()) and not re.match(r"[A-Z][a-z]*[A-Z]", ip)):
+                ip = ip[0].lower() + ip[1:]
+        body.append(ip)
     use_tangent = tangent if tangent is not None else (reg in ("chatty", "rambling") and rng.random() < 0.65)
+    t = ""
     if use_tangent:
         t = rng.choice(TANGENTS)
         if reg == "hurried":
             t = sloppy(rng, t)
-        body.append(t)
-    head = " ".join(body).strip()
     ask_p = prose(rng, ask, reg) if ask else ""
-    if reg == "hurried" and ask_p:
-        ask_p = ask_p  # already sloppy
+    if ask_p and reg in ("hurried", "terse") and ask_p.endswith(".") and rng.random() < 0.5:
+        ask_p = ask_p[:-1]
+    if t:
+        if intro and intro.rstrip()[-1:] in ".!?)" and rng.random() < 0.7:
+            body.append(t)
+            t = ""
+        elif not ask_p:
+            body.append(t)
+            t = ""
+        else:
+            ask_p = ask_p + " " + t if rng.random() < 0.5 else t + " " + ask_p
+    head = " ".join(body).strip()
     cl = rng.choice(CLOSERS[reg])
     if data is not None:
         if data_after_ask:
-            pieces = [head, ask_p, data.rstrip("\n"), cl]
+            pieces = [head, spec, ask_p, data.rstrip("\n"), cl]
         else:
-            pieces = [head, data.rstrip("\n"), ask_p, cl]
+            pieces = [head, data.rstrip("\n"), spec, ask_p, cl]
+    elif spec:
+        pieces = [head, spec, " ".join(x for x in (ask_p, cl) if x)]
     else:
         pieces = [" ".join(x for x in (head, ask_p, cl) if x)]
     msg = "\n\n".join(p for p in pieces if p)
@@ -313,3 +328,28 @@ def nth_weekday(year: int, month: int, weekday: int, n: int) -> date | None:
     d += timedelta(days=(weekday - d.weekday()) % 7)
     d += timedelta(weeks=n - 1)
     return d if d.month == month else None
+
+
+def nosep(contains) -> str:
+    """A format reminder to append to an ask when an expected answer has four or more integer digits."""
+    for c in contains:
+        m = re.match(r"^\d{4,}(\.\d+)?$", c)
+        if m:
+            return rng_choice_note(c)
+    return ""
+
+
+def rng_choice_note(c: str) -> str:
+    return " (Digits only please, no thousands separators.)"
+
+
+def unseen(prompt: str, contains: list[str], fold: bool = False, min_keep: int = 1) -> list[str] | None:
+    """Drop expected strings that already occur in the prompt (the validator rejects those); None if too few remain."""
+    hay = prompt.lower() if fold else prompt
+    keep = [c for c in contains if not (len(c) > 3 and (c.lower() if fold else c) in hay)]
+    return keep if len(keep) >= min_keep else None
+
+
+def fix_articles(text: str) -> str:
+    """'a orange' -> 'an orange' (only for the vowels our word lists use)."""
+    return re.sub(r"\b([Aa]) (?=[aeiouAEIOU][a-zA-Z])", lambda m: m.group(1) + "n ", text)

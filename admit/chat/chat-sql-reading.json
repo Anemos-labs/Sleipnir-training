@@ -1,0 +1,58 @@
+[
+{
+"id": "chat-sql-reading-01-count_null",
+"ok": true
+},
+{
+"id": "chat-sql-reading-02-union",
+"ok": true
+},
+{
+"id": "chat-sql-reading-03-left_filter",
+"ok": true
+},
+{
+"id": "chat-sql-reading-04-count_col",
+"ok": true
+},
+{
+"id": "chat-sql-reading-05-above_avg",
+"ok": true
+},
+{
+"id": "chat-sql-reading-06-many_many",
+"ok": true
+},
+{
+"id": "chat-sql-reading-07-above_avg",
+"ok": true
+},
+{
+"id": "chat-sql-reading-08-left_on_vs_where",
+"ok": true
+},
+{
+"id": "chat-sql-reading-09-count_null",
+"ok": true
+},
+{
+"id": "chat-sql-reading-10-union",
+"ok": true
+},
+{
+"id": "chat-sql-reading-11-many_many",
+"ok": true
+},
+{
+"id": "chat-sql-reading-12-left_on_vs_where",
+"ok": true
+},
+{
+"id": "chat-sql-reading-13-left_filter",
+"ok": true
+},
+{
+"id": "chat-sql-reading-14-many_many",
+"ok": true
+}
+]

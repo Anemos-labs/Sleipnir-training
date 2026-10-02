@@ -1,0 +1,42 @@
+[
+{
+"id": "data-etl-tidepool-01-mixed-dates",
+"ok": true
+},
+{
+"id": "data-etl-tidepool-02-probe-units",
+"ok": true
+},
+{
+"id": "data-etl-tidepool-03-number-formats",
+"ok": true
+},
+{
+"id": "data-etl-tidepool-04-dedupe-revisions",
+"ok": true
+},
+{
+"id": "data-etl-tidepool-05-csv-hygiene",
+"ok": true
+},
+{
+"id": "data-etl-tidepool-06-fixed-width-dump",
+"ok": true
+},
+{
+"id": "data-etl-tidepool-07-ping-episodes",
+"ok": true
+},
+{
+"id": "data-etl-tidepool-08-short-gap-fill",
+"ok": true
+},
+{
+"id": "data-etl-tidepool-09-mad-outliers",
+"ok": true
+},
+{
+"id": "data-etl-tidepool-10-auto-vs-notebook",
+"ok": true
+}
+]

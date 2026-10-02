@@ -1,0 +1,66 @@
+[
+{
+"id": "feature-go-parcelhub-01-events",
+"ok": true
+},
+{
+"id": "feature-go-parcelhub-02-idempotent",
+"ok": true
+},
+{
+"id": "feature-go-parcelhub-03-listeners",
+"ok": true
+},
+{
+"id": "feature-go-parcelhub-04-usage-status-json",
+"ok": true
+},
+{
+"id": "feature-go-parcelhub-05-expiry",
+"ok": true
+},
+{
+"id": "feature-go-parcelhub-06-status-json",
+"ok": true
+},
+{
+"id": "feature-go-parcelhub-07-fit-policy",
+"ok": true
+},
+{
+"id": "feature-go-parcelhub-08-dims-events-idempotent",
+"ok": true
+},
+{
+"id": "feature-go-parcelhub-09-status-locker",
+"ok": true
+},
+{
+"id": "feature-go-parcelhub-10-status-json",
+"ok": true
+},
+{
+"id": "feature-go-parcelhub-11-expiry",
+"ok": true
+},
+{
+"id": "feature-go-parcelhub-12-fit-policy-expiry-idempotent",
+"ok": true
+},
+{
+"id": "feature-go-parcelhub-13-dims",
+"ok": true
+},
+{
+"id": "feature-go-parcelhub-14-events",
+"ok": true
+},
+{
+"id": "feature-go-parcelhub-15-status-locker",
+"ok": true
+},
+{
+"id": "feature-go-parcelhub-16-usage-dims",
+"ok": true
+}
+]

@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-querybag-01-const",
+"ok": true
+},
+{
+"id": "fix-py-querybag-02-cmp",
+"ok": true
+},
+{
+"id": "fix-py-querybag-03-delete",
+"ok": true
+},
+{
+"id": "fix-py-querybag-04-negate",
+"ok": true
+},
+{
+"id": "fix-py-querybag-05-swap",
+"ok": true
+},
+{
+"id": "fix-py-querybag-06-const",
+"ok": true
+},
+{
+"id": "fix-py-querybag-07-delete",
+"ok": true
+},
+{
+"id": "fix-py-querybag-08-negate",
+"ok": true
+},
+{
+"id": "fix-py-querybag-09-swap",
+"ok": true
+},
+{
+"id": "fix-py-querybag-10-const",
+"ok": true
+}
+]

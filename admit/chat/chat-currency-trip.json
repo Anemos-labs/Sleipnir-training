@@ -1,0 +1,42 @@
+[
+{
+"id": "chat-currency-trip-01-usdaud-d2",
+"ok": true
+},
+{
+"id": "chat-currency-trip-02-gbpaud-d3",
+"ok": true
+},
+{
+"id": "chat-currency-trip-03-usdeur-d3",
+"ok": true
+},
+{
+"id": "chat-currency-trip-04-gbpcad-d4",
+"ok": true
+},
+{
+"id": "chat-currency-trip-05-usdchf-d2",
+"ok": true
+},
+{
+"id": "chat-currency-trip-06-cadusd-d4",
+"ok": true
+},
+{
+"id": "chat-currency-trip-07-chfaud-d5",
+"ok": true
+},
+{
+"id": "chat-currency-trip-08-usdaud-d3",
+"ok": true
+},
+{
+"id": "chat-currency-trip-09-eurchf-d4",
+"ok": true
+},
+{
+"id": "chat-currency-trip-10-audeur-d5",
+"ok": true
+}
+]

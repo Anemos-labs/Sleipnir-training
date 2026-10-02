@@ -169,7 +169,12 @@ FZ_HIDDEN = dd('''
         def test_zone_of(self):
             self.assertEqual(zone_of("Anvil Quay"), 1)
             self.assertEqual(zone_of("Dunmore"), 2)
+            self.assertEqual(zone_of("Eel Reach"), 3)
+            self.assertEqual(zone_of("Fenwick Stairs"), 4)
             self.assertEqual(zone_of("Gull Hythe"), 4)
+            self.assertEqual(zone_of("Hallow Isle"), 5)
+            self.assertEqual(zone_of("Brack"), 1)
+            self.assertEqual(zone_of("Cormorant Pier"), 2)
             self.assertEqual(zone_of("Ironbridge Slip"), 6)
 
         def test_unknown_port(self):
@@ -270,6 +275,18 @@ FZ_HIDDEN = dd('''
             b = leg(660, 700, "Brack", "Cormorant Pier")
             c = leg(740, 760, "Cormorant Pier", "Dunmore")
             self.assertEqual(group_journeys([a, b, c]), [[a, b, c]])
+
+        def test_comparison_is_with_the_latest_leg_of_the_latest_journey(self):
+            a = leg(600, 620, "Anvil Quay", "Brack")
+            x = leg(700, 720, "Dunmore", "Eel Reach")
+            y = leg(730, 750, "Eel Reach", "Fenwick Stairs")
+            z = leg(760, 770, "Brack", "Anvil Quay")
+            self.assertEqual(group_journeys([a, x, y]), [[a], [x, y]])
+            self.assertEqual(group_journeys([a, x, y, z]), [[a], [x, y], [z]])
+
+        def test_zero_length_leg_is_allowed(self):
+            a = leg(600, 600, "Anvil Quay", "Brack")
+            self.assertEqual(group_journeys([a]), [[a]])
 
         def test_arrival_before_departure(self):
             with self.assertRaises(ValueError):
@@ -491,10 +508,10 @@ PK_SRC = dd('''
         days, rest = divmod(minutes, DAY)
         hours, mins = divmod(rest, 60)
         if days:
-            return f"{days}d {hours:02d}h {mins:02d}m"
+            return f"{days:d}d {hours:02d}h {mins:02d}m"
         if hours:
-            return f"{hours}h {mins:02d}m"
-        return f"{mins}m"
+            return f"{hours:d}h {mins:02d}m"
+        return f"{mins:d}m"
 
 
     def receipt(entry, exit, stamps=0, lost_ticket=False):
@@ -572,6 +589,7 @@ PK_HIDDEN = dd('''
 
         def test_stamps(self):
             self.assertEqual(fee(600, 690, stamps=1), 120)
+            self.assertEqual(fee(600, 691, stamps=1), 240)
             self.assertEqual(fee(600, 690, stamps=2), 0)
             self.assertEqual(fee(600, 690, stamps=3), 0)
             self.assertEqual(fee(600, 675, stamps=1), 0)
@@ -859,6 +877,7 @@ TG_HIDDEN = dd('''
 
         def test_tag_discount(self):
             self.assertEqual(trip_toll(0, 100, "A", 720, tag=True), 72)
+            self.assertEqual(trip_toll(0, 124, "A", 720, tag=True), 90)
             self.assertEqual(trip_toll(0, 57, "C", 720, tag=True), 150 - 15)
             self.assertEqual(trip_toll(0, 62, "C", 720, tag=True), 155 - 15)
             self.assertEqual(trip_toll(0, 100, "C", 430, tag=True), 375 - 37)
@@ -926,6 +945,7 @@ TG_HIDDEN = dd('''
             self.assertEqual(quote("Eastfold", "Harbour Junction", "A", 720), 274)
             self.assertEqual(quote("Millrace", "Carter's Cross", "B", 720), 147)
             self.assertEqual(quote("Salt Hill", "Salt Hill", "C", 720), 0)
+            self.assertEqual(quote("Eastfold", "Salt Hill", "C", 720), 420)
             self.assertEqual(quote("Harbour Junction", "Salt Hill", "A", 450, tag=True), 551)
 
         def test_unknown_gantry(self):

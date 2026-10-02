@@ -1,5 +1,6 @@
 """Keyset pagination with opaque cursors (javascript): bugs injected into a small list-endpoint helper."""
-from fx import Lib, dd, register_libs
+from fx import Lib, dd
+from generators.fix._lang2 import JS_VERIFY, PACKAGE_JSON, register_libs
 
 README = dd(r'''
     # cursorpage
@@ -566,14 +567,39 @@ HIDDEN = dd(r'''
 ''')
 
 LIB = Lib(
-    name="cursorpage", lang="javascript", title="the cursorpage pagination helpers (`src/cursor.js`, `src/pager.js`)",
+    name="cursorpage", lang="javascript", title="the cursorpage helpers",
     blurb="The list endpoints of the admin API use these helpers to page through records with opaque cursors and to render page links.",
-    files={"package.json": '{\n  "name": "cursorpage",\n  "version": "1.0.0",\n  "private": true\n}\n', "src/cursor.js": CURSOR,
+    files={"package.json": PACKAGE_JSON % "cursorpage", "src/cursor.js": CURSOR,
            "src/pager.js": PAGER, "README.md": README, ".gitignore": "node_modules/\n"},
     visible_tests={"test/basic.test.js": VISIBLE},
     hidden_tests={"test/full.test.js": HIDDEN},
     mutate=["src/cursor.js", "src/pager.js"], difficulty=3, tags=["pagination", "cursor", "api"],
-    verify="node --test --test-reporter=spec test/*.test.js",
+    verify=JS_VERIFY,
+    probe_import="const { paginate, encodeCursor, decodeCursor } = require('./src/cursor');\nconst { clampLimit, pageCount, describeRange, pageWindow } = require('./src/pager');\nconst ROWS = [{ id: 1, score: 5 }, { id: 2, score: 9 }, { id: 3, score: 5 }, { id: 4, score: 1 }, { id: 5, score: 9 }];",
+    probes=[
+        'clampLimit(500, 20, 50)',
+        'clampLimit(null)',
+        "clampLimit('12')",
+        'clampLimit(0)',
+        'pageCount(100, 20)',
+        'pageCount(0, 20)',
+        'describeRange(5, 20, 95)',
+        'describeRange(6, 20, 95)',
+        'describeRange(2, 5, 6)',
+        'pageWindow(5, 10)',
+        'pageWindow(1, 10)',
+        'pageWindow(4, 10)',
+        'pageWindow(10, 20, 2)',
+        "decodeCursor(encodeCursor({ key: 'ab', id: 7 }))",
+        "decodeCursor('garbage')",
+        'paginate(ROWS, { limit: 2 }).items.map((r) => r.id)',
+        'decodeCursor(paginate(ROWS, { limit: 2 }).next)',
+        'paginate(ROWS, { limit: 2, after: encodeCursor({ key: 2, id: 2 }) }).items.map((r) => r.id)',
+        'paginate(ROWS, { limit: 2, before: encodeCursor({ key: 4, id: 4 }) }).items.map((r) => r.id)',
+        "paginate(ROWS, { sort: 'score', dir: 'desc', limit: 5 }).items.map((r) => r.id)",
+        'paginate(ROWS, { limit: 5 }).next',
+        'paginate(ROWS, { limit: 2, after: encodeCursor({ key: 4, id: 4 }) }).next',
+    ],
 )
 
 register_libs([LIB], n=8)

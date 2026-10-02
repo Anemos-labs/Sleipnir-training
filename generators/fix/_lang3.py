@@ -58,6 +58,20 @@ static void h_init(void) {
     if (g_ != w_) { h_fails++; printf("FAIL %s:%d: %s: got %lld, want %lld\n", __FILE__, __LINE__, #got, g_, w_); } \
 } while (0)
 
+/* like CHECK_INT / CHECK_STR, but `ctx` (a string, e.g. the input of a table row) is part of the message */
+#define CHECK_INT_CTX(ctx, got, want) do { \
+    long long g_ = (long long)(got), w_ = (long long)(want); \
+    h_checks++; \
+    if (g_ != w_) { h_fails++; printf("FAIL %s:%d: [%s] %s: got %lld, want %lld\n", __FILE__, __LINE__, (ctx), #got, g_, w_); } \
+} while (0)
+
+#define CHECK_STR_CTX(ctx, got, want) do { \
+    const char *g_ = (got), *w_ = (want); \
+    h_checks++; \
+    if (g_ == NULL || strcmp(g_, w_) != 0) { \
+        h_fails++; printf("FAIL %s:%d: [%s] %s: got \"%s\", want \"%s\"\n", __FILE__, __LINE__, (ctx), #got, g_ ? g_ : "(null)", w_); } \
+} while (0)
+
 #define CHECK_UINT(got, want) do { \
     unsigned long long g_ = (unsigned long long)(got), w_ = (unsigned long long)(want); \
     h_checks++; \
@@ -253,9 +267,17 @@ function t_done(): void {
 _PID = re.compile(r"^==\d+==.*$\n?", re.M)
 
 
-def _scrub(task: Task, hidden: list[str]) -> Task:
-    """Make a prompt independent of process ids and free of the hidden test paths."""
+_NICE_VERIFY = {
+    "c": "The test program (`src/*.c` and `tests/*.c` compiled with `gcc -fsanitize=address,undefined`, then run as `./build/tests`)",
+    "cpp": "The test program (`src/*.cpp` and `tests/*.cpp` compiled with `g++ -std=c++17 -fsanitize=address,undefined`, then run as `./build/tests`)",
+}
+
+
+def _scrub(task: Task, hidden: list[str], verify: str = "", lang: str = "") -> Task:
+    """Make a prompt independent of process ids and free of the hidden test paths; shorten the long verify command."""
     p = _PID.sub("", task.prompt)
+    if verify and lang in _NICE_VERIFY and f"`{verify}`" in p:
+        p = p.replace(f"`{verify}`", _NICE_VERIFY[lang])
     for h in hidden:
         if h in p:
             base = h.rsplit("/", 1)[-1]
@@ -271,7 +293,7 @@ def add(lib, n: int = 8, max_candidates: int | None = None) -> None:
 
     def gen(rng, count, _lib=lib):
         hidden = sorted(_lib.hidden_tests)
-        return [_scrub(t, hidden) for t in mutation_tasks(_lib, rng, count, max_candidates=budget)]
+        return [_scrub(t, hidden, _lib.verify, _lib.lang) for t in mutation_tasks(_lib, rng, count, max_candidates=budget)]
 
     gen.__module__ = lib.__class__.__module__
     register(fam, gen)

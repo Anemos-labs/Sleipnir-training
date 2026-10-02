@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-negotiator-01-delete",
+"ok": true
+},
+{
+"id": "fix-py-negotiator-02-const",
+"ok": true
+},
+{
+"id": "fix-py-negotiator-03-cmp",
+"ok": true
+},
+{
+"id": "fix-py-negotiator-04-logic",
+"ok": true
+},
+{
+"id": "fix-py-negotiator-05-swap",
+"ok": true
+},
+{
+"id": "fix-py-negotiator-06-negate",
+"ok": true
+},
+{
+"id": "fix-py-negotiator-07-delete",
+"ok": true
+},
+{
+"id": "fix-py-negotiator-08-cmp",
+"ok": true
+},
+{
+"id": "fix-py-negotiator-09-logic",
+"ok": true
+},
+{
+"id": "fix-py-negotiator-10-swap",
+"ok": true
+}
+]

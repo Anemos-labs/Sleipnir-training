@@ -1,0 +1,54 @@
+[
+{
+"id": "fix-hand-paging-01-first-page-skipped",
+"ok": true
+},
+{
+"id": "fix-hand-paging-02-pages-off-by-one",
+"ok": true
+},
+{
+"id": "fix-hand-paging-03-cap-resets",
+"ok": true
+},
+{
+"id": "fix-hand-paging-04-empty-is-zero-pages",
+"ok": true
+},
+{
+"id": "fix-hand-paging-05-next-from-item-count",
+"ok": true
+},
+{
+"id": "fix-hand-paging-06-offset-from-raw-size",
+"ok": true
+},
+{
+"id": "fix-hand-paging-07-filter-after-slice",
+"ok": true
+},
+{
+"id": "fix-hand-paging-08-lenient-limit",
+"ok": true
+},
+{
+"id": "fix-hand-paging-09-same-ts-skipped",
+"ok": true
+},
+{
+"id": "fix-hand-paging-10-id-compared-as-text",
+"ok": true
+},
+{
+"id": "fix-hand-paging-11-cursor-of-peeked-item",
+"ok": true
+},
+{
+"id": "fix-hand-paging-12-add-skips-resort",
+"ok": true
+},
+{
+"id": "fix-hand-paging-13-order-and-add",
+"ok": true
+}
+]

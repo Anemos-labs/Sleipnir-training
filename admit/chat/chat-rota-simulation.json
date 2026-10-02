@@ -1,0 +1,42 @@
+[
+{
+"id": "chat-rota-simulation-01-5p-100w",
+"ok": true
+},
+{
+"id": "chat-rota-simulation-02-6p-10000w",
+"ok": true
+},
+{
+"id": "chat-rota-simulation-03-6p-365w",
+"ok": true
+},
+{
+"id": "chat-rota-simulation-04-7p-97w",
+"ok": true
+},
+{
+"id": "chat-rota-simulation-05-7p-123456w",
+"ok": true
+},
+{
+"id": "chat-rota-simulation-06-8p-97w",
+"ok": true
+},
+{
+"id": "chat-rota-simulation-07-6p-2500w",
+"ok": true
+},
+{
+"id": "chat-rota-simulation-08-7p-10000w",
+"ok": true
+},
+{
+"id": "chat-rota-simulation-09-8p-365w",
+"ok": true
+},
+{
+"id": "chat-rota-simulation-10-5p-50w",
+"ok": true
+}
+]

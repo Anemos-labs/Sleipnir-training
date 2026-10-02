@@ -1,0 +1,50 @@
+[
+{
+"id": "swarm-pipeline-stages-01-kilns-kv",
+"ok": true
+},
+{
+"id": "swarm-pipeline-stages-02-tanks-columns",
+"ok": true
+},
+{
+"id": "swarm-pipeline-stages-03-rainfall-csv",
+"ok": true
+},
+{
+"id": "swarm-pipeline-stages-04-greenhouse-kv-tz",
+"ok": true
+},
+{
+"id": "swarm-pipeline-stages-05-hives-columns-tz",
+"ok": true
+},
+{
+"id": "swarm-pipeline-stages-06-cellar-csv-tz",
+"ok": true
+},
+{
+"id": "swarm-pipeline-stages-07-kilns-kv",
+"ok": true
+},
+{
+"id": "swarm-pipeline-stages-08-tanks-csv",
+"ok": true
+},
+{
+"id": "swarm-pipeline-stages-09-rainfall-columns-tz",
+"ok": true
+},
+{
+"id": "swarm-pipeline-stages-10-greenhouse-kv-tz",
+"ok": true
+},
+{
+"id": "swarm-pipeline-stages-11-hives-csv-tz",
+"ok": true
+},
+{
+"id": "swarm-pipeline-stages-12-cellar-columns",
+"ok": true
+}
+]

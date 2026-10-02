@@ -82,7 +82,7 @@ THEMES: dict[str, dict] = {
     "observatory": dict(
         org=["{a} Observatory", "{a} Institute of Astronomy", "{a} Sky Survey"],
         teams=["Instrumentation", "Data Reduction", "Telescope Operations", "Outreach", "Facilities", "Visiting Observers", "Computing"],
-        asset="instrument", asset_fmt="the {w} spectrograph", site="dome", site_fmt="{w} Dome",
+        asset="instrument", asset_fmt="{w} spectrograph", site="dome", site_fmt="{w} Dome",
         titles=["Night Assistant", "Instrument Scientist", "Operations Manager", "Data Curator", "Support Astronomer", "Facility Engineer", "Outreach Coordinator"],
         unit="exposures", thing="observation",
     ),
@@ -163,7 +163,7 @@ MONTHS = ["January", "February", "March", "April", "May", "June", "July", "Augus
 WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
 
-@dataclass
+@dataclass(eq=False)
 class Person:
     first: str
     last: str
@@ -319,10 +319,10 @@ _FILLER = [
     "The kettle in the {team} office was descaled on {d1}. Please do not put the filter jug back in the cupboard.",
     "Fire drill at {site} took {n} minutes; the assembly point was too close to the bins again.",
     "{p} asked whether the {asset} could be added to the open-day tour. No decision yet.",
-    "New starter {p} joins {team} on {d1}; please share a desk plan with {q}.",
+    "New starter {newp} joins {team} on {d1}; please share a desk plan with {q}.",
     "Room {n} is double-booked on {d1}; {team} has priority until the calendar is fixed.",
     "The vending machine near {site} now takes cards. It still does not give change.",
-    "Printer on level {m} is out of toner again; {p} has ordered {n} cartridges.",
+    "Printer on level {m} is out of toner again; {p} has ordered {few} cartridges.",
     "A note from {p}: please label everything in the shared fridge, anything unlabelled goes on {d1}.",
     "Parking permits for {team} are renewed each year; the next batch is due {d1}.",
     "Pest control visited {site} on {d1}; no further action needed.",
@@ -338,8 +338,8 @@ _FILLER = [
     "Cycle shelter at {site} has a new lock; keys from {p}.",
     "Bank holiday opening: {site} closes at {hh} the day before, reopens as normal.",
     "{p} proposed a lunchtime walking group starting {d1}. {q} has offered a route.",
-    "The {team} stationery order went in on {d1}; delivery expected within {n} working days.",
-    "Heating at {site} has been set to {n} degrees pending the engineer's visit.",
+    "The {team} stationery order went in on {d1}; delivery expected within {wd} working days.",
+    "Heating at {site} has been set to {temp} degrees pending the engineer's visit.",
     "Charity bake sale raised {n} for the local food bank; thanks to {p} and {q}.",
     "Lift maintenance at {site}: out of service {d1}, {hh} to {hh2}.",
 ]
@@ -351,6 +351,7 @@ def filler_line(rng: random.Random, org: Org, lo: dt.date = dt.date(2031, 1, 1),
     d1 = rand_date(rng, lo, hi)
     d2 = d1 + dt.timedelta(days=rng.randint(3, 20))
     return t.format(
+        newp=rng.choice([f for f in FIRST if f not in {x.first for x in org.people}]) + " " + rng.choice([a for a in SUR_A if not any(x.last.startswith(a) for x in org.people)]) + rng.choice(SUR_B), few=rng.randint(2, 6), temp=rng.randint(15, 22), wd=rng.randint(2, 9),
         site=rng.choice(org.sites), n=rng.randint(2, 40), m=rng.randint(1, 9), thing=rng.choice(["umbrella", "scarf", "flask", "folder", "glove", "notebook"]),
         team=rng.choice(org.teams), p=p.full, q=q.full, d1=d_long(d1), d2=d_long(d2), asset=rng.choice(org.assets), hh=hhmm(rng, 8, 13), hh2=hhmm(rng, 14, 17),
     )
@@ -454,7 +455,8 @@ notes = []
 
 def norm(v):
     s = re.sub(r"\s+", " ", str(v).strip()).casefold()
-    return s.strip("`'\" ").rstrip(".")
+    s = s.strip("`'\" ").rstrip(".")
+    return s[2:] if s.startswith("./") else s
 
 
 def num(v):
@@ -478,6 +480,8 @@ def same(kind, got, want, tol=0.0):
             if isinstance(got, bool):
                 return got == want
             return norm(got) in (("true", "yes") if want else ("false", "no"))
+        if kind == "oneof":
+            return norm(got) in [norm(x) for x in want]
         if kind == "date":
             return str(got).strip() == want
         if kind == "none":
@@ -498,8 +502,6 @@ def score_field(f, got):
         if kind == "list":
             return 1.0 if g == w else 0.0
         gs, ws = set(g), set(w)
-        if len(g) != len(gs):
-            return 0.0 if gs == ws and False else (len(gs & ws) / max(1, len(gs | ws)) if gs != ws else 0.0)
         return len(gs & ws) / max(1, len(gs | ws))
     if kind == "map":  # str -> number/str, graded per key
         if not isinstance(got, dict):
@@ -508,7 +510,7 @@ def score_field(f, got):
         sub = f.get("sub", "str")
         gm = {norm(k): v for k, v in got.items()}
         hit = sum(1 for k, v in want.items() if norm(k) in gm and same(sub, gm[norm(k)], v, tol))
-        extra = sum(1 for k in gm if k not in {norm(x) for x in want})
+        extra = 0 if f.get("lenient_extra") else sum(1 for k in gm if k not in {norm(x) for x in want})
         return max(0.0, (hit - 0.5 * extra) / max(1, len(want)))
     return 1.0 if same(kind, got, want, f.get("tol", 0.0)) else 0.0
 
@@ -616,13 +618,22 @@ def check_report():
     text = open(path, encoding="utf-8", errors="replace").read()
     words = len(re.findall(r"\w+", text))
     found = []
+    credit = 0.0
+
+    def has_id(i):
+        return re.search(r"(?<![A-Za-z0-9-])" + re.escape(i) + r"(?![A-Za-z0-9])", text) is not None
     for fact in SPEC["facts"]:
         if any(re.search(p, text, re.I) for p in fact["any"]):
             found.append(fact["id"])
+            if fact.get("cite") and not any(has_id(c) for c in fact["cite"]):
+                notes.append(f"fact {fact['id']}: stated but its source document is not cited")
+                credit += 0.5
+            else:
+                credit += 1.0
         else:
             notes.append(f"fact not found: {fact['id']}")
     need = SPEC["need"]
-    s = min(1.0, len(found) / need)
+    s = min(1.0, credit / need)
     for bad in SPEC.get("forbid", []):
         if re.search(bad["pat"], text, re.I):
             notes.append(f"states something false: {bad['why']}")
@@ -717,6 +728,34 @@ sys.exit(0 if score >= 0.9999 else 1)
 '''
 
 
+def pat_money(v: int) -> list[str]:
+    """regexes matching an integer amount written plainly, with thousands commas, or in millions"""
+    pats = [rf"(?<![\d.,]){v}(?!\d)", rf"(?<![\d.,]){re.escape(f'{v:,}')}(?!\d)"]
+    if v % 10000 == 0:
+        m = f"{v / 1e6:.2f}".rstrip("0").rstrip(".")
+        pats.append(rf"(?<![\d.,]){re.escape(m)}\s?(m\b|million)")
+    return pats
+
+
+def pat_date(d: dt.date) -> list[str]:
+    forms = {d_iso(d), d_long(d), d_us(d), d_short(d)}
+    return [rf"(?<![\w]){re.escape(f)}(?![\w])" for f in sorted(forms)]
+
+
+_NUMW = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen"]
+
+
+def pat_count_near(n: int, words: list[str], span: int = 30) -> list[str]:
+    """a count (digits or spelled out for small values) within ``span`` characters of one of the words"""
+    forms = [str(n)] + ([_NUMW[n]] if n < len(_NUMW) else [])
+    w = "(?:" + "|".join(words) + ")"
+    out = []
+    for f in forms:
+        out.append(rf"(?<![\d.,\w]){f}(?![\d\w])[^.\n]{{0,{span}}}{w}")
+        out.append(rf"{w}[^.\n]{{0,{span}}}(?<![\d.,\w]){f}(?![\d\w])")
+    return out
+
+
 def checker(spec: dict) -> dict[str, str]:
     """The hidden-files dict holding the checker for ``spec``."""
     s = json.dumps(spec, ensure_ascii=False, sort_keys=True)
@@ -787,12 +826,53 @@ CLOSERS = [
 ]
 
 
-def voice(rng: random.Random, org: Org, body: str, closers: bool = True) -> str:
+_LOWER_OK = {"Which", "Who", "What", "When", "How", "Is", "Are", "Did", "Was", "Were", "Does", "Do", "Can", "Could", "Please", "List", "Tell",
+             "Find", "Give", "Work", "Count", "Write", "Build", "Make", "Put", "Read", "Go", "Using", "Looking", "From", "For", "In", "On",
+             "Over", "Among", "Of", "Take", "Across", "One", "Ticket", "Add", "Between", "After", "Before", "Out", "Any", "Each", "At", "If",
+             "Suppose", "Total", "Show", "Check", "With", "As", "By", "Name", "Where", "Why", "Should", "Would", "Will", "Has", "Have", "Had",
+             "Reply", "Create", "Save", "Sum", "Pull", "Go", "Dig", "Look", "Pick", "Compile", "Draft", "Produce", "Summarise", "Extract",
+             "Reconstruct", "Identify", "Determine", "Work", "Compare", "Cross-check", "Verify", "Trace", "Follow", "Start", "Open", "Locate",
+             "Assuming", "Given", "Under", "Per", "Regarding", "About", "Concerning", "Within", "Starting", "Counting", "Considering", "Taking", "Not", "Only", "My", "Our", "The", "A", "An", "Going", "Digging",
+             "Searching", "Scanning", "Reading", "Judging", "Based", "According"}
+
+
+def join_lead(lead: str, body: str) -> str:
+    first = body.split(" ", 1)[0].strip(",:")
+    if first in _LOWER_OK:
+        body = body[:1].lower() + body[1:]
+    return lead.rstrip() + " " + body
+
+
+def voice(rng: random.Random, org: Org, body: str, closers: bool = True, lead: str = "") -> str:
+    """Wrap ``body`` in a short human opener and sign-off (both often empty). ``lead`` is an optional clause such as
+    "In the archive folder," that the body continues."""
+    if lead:
+        body = join_lead(lead, body)
     o = rng.choice(OPENERS).format(team=rng.choice(org.teams))
     c = rng.choice(CLOSERS) if closers else ""
-    if o and body[:1].isupper() is False and o.endswith(". "):
+    first = body.split(" ", 1)[0].strip(",:")
+    if o and o.rstrip().endswith((",", ":", "but")) and first in _LOWER_OK:
+        body = body[:1].lower() + body[1:]
+    elif (not o or o.endswith((". ", "? ", "! "))) and body[:1].islower():
         body = body[:1].upper() + body[1:]
     return (o + body + c).strip()
+
+
+def numfmt(rng: random.Random, n: int, labels: tuple = ("Answer", "Count", "Total", "Result")) -> tuple[str, str]:
+    """How to ask for a number so that the check is not satisfied by a stray digit: (instruction sentence, contains string)."""
+    if n >= 100:
+        return rng.choice([" Digits only.", " Just the number.", "", " Plain digits, no separators."]), str(n)
+    lab = rng.choice(list(labels))
+    return f" End your reply with a line `{lab}: <number>`.", f"{lab}: {n}"
+
+
+_SING = {"credits": "credit", "members": "member", "passes": "pass", "days": "day", "people": "person", "minutes": "minute", "hours": "hour",
+         "weeks": "week", "items": "item", "units": "unit", "boxes": "box", "kits": "kit", "places": "place"}
+
+
+def units(v: int, unit: str) -> str:
+    """'1 pass', '2 passes'"""
+    return f"{v} {_SING.get(unit, unit) if v == 1 else unit}"
 
 
 def ordinal(n: int) -> str:

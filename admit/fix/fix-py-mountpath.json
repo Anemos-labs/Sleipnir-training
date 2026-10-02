@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-mountpath-01-negate",
+"ok": true
+},
+{
+"id": "fix-py-mountpath-02-logic",
+"ok": true
+},
+{
+"id": "fix-py-mountpath-03-delete",
+"ok": true
+},
+{
+"id": "fix-py-mountpath-04-swap",
+"ok": true
+},
+{
+"id": "fix-py-mountpath-05-cmp",
+"ok": true
+},
+{
+"id": "fix-py-mountpath-06-const",
+"ok": true
+},
+{
+"id": "fix-py-mountpath-07-arith",
+"ok": true
+},
+{
+"id": "fix-py-mountpath-08-negate",
+"ok": true
+},
+{
+"id": "fix-py-mountpath-09-delete",
+"ok": true
+},
+{
+"id": "fix-py-mountpath-10-swap",
+"ok": true
+}
+]

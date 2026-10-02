@@ -1,0 +1,50 @@
+[
+{
+"id": "games-slidebox-fix-01-push-into-wall",
+"ok": true
+},
+{
+"id": "games-slidebox-fix-02-player-into-water",
+"ok": true
+},
+{
+"id": "games-slidebox-fix-03-move-cost",
+"ok": true
+},
+{
+"id": "games-slidebox-fix-04-push-limit",
+"ok": true
+},
+{
+"id": "games-slidebox-fix-05-water-not-filled",
+"ok": true
+},
+{
+"id": "games-slidebox-fix-06-slide-stops-early",
+"ok": true
+},
+{
+"id": "games-slidebox-fix-07-slide-through-crate",
+"ok": true
+},
+{
+"id": "games-slidebox-fix-08-exact-solved",
+"ok": true
+},
+{
+"id": "games-slidebox-fix-09-moves-after-solved",
+"ok": true
+},
+{
+"id": "games-slidebox-fix-10-run-shift",
+"ok": true
+},
+{
+"id": "games-slidebox-fix-11-pad-render",
+"ok": true
+},
+{
+"id": "games-slidebox-fix-12-counter-illegal",
+"ok": true
+}
+]

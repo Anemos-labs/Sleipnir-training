@@ -1,0 +1,50 @@
+[
+{
+"id": "chat-json-read-01-order_qty",
+"ok": true
+},
+{
+"id": "chat-json-read-02-cancel_count",
+"ok": true
+},
+{
+"id": "chat-json-read-03-cancel_count",
+"ok": true
+},
+{
+"id": "chat-json-read-04-distinct_sku",
+"ok": true
+},
+{
+"id": "chat-json-read-05-distinct_sku",
+"ok": true
+},
+{
+"id": "chat-json-read-06-distinct_sku",
+"ok": true
+},
+{
+"id": "chat-json-read-07-revenue_month",
+"ok": true
+},
+{
+"id": "chat-json-read-08-revenue_month",
+"ok": true
+},
+{
+"id": "chat-json-read-09-two_part",
+"ok": true
+},
+{
+"id": "chat-json-read-10-cancel_count",
+"ok": true
+},
+{
+"id": "chat-json-read-11-revenue",
+"ok": true
+},
+{
+"id": "chat-json-read-12-best_customer",
+"ok": true
+}
+]

@@ -506,6 +506,10 @@ HIDDEN = gosrc(dd(r'''
                 t.Errorf("Parse(%q) = %d, %v", s, got, err)
             }
         }
+        z, err := Parse("aaaa-aaaa-zzzzz")
+        if err != nil || z != ID(23*(1<<20)+23*(1<<15)+23*(1<<10)+23*32+23) {
+            t.Errorf("lower-case z: %d %v", z, err)
+        }
         if got, err := Parse("R999-9999-99999"); err != nil || uint64(got) != 1<<64-1 {
             t.Errorf("max id: %d %v", got, err)
         }
@@ -514,7 +518,7 @@ HIDDEN = gosrc(dd(r'''
     func TestParseErrors(t *testing.T) {
         bad := []string{
             "", "AAB4-53WL-9999", "AAB4-53WL-999977", "AAB453WL9999", "AAB453WL999977",
-            "AAB45-3WL-99997", "AAB4-53WL9-9997", "AAB4_53WL_99997", "AAB4 53WL 99997",
+            "AAB45-3WL-99997", "AAB4-53WL9-9997", "AAB4_53WL-99997", "AAB4-53WL_99997", "AAB4_53WL_99997", "AAB4 53WL 99997",
             "AAB4-53WL-9999I", "AAB4-53WL-9999O", "AAB4-53WL-9999 ", "0AB4-53WL-99997", "AAB4-53WL-9999!",
             "SAAA-AAAA-AAAAA", "ZAAA-AAAA-AAAAA", "AAB4-53WL-99-97", "AAB4-53WL-1AAAA",
         }

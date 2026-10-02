@@ -1,10 +1,9 @@
-"""Text-format libraries (python), batch: log lines, env-file dialect, query strings."""
+"""Text-format libraries (python), batch: log lines."""
 from fx import Lib, dd, register_libs
 
 # ======================================================================================================================
 # lanternlog: the log-line format of the lantern daemons (two modules)
 # ======================================================================================================================
-
 LANTERN_README = dd(r'''
     # lanternlog
 
@@ -542,6 +541,7 @@ LANTERN = Lib(
     ],
     probe_import="from lanternlog.parse import *\nfrom lanternlog.query import *",
 )
+
 
 LIBS = [LANTERN]
 register_libs(LIBS, n=10)

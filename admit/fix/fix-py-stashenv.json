@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-stashenv-01-cmp",
+"ok": true
+},
+{
+"id": "fix-py-stashenv-02-const",
+"ok": true
+},
+{
+"id": "fix-py-stashenv-03-arith",
+"ok": true
+},
+{
+"id": "fix-py-stashenv-04-negate",
+"ok": true
+},
+{
+"id": "fix-py-stashenv-05-delete",
+"ok": true
+},
+{
+"id": "fix-py-stashenv-06-cmp",
+"ok": true
+},
+{
+"id": "fix-py-stashenv-07-const",
+"ok": true
+},
+{
+"id": "fix-py-stashenv-08-arith",
+"ok": true
+},
+{
+"id": "fix-py-stashenv-09-delete",
+"ok": true
+},
+{
+"id": "fix-py-stashenv-10-cmp",
+"ok": true
+}
+]

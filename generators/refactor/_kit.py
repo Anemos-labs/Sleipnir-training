@@ -19,6 +19,21 @@ ASSETS = Path(__file__).parent / "_assets"
 PY_BEHAVIOUR_CMD = "python3 -m unittest discover -s tests -p 'test_[a-y]*.py'"
 PY_STRUCT_CMD = "python3 -m unittest discover -s tests -p 'test_zz*.py'"
 
+# node 22: `node --test test/` treats the directory as a module and fails, so name the files
+JS_BEHAVIOUR_CMD = "node --test test/*.test.js"
+JS_STRUCT_CMD = "python3 checks/structure.py"
+JS_FULL_CMD = "node --test test/*.test.js && python3 checks/structure.py"
+
+
+def load_structlib():
+    """The python structure helpers as a module, for use at generation time (same code the hidden checks run)."""
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location("fx_structlib", ASSETS / "structlib.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
 
 def asset(name: str) -> str:
     return (ASSETS / name).read_text(encoding="utf-8")
@@ -26,6 +41,10 @@ def asset(name: str) -> str:
 
 def py_structlib() -> dict[str, str]:
     return {"tests/structlib.py": asset("structlib.py")}
+
+
+def clike_lib() -> dict[str, str]:
+    return {"checks/clike.py": asset("clike.py")}
 
 
 _PRELUDE = "import copy, json, sys\nsys.path.insert(0, '.')\n"
@@ -53,9 +72,13 @@ def py_golden(files: dict[str, str], harness: str, cases: list) -> list:
     return json.loads(r.out.strip().splitlines()[-1])
 
 
-def py_behaviour(files: dict[str, str], harness: str, cases: list, title: str = "behaviour") -> str:
-    """Text of a hidden unittest module asserting that every case still gives the golden outcome."""
+def py_behaviour(files: dict[str, str], harness: str, cases: list, title: str = "behaviour", test_harness: str | None = None) -> str:
+    """Text of a hidden unittest module asserting that every case still gives the golden outcome.
+
+    When the API changes in the refactor (``test_harness``), the golden outcomes are recorded with ``harness`` on the
+    start tree, and the module drives the *new* API with ``test_harness``."""
     want = py_golden(files, harness, cases)
+    harness = test_harness or harness
     cs = json.dumps(json.dumps(cases))
     ws = json.dumps(json.dumps(want))
     return (
@@ -71,11 +94,13 @@ def py_behaviour(files: dict[str, str], harness: str, cases: list, title: str = 
 
 
 def prove(label: str, start: dict, hidden: dict, solution: dict, behaviour_cmd: str, struct_cmd: str, full_cmd: str,
-          timeout: int = 120) -> None:
+          timeout: int = 120, behaviour_on_start: bool = True) -> None:
     base = merged(start, hidden)
     r = run(base, behaviour_cmd, timeout=timeout)
-    if not r.ok:
+    if behaviour_on_start and not r.ok:
         raise RuntimeError(f"{label}: behaviour checks FAIL on the start (they must pass):\n{r.out[-1800:]}")
+    if not behaviour_on_start and r.ok:
+        raise RuntimeError(f"{label}: behaviour checks pass on the start although the API is supposed to change")
     r = run(base, struct_cmd, timeout=timeout)
     if r.ok:
         raise RuntimeError(f"{label}: structure checks PASS on the start (they must fail)")

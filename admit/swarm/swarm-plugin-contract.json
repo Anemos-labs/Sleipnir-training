@@ -1,0 +1,50 @@
+[
+{
+"id": "swarm-plugin-contract-01-teashop-k3",
+"ok": true
+},
+{
+"id": "swarm-plugin-contract-02-nursery-k4",
+"ok": true
+},
+{
+"id": "swarm-plugin-contract-03-ferry-k4",
+"ok": true
+},
+{
+"id": "swarm-plugin-contract-04-bikecoop-k5",
+"ok": true
+},
+{
+"id": "swarm-plugin-contract-05-stationer-k5",
+"ok": true
+},
+{
+"id": "swarm-plugin-contract-06-teashop-k5",
+"ok": true
+},
+{
+"id": "swarm-plugin-contract-07-nursery-k6",
+"ok": true
+},
+{
+"id": "swarm-plugin-contract-08-ferry-k6",
+"ok": true
+},
+{
+"id": "swarm-plugin-contract-09-bikecoop-k4",
+"ok": true
+},
+{
+"id": "swarm-plugin-contract-10-stationer-k7",
+"ok": true
+},
+{
+"id": "swarm-plugin-contract-11-teashop-k6",
+"ok": true
+},
+{
+"id": "swarm-plugin-contract-12-nursery-k3",
+"ok": true
+}
+]

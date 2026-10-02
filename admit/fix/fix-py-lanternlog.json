@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-lanternlog-01-cmp",
+"ok": true
+},
+{
+"id": "fix-py-lanternlog-02-negate",
+"ok": true
+},
+{
+"id": "fix-py-lanternlog-03-logic",
+"ok": true
+},
+{
+"id": "fix-py-lanternlog-04-arith",
+"ok": true
+},
+{
+"id": "fix-py-lanternlog-05-const",
+"ok": true
+},
+{
+"id": "fix-py-lanternlog-06-delete",
+"ok": true
+},
+{
+"id": "fix-py-lanternlog-07-cmp",
+"ok": true
+},
+{
+"id": "fix-py-lanternlog-08-logic",
+"ok": true
+},
+{
+"id": "fix-py-lanternlog-09-arith",
+"ok": true
+},
+{
+"id": "fix-py-lanternlog-10-const",
+"ok": true
+}
+]

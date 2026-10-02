@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-cachelens-01-swap",
+"ok": true
+},
+{
+"id": "fix-py-cachelens-02-delete",
+"ok": true
+},
+{
+"id": "fix-py-cachelens-03-const",
+"ok": true
+},
+{
+"id": "fix-py-cachelens-04-logic",
+"ok": true
+},
+{
+"id": "fix-py-cachelens-05-negate",
+"ok": true
+},
+{
+"id": "fix-py-cachelens-06-cmp",
+"ok": true
+},
+{
+"id": "fix-py-cachelens-07-swap",
+"ok": true
+},
+{
+"id": "fix-py-cachelens-08-delete",
+"ok": true
+},
+{
+"id": "fix-py-cachelens-09-const",
+"ok": true
+},
+{
+"id": "fix-py-cachelens-10-negate",
+"ok": true
+}
+]

@@ -105,6 +105,17 @@ class Ctx:
 # `node --test test/` does not work on node 22 (a directory argument is run as a module); use a glob.
 KIT_VERIFY = {"javascript": "node --test test/*.test.js"}
 
+def _visible_out(self, tail: int = 25) -> str:
+    """Output of the verify command on the buggy tree with only the visible tests (what a CI run would show)."""
+    lang = self.bug.lang or self.base.lang
+    verify = self.base.verify or KIT_VERIFY.get(lang) or langs.VERIFY[lang]
+    r = run(merged(self.bad_tree, self.base.visible, self.bug.reported), verify, timeout=60)
+    lines = [ln.rstrip() for ln in r.out.strip().splitlines()]
+    return "\n".join(lines[-tail:])
+
+
+Ctx.visible_out = _visible_out
+
 _COMPILE_ERR = re.compile(r"SyntaxError|IndentationError|error\[E\d+\]|cannot find symbol|undefined: |syntax error|declared and not used|"
                           r"imported and not used|expected .*, found|error: cannot|error: expected|mismatched types|unresolved")
 
@@ -125,7 +136,12 @@ def tasks_from(bases: list[Base], picks: list[tuple[int, int]] | None = None, ch
         for path, pairs in bug.patches.items():
             if path not in base.good:
                 raise ValueError(f"{base.name}/{bug.id}: patch for unknown file {path}")
-            bad_tree[path] = patch_text(base.good[path], pairs, f"{base.name}/{bug.id}:{path}")
+            if isinstance(pairs, str):  # the whole buggy file, written out by hand
+                if pairs == base.good[path]:
+                    raise ValueError(f"{base.name}/{bug.id}: buggy file {path} equals the correct one")
+                bad_tree[path] = pairs
+            else:
+                bad_tree[path] = patch_text(base.good[path], pairs, f"{base.name}/{bug.id}:{path}")
         ctx = Ctx(base, bug, good_tree, bad_tree)
         prompt = bug.prompt(ctx) if callable(bug.prompt) else bug.prompt
         start = merged(bad_tree, base.visible, bug.reported)

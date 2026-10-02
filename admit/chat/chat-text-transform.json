@@ -1,0 +1,50 @@
+[
+{
+"id": "chat-text-transform-01-names",
+"ok": true
+},
+{
+"id": "chat-text-transform-02-dates",
+"ok": true
+},
+{
+"id": "chat-text-transform-03-dates",
+"ok": true
+},
+{
+"id": "chat-text-transform-04-phones",
+"ok": true
+},
+{
+"id": "chat-text-transform-05-dates",
+"ok": true
+},
+{
+"id": "chat-text-transform-06-phones_dedupe",
+"ok": true
+},
+{
+"id": "chat-text-transform-07-names_sort2",
+"ok": true
+},
+{
+"id": "chat-text-transform-08-contacts",
+"ok": true
+},
+{
+"id": "chat-text-transform-09-dates",
+"ok": true
+},
+{
+"id": "chat-text-transform-10-phones",
+"ok": true
+},
+{
+"id": "chat-text-transform-11-phones_dedupe",
+"ok": true
+},
+{
+"id": "chat-text-transform-12-contacts",
+"ok": true
+}
+]

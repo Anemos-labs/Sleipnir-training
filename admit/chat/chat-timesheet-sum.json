@@ -1,0 +1,50 @@
+[
+{
+"id": "chat-timesheet-sum-01-plain-d1",
+"ok": true
+},
+{
+"id": "chat-timesheet-sum-02-dot-d2",
+"ok": true
+},
+{
+"id": "chat-timesheet-sum-03-ampm-d2",
+"ok": true
+},
+{
+"id": "chat-timesheet-sum-04-compact-d3",
+"ok": true
+},
+{
+"id": "chat-timesheet-sum-05-ampm-d3",
+"ok": true
+},
+{
+"id": "chat-timesheet-sum-06-dot-d3",
+"ok": true
+},
+{
+"id": "chat-timesheet-sum-07-compact-d4",
+"ok": true
+},
+{
+"id": "chat-timesheet-sum-08-compact-d4",
+"ok": true
+},
+{
+"id": "chat-timesheet-sum-09-compact-d5",
+"ok": true
+},
+{
+"id": "chat-timesheet-sum-10-plain-d2",
+"ok": true
+},
+{
+"id": "chat-timesheet-sum-11-plain-d3",
+"ok": true
+},
+{
+"id": "chat-timesheet-sum-12-dot-d4",
+"ok": true
+}
+]

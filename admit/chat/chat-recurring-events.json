@@ -1,0 +1,50 @@
+[
+{
+"id": "chat-recurring-events-01-nth",
+"ok": true
+},
+{
+"id": "chat-recurring-events-02-every_k",
+"ok": true
+},
+{
+"id": "chat-recurring-events-03-every_k",
+"ok": true
+},
+{
+"id": "chat-recurring-events-04-every_k_weekend",
+"ok": true
+},
+{
+"id": "chat-recurring-events-05-nth_cancel",
+"ok": true
+},
+{
+"id": "chat-recurring-events-06-coincide",
+"ok": true
+},
+{
+"id": "chat-recurring-events-07-nth",
+"ok": true
+},
+{
+"id": "chat-recurring-events-08-every_k",
+"ok": true
+},
+{
+"id": "chat-recurring-events-09-nth_cancel",
+"ok": true
+},
+{
+"id": "chat-recurring-events-10-coincide",
+"ok": true
+},
+{
+"id": "chat-recurring-events-11-nth",
+"ok": true
+},
+{
+"id": "chat-recurring-events-12-nth_cancel",
+"ok": true
+}
+]

@@ -1,0 +1,74 @@
+[
+{
+"id": "games-reef-fix-01-chain-off-by-one",
+"ok": true
+},
+{
+"id": "games-reef-fix-02-shoal-linear",
+"ok": true
+},
+{
+"id": "games-reef-fix-03-shoal-min",
+"ok": true
+},
+{
+"id": "games-reef-fix-04-chain-min",
+"ok": true
+},
+{
+"id": "games-reef-fix-05-sweep-forgotten",
+"ok": true
+},
+{
+"id": "games-reef-fix-06-round-counter",
+"ok": true
+},
+{
+"id": "games-reef-fix-07-rng-low-bits",
+"ok": true
+},
+{
+"id": "games-reef-fix-08-fine-negative",
+"ok": true
+},
+{
+"id": "games-reef-fix-09-sting-threshold",
+"ok": true
+},
+{
+"id": "games-reef-fix-10-shared-totals",
+"ok": true
+},
+{
+"id": "games-reef-fix-11-pool-unsorted",
+"ok": true
+},
+{
+"id": "games-reef-fix-12-bank-at-start",
+"ok": true
+},
+{
+"id": "games-reef-fix-13-moves-after-end",
+"ok": true
+},
+{
+"id": "games-reef-fix-14-sudden-boundary",
+"ok": true
+},
+{
+"id": "games-reef-fix-15-chain-min-sweep-forgotten",
+"ok": true
+},
+{
+"id": "games-reef-fix-16-round-counter-shoal-linear-pool-unsorted",
+"ok": true
+},
+{
+"id": "games-reef-fix-17-fine-negative-sting-threshold",
+"ok": true
+},
+{
+"id": "games-reef-fix-18-shared-totals-moves-after-end-sudden-boundary-bank-at-start",
+"ok": true
+}
+]

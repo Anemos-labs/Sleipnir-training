@@ -1,0 +1,38 @@
+[
+{
+"id": "testing-write-py-pricing-01-ferryfare-8m",
+"ok": true
+},
+{
+"id": "testing-write-py-pricing-02-ferryfare-9m",
+"ok": true
+},
+{
+"id": "testing-write-py-pricing-03-ferryfare-5m",
+"ok": true
+},
+{
+"id": "testing-write-py-pricing-04-ferryfare-7m",
+"ok": true
+},
+{
+"id": "testing-write-py-pricing-05-ferryfare-5m",
+"ok": true
+},
+{
+"id": "testing-write-py-pricing-06-ferryfare-10m",
+"ok": true
+},
+{
+"id": "testing-write-py-pricing-07-ferryfare-12m",
+"ok": true
+},
+{
+"id": "testing-write-py-pricing-08-ferryfare-5m",
+"ok": true
+},
+{
+"id": "testing-write-py-pricing-09-ferryfare-8m",
+"ok": true
+}
+]

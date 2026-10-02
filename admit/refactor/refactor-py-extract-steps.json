@@ -1,0 +1,58 @@
+[
+{
+"id": "refactor-py-extract-steps-01-initiative-all",
+"ok": true
+},
+{
+"id": "refactor-py-extract-steps-02-initiative-split",
+"ok": true
+},
+{
+"id": "refactor-py-extract-steps-03-chapters-all",
+"ok": true
+},
+{
+"id": "refactor-py-extract-steps-04-ferry-all",
+"ok": true
+},
+{
+"id": "refactor-py-extract-steps-05-initiative-all",
+"ok": true
+},
+{
+"id": "refactor-py-extract-steps-06-intake-split",
+"ok": true
+},
+{
+"id": "refactor-py-extract-steps-07-chapters-split",
+"ok": true
+},
+{
+"id": "refactor-py-extract-steps-08-duty-one",
+"ok": true
+},
+{
+"id": "refactor-py-extract-steps-09-duty-one",
+"ok": true
+},
+{
+"id": "refactor-py-extract-steps-10-ferry-one",
+"ok": true
+},
+{
+"id": "refactor-py-extract-steps-11-ferry-all",
+"ok": true
+},
+{
+"id": "refactor-py-extract-steps-12-intake-all",
+"ok": true
+},
+{
+"id": "refactor-py-extract-steps-13-intake-split",
+"ok": true
+},
+{
+"id": "refactor-py-extract-steps-14-chapters-all",
+"ok": true
+}
+]

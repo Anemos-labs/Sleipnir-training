@@ -66,7 +66,7 @@ def dataset_sql(cols: dict[str, list[str]], data: dict[str, list[tuple]], pretty
         else:
             for i in range(0, len(rows), 40):
                 chunk = rows[i:i + 40]
-                out.append(f"INSERT INTO {table} ({cl}) VALUES\n" + ",\n".join("  (" + ", ".join(lit(v) for v in r) + ")" for r in chunk) + ";")
+                out.append(f"INSERT INTO {table} ({cl}) VALUES\n" + ",\n".join("(" + ",".join(lit(v) for v in r) + ")" for r in chunk) + ";")
         out.append("")
     return "\n".join(out)
 
@@ -451,7 +451,7 @@ def _stub(spec: Spec) -> str:
     return "-- write your query here\n"
 
 
-def query_tasks(dom: Domain, specs: list[Spec], rng: random.Random, n: int, base_tags: tuple = ()) -> list[Task]:
+def query_tasks(dom: Domain, specs: list[Spec], rng: random.Random, n: int, base_tags: tuple = (), n_hidden: int = 2) -> list[Task]:
     schema = dom.schema
     cols = table_columns(schema)
     tasks: list[Task] = []
@@ -459,7 +459,7 @@ def query_tasks(dom: Domain, specs: list[Spec], rng: random.Random, n: int, base
         srng = random.Random(rng.random())
         vis = dom.gen(random.Random(srng.random()), False)
         vis_sql = dataset_sql(cols, vis, pretty=True)
-        hidden_sets = [dom.gen(random.Random(srng.random()), True) for _ in range(3)]
+        hidden_sets = [dom.gen(random.Random(srng.random()), True) for _ in range(n_hidden)]
         hidden_sql = [dataset_sql(cols, h) for h in hidden_sets]
         # guards
         sample_rows = exec_rows(schema, vis_sql, spec.ref)
@@ -475,7 +475,7 @@ def query_tasks(dom: Domain, specs: list[Spec], rng: random.Random, n: int, base
             results.append(r1)
         if len({json.dumps(r, default=str) for r in results}) < 2 and not spec.allow_empty:
             raise RuntimeError(f"{spec.slug}: hidden datasets give identical results")
-        if norm_rows(sample_rows, spec.places, spec.ordered) in results:
+        if sample_rows and norm_rows(sample_rows, spec.places, spec.ordered) in results:
             raise RuntimeError(f"{spec.slug}: sample result equals a hidden result (hard-codable)")
         if not sample_rows and not spec.allow_empty:
             raise RuntimeError(f"{spec.slug}: reference returns nothing on the sample")
@@ -563,7 +563,7 @@ class ScriptSpec:
     show_sql: str = ""  # a SELECT whose sample output after the reference script goes into the README
 
 
-def script_tasks(dom: Domain, specs: list[ScriptSpec], rng: random.Random, n: int, base_tags: tuple = ()) -> list[Task]:
+def script_tasks(dom: Domain, specs: list[ScriptSpec], rng: random.Random, n: int, base_tags: tuple = (), n_hidden: int = 2) -> list[Task]:
     schema = dom.schema
     cols = table_columns(schema)
     tasks: list[Task] = []
@@ -571,7 +571,7 @@ def script_tasks(dom: Domain, specs: list[ScriptSpec], rng: random.Random, n: in
         srng = random.Random(rng.random())
         vis = dom.gen(random.Random(srng.random()), False)
         vis_sql = dataset_sql(cols, vis, pretty=True)
-        hidden_sets = [dom.gen(random.Random(srng.random()), True) for _ in range(3)]
+        hidden_sets = [dom.gen(random.Random(srng.random()), True) for _ in range(n_hidden)]
         hidden_sql = [dataset_sql(cols, h) for h in hidden_sets]
         # guard: the reference script runs on every dataset and its checks differ from the pre-state somewhere
         changed = 0
@@ -692,3 +692,32 @@ def index_tasks(dom: Domain, specs: list[IndexSpec], rng: random.Random, n: int)
                 raise RuntimeError(f"{spec.slug}: checker accepted wrong indexes #{wi}")
         tasks.append(t)
     return tasks
+
+
+# --------------------------------------------------------------------------------------------------------------
+# small helpers for domain generators
+
+from datetime import date, datetime, timedelta  # noqa: E402
+
+
+def rdate(rng: random.Random, start: date, days: int) -> date:
+    return start + timedelta(days=rng.randint(0, days))
+
+
+def iso(d) -> str:
+    return d.isoformat() if isinstance(d, date) and not isinstance(d, datetime) else d.strftime("%Y-%m-%d %H:%M")
+
+
+def uniq(rng: random.Random, k: int, make) -> list:
+    out, seen, tries = [], set(), 0
+    while len(out) < k and tries < k * 50:
+        tries += 1
+        x = make()
+        if x not in seen:
+            seen.add(x)
+            out.append(x)
+    return out
+
+
+def person(rng: random.Random, firsts: list, lasts: list) -> str:
+    return f"{rng.choice(firsts)} {rng.choice(lasts)}"

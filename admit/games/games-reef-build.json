@@ -1,0 +1,42 @@
+[
+{
+"id": "games-reef-build-01-d6-s2c3",
+"ok": true
+},
+{
+"id": "games-reef-build-02-d6-s3c3",
+"ok": true
+},
+{
+"id": "games-reef-build-03-d7-s2c3-sting",
+"ok": true
+},
+{
+"id": "games-reef-build-04-d6-s2c4-fine",
+"ok": true
+},
+{
+"id": "games-reef-build-05-d5-s2c3-sudden",
+"ok": true
+},
+{
+"id": "games-reef-build-06-d5-s2c4-sting-sudden",
+"ok": true
+},
+{
+"id": "games-reef-build-07-d7-s3c4-sting-sudden",
+"ok": true
+},
+{
+"id": "games-reef-build-08-d5-s2c3-sting-sudden",
+"ok": true
+},
+{
+"id": "games-reef-build-09-d7-s2c4-sting-sudden",
+"ok": true
+},
+{
+"id": "games-reef-build-10-d7-s3c4-sting-sudden",
+"ok": true
+}
+]

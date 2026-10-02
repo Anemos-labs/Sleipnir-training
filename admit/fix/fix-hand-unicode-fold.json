@@ -1,0 +1,58 @@
+[
+{
+"id": "fix-hand-unicode-fold-01-lower-instead-of-casefold",
+"ok": true
+},
+{
+"id": "fix-hand-unicode-fold-02-nfc-misses-compat-forms",
+"ok": true
+},
+{
+"id": "fix-hand-unicode-fold-03-length-in-bytes",
+"ok": true
+},
+{
+"id": "fix-hand-unicode-fold-04-format-chars-kept",
+"ok": true
+},
+{
+"id": "fix-hand-unicode-fold-05-search-query-not-normalised",
+"ok": true
+},
+{
+"id": "fix-hand-unicode-fold-06-rename-index-stale",
+"ok": true
+},
+{
+"id": "fix-hand-unicode-fold-07-rename-self-collision",
+"ok": true
+},
+{
+"id": "fix-hand-unicode-fold-08-compat-and-stale-index",
+"ok": true
+},
+{
+"id": "fix-hand-unicode-fold-09-slug-empty-allowed",
+"ok": true
+},
+{
+"id": "fix-hand-unicode-fold-10-truncate-code-units",
+"ok": true
+},
+{
+"id": "fix-hand-unicode-fold-11-title-order-raw",
+"ok": true
+},
+{
+"id": "fix-hand-unicode-fold-12-marks-limited-range",
+"ok": true
+},
+{
+"id": "fix-hand-unicode-fold-13-unique-suffix-overflows",
+"ok": true
+},
+{
+"id": "fix-hand-unicode-fold-14-highlight-folded-indexes",
+"ok": true
+}
+]

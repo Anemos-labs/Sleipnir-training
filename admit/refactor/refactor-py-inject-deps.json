@@ -1,0 +1,50 @@
+[
+{
+"id": "refactor-py-inject-deps-01-holds",
+"ok": true
+},
+{
+"id": "refactor-py-inject-deps-02-parking",
+"ok": true
+},
+{
+"id": "refactor-py-inject-deps-03-parking",
+"ok": true
+},
+{
+"id": "refactor-py-inject-deps-04-alerts",
+"ok": true
+},
+{
+"id": "refactor-py-inject-deps-05-alerts",
+"ok": true
+},
+{
+"id": "refactor-py-inject-deps-06-holds",
+"ok": true
+},
+{
+"id": "refactor-py-inject-deps-07-coupons",
+"ok": true
+},
+{
+"id": "refactor-py-inject-deps-08-alerts",
+"ok": true
+},
+{
+"id": "refactor-py-inject-deps-09-coupons",
+"ok": true
+},
+{
+"id": "refactor-py-inject-deps-10-coupons",
+"ok": true
+},
+{
+"id": "refactor-py-inject-deps-11-parking",
+"ok": true
+},
+{
+"id": "refactor-py-inject-deps-12-holds",
+"ok": true
+}
+]

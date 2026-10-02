@@ -46,6 +46,7 @@ class Mod:
     hidden: str
     bugs: list[Bug]
     names: list[str] = field(default_factory=list)  # public functions, in spec order
+    probe_pre: str = ""  # extra import lines for probe expressions (e.g. "from datetime import date")
 
     def init_py(self) -> str:
         return f'"""{self.title}."""\nfrom .core import *  # noqa: F401,F403\n'
@@ -96,7 +97,7 @@ def add(m: Mod) -> Mod:
 def _probe_script(m: Mod, probes: list[str]) -> str:
     return (
         "import sys, json\nsys.path.insert(0, 'src')\n"
-        f"from {m.key} import *\n"
+        f"from {m.key} import *\n{m.probe_pre}\n"
         f"PROBES = {json.dumps(probes)}\n"
         "for e in PROBES:\n"
         "    try:\n        r = repr(eval(e))\n"
@@ -130,13 +131,17 @@ def symptoms(m: Mod, bug: Bug) -> list[tuple[str, str, str]]:
     return out
 
 
-def describe(sym: tuple[str, str, str]) -> str:
+def describe(sym: tuple[str, str, str], variant: int = 0) -> str:
     e, good, bad = sym
+    v = variant % 3
     if bad.startswith("raises "):
-        return f"`{e}` raises `{bad[7:]}`, but it should return `{good}`"
+        return (f"`{e}` raises `{bad[7:]}`, but it should return `{good}`", f"`{e}` blows up with `{bad[7:]}` instead of returning `{good}`",
+                f"expected `{good}` from `{e}` but it raises `{bad[7:]}`")[v]
     if good.startswith("raises "):
-        return f"`{e}` returns `{bad}`, but it should raise `{good[7:]}`"
-    return f"`{e}` gives `{bad}`, but it should give `{good}`"
+        return (f"`{e}` returns `{bad}`, but it should raise `{good[7:]}`", f"`{e}` quietly returns `{bad}` where `{good[7:]}` is expected",
+                f"`{e}` should raise `{good[7:]}` and returns `{bad}` instead")[v]
+    return (f"`{e}` gives `{bad}`, but it should give `{good}`", f"`{e}` returns `{bad}` where `{good}` is expected",
+            f"expected `{good}` from `{e}`, got `{bad}`")[v]
 
 
 def run_hidden(m: Mod, bug: Bug | None, extra: dict[str, str] | None = None):

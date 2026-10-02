@@ -1,0 +1,42 @@
+[
+{
+"id": "debug-trace-py-01-lockers-pick-wrong",
+"ok": true
+},
+{
+"id": "debug-trace-py-02-lockers-audit-crash",
+"ok": true
+},
+{
+"id": "debug-trace-py-03-lockers-release-wrong",
+"ok": true
+},
+{
+"id": "debug-trace-py-04-lockers-release-wrong",
+"ok": true
+},
+{
+"id": "debug-trace-py-05-lockers-expire-wrong",
+"ok": true
+},
+{
+"id": "debug-trace-py-06-lockers-history-wrong",
+"ok": true
+},
+{
+"id": "debug-trace-py-07-lockers-store-wrong",
+"ok": true
+},
+{
+"id": "debug-trace-py-08-lockers-free-wrong",
+"ok": true
+},
+{
+"id": "debug-trace-py-09-lockers-validate-crash",
+"ok": true
+},
+{
+"id": "debug-trace-py-10-lockers-expire-wrong",
+"ok": true
+}
+]

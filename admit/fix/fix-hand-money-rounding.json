@@ -1,0 +1,54 @@
+[
+{
+"id": "fix-hand-money-rounding-01-half-even-discounts",
+"ok": true
+},
+{
+"id": "fix-hand-money-rounding-02-one-decimal-misparsed",
+"ok": true
+},
+{
+"id": "fix-hand-money-rounding-03-tax-on-order-total",
+"ok": true
+},
+{
+"id": "fix-hand-money-rounding-04-discount-after-tax",
+"ok": true
+},
+{
+"id": "fix-hand-money-rounding-05-price-via-float",
+"ok": true
+},
+{
+"id": "fix-hand-money-rounding-06-float-price-and-order-tax",
+"ok": true
+},
+{
+"id": "fix-hand-money-rounding-07-started-blocks-floored",
+"ok": true
+},
+{
+"id": "fix-hand-money-rounding-08-sum-in-int",
+"ok": true
+},
+{
+"id": "fix-hand-money-rounding-09-percent-via-double",
+"ok": true
+},
+{
+"id": "fix-hand-money-rounding-10-split-negative-total",
+"ok": true
+},
+{
+"id": "fix-hand-money-rounding-11-vat-on-storage-only",
+"ok": true
+},
+{
+"id": "fix-hand-money-rounding-12-statement-vat-on-sum",
+"ok": true
+},
+{
+"id": "fix-hand-money-rounding-13-refund-split-and-percent",
+"ok": true
+}
+]

@@ -73,12 +73,19 @@ class App:
 # --------------------------------------------------------------------------------------------- rendering
 
 
+def fmt(text: str, **kw) -> str:
+    """Replace ``__KEY__`` tokens (safe in every language, unlike str.format with code braces)."""
+    for k, v in kw.items():
+        text = text.replace(f"__{k}__", str(v))
+    return text
+
+
 def _reindent(frag: str, indent: str) -> list[str]:
     text = textwrap.dedent(frag).strip("\n")
     return [(indent + ln) if ln.strip() else "" for ln in text.split("\n")]
 
 
-def expand(template: str, path: str, frags: dict) -> str:
+def _expand_once(template: str, path: str, frags: dict) -> str:
     lines = template.split("\n")
     out: list[str] = []
     i = 0
@@ -118,10 +125,20 @@ def expand(template: str, path: str, frags: dict) -> str:
                             seen.add(ln)
                         out.append(ln)
         i += 1
-    text = "\n".join(out)
+    return "\n".join(out)
+
+
+def expand(template: str, path: str, frags: dict) -> str:
+    """Expand markers; fragments may themselves contain markers (other slices' cross fragments fill them)."""
+    text = template
+    for _ in range(4):
+        text = _expand_once(text, path, frags)
+        if not any(_MARK.match(ln) for ln in text.split("\n")):
+            break
+    else:
+        raise ValueError(f"{path}: markers nest too deeply")
     text = re.sub(r"\n{4,}", "\n\n\n", text)
-    if "@@" in text and re.search(r"^[ \t]*@@(slot|blocks|uniq|default|end)\b", text, re.M):
-        raise ValueError(f"{path}: unexpanded marker")
+    text = re.sub(r"\n\n\n(?=[ \t]+\S)", "\n\n", text)  # one blank line between indented blocks
     return text.rstrip("\n") + "\n" if text.strip() else text
 
 
@@ -177,40 +194,34 @@ def _render_tree(templates: dict, frags: dict) -> dict:
 # --------------------------------------------------------------------------------------------- planning
 
 
-def _closure_ok(ordered: dict, present: set, targets: set) -> set:
-    """Make ``present`` closed under needs: pull in needed slices, drop ones that need a target or a conflicting one."""
-    present = set(present)
-    changed = True
-    while changed:
+def _closure_ok(by_id: dict, present: set, targets: set) -> set:
+    """Make ``present`` closed under ``needs`` (pulling in what is needed, dropping what needs a target) and free of
+    conflicts with the targets."""
+    present = set(present) - set(targets)
+    for _ in range(12):
         changed = False
+        everything = present | set(targets)
         for sid in sorted(present):
-            s = ordered[sid]
-            if any(c in targets or c in present for c in s.conflicts):
+            s = by_id[sid]
+            if any(c in everything for c in s.conflicts) or any(sid in by_id[o].conflicts for o in everything if o != sid):
                 present.discard(sid)
                 changed = True
-                continue
-            for need in s.needs:
-                if need in targets:
-                    present.discard(sid)
+                break
+            if any(nd in targets for nd in s.needs):
+                present.discard(sid)
+                changed = True
+                break
+            miss = [nd for nd in s.needs if nd not in present]
+            if miss:
+                present.update(miss)
+                changed = True
+        for t in targets:
+            for nd in by_id[t].needs:
+                if nd not in targets and nd not in present:
+                    present.add(nd)
                     changed = True
-                    break
-                if need not in present:
-                    present.add(need)
-                    changed = True
-    for t in targets:
-        for need in ordered[t].needs:
-            if need not in targets and need not in present:
-                present.add(need)
-    return _closure_fix(ordered, present, targets)
-
-
-def _closure_fix(ordered, present, targets):
-    # adding needs may have introduced new needs; iterate once more cheaply
-    for _ in range(4):
-        for sid in sorted(present):
-            for need in ordered[sid].needs:
-                if need not in targets:
-                    present.add(need)
+        if not changed:
+            break
     return present
 
 
@@ -255,7 +266,7 @@ def difficulty(slices_by_id: dict, targets: list, present: set) -> int:
         for other in slices_by_id[sid].cross:
             if other in final and (sid in targets or other in targets):
                 cross += 1
-    score = max(s.d for s in ts) + 0.6 * (len(ts) - 1) + 0.35 * cross + (0.4 if len(present) >= 5 else 0.0)
+    score = max(s.d for s in ts) + 0.4 * (len(ts) - 1) + 0.25 * cross + (0.3 if len(present) >= 7 else 0.0)
     return max(1, min(5, int(score + 0.5)))
 
 
@@ -390,7 +401,7 @@ def _v_story(rng, app, items, closer, detail):
 
 def _v_notes(rng, app, items, closer, detail):
     """A terse hand-off note: numbered, clipped."""
-    out = [rng.choice([f"{app.name}: todo from the planning call.", f"For {app.name} - notes from standup.", f"{app.name}, short version:"]), ""]
+    out = [rng.choice([f"{app.name}: tasks from the planning call.", f"For {app.name} - notes from standup.", f"{app.name}, short version:"]), ""]
     k = 1
     for s, pitch, reqs in items:
         out.append(f"{k}. {s.title}" + (f" ({_lc(pitch)})" if pitch and detail else ""))

@@ -1,0 +1,46 @@
+[
+{
+"id": "data-observatory-log-01-dark-clear-nights",
+"ok": true
+},
+{
+"id": "data-observatory-log-02-filter-hours-pivot",
+"ok": true
+},
+{
+"id": "data-observatory-log-03-untouched-targets",
+"ok": true
+},
+{
+"id": "data-observatory-log-04-clear-streaks",
+"ok": true
+},
+{
+"id": "data-observatory-log-05-best-session-per-observer",
+"ok": true
+},
+{
+"id": "data-observatory-log-06-quality-top-three",
+"ok": true
+},
+{
+"id": "data-observatory-log-07-rgb-complete-targets",
+"ok": true
+},
+{
+"id": "data-observatory-log-08-session-dead-time",
+"ok": true
+},
+{
+"id": "data-observatory-log-09-rolling-week-hours",
+"ok": true
+},
+{
+"id": "data-observatory-log-10-open-minutes-per-night",
+"ok": true
+},
+{
+"id": "data-observatory-log-11-fix-mean-quality",
+"ok": true
+}
+]

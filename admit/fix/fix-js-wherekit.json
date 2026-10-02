@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-js-wherekit-01-const",
+"ok": true
+},
+{
+"id": "fix-js-wherekit-02-cmp",
+"ok": true
+},
+{
+"id": "fix-js-wherekit-03-delete",
+"ok": true
+},
+{
+"id": "fix-js-wherekit-04-arith",
+"ok": true
+},
+{
+"id": "fix-js-wherekit-05-swap",
+"ok": true
+},
+{
+"id": "fix-js-wherekit-06-negate",
+"ok": true
+},
+{
+"id": "fix-js-wherekit-07-const",
+"ok": true
+},
+{
+"id": "fix-js-wherekit-08-cmp",
+"ok": true
+}
+]

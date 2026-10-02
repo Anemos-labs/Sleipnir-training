@@ -1,0 +1,58 @@
+[
+{
+"id": "chat-probability-small-01-draw",
+"ok": true
+},
+{
+"id": "chat-probability-small-02-draw",
+"ok": true
+},
+{
+"id": "chat-probability-small-03-draw2",
+"ok": true
+},
+{
+"id": "chat-probability-small-04-shuffle",
+"ok": true
+},
+{
+"id": "chat-probability-small-05-shuffle",
+"ok": true
+},
+{
+"id": "chat-probability-small-06-replace",
+"ok": true
+},
+{
+"id": "chat-probability-small-07-shuffle",
+"ok": true
+},
+{
+"id": "chat-probability-small-08-table",
+"ok": true
+},
+{
+"id": "chat-probability-small-09-game",
+"ok": true
+},
+{
+"id": "chat-probability-small-10-dice",
+"ok": true
+},
+{
+"id": "chat-probability-small-11-dice",
+"ok": true
+},
+{
+"id": "chat-probability-small-12-committee",
+"ok": true
+},
+{
+"id": "chat-probability-small-13-dice",
+"ok": true
+},
+{
+"id": "chat-probability-small-14-shuffle2",
+"ok": true
+}
+]

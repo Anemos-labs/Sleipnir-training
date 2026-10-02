@@ -1,0 +1,50 @@
+[
+{
+"id": "swarm-registry-merge-01-k3-boxtext",
+"ok": true
+},
+{
+"id": "swarm-registry-merge-02-k4-columnize",
+"ok": true
+},
+{
+"id": "swarm-registry-merge-03-k4-boxtext",
+"ok": true
+},
+{
+"id": "swarm-registry-merge-04-k5-fieldpick",
+"ok": true
+},
+{
+"id": "swarm-registry-merge-05-k3-columnize",
+"ok": true
+},
+{
+"id": "swarm-registry-merge-06-k5-boxtext",
+"ok": true
+},
+{
+"id": "swarm-registry-merge-07-k6-dedupe",
+"ok": true
+},
+{
+"id": "swarm-registry-merge-08-k4-boxtext",
+"ok": true
+},
+{
+"id": "swarm-registry-merge-09-k6-columnize",
+"ok": true
+},
+{
+"id": "swarm-registry-merge-10-k5-boxtext",
+"ok": true
+},
+{
+"id": "swarm-registry-merge-11-k3-headtail",
+"ok": true
+},
+{
+"id": "swarm-registry-merge-12-k7-boxtext",
+"ok": true
+}
+]

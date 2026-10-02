@@ -1,0 +1,46 @@
+[
+{
+"id": "fix-hand-tz-wallclock-01-digest-offset-of-now",
+"ok": true
+},
+{
+"id": "fix-hand-tz-wallclock-02-add-days-absolute",
+"ok": true
+},
+{
+"id": "fix-hand-tz-wallclock-03-days-between-utc-diff",
+"ok": true
+},
+{
+"id": "fix-hand-tz-wallclock-04-overlap-fold-swapped",
+"ok": true
+},
+{
+"id": "fix-hand-tz-wallclock-05-dst-end-bound",
+"ok": true
+},
+{
+"id": "fix-hand-tz-wallclock-06-midnight-by-elapsed",
+"ok": true
+},
+{
+"id": "fix-hand-tz-wallclock-07-elapsed-ignores-zone",
+"ok": true
+},
+{
+"id": "fix-hand-tz-wallclock-08-overtime-on-everything",
+"ok": true
+},
+{
+"id": "fix-hand-tz-wallclock-09-southern-no-wrap",
+"ok": true
+},
+{
+"id": "fix-hand-tz-wallclock-10-end-uses-start-offset",
+"ok": true
+},
+{
+"id": "fix-hand-tz-wallclock-11-wrap-and-fold",
+"ok": true
+}
+]

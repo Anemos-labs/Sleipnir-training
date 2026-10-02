@@ -1,0 +1,34 @@
+[
+{
+"id": "games-slidebox-build-01-water",
+"ok": true
+},
+{
+"id": "games-slidebox-build-02-slide-water",
+"ok": true
+},
+{
+"id": "games-slidebox-build-03-push2",
+"ok": true
+},
+{
+"id": "games-slidebox-build-04-slide-cost2",
+"ok": true
+},
+{
+"id": "games-slidebox-build-05-push3-water-cost2",
+"ok": true
+},
+{
+"id": "games-slidebox-build-06-water-exact",
+"ok": true
+},
+{
+"id": "games-slidebox-build-07-slide-water-exact-cost2",
+"ok": true
+},
+{
+"id": "games-slidebox-build-08-push2-water-exact-cost3",
+"ok": true
+}
+]

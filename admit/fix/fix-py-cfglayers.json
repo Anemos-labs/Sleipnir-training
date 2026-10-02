@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-cfglayers-01-arith",
+"ok": true
+},
+{
+"id": "fix-py-cfglayers-02-delete",
+"ok": true
+},
+{
+"id": "fix-py-cfglayers-03-const",
+"ok": true
+},
+{
+"id": "fix-py-cfglayers-04-swap",
+"ok": true
+},
+{
+"id": "fix-py-cfglayers-05-negate",
+"ok": true
+},
+{
+"id": "fix-py-cfglayers-06-delete",
+"ok": true
+},
+{
+"id": "fix-py-cfglayers-07-const",
+"ok": true
+},
+{
+"id": "fix-py-cfglayers-08-swap",
+"ok": true
+},
+{
+"id": "fix-py-cfglayers-09-negate",
+"ok": true
+},
+{
+"id": "fix-py-cfglayers-10-delete",
+"ok": true
+}
+]

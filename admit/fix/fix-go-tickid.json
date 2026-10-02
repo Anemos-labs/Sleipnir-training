@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-go-tickid-01-delete",
+"ok": true
+},
+{
+"id": "fix-go-tickid-02-arith",
+"ok": true
+},
+{
+"id": "fix-go-tickid-03-swap",
+"ok": true
+},
+{
+"id": "fix-go-tickid-04-const",
+"ok": true
+},
+{
+"id": "fix-go-tickid-05-cmp",
+"ok": true
+},
+{
+"id": "fix-go-tickid-06-negate",
+"ok": true
+},
+{
+"id": "fix-go-tickid-07-delete",
+"ok": true
+},
+{
+"id": "fix-go-tickid-08-arith",
+"ok": true
+}
+]

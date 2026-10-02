@@ -115,6 +115,13 @@ class _Norm(ast.NodeTransformer):
             return node
         return ast.copy_location(ast.Constant(value=type(v)()), node)
 
+    def visit_UnaryOp(self, node):
+        self.generic_visit(node)
+        if isinstance(node.op, (ast.USub, ast.UAdd)) and isinstance(node.operand, ast.Constant) \
+                and isinstance(node.operand.value, (int, float)) and not isinstance(node.operand.value, bool):
+            return ast.copy_location(ast.Constant(value=type(node.operand.value)()), node)
+        return node
+
     def visit_keyword(self, node):
         self.generic_visit(node)
         return ast.keyword(arg="_" if node.arg else None, value=node.value)
@@ -280,3 +287,38 @@ def dotted_calls(node):
 
 def format_problems(problems):
     return "\n".join("  - " + p for p in problems)
+
+
+_MUTATORS = {"append", "extend", "add", "update", "pop", "popitem", "clear", "setdefault", "remove", "insert", "discard", "sort", "reverse"}
+_CONTAINER_CALLS = {"dict", "list", "set", "defaultdict", "Counter", "OrderedDict", "deque", "bytearray"}
+
+
+def global_state_problems(tree):
+    """Module-level containers that functions mutate, and `global` statements: the signs of hidden shared state."""
+    containers = set()
+    for n in tree.body:
+        if isinstance(n, ast.Assign):
+            v = n.value
+            is_container = isinstance(v, (ast.Dict, ast.List, ast.Set, ast.ListComp, ast.DictComp, ast.SetComp))
+            if isinstance(v, ast.Call):
+                f = v.func
+                name = f.id if isinstance(f, ast.Name) else f.attr if isinstance(f, ast.Attribute) else ""
+                is_container = name in _CONTAINER_CALLS
+            if is_container:
+                for t in n.targets:
+                    if isinstance(t, ast.Name):
+                        containers.add(t.id)
+    problems = []
+    for q, fn in functions(tree):
+        for node in ast.walk(fn):
+            if isinstance(node, ast.Global):
+                problems.append("%s uses `global %s`" % (q, ", ".join(node.names)))
+            elif isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute) and node.func.attr in _MUTATORS \
+                    and isinstance(node.func.value, ast.Name) and node.func.value.id in containers:
+                problems.append("%s mutates module-level %s" % (q, node.func.value.id))
+            elif isinstance(node, (ast.Assign, ast.AugAssign, ast.Delete)):
+                targets = node.targets if isinstance(node, (ast.Assign, ast.Delete)) else [node.target]
+                for t in targets:
+                    if isinstance(t, ast.Subscript) and isinstance(t.value, ast.Name) and t.value.id in containers:
+                        problems.append("%s writes into module-level %s" % (q, t.value.id))
+    return sorted(set(problems))

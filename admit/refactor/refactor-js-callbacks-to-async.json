@@ -1,0 +1,50 @@
+[
+{
+"id": "refactor-js-callbacks-to-async-01-signup-dual",
+"ok": true
+},
+{
+"id": "refactor-js-callbacks-to-async-02-orders-dual",
+"ok": true
+},
+{
+"id": "refactor-js-callbacks-to-async-03-report-promise",
+"ok": true
+},
+{
+"id": "refactor-js-callbacks-to-async-04-report-dual",
+"ok": true
+},
+{
+"id": "refactor-js-callbacks-to-async-05-signup-dual",
+"ok": true
+},
+{
+"id": "refactor-js-callbacks-to-async-06-report-dual",
+"ok": true
+},
+{
+"id": "refactor-js-callbacks-to-async-07-orders-dual",
+"ok": true
+},
+{
+"id": "refactor-js-callbacks-to-async-08-signup-promise",
+"ok": true
+},
+{
+"id": "refactor-js-callbacks-to-async-09-orders-promise",
+"ok": true
+},
+{
+"id": "refactor-js-callbacks-to-async-10-signup-dual",
+"ok": true
+},
+{
+"id": "refactor-js-callbacks-to-async-11-report-promise",
+"ok": true
+},
+{
+"id": "refactor-js-callbacks-to-async-12-orders-promise",
+"ok": true
+}
+]

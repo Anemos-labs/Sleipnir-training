@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-js-cursorpage-01-logic",
+"ok": true
+},
+{
+"id": "fix-js-cursorpage-02-cmp",
+"ok": true
+},
+{
+"id": "fix-js-cursorpage-03-const",
+"ok": true
+},
+{
+"id": "fix-js-cursorpage-04-delete",
+"ok": true
+},
+{
+"id": "fix-js-cursorpage-05-arith",
+"ok": true
+},
+{
+"id": "fix-js-cursorpage-06-negate",
+"ok": true
+},
+{
+"id": "fix-js-cursorpage-07-cmp",
+"ok": true
+},
+{
+"id": "fix-js-cursorpage-08-const",
+"ok": true
+}
+]

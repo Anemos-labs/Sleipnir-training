@@ -1,0 +1,54 @@
+[
+{
+"id": "data-ferry-timetable-01-cancelled-june",
+"ok": true
+},
+{
+"id": "data-ferry-timetable-02-vessel-workload",
+"ok": true
+},
+{
+"id": "data-ferry-timetable-03-fill-rate-85",
+"ok": true
+},
+{
+"id": "data-ferry-timetable-04-round-trippers",
+"ok": true
+},
+{
+"id": "data-ferry-timetable-05-latest-sailed-per-route",
+"ok": true
+},
+{
+"id": "data-ferry-timetable-06-vessel-running-revenue",
+"ok": true
+},
+{
+"id": "data-ferry-timetable-07-booking-lead-buckets",
+"ok": true
+},
+{
+"id": "data-ferry-timetable-08-overbooked-sailings",
+"ok": true
+},
+{
+"id": "data-ferry-timetable-09-vessel-idle-gaps",
+"ok": true
+},
+{
+"id": "data-ferry-timetable-10-double-booked-vessels",
+"ok": true
+},
+{
+"id": "data-ferry-timetable-11-cheapest-multi-leg",
+"ok": true
+},
+{
+"id": "data-ferry-timetable-12-silver-tier-crossing",
+"ok": true
+},
+{
+"id": "data-ferry-timetable-13-fix-vessel-workload-fanout",
+"ok": true
+}
+]
