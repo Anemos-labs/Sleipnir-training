@@ -1,7 +1,7 @@
 """Spreadsheet cell references (rust): A1 notation, ranges, anchors, and shifting formulas when they are copied."""
-from fx import Lib, dd, register_libs
+from fx import Lib, dd
 
-from generators.fix._lang1 import cargo
+from generators.fix._lang1 import CARGO_CONFIG, cargo, register_libs
 
 README = dd('''
     # cellref
@@ -653,7 +653,7 @@ HIDDEN = dd('''
 LIB = Lib(
     name="cellref", lang="rust", title="the cellref crate",
     blurb="The report builder's formula engine uses cellref to parse A1-style references and to rewrite formulas when cells are copied.",
-    files={"Cargo.toml": cargo("cellref"), "src/lib.rs": SRC, "README.md": README, ".gitignore": "target/\n"},
+    files={"Cargo.toml": cargo("cellref"), "src/lib.rs": SRC, "README.md": README, ".gitignore": "target/\n", ".cargo/config.toml": CARGO_CONFIG},
     visible_tests={"tests/basic.rs": VISIBLE},
     hidden_tests={"tests/full.rs": HIDDEN},
     mutate=["src/lib.rs"], difficulty=3, tags=["spreadsheet", "parsing", "formula"],

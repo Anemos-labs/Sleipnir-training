@@ -1,0 +1,42 @@
+[
+{
+"id": "swarm-data-shards-01-k3-accounting",
+"ok": true
+},
+{
+"id": "swarm-data-shards-02-k3-currency",
+"ok": true
+},
+{
+"id": "swarm-data-shards-03-k4-cents",
+"ok": true
+},
+{
+"id": "swarm-data-shards-04-k4-currency",
+"ok": true
+},
+{
+"id": "swarm-data-shards-05-k5-cents",
+"ok": true
+},
+{
+"id": "swarm-data-shards-06-k5-accounting",
+"ok": true
+},
+{
+"id": "swarm-data-shards-07-k6-currency",
+"ok": true
+},
+{
+"id": "swarm-data-shards-08-k4-plain",
+"ok": true
+},
+{
+"id": "swarm-data-shards-09-k6-plain",
+"ok": true
+},
+{
+"id": "swarm-data-shards-10-k7-cents",
+"ok": true
+}
+]

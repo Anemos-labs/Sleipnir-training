@@ -1,0 +1,46 @@
+[
+{
+"id": "fix-hand-iter-invalidate-01-sweep-iterates-live-dict",
+"ok": true
+},
+{
+"id": "fix-hand-iter-invalidate-02-revoke-iterates-live-list",
+"ok": true
+},
+{
+"id": "fix-hand-iter-invalidate-03-sweep-bypasses-the-index",
+"ok": true
+},
+{
+"id": "fix-hand-iter-invalidate-04-sweep-without-gone-check",
+"ok": true
+},
+{
+"id": "fix-hand-iter-invalidate-05-revoke-live-and-no-gone-check",
+"ok": true
+},
+{
+"id": "fix-hand-iter-invalidate-06-dispatch-over-live-list",
+"ok": true
+},
+{
+"id": "fix-hand-iter-invalidate-07-removed-handler-still-called",
+"ok": true
+},
+{
+"id": "fix-hand-iter-invalidate-08-first-error-stops-dispatch",
+"ok": true
+},
+{
+"id": "fix-hand-iter-invalidate-09-off-removes-every-copy",
+"ok": true
+},
+{
+"id": "fix-hand-iter-invalidate-10-once-removed-after-the-call",
+"ok": true
+},
+{
+"id": "fix-hand-iter-invalidate-11-removal-ignored-and-once-late",
+"ok": true
+}
+]

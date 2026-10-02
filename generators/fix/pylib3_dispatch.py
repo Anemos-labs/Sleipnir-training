@@ -57,8 +57,9 @@ LIFTSIM_README = dd('''
        then the passengers waiting here for *this* car board (`boarded = t`) in arrival order (arrival tick, then id)
        and each boarding passenger's destination is added to `stops`. Otherwise the car calls `move()`.
 
-    The simulation ends at the tick in which the last passenger is delivered; if that has not happened by
-    `max_ticks` ticks, `RuntimeError`. With no passengers the result is `[]`.
+    The simulation ends at the tick in which the last passenger is delivered. Only the ticks `0 .. max_ticks - 1` are
+    simulated: if somebody is still undelivered after the last of them, `RuntimeError`. With no passengers the result
+    is `[]`.
 
     * `stats(trips) -> dict`: `{"count": n, "max_wait": ..., "total_wait": ..., "avg_wait_tenths": ...}`, where
       `avg_wait_tenths` is the mean wait in tenths of a tick, rounded half up (`0` when there are no trips, and the
@@ -456,6 +457,11 @@ LIFTSIM_HIDDEN_SIM = dd('''
             trips = run([P(1, 0, 30, 0)], [Car(0)], max_ticks=32)
             self.assertEqual(trips[0].delivered, 31)
 
+        def test_default_max_ticks_is_500(self):
+            self.assertEqual(run([P(1, 0, 498, 0)], [Car(0)])[0].delivered, 499)
+            with self.assertRaises(RuntimeError):
+                run([P(1, 0, 499, 0)], [Car(0)])
+
         def test_cars_are_left_in_final_state(self):
             car = Car(0)
             run([P(1, 0, 3, 0)], [car])
@@ -518,7 +524,7 @@ LIFTSIM = Lib(
         "[(t.id, t.car) for t in run([Passenger(2, 5, 0, 0), Passenger(1, 5, 9, 0)], [Car(0, floor=4), Car(1, floor=6)])]",
         "stats(run([Passenger(1, 0, 5, 0), Passenger(2, 3, 0, 0)], [Car(0)]))",
     ],
-    probe_import="from liftsim.car import Car, choose_direction\\nfrom liftsim.dispatch import assign, cost\\nfrom liftsim.sim import Passenger, run, stats\\n",
+    probe_import="from liftsim.car import Car, choose_direction\nfrom liftsim.dispatch import assign, cost\nfrom liftsim.sim import Passenger, run, stats\n",
 )
 
 # ======================================================================================================================
@@ -982,13 +988,13 @@ TRIAGEQ = Lib(
         "is_overdue(Ticket('a', 3, 0), 240)",
         "sort_key(Ticket('t7', 4, 20), 260)",
         chain("TicketQueue()", ["push(Ticket('a', 2, 0))", "push(Ticket('b', 1, 0))", "push(Ticket('c', 3, 0))", "pop(0).id", "pop(0).id", "pop(0).id"]),
-        chain("TicketQueue()", ["push(Ticket('old', 4, 0))", "push(Ticket('new', 2, 50))", "[t.id for t in o.order(50)]"]),
-        chain("TicketQueue(step=1000)", ["push(Ticket('urgent', 1, 200))", "push(Ticket('ancient', 5, 0))", "[t.id for t in o.order(240)]"]),
+        chain("TicketQueue()", ["push(Ticket('old', 4, 0))", "push(Ticket('new', 2, 50))", "![t.id for t in o.order(50)]"]),
+        chain("TicketQueue(step=1000)", ["push(Ticket('urgent', 1, 200))", "push(Ticket('ancient', 5, 0))", "![t.id for t in o.order(240)]"]),
         chain("TicketQueue()", ["push(Ticket('a', 5, 0))", "push(Ticket('b', 3, 60))", "push(Ticket('c', 1, 0))", "escalated(100)", "overdue_ids(240)", "histogram(100)"]),
     ],
     probe_import=(
-        "from triageq.aging import effective_priority, is_overdue, sort_key\\n"
-        "from triageq.queue import TicketQueue\\nfrom triageq.ticket import Ticket\\n"
+        "from triageq.aging import effective_priority, is_overdue, sort_key\n"
+        "from triageq.queue import TicketQueue\nfrom triageq.ticket import Ticket\n"
     ),
 )
 
@@ -1554,7 +1560,7 @@ TOLLROUTE_HIDDEN_ROUTER = dd('''
         unittest.main()
 ''')
 
-_TM = "'A-B 10 100\\\\nB-D 10 100\\\\nA-C 5 300 highway\\\\nC-D 5 0 highway\\\\nD-E 4 0 narrow\\\\nA>E 30 250'"
+_TM = "'A-B 10 100\\nB-D 10 100\\nA-C 5 300 highway\\nC-D 5 0 highway\\nD-E 4 0 narrow\\nA>E 30 250'"
 
 TOLLROUTE = Lib(
     name="tollroute", lang="python", title="the tollroute route planner",
@@ -1576,13 +1582,13 @@ TOLLROUTE = Lib(
         f"best_route(parse_map({_TM}), 'A', 'E', 'truck')",
         f"quote(parse_map({_TM}), ['A', 'B', 'D', 'E'], 'van', 0, 10)",
         f"isochrone(parse_map({_TM}), 'A', 'van', 14)",
-        "best_route(parse_map('P-Q 5\\\\nP-R 5\\\\nQ-S 5\\\\nR-S 5'), 'P', 'S', 'van').path",
-        "parse_map('A-B 5 7\\\\nB>C 4').nodes()",
+        "best_route(parse_map('P-Q 5\\nP-R 5\\nQ-S 5\\nR-S 5'), 'P', 'S', 'van').path",
+        "parse_map('A-B 5 7\\nB>C 4').nodes()",
         "toll_for(Road('A', 'B', 1, 3), 'van', 480)", "is_peak(540)", "is_peak(420)",
     ],
     probe_import=(
-        "from tollroute.graph import Road, parse_map\\nfrom tollroute.tolls import is_peak, toll_for\\n"
-        "from tollroute.router import best_route, quote, isochrone\\n"
+        "from tollroute.graph import Road, parse_map\nfrom tollroute.tolls import is_peak, toll_for\n"
+        "from tollroute.router import best_route, quote, isochrone\n"
     ),
 )
 

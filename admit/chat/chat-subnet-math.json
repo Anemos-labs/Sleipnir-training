@@ -1,0 +1,58 @@
+[
+{
+"id": "chat-subnet-math-01-basic",
+"ok": true
+},
+{
+"id": "chat-subnet-math-02-samenet",
+"ok": true
+},
+{
+"id": "chat-subnet-math-03-samenet",
+"ok": true
+},
+{
+"id": "chat-subnet-math-04-split",
+"ok": true
+},
+{
+"id": "chat-subnet-math-05-sizing",
+"ok": true
+},
+{
+"id": "chat-subnet-math-06-split",
+"ok": true
+},
+{
+"id": "chat-subnet-math-07-samenet2",
+"ok": true
+},
+{
+"id": "chat-subnet-math-08-split",
+"ok": true
+},
+{
+"id": "chat-subnet-math-09-summarise",
+"ok": true
+},
+{
+"id": "chat-subnet-math-10-samenet",
+"ok": true
+},
+{
+"id": "chat-subnet-math-11-split",
+"ok": true
+},
+{
+"id": "chat-subnet-math-12-split",
+"ok": true
+},
+{
+"id": "chat-subnet-math-13-summarise",
+"ok": true
+},
+{
+"id": "chat-subnet-math-14-split",
+"ok": true
+}
+]

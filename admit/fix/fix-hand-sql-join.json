@@ -1,0 +1,58 @@
+[
+{
+"id": "fix-hand-sql-join-01-loan-counts-inner-join",
+"ok": true
+},
+{
+"id": "fix-hand-sql-join-02-loan-counts-count-star",
+"ok": true
+},
+{
+"id": "fix-hand-sql-join-03-since-filter-in-where",
+"ok": true
+},
+{
+"id": "fix-hand-sql-join-04-never-borrowed-not-in",
+"ok": true
+},
+{
+"id": "fix-hand-sql-join-05-overdue-includes-returned",
+"ok": true
+},
+{
+"id": "fix-hand-sql-join-06-range-end-excluded",
+"ok": true
+},
+{
+"id": "fix-hand-sql-join-07-fines-join-fan-out",
+"ok": true
+},
+{
+"id": "fix-hand-sql-join-08-fan-out-and-returned-overdue",
+"ok": true
+},
+{
+"id": "fix-hand-sql-join-09-all-statuses-take-a-seat",
+"ok": true
+},
+{
+"id": "fix-hand-sql-join-10-overbooked-goes-negative",
+"ok": true
+},
+{
+"id": "fix-hand-sql-join-11-waitlist-ties-unordered",
+"ok": true
+},
+{
+"id": "fix-hand-sql-join-12-division-ignores-status",
+"ok": true
+},
+{
+"id": "fix-hand-sql-join-13-fill-ratio-integer-division",
+"ok": true
+},
+{
+"id": "fix-hand-sql-join-14-average-skips-idle-students",
+"ok": true
+}
+]

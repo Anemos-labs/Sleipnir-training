@@ -1,7 +1,7 @@
 """Gauge downsampling (go): aligned buckets with floor division, gap fill policies, min/max decimation, counter rates."""
-from fx import Lib, dd, langs, register_libs
+from fx import Lib, dd, langs
 
-from generators.fix._lang1 import gosrc
+from generators.fix._lang1 import gosrc, register_libs
 
 README = dd('''
     # gaugedown

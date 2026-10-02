@@ -54,7 +54,7 @@ _RUNS: dict[str, tuple[int, str]] = {}
 
 
 def repo_files(mod: Module, choice: dict) -> tuple[dict[str, str], dict]:
-    head, spans = render(mod.template, slot_texts(mod, choice))
+    head, spans = render(mod.template, slot_texts(mod, choice), mod.lang)
     files = dict(mod.ctx)
     files[mod.path] = head
     files[mod.scenario_path] = mod.scenario

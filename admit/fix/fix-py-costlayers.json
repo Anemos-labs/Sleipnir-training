@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-costlayers-01-const",
+"ok": true
+},
+{
+"id": "fix-py-costlayers-02-negate",
+"ok": true
+},
+{
+"id": "fix-py-costlayers-03-delete",
+"ok": true
+},
+{
+"id": "fix-py-costlayers-04-arith",
+"ok": true
+},
+{
+"id": "fix-py-costlayers-05-cmp",
+"ok": true
+},
+{
+"id": "fix-py-costlayers-06-const",
+"ok": true
+},
+{
+"id": "fix-py-costlayers-07-negate",
+"ok": true
+},
+{
+"id": "fix-py-costlayers-08-delete",
+"ok": true
+},
+{
+"id": "fix-py-costlayers-09-arith",
+"ok": true
+},
+{
+"id": "fix-py-costlayers-10-cmp",
+"ok": true
+}
+]

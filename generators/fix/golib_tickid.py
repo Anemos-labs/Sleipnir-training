@@ -1,7 +1,7 @@
 """Dock-ticket identifiers (go): bit-packed 64-bit ids with a clock-skew policy, check bits and a text form."""
-from fx import Lib, dd, langs, register_libs
+from fx import Lib, dd, langs
 
-from generators.fix._lang1 import gosrc
+from generators.fix._lang1 import gosrc, register_libs
 
 README = dd('''
     # tickid

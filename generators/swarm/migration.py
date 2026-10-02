@@ -47,10 +47,15 @@ class Mig:
 
 
 def render(template, calls):
-    out = template
-    for key, text in calls.items():
-        out = out.replace(f"@{key}@", text)
-    return out
+    lines = []
+    for line in template.split("\n"):
+        indent = line[: len(line) - len(line.lstrip())]
+        for key, text in calls.items():
+            marker = f"@{key}@"
+            if marker in line:
+                line = line.replace(marker, text.replace("\n", "\n" + indent))
+        lines.append(line)
+    return "\n".join(lines)
 
 
 def multiline(fn, args, indent="    "):
@@ -662,9 +667,7 @@ def migration_split(rng, n):
         for p in list(solution):
             if p.endswith("__init__.py") and p in start and start[p] == solution[p]:
                 del solution[p]
-        d = 3 if k <= 3 else 4 if k <= 5 else 5
-        if mig.name in ("net", "logging") and d < 5:
-            d += 1 if k >= 4 else 0
+        d = 3 if k <= 3 else 4 if k <= 6 else 5
         voices = [
             f"We're deleting the legacy/ package after this release and {len(svcs)} service directories still depend on it ({oxford(svcs)}). "
             f"MIGRATION.md explains the {mig.name} change. Please move every caller over; behaviour must stay exactly the same.",

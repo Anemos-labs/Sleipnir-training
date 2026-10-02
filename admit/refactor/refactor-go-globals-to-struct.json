@@ -1,0 +1,42 @@
+[
+{
+"id": "refactor-go-globals-to-struct-01-deck",
+"ok": true
+},
+{
+"id": "refactor-go-globals-to-struct-02-deck",
+"ok": true
+},
+{
+"id": "refactor-go-globals-to-struct-03-bands",
+"ok": true
+},
+{
+"id": "refactor-go-globals-to-struct-04-deck",
+"ok": true
+},
+{
+"id": "refactor-go-globals-to-struct-05-badges",
+"ok": true
+},
+{
+"id": "refactor-go-globals-to-struct-06-badges",
+"ok": true
+},
+{
+"id": "refactor-go-globals-to-struct-07-badges",
+"ok": true
+},
+{
+"id": "refactor-go-globals-to-struct-08-deck",
+"ok": true
+},
+{
+"id": "refactor-go-globals-to-struct-09-bands",
+"ok": true
+},
+{
+"id": "refactor-go-globals-to-struct-10-bands",
+"ok": true
+}
+]

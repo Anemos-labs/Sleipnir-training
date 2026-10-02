@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-latbuckets-01-arith",
+"ok": true
+},
+{
+"id": "fix-py-latbuckets-02-negate",
+"ok": true
+},
+{
+"id": "fix-py-latbuckets-03-delete",
+"ok": true
+},
+{
+"id": "fix-py-latbuckets-04-const",
+"ok": true
+},
+{
+"id": "fix-py-latbuckets-05-cmp",
+"ok": true
+},
+{
+"id": "fix-py-latbuckets-06-swap",
+"ok": true
+},
+{
+"id": "fix-py-latbuckets-07-arith",
+"ok": true
+},
+{
+"id": "fix-py-latbuckets-08-negate",
+"ok": true
+},
+{
+"id": "fix-py-latbuckets-09-delete",
+"ok": true
+},
+{
+"id": "fix-py-latbuckets-10-const",
+"ok": true
+}
+]

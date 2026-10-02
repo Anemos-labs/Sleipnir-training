@@ -1,0 +1,42 @@
+[
+{
+"id": "chat-write-redact-01-6lines-d2",
+"ok": true
+},
+{
+"id": "chat-write-redact-02-6lines-d2",
+"ok": true
+},
+{
+"id": "chat-write-redact-03-8lines-d3",
+"ok": true
+},
+{
+"id": "chat-write-redact-04-8lines-d3",
+"ok": true
+},
+{
+"id": "chat-write-redact-05-8lines-d3",
+"ok": true
+},
+{
+"id": "chat-write-redact-06-10lines-d4",
+"ok": true
+},
+{
+"id": "chat-write-redact-07-10lines-d4",
+"ok": true
+},
+{
+"id": "chat-write-redact-08-10lines-d4",
+"ok": true
+},
+{
+"id": "chat-write-redact-09-12lines-d5",
+"ok": true
+},
+{
+"id": "chat-write-redact-10-8lines-d3",
+"ok": true
+}
+]

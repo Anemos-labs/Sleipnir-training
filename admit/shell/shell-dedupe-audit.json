@@ -1,0 +1,46 @@
+[
+{
+"id": "shell-dedupe-audit-01-duplicate-groups",
+"ok": true
+},
+{
+"id": "shell-dedupe-audit-02-dedupe-keep-oldest",
+"ok": true
+},
+{
+"id": "shell-dedupe-audit-03-hardlink-duplicates",
+"ok": true
+},
+{
+"id": "shell-dedupe-audit-04-same-name-any-case",
+"ok": true
+},
+{
+"id": "shell-dedupe-audit-05-size-first-dedupe",
+"ok": true
+},
+{
+"id": "shell-dedupe-audit-06-compare-trees",
+"ok": true
+},
+{
+"id": "shell-dedupe-audit-07-fix-same-file-check",
+"ok": true
+},
+{
+"id": "shell-dedupe-audit-08-dedupe-with-priorities",
+"ok": true
+},
+{
+"id": "shell-dedupe-audit-09-clean-empties",
+"ok": true
+},
+{
+"id": "shell-dedupe-audit-10-checksum-manifest",
+"ok": true
+},
+{
+"id": "shell-dedupe-audit-11-largest-files",
+"ok": true
+}
+]

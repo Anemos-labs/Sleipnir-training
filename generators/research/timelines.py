@@ -114,7 +114,7 @@ def render(rng, org, evs, dates):
 def gen(rng, n):
     made = 0
     while made < n:
-        k = rng.choice([5, 6, 7, 8])
+        k = rng.choice([3, 4, 5, 6, 8])
         org, evs, dates = build(rng, k)
         files = render(rng, org, evs, dates)
         rows = [[c, W.d_iso(dates[c])] for c, _, _ in evs]
@@ -128,7 +128,7 @@ def gen(rng, n):
               f"Put the following events in the order they really happened and give each its actual date (not a planned one): {listing}. Save as `timeline.json` ({{\"timeline\": [{{\"event\": ..., \"date\": ...}}]}})."]
         made += 1
         sol = W.dumps({"timeline": [{"event": r[0], "date": r[1]} for r in rows]})
-        yield W.file_task(slug=f"{made:02d}-{k}-events", prompt=W.voice(rng, org, rng.choice(ph)), difficulty=3 + (k >= 6) + (k >= 8), start=files, spec=spec,
+        yield W.file_task(slug=f"{made:02d}-{k}-events", prompt=W.voice(rng, org, rng.choice(ph)), difficulty=2 + (k >= 5) + (k >= 7), start=files, spec=spec,
                           solution={"timeline.json": sol}, scored=True, tags=["timeline", "temporal"], notes={"events": k})
 
 
@@ -137,7 +137,7 @@ def gen(rng, n):
 def gen_gaps(rng, n):
     made = 0
     while made < n:
-        k = rng.choice([5, 6, 7])
+        k = rng.choice([3, 4, 5, 6, 7])
         org, evs, dates = build(rng, k)
         files = render(rng, org, evs, dates)
         a, b = rng.sample([c for c, _, _ in evs], 2)
@@ -156,5 +156,5 @@ def gen_gaps(rng, n):
                   f"Give me the actual date (ISO) on which {desc[a]}."]
             prompt, contains, gold = rng.choice(ph), [W.d_iso(dates[a])], f"It happened on {W.d_iso(dates[a])}."
         made += 1
-        yield W.say_task(slug=f"{made:02d}-{qk}", prompt=W.voice(rng, org, prompt), difficulty=3 + (k >= 6) + (qk == "gap"), start=files, contains=contains, gold=gold,
+        yield W.say_task(slug=f"{made:02d}-{qk}", prompt=W.voice(rng, org, prompt), difficulty=1 + (k >= 5) + (qk == "gap") + (qk == "gap" and k >= 6), start=files, contains=contains, gold=gold,
                          tags=["timeline", "temporal"], notes={"events": k, "question": qk})

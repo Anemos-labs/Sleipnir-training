@@ -267,6 +267,8 @@ def difficulty(slices_by_id: dict, targets: list, present: set) -> int:
             if other in final and (sid in targets or other in targets):
                 cross += 1
     score = max(s.d for s in ts) + 0.4 * (len(ts) - 1) + 0.25 * cross + (0.3 if len(present) >= 7 else 0.0)
+    if len(ts) == 1 and ts[0].d == 1:
+        score = min(score, 1.45)  # a lone trivial request stays trivial, however large the repository
     return max(1, min(5, int(score + 0.5)))
 
 

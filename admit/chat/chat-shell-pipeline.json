@@ -1,0 +1,58 @@
+[
+{
+"id": "chat-shell-pipeline-01-streets-d1",
+"ok": true
+},
+{
+"id": "chat-shell-pipeline-02-top3-team-d2",
+"ok": true
+},
+{
+"id": "chat-shell-pipeline-03-top3-team-d2",
+"ok": true
+},
+{
+"id": "chat-shell-pipeline-04-top3-team-d2",
+"ok": true
+},
+{
+"id": "chat-shell-pipeline-05-top2-amount-d3",
+"ok": true
+},
+{
+"id": "chat-shell-pipeline-06-street-totals-d3",
+"ok": true
+},
+{
+"id": "chat-shell-pipeline-07-paid-by-street-d3",
+"ok": true
+},
+{
+"id": "chat-shell-pipeline-08-teams-with-2--big-d4",
+"ok": true
+},
+{
+"id": "chat-shell-pipeline-09-teams-with-2--big-d4",
+"ok": true
+},
+{
+"id": "chat-shell-pipeline-10-word-freq-d4",
+"ok": true
+},
+{
+"id": "chat-shell-pipeline-11-max-per-state-d5",
+"ok": true
+},
+{
+"id": "chat-shell-pipeline-12-max-per-state-d5",
+"ok": true
+},
+{
+"id": "chat-shell-pipeline-13-count-d1",
+"ok": true
+},
+{
+"id": "chat-shell-pipeline-14-paid-by-street-d3",
+"ok": true
+}
+]

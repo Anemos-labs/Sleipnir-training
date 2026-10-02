@@ -215,14 +215,21 @@ def _pick_date(rng, meetings, params):
 def gen_rules(rng, n):
     made = 0
     while made < n:
-        nm = rng.choice([8, 11, 14, 18])
-        org, d0, meetings, params, items, present = build(rng, nm, rng.choice([2, 3, 4]))
+        nm = rng.choice([4, 5, 6, 8, 11, 14, 18])
+        org, d0, meetings, params, items, present = build(rng, nm, rng.choice([1, 2, 3, 4]))
         files = render_files(rng, org, d0, meetings, params, items, present, rng.choice(["dated", "numbered"]))
         files["README.md"] = README
-        prm = rng.choice([p for p in params if len(p.changes) >= 3] or params)
-        kind = rng.choice(["value_on", "value_on", "eff_of_current", "n_changes", "last_meeting"])
+        prm = rng.choice([p for p in params if len(p.changes) >= 2] or params)
+        kind = rng.choice(["initial", "value_on", "value_on", "eff_of_current", "n_changes", "last_meeting"])
         n_ch = len(prm.changes) - 1
-        if kind == "value_on":
+        if kind == "initial":
+            v0 = prm.changes[0].value
+            ins, c = W.numfmt(rng, v0, ("Answer", "Result", "Figure"))
+            ph = [f"What figure did the standing rules give for the {prm.name} when they were first adopted?{ins}",
+                  f"Before any committee decision, what was the {prm.name}? (Original standing rules.){ins}"]
+            prompt, contains, gold = rng.choice(ph), [c], f"The standing rules set the {prm.name} at {v0} {prm.unit}. {c}"
+            diff = 1 + (nm >= 11)
+        elif kind == "value_on":
             for _ in range(20):
                 d = _pick_date(rng, meetings, params)
                 v = prm.value_at(d)
@@ -232,7 +239,7 @@ def gen_rules(rng, n):
             ph = [f"What was the {prm.name} in force on {W.d_long(d)}?{ins}",
                   f"Which figure for the {prm.name} applied on {W.d_us(d)}? ({prm.unit}){ins}",
                   f"A member disputes a charge from {W.d_long(d)}. What was the {prm.name} on that day, according to the committee's decisions?{ins}"]
-            diff = 3 + (n_ch >= 3) + (any(x.kind == "rescinded" for x in prm.changes)) * 1
+            diff = 2 + (n_ch >= 3) + (any(x.kind == "rescinded" for x in prm.changes)) + (nm >= 14)
             prompt, contains, gold = rng.choice(ph), [c], f"On {W.d_long(d)} the {prm.name} was {v} {prm.unit}. {c}"
         elif kind == "eff_of_current":
             cur = prm.changes[-1]
@@ -244,13 +251,13 @@ def gen_rules(rng, n):
             prompt = rng.choice(ph) + f" Treat {W.d_long(end)} as 'now'."
             contains = [W.d_iso(cur.eff)]
             gold = f"The current {prm.name} ({cur.value} {prm.unit}) took effect on {W.d_iso(cur.eff)}."
-            diff = 4
+            diff = 3 + (nm >= 11)
         elif kind == "n_changes":
             ins, c = W.numfmt(rng, n_ch, ("Count", "Total", "Answer"))
             ph = [f"How many decisions changing the {prm.name} do the minutes record since the standing rules were adopted? Count motions that were carried (as moved or as amended) and rescissions that were carried; defeated motions and motions only tabled don't count, and a tabled motion that was later carried counts once.{ins}",
                   f"Count the decisions on the {prm.name} that actually changed it since {W.d_long(d0)}: carried, carried-as-amended, or rescinding. Defeated and still-tabled motions don't count.{ins}"]
             prompt, contains, gold = rng.choice(ph), [c], f"The {prm.name} changed {n_ch} times. {c}"
-            diff = 3 + (nm >= 14)
+            diff = 2 + (nm >= 11) + (n_ch >= 4)
         else:
             lastc = prm.changes[-1] if prm.changes[-1].kind != "initial" else None
             if lastc is None:
@@ -259,7 +266,7 @@ def gen_rules(rng, n):
             ph = [f"At which meeting was the {prm.name} last changed by a carried, amended or rescinding decision? Give the meeting date as YYYY-MM-DD.",
                   f"What is the date of the latest meeting whose minutes record a change to the {prm.name} (a motion that carried)? ISO date please."]
             prompt, contains, gold = rng.choice(ph), [W.d_iso(latest.meeting)], f"The last change was decided on {W.d_iso(latest.meeting)}."
-            diff = 3
+            diff = 2 + (nm >= 11)
         made += 1
         prompt = W.voice(rng, org, prompt, lead=rng.choice(["", "", "Going by the minutes in this folder,", "Using the committee's records here,"]))
         yield W.say_task(slug=f"{made:02d}-{kind.replace('_', '-')}", prompt=prompt, difficulty=min(5, diff), start=files, contains=contains, gold=gold,
@@ -271,12 +278,12 @@ def gen_rules(rng, n):
 def gen_ledger(rng, n):
     made = 0
     while made < n:
-        nm = rng.choice([9, 12, 15, 18])
+        nm = rng.choice([6, 8, 10, 12, 15, 18])
         org, d0, meetings, params, items, present = build(rng, nm, rng.choice([2, 3]))
         files = render_files(rng, org, d0, meetings, params, items, present, rng.choice(["dated", "numbered"]))
         files["README.md"] = README
         prm = max(params, key=lambda p: len(p.changes))
-        if len(prm.changes) < 3:
+        if len(prm.changes) < 2:
             continue
         if made % 2 == 0:
             rows = [[W.d_iso(c.eff), c.value] for c in prm.changes[1:]]
@@ -288,7 +295,7 @@ def gen_ledger(rng, n):
             ph = [f"Build the history of the {prm.name} for me: `out.csv` with columns `effective_date,value`, one row for every decision that changed it (carried, amended or rescinded) "
                   f"from the minutes, sorted by effective date, ISO dates. Don't include the original standing-rules figure.",
                   f"Please write `out.csv` (header `effective_date,value`) listing each point at which the {prm.name} changed, with the day the new figure came into force. Defeated or merely tabled motions don't count; the first row is the first change after the standing rules."]
-            d = 4 + (nm >= 15)
+            d = 3 + (nm >= 12) + (len(prm.changes) >= 5)
             made += 1
             yield W.file_task(slug=f"{made:02d}-history", prompt=W.voice(rng, org, rng.choice(ph)), difficulty=d, start=files, spec=spec,
                               solution={"out.csv": W.csv_text(["effective_date", "value"], rows)}, scored=True, tags=["minutes", "table"],
@@ -305,6 +312,6 @@ def gen_ledger(rng, n):
             ph = [f"Write `answer.json` of the form {{\"values\": {{\"<date>\": <figure>}}}} giving the {prm.name} in force on each of these dates: {keys}.",
                   f"I need the {prm.name} on {len(exp)} dates for an audit ({keys}). Put them in `answer.json` as an object under `values`, keyed by the ISO date."]
             made += 1
-            yield W.file_task(slug=f"{made:02d}-values", prompt=W.voice(rng, org, rng.choice(ph)), difficulty=3 + (len(prm.changes) >= 4), start=files,
+            yield W.file_task(slug=f"{made:02d}-values", prompt=W.voice(rng, org, rng.choice(ph)), difficulty=2 + (len(prm.changes) >= 3) + (len(prm.changes) >= 5), start=files,
                               spec=W.json_spec(fields), solution={"answer.json": W.dumps({"values": exp})}, scored=True, tags=["minutes", "temporal"],
                               notes={"theme": org.theme, "meetings": nm, "param": prm.name})

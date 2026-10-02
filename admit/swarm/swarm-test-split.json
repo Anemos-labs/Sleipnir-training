@@ -1,0 +1,42 @@
+[
+{
+"id": "swarm-test-split-01-k3-meterbill",
+"ok": true
+},
+{
+"id": "swarm-test-split-02-k3-stampduty",
+"ok": true
+},
+{
+"id": "swarm-test-split-03-k4-samplelabel",
+"ok": true
+},
+{
+"id": "swarm-test-split-04-k4-lockers",
+"ok": true
+},
+{
+"id": "swarm-test-split-05-k4-rentshare",
+"ok": true
+},
+{
+"id": "swarm-test-split-06-k5-tidal",
+"ok": true
+},
+{
+"id": "swarm-test-split-07-k5-samplelabel",
+"ok": true
+},
+{
+"id": "swarm-test-split-08-k3-stampduty",
+"ok": true
+},
+{
+"id": "swarm-test-split-09-k5-ferryfare",
+"ok": true
+},
+{
+"id": "swarm-test-split-10-k4-ferryfare",
+"ok": true
+}
+]

@@ -1,0 +1,46 @@
+[
+{
+"id": "shell-log-retention-01-keep-newest-n",
+"ok": true
+},
+{
+"id": "shell-log-retention-02-age-from-name",
+"ok": true
+},
+{
+"id": "shell-log-retention-03-numbered-rotation",
+"ok": true
+},
+{
+"id": "shell-log-retention-04-tiered-retention",
+"ok": true
+},
+{
+"id": "shell-log-retention-05-compress-old-logs",
+"ok": true
+},
+{
+"id": "shell-log-retention-06-total-size-cap",
+"ok": true
+},
+{
+"id": "shell-log-retention-07-archive-by-month",
+"ok": true
+},
+{
+"id": "shell-log-retention-08-trim-oversized-logs",
+"ok": true
+},
+{
+"id": "shell-log-retention-09-fix-rotate-three",
+"ok": true
+},
+{
+"id": "shell-log-retention-10-retention-dry-run",
+"ok": true
+},
+{
+"id": "shell-log-retention-11-newest-by-date-in-name",
+"ok": true
+}
+]

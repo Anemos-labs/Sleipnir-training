@@ -111,10 +111,7 @@ CPP_HARNESS = r'''// Tiny test harness: every failed CHECK prints one FAIL line;
 
 #include <csignal>
 #include <cstdio>
-#include <iostream>
-#include <map>
 #include <optional>
-#include <sstream>
 #include <string>
 #include <type_traits>
 #include <unistd.h>
@@ -130,7 +127,6 @@ static void h_on_alarm(int) {
 }
 
 static void h_init() {
-    std::ios::sync_with_stdio(true);
     setvbuf(stdout, nullptr, _IONBF, 0);
     std::signal(SIGALRM, h_on_alarm);
     alarm(20);
@@ -152,10 +148,12 @@ template <class T> std::string h_show(const std::optional<T> &o) { return o ? "s
 template <class T> std::string h_show(const T &v) {
     if constexpr (std::is_enum_v<T>) {
         return std::to_string(static_cast<long long>(v));
+    } else if constexpr (std::is_floating_point_v<T>) {
+        char buf[48];
+        std::snprintf(buf, sizeof buf, "%.10g", static_cast<double>(v));
+        return buf;
     } else if constexpr (std::is_arithmetic_v<T>) {
-        std::ostringstream os;
-        os << v;
-        return os.str();
+        return std::to_string(v);
     } else if constexpr (h_is_seq<T>::value) {
         std::string s = "[";
         bool first = true;
@@ -166,9 +164,22 @@ template <class T> std::string h_show(const T &v) {
         }
         return s + "]";
     } else {
-        std::ostringstream os;
-        os << v;
-        return os.str();
+        return "<value>";
+    }
+}
+
+/* equality that is safe for integers of different signedness */
+template <class A, class B> bool h_eq(const A &a, const B &b) {
+    if constexpr (std::is_integral_v<A> && std::is_integral_v<B> && !std::is_same_v<A, bool> && !std::is_same_v<B, bool>) {
+        if constexpr (std::is_signed_v<A> == std::is_signed_v<B>) {
+            return a == b;
+        } else if constexpr (std::is_signed_v<A>) {
+            return a >= 0 && static_cast<std::make_unsigned_t<A>>(a) == b;
+        } else {
+            return b >= 0 && a == static_cast<std::make_unsigned_t<B>>(b);
+        }
+    } else {
+        return a == b;
     }
 }
 
@@ -181,9 +192,18 @@ template <class T> std::string h_show(const T &v) {
     auto g_ = (got); \
     auto w_ = (want); \
     h_checks++; \
-    if (!(g_ == w_)) { \
+    if (!h_eq(g_, w_)) { \
         h_fails++; \
         std::printf("FAIL %s:%d: %s: got %s, want %s\n", __FILE__, __LINE__, #got, h_show(g_).c_str(), h_show(w_).c_str()); } \
+} while (0)
+
+#define CHECK_EQ_CTX(ctx, got, want) do { \
+    auto g_ = (got); \
+    auto w_ = (want); \
+    h_checks++; \
+    if (!h_eq(g_, w_)) { \
+        h_fails++; \
+        std::printf("FAIL %s:%d: [%s] %s: got %s, want %s\n", __FILE__, __LINE__, std::string(ctx).c_str(), #got, h_show(g_).c_str(), h_show(w_).c_str()); } \
 } while (0)
 
 #define CHECK_THROWS(expr, ExType) do { \
@@ -202,6 +222,9 @@ static int h_report() {
 '''
 
 PHP_HARNESS = r'''// ---- tiny test harness -------------------------------------------------------------------------------------
+error_reporting(E_ALL);
+ini_set('memory_limit', '256M');
+set_time_limit(20);
 set_error_handler(function ($no, $str, $file, $line) {
     throw new ErrorException($str, 0, $no, $file, $line);
 });

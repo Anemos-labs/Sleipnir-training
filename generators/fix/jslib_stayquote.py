@@ -500,7 +500,7 @@ LIB = Lib(
     hidden_tests={"test/full.test.js": HIDDEN},
     mutate=["src/quote.js", "src/calendar.js", "src/dates.js"], difficulty=3, tags=["dates", "pricing", "booking"],
     verify=JS_VERIFY,
-    probe_import="const { parseDate, formatDate, weekday, nightsBetween } = require('./src/dates');\nconst { overlaps, freeWindows } = require('./src/calendar');\nconst { quote } = require('./src/quote');\nconst RATES = { base: 10000, seasons: [{ name: 'winter', from: '12-20', to: '01-05', rate: 15000, minNights: 3 }, { name: 'summer', from: '07-01', to: '08-31', rate: 12000, minNights: 2 }], weekendPct: 10, longStay: [{ nights: 7, pct: 10 }, { nights: 28, pct: 25 }, { nights: 14, pct: 15 }], cleaning: 4000, cleaningWaivedFrom: 5, taxPct: 8 };",
+    probe_import="const { parseDate, formatDate, weekday, nightsBetween } = require('./src/dates');\nconst { overlaps, freeWindows } = require('./src/calendar');\nconst { quote } = require('./src/quote');",
     probes=[
         "weekday('2025-03-07')",
         "weekday('1969-12-31')",
@@ -512,14 +512,13 @@ LIB = Lib(
         "freeWindows('2025-06-01', '2025-06-30', [{ from: '2025-06-10', to: '2025-06-12' }, { from: '2025-06-03', to: '2025-06-05' }])",
         "freeWindows('2025-06-01', '2025-06-20', [{ from: '2025-06-02', to: '2025-06-15' }, { from: '2025-06-04', to: '2025-06-06' }])",
         "quote('2025-03-06', '2025-03-10', { base: 10000, weekendPct: 10 }).perNight",
-        "quote('2025-06-29', '2025-07-03', RATES).perNight",
-        "quote('2024-12-24', '2024-12-26', RATES)",
-        "quote('2025-07-10', '2025-07-12', RATES).perNight",
-        "quote('2025-03-03', '2025-03-17', { base: 1000, longStay: RATES.longStay }).discount",
+        "quote('2025-06-29', '2025-07-03', { base: 10000, seasons: [{ name: 'summer', from: '07-01', to: '08-31', rate: 12000 }] }).perNight",
+        "quote('2024-12-24', '2024-12-26', { base: 10000, seasons: [{ name: 'winter', from: '12-20', to: '01-05', rate: 15000, minNights: 3 }], weekendPct: 10, cleaning: 4000, cleaningWaivedFrom: 5, taxPct: 8 })",
+        "quote('2025-03-03', '2025-03-17', { base: 1000, longStay: [{ nights: 7, pct: 10 }, { nights: 28, pct: 25 }, { nights: 14, pct: 15 }] }).discount",
         "quote('2025-03-03', '2025-03-10', { base: 1005, longStay: [{ nights: 7, pct: 10 }] }).discount",
         "quote('2025-03-03', '2025-03-08', { base: 1000, cleaning: 4000, cleaningWaivedFrom: 5 }).cleaning",
         "quote('2025-03-03', '2025-03-04', { base: 1010, taxPct: 5 })",
-        "quote('2024-12-31', '2025-01-03', RATES)",
+        "quote('2024-12-31', '2025-01-03', { base: 10000, seasons: [{ name: 'winter', from: '12-20', to: '01-05', rate: 15000, minNights: 3 }], weekendPct: 10, cleaning: 4000, cleaningWaivedFrom: 5, taxPct: 8 })",
     ],
 )
 

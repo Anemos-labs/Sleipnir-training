@@ -390,8 +390,9 @@ def record_lib(api: Api, lang: str, tree: dict[str, str], cases: list[tuple], ti
     if not r.ok:
         raise RecordError(f"{api.mod} [{lang}] reference solution failed:\n{r.out[-1500:]}")
     lines = [ln.strip() for ln in r.out.splitlines() if re.fullmatch(r"[0-9a-f]*", ln.strip())]
-    # the build may print noise; keep only hex-looking lines at the tail
-    if len(lines) < len(cases):
+    # the build may print noise; keep only hex-looking lines at the tail. fx.run keeps only the last 24000 characters of
+    # the output, so a long output may have lost its head: record such cases in smaller batches
+    if len(lines) < len(cases) or len(r.out) >= 23_000:
         if len(cases) > 1:  # output may have been truncated: record in halves
             h = len(cases) // 2
             return record_lib(api, lang, tree, cases[:h], timeout) + record_lib(api, lang, tree, cases[h:], timeout)
@@ -579,11 +580,13 @@ def record_cli(spec: CliSpec, lang: str, tree: dict[str, str], cases: list[CliCa
     if not r.ok:
         raise RecordError(f"{spec.tool} [{lang}] reference solution failed:\n{r.out[-1500:]}")
     res = []
-    for ln in r.out.splitlines():
-        m = re.fullmatch(r"(\d+) ?([0-9a-f]*)", ln.strip())
-        if m:
-            res.append((bytes.fromhex(m.group(2)).decode("utf-8", "replace"), int(m.group(1))))
-    if len(res) < len(cases):
+    truncated = len(r.out) >= 23_000  # fx.run keeps only the last 24000 characters: the head may be cut
+    if not truncated:
+        for ln in r.out.splitlines():
+            m = re.fullmatch(r"(\d+) ?([0-9a-f]*)", ln.strip())
+            if m and len(m.group(2)) % 2 == 0:
+                res.append((bytes.fromhex(m.group(2)).decode("utf-8", "replace"), int(m.group(1))))
+    if truncated or len(res) < len(cases):
         mid = len(cases) // 2
         cuts = [i for i in range(1, len(cases)) if cases[i].fresh]
         if cuts:

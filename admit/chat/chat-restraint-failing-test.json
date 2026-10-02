@@ -1,0 +1,42 @@
+[
+{
+"id": "chat-restraint-failing-test-01-off_by_one",
+"ok": true
+},
+{
+"id": "chat-restraint-failing-test-02-floor_div",
+"ok": true
+},
+{
+"id": "chat-restraint-failing-test-03-off_by_one",
+"ok": true
+},
+{
+"id": "chat-restraint-failing-test-04-floor_div",
+"ok": true
+},
+{
+"id": "chat-restraint-failing-test-05-strict_gt",
+"ok": true
+},
+{
+"id": "chat-restraint-failing-test-06-floor_div",
+"ok": true
+},
+{
+"id": "chat-restraint-failing-test-07-min_for_max",
+"ok": true
+},
+{
+"id": "chat-restraint-failing-test-08-strict_gt",
+"ok": true
+},
+{
+"id": "chat-restraint-failing-test-09-off_by_one",
+"ok": true
+},
+{
+"id": "chat-restraint-failing-test-10-no_lower",
+"ok": true
+}
+]

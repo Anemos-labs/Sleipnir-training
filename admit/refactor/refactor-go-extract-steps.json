@@ -1,0 +1,50 @@
+[
+{
+"id": "refactor-go-extract-steps-01-sauna-one",
+"ok": true
+},
+{
+"id": "refactor-go-extract-steps-02-sauna-one",
+"ok": true
+},
+{
+"id": "refactor-go-extract-steps-03-seeds-all",
+"ok": true
+},
+{
+"id": "refactor-go-extract-steps-04-post-all",
+"ok": true
+},
+{
+"id": "refactor-go-extract-steps-05-seeds-all",
+"ok": true
+},
+{
+"id": "refactor-go-extract-steps-06-sauna-one",
+"ok": true
+},
+{
+"id": "refactor-go-extract-steps-07-post-all",
+"ok": true
+},
+{
+"id": "refactor-go-extract-steps-08-post-all",
+"ok": true
+},
+{
+"id": "refactor-go-extract-steps-09-post-all",
+"ok": true
+},
+{
+"id": "refactor-go-extract-steps-10-seeds-all",
+"ok": true
+},
+{
+"id": "refactor-go-extract-steps-11-seeds-all",
+"ok": true
+},
+{
+"id": "refactor-go-extract-steps-12-sauna-all",
+"ok": true
+}
+]

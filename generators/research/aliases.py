@@ -128,7 +128,7 @@ def render(rng, org, people, holders, appoint, tickets, d0, d_end):
 def gen(rng, n):
     made = 0
     while made < n:
-        nt = rng.choice([18, 24, 32, 40])
+        nt = rng.choice([8, 12, 18, 24, 32, 40])
         org, people, holders, appoint, tickets, d0, d_end = build(rng, nt)
         files = render(rng, org, people, holders, appoint, tickets, d0, d_end)
         per = {}
@@ -143,7 +143,7 @@ def gen(rng, n):
             ph = [f"Which tickets did {p.full} resolve? Write `answer.json` as {{\"tickets\": [\"T-1234\", ...]}} listing every ticket id (as in the filenames), in any order. People get named in many ways in these tickets, so watch for that.",
                   f"I need to credit {p.full} for tickets they closed. Create `answer.json` with the key `tickets`: the list of ticket ids (like \"T-1042\") that {p.first} resolved. Don't include tickets they were merely assigned or that they reported."]
             files_sol = {"answer.json": W.dumps({"tickets": exp})}
-            diff, label = 4 + (nt >= 32) + (len(same_last) > 1), "one-person"
+            diff, label = 2 + (nt >= 18) + (nt >= 32) + (len(same_last) > 1), "one-person"
         elif qk == 1:
             exp = {p.last: len(v) for p, v in per.items()}
             names = {}
@@ -160,7 +160,7 @@ def gen(rng, n):
                 exp[key] = len(v)
             spec = W.json_spec({"resolved": W.jf("map", exp, sub="int")})
             files_sol = {"answer.json": W.dumps({"resolved": exp})}
-            diff, label = 5, "all-people"
+            diff, label = 3 + (nt >= 18) + (nt >= 32), "all-people"
         else:
             cnt = sorted(((len(v), p) for p, v in per.items()), key=lambda x: -x[0])
             if len(cnt) < 2 or cnt[0][0] == cnt[1][0]:
@@ -171,7 +171,7 @@ def gen(rng, n):
             ph = ["Who resolved the most tickets in this export, and how many? Put it in `answer.json` as {\"person\": \"<surname>\", \"count\": <n>} (if another staff member shares the surname, write `Surname F` with the first initial).",
                   "Find the top resolver. `answer.json`: key `person` (surname; add the first initial like `Marrick H` only if someone else shares that surname) and key `count` (their resolved tickets)."]
             files_sol = {"answer.json": W.dumps({"person": key, "count": cnt[0][0]})}
-            diff, label = 5, "top"
+            diff, label = 3 + (nt >= 24), "top"
         made += 1
         yield W.file_task(slug=f"{made:02d}-{label}", prompt=W.voice(rng, org, rng.choice(ph)), difficulty=min(5, diff), start=files, spec=spec, solution=files_sol,
                           scored=True, tags=["aliases", "entity-resolution"], notes={"tickets": nt, "kind": label})

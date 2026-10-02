@@ -1,7 +1,7 @@
 """Retry back-off schedules (go): capped exponential delays, deterministic jitter, budgets, and a failure tracker."""
-from fx import Lib, dd, langs, register_libs
+from fx import Lib, dd, langs
 
-from generators.fix._lang1 import gosrc
+from generators.fix._lang1 import gosrc, register_libs
 
 README = dd('''
     # retrywin

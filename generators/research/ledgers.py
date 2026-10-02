@@ -148,8 +148,8 @@ def totals(vendors, rows_all, depts_filter=None, quarters=None, rates=None):
 def gen(rng, n):
     made = 0
     while made < n:
-        nv = rng.choice([4, 5, 6])
-        nd = rng.choice([2, 3, 4])
+        nv = rng.choice([3, 4, 5, 6])
+        nd = rng.choice([1, 2, 3, 4])
         year = rng.randint(2030, 2035)
         org, vendors, depts, rates = build(rng, nv, nd, year)
         names = [norm_name(x) for v in vendors for x in [v['canon']] + v['aliases']]
@@ -160,22 +160,22 @@ def gen(rng, n):
         if qk == 0:
             tot = totals(vendors, rows_all, rates=rates)
             scope = f"the whole of {year} (all departments)"
-            dq = 5
+            dq = 3 + (nd >= 3) + (nv >= 5)
         elif qk == 1:
             d = rng.choice(depts)
             tot = totals(vendors, rows_all, depts_filter={d}, rates=rates)
             scope = f"the {d} department for {year}"
-            dq = 4
+            dq = 2 + (nd >= 3) + (nv >= 5)
         elif qk == 2:
             q = rng.randint(1, 4)
             tot = totals(vendors, rows_all, quarters={q}, rates=rates)
             scope = f"{year}-Q{q}, all departments"
-            dq = 4
+            dq = 2 + (nd >= 3) + (nv >= 5)
         else:
             qs = rng.choice([{1, 2}, {3, 4}, {2, 3}])
             tot = totals(vendors, rows_all, quarters=qs, rates=rates)
             scope = f"quarters {', '.join('Q' + str(x) for x in sorted(qs))} of {year}, all departments"
-            dq = 4
+            dq = 3 + (nd >= 3) + (nv >= 5)
         rows = [[vendors[i]["canon"], f"{c // 100}.{c % 100:02d}" if c >= 0 else f"-{abs(c) // 100}.{abs(c) % 100:02d}"] for i, c in tot.items() if c != 0]
         order = sorted(rows, key=lambda r: -float(r[1]))
         vals = [float(r[1]) for r in order]

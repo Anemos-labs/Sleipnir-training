@@ -1,0 +1,66 @@
+[
+{
+"id": "feature-java-seatmap-01-hold",
+"ok": true
+},
+{
+"id": "feature-java-seatmap-02-pricing",
+"ok": true
+},
+{
+"id": "feature-java-seatmap-03-accessible",
+"ok": true
+},
+{
+"id": "feature-java-seatmap-04-pricing-audit",
+"ok": true
+},
+{
+"id": "feature-java-seatmap-05-adjacent",
+"ok": true
+},
+{
+"id": "feature-java-seatmap-06-idempotent",
+"ok": true
+},
+{
+"id": "feature-java-seatmap-07-seat-map",
+"ok": true
+},
+{
+"id": "feature-java-seatmap-08-booking-limit-pricing",
+"ok": true
+},
+{
+"id": "feature-java-seatmap-09-adjacent",
+"ok": true
+},
+{
+"id": "feature-java-seatmap-10-accessible",
+"ok": true
+},
+{
+"id": "feature-java-seatmap-11-pricing",
+"ok": true
+},
+{
+"id": "feature-java-seatmap-12-seat-map-pricing",
+"ok": true
+},
+{
+"id": "feature-java-seatmap-13-booking-limit",
+"ok": true
+},
+{
+"id": "feature-java-seatmap-14-audit",
+"ok": true
+},
+{
+"id": "feature-java-seatmap-15-idempotent",
+"ok": true
+},
+{
+"id": "feature-java-seatmap-16-adjacent-hold",
+"ok": true
+}
+]

@@ -1,0 +1,50 @@
+[
+{
+"id": "optimize-py-windows-01-moving_average-smoothed_levels",
+"ok": true
+},
+{
+"id": "optimize-py-windows-02-range_sums-rain_totals",
+"ok": true
+},
+{
+"id": "optimize-py-windows-03-count_over-exceedances",
+"ok": true
+},
+{
+"id": "optimize-py-windows-04-range_sums-usage_between",
+"ok": true
+},
+{
+"id": "optimize-py-windows-05-moving_average-rolling_load",
+"ok": true
+},
+{
+"id": "optimize-py-windows-06-cumulative-distance_so_far",
+"ok": true
+},
+{
+"id": "optimize-py-windows-07-range_sums-sales_in_ranges",
+"ok": true
+},
+{
+"id": "optimize-py-windows-08-cumulative-running_balance",
+"ok": true
+},
+{
+"id": "optimize-py-windows-09-cumulative-cumulative_rainfall",
+"ok": true
+},
+{
+"id": "optimize-py-windows-10-range_sums-usage_between",
+"ok": true
+},
+{
+"id": "optimize-py-windows-11-count_over-pages_slower_than",
+"ok": true
+},
+{
+"id": "optimize-py-windows-12-count_over-orders_above",
+"ok": true
+}
+]

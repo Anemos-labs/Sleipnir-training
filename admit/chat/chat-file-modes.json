@@ -1,0 +1,50 @@
+[
+{
+"id": "chat-file-modes-01-umask027-d2",
+"ok": true
+},
+{
+"id": "chat-file-modes-02-umask002-d2",
+"ok": true
+},
+{
+"id": "chat-file-modes-03-umask037-d3",
+"ok": true
+},
+{
+"id": "chat-file-modes-04-umask077-d3",
+"ok": true
+},
+{
+"id": "chat-file-modes-05-umask022-d3",
+"ok": true
+},
+{
+"id": "chat-file-modes-06-umask077-d4",
+"ok": true
+},
+{
+"id": "chat-file-modes-07-umask077-d4",
+"ok": true
+},
+{
+"id": "chat-file-modes-08-umask022-d4",
+"ok": true
+},
+{
+"id": "chat-file-modes-09-umask027-d5",
+"ok": true
+},
+{
+"id": "chat-file-modes-10-umask027-d5",
+"ok": true
+},
+{
+"id": "chat-file-modes-11-umask022-d3",
+"ok": true
+},
+{
+"id": "chat-file-modes-12-umask027-d4",
+"ok": true
+}
+]

@@ -1,0 +1,66 @@
+[
+{
+"id": "feature-js-stallcart-01-currency",
+"ok": true
+},
+{
+"id": "feature-js-stallcart-02-cache",
+"ok": true
+},
+{
+"id": "feature-js-stallcart-03-bulk-price",
+"ok": true
+},
+{
+"id": "feature-js-stallcart-04-bulk-price-receipt",
+"ok": true
+},
+{
+"id": "feature-js-stallcart-05-promo-codes",
+"ok": true
+},
+{
+"id": "feature-js-stallcart-06-tax",
+"ok": true
+},
+{
+"id": "feature-js-stallcart-07-limits",
+"ok": true
+},
+{
+"id": "feature-js-stallcart-08-plugins-currency",
+"ok": true
+},
+{
+"id": "feature-js-stallcart-09-limits",
+"ok": true
+},
+{
+"id": "feature-js-stallcart-10-tax",
+"ok": true
+},
+{
+"id": "feature-js-stallcart-11-promo-codes",
+"ok": true
+},
+{
+"id": "feature-js-stallcart-12-limits-cache-receipt",
+"ok": true
+},
+{
+"id": "feature-js-stallcart-13-bulk-price",
+"ok": true
+},
+{
+"id": "feature-js-stallcart-14-receipt",
+"ok": true
+},
+{
+"id": "feature-js-stallcart-15-currency",
+"ok": true
+},
+{
+"id": "feature-js-stallcart-16-tax-plugins-cache",
+"ok": true
+}
+]

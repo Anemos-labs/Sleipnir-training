@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-gridrender-01-cmp",
+"ok": true
+},
+{
+"id": "fix-py-gridrender-02-swap",
+"ok": true
+},
+{
+"id": "fix-py-gridrender-03-logic",
+"ok": true
+},
+{
+"id": "fix-py-gridrender-04-delete",
+"ok": true
+},
+{
+"id": "fix-py-gridrender-05-negate",
+"ok": true
+},
+{
+"id": "fix-py-gridrender-06-arith",
+"ok": true
+},
+{
+"id": "fix-py-gridrender-07-cmp",
+"ok": true
+},
+{
+"id": "fix-py-gridrender-08-delete",
+"ok": true
+},
+{
+"id": "fix-py-gridrender-09-negate",
+"ok": true
+},
+{
+"id": "fix-py-gridrender-10-arith",
+"ok": true
+}
+]

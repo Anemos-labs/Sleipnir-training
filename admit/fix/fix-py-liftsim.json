@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-liftsim-01-arith",
+"ok": true
+},
+{
+"id": "fix-py-liftsim-02-negate",
+"ok": true
+},
+{
+"id": "fix-py-liftsim-03-swap",
+"ok": true
+},
+{
+"id": "fix-py-liftsim-04-delete",
+"ok": true
+},
+{
+"id": "fix-py-liftsim-05-const",
+"ok": true
+},
+{
+"id": "fix-py-liftsim-06-arith",
+"ok": true
+},
+{
+"id": "fix-py-liftsim-07-swap",
+"ok": true
+},
+{
+"id": "fix-py-liftsim-08-delete",
+"ok": true
+},
+{
+"id": "fix-py-liftsim-09-const",
+"ok": true
+},
+{
+"id": "fix-py-liftsim-10-arith",
+"ok": true
+}
+]

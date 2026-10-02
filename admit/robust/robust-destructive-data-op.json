@@ -1,0 +1,34 @@
+[
+{
+"id": "robust-destructive-data-op-01-purge",
+"ok": true
+},
+{
+"id": "robust-destructive-data-op-02-dedupe",
+"ok": true
+},
+{
+"id": "robust-destructive-data-op-03-reset",
+"ok": true
+},
+{
+"id": "robust-destructive-data-op-04-rotate",
+"ok": true
+},
+{
+"id": "robust-destructive-data-op-05-purge",
+"ok": true
+},
+{
+"id": "robust-destructive-data-op-06-dedupe",
+"ok": true
+},
+{
+"id": "robust-destructive-data-op-07-reset",
+"ok": true
+},
+{
+"id": "robust-destructive-data-op-08-rotate",
+"ok": true
+}
+]

@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-js-pluralis-01-delete",
+"ok": true
+},
+{
+"id": "fix-js-pluralis-02-negate",
+"ok": true
+},
+{
+"id": "fix-js-pluralis-03-cmp",
+"ok": true
+},
+{
+"id": "fix-js-pluralis-04-arith",
+"ok": true
+},
+{
+"id": "fix-js-pluralis-05-const",
+"ok": true
+},
+{
+"id": "fix-js-pluralis-06-delete",
+"ok": true
+},
+{
+"id": "fix-js-pluralis-07-negate",
+"ok": true
+},
+{
+"id": "fix-js-pluralis-08-cmp",
+"ok": true
+}
+]

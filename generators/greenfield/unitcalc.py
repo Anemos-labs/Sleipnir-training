@@ -53,9 +53,20 @@ def params(rng, level):
             f = rng.choice([(1, 1), (2, 1), (3, 2), (5, 4), (7, 1), (1, 5), (11, 10), (9, 1)])
             units.append((uname(rng, used), f[0], f[1], v))
             break
+    prefixes = {}
+    if level >= 5:
+        for letter, f in rng.sample([("k", (1000, 1)), ("m", (1, 1000)), ("h", (100, 1)), ("c", (1, 100)), ("d", (1, 10)), ("q", (1, 4)), ("w", (12, 1))], rng.choice([2, 3])):
+            prefixes[letter] = f
+        # a table unit whose name looks like prefix + another unit: the exact name must win
+        letter = sorted(prefixes)[0]
+        host = rng.choice(units)
+        shadow = letter + host[0]
+        if shadow not in used:
+            used.add(shadow)
+            units.append((shadow, 7, 3, host[3]))
     units.sort(key=lambda u: u[0])
     return {"level": level, "dims": dims, "units": units, "digits": rng.choice([2, 3, 4]) if level < 5 else rng.choice([3, 4]),
-            "pow": level >= 3, "nd": nd}
+            "pow": level >= 3, "nd": nd, "composite": level >= 4, "prefixes": prefixes}
 
 
 PY = r'''
@@ -65,6 +76,8 @@ ND = @ND@
 UNITS = @UNITS_PY@
 DIGITS = @DIGITS@
 HAS_POW = @HAS_POW@
+COMPOSITE = @COMPOSITE@
+PREFIXES = @PREFIXES_PY@
 ZERO = (0,) * ND
 
 
@@ -204,7 +217,48 @@ def unit(name):
     for n, num, den, dims in UNITS:
         if n == name:
             return Fraction(num, den), dims
+    if len(name) > 1 and name[0] in PREFIXES:
+        for n, num, den, dims in UNITS:
+            if n == name[1:]:
+                return Fraction(num, den) * PREFIXES[name[0]], dims
     raise CalcError("unknown unit " + name)
+
+
+def target_unit(t):
+    """(size, dims) of a target: one unit, or with COMPOSITE a product/quotient of units with exponents."""
+    if not COMPOSITE:
+        return unit(t)
+    try:
+        toks = tokenize(t)
+        p = Parser(toks)
+        items = []
+        sign = 1
+        while True:
+            if p.peek() != "id":
+                raise CalcError("target")
+            name = p.take()[1]
+            e = p.exp()
+            items.append((sign, name, 1 if e is None else e))
+            k = p.peek()
+            if k == "*":
+                p.take()
+                sign = 1
+            elif k == "/":
+                p.take()
+                sign = -1
+            else:
+                break
+        if p.i != len(toks):
+            raise CalcError("target")
+    except CalcError:
+        raise CalcError("target")
+    size = Fraction(1)
+    dims = ZERO
+    for sign, name, e in items:
+        f, d = powq(unit(name), sign * e)
+        size = size * f
+        dims = tuple(x + y for x, y in zip(dims, d))
+    return size, dims
 
 
 def ev(t):
@@ -261,7 +315,7 @@ def calc(expr, target):
             if d != ZERO:
                 raise CalcError("dimension")
             return fmt(r)
-        f, td = unit(target)
+        f, td = target_unit(target)
         if td != d:
             raise CalcError("dimension")
         return fmt(r / f) + " " + target
@@ -276,6 +330,8 @@ const ND = @ND@;
 const UNITS = @UNITS_JS@;
 const DIGITS = @DIGITS@;
 const HAS_POW = @HAS_POW@;
+const COMPOSITE = @COMPOSITE@;
+const PREFIXES = @PREFIXES_JS@;
 const ZERO = new Array(ND).fill(0);
 
 class CalcError extends Error {}
@@ -391,7 +447,49 @@ function powq(v, e) {
 
 function unit(name) {
   for (const [n, num, den, dims] of UNITS) if (n === name) return [mk(BigInt(num), BigInt(den)), dims];
+  if (name.length > 1 && Object.prototype.hasOwnProperty.call(PREFIXES, name[0])) {
+    for (const [n, num, den, dims] of UNITS) {
+      if (n === name.slice(1)) {
+        const [pn, pd] = PREFIXES[name[0]];
+        return [mk(BigInt(num) * BigInt(pn), BigInt(den) * BigInt(pd)), dims];
+      }
+    }
+  }
   return fail('unknown unit ' + name);
+}
+
+function targetUnit(t) {
+  if (!COMPOSITE) return unit(t);
+  let toks;
+  try { toks = tokenize(t); } catch (e) { if (e instanceof CalcError) fail('target'); throw e; }
+  let i = 0;
+  const items = [];
+  let sign = 1;
+  for (;;) {
+    if (!(i < toks.length && toks[i][0] === 'id')) fail('target');
+    const name = toks[i++][1];
+    let e = 1;
+    if (i < toks.length && toks[i][0] === '^') {
+      i++;
+      let sg = 1;
+      if (i < toks.length && toks[i][0] === '-') { i++; sg = -1; }
+      if (!(i < toks.length && toks[i][0] === 'num' && toks[i][1].length === 1)) fail('target');
+      e = sg * Number(toks[i++][1]);
+    }
+    items.push([sign, name, e]);
+    if (i < toks.length && toks[i][0] === '*') { i++; sign = 1; }
+    else if (i < toks.length && toks[i][0] === '/') { i++; sign = -1; }
+    else break;
+  }
+  if (i !== toks.length) fail('target');
+  let size = [1n, 1n];
+  let dims = ZERO;
+  for (const [sg, name, e] of items) {
+    const [f, d] = powq(unit(name), sg * e);
+    size = qmul(size, f);
+    dims = dims.map((x, k) => x + d[k]);
+  }
+  return [size, dims];
 }
 
 const sameDims = (a, b) => a.every((x, i) => x === b[i]);
@@ -439,7 +537,7 @@ function calc(expr, target) {
       if (!sameDims(d, ZERO)) fail('dimension');
       return fmt(r);
     }
-    const [f, td] = unit(target);
+    const [f, td] = targetUnit(target);
     if (!sameDims(td, d)) fail('dimension');
     return fmt(qdiv(r, f)) + ' ' + target;
   } catch (e) {
@@ -461,10 +559,13 @@ import (
 )
 
 const (
-	nd      = @ND@
-	digits  = @DIGITS@
-	hasPow  = @HAS_POW@
+	nd        = @ND@
+	digits    = @DIGITS@
+	hasPow    = @HAS_POW@
+	composite = @COMPOSITE@
 )
+
+var prefixes = @PREFIXES_GO@
 
 type unitDef struct {
 	name     string
@@ -672,8 +773,86 @@ func lookup(name string) value {
 			return value{r: big.NewRat(u.num, u.den), dims: u.dims}
 		}
 	}
+	if len(name) > 1 {
+		if pf, ok := prefixes[name[0]]; ok {
+			for _, u := range units {
+				if u.name == name[1:] {
+					return value{r: new(big.Rat).Mul(big.NewRat(u.num, u.den), big.NewRat(pf[0], pf[1])), dims: u.dims}
+				}
+			}
+		}
+	}
 	fail("unknown unit " + name)
 	return value{}
+}
+
+func targetUnit(t string) value {
+	if !composite {
+		return lookup(t)
+	}
+	var toks []tok
+	func() {
+		defer func() {
+			if r := recover(); r != nil {
+				if _, ok := r.(calcErr); ok {
+					fail("target")
+				}
+				panic(r)
+			}
+		}()
+		toks = tokenize(t)
+	}()
+	type item struct {
+		sign int
+		name string
+		e    int
+	}
+	var items []item
+	i, sign := 0, 1
+	for {
+		if !(i < len(toks) && toks[i].kind == "id") {
+			fail("target")
+		}
+		name := toks[i].text
+		i++
+		e := 1
+		if i < len(toks) && toks[i].kind == "^" {
+			i++
+			sg := 1
+			if i < len(toks) && toks[i].kind == "-" {
+				i++
+				sg = -1
+			}
+			if !(i < len(toks) && toks[i].kind == "num" && len(toks[i].text) == 1) {
+				fail("target")
+			}
+			v, _ := strconv.Atoi(toks[i].text)
+			e = sg * v
+			i++
+		}
+		items = append(items, item{sign, name, e})
+		if i < len(toks) && toks[i].kind == "*" {
+			i++
+			sign = 1
+		} else if i < len(toks) && toks[i].kind == "/" {
+			i++
+			sign = -1
+		} else {
+			break
+		}
+	}
+	if i != len(toks) {
+		fail("target")
+	}
+	size := value{r: new(big.Rat).SetInt64(1)}
+	for _, it := range items {
+		f := powq(lookup(it.name), it.sign*it.e)
+		size.r.Mul(size.r, f.r)
+		for k := range size.dims {
+			size.dims[k] += f.dims[k]
+		}
+	}
+	return size
 }
 
 func ev(t *node) value {
@@ -774,7 +953,7 @@ func Calc(expr, target string) (out string) {
 		}
 		return format(v.r)
 	}
-	u := lookup(target)
+	u := targetUnit(target)
 	if u.dims != v.dims {
 		fail("dimension")
 	}
@@ -786,6 +965,8 @@ RS = r'''
 const ND: usize = @ND@;
 const DIGITS: u32 = @DIGITS@;
 const HAS_POW: bool = @HAS_POW@;
+const COMPOSITE: bool = @COMPOSITE@;
+const PREFIXES: &[(char, i128, i128)] = &@PREFIXES_RS@;
 const UNITS: &[(&str, i128, i128, [i32; ND])] = &@UNITS_RS@;
 
 type Dims = [i32; ND];
@@ -1019,7 +1200,78 @@ fn unit(name: &str) -> R<(Q, Dims)> {
             return Ok((q(*num, *den), *dims));
         }
     }
+    let first = name.chars().next();
+    if name.len() > 1 {
+        if let Some((_, pn, pd)) = PREFIXES.iter().find(|(c, _, _)| Some(*c) == first) {
+            for (n, num, den, dims) in UNITS.iter() {
+                if *n == &name[1..] {
+                    return Ok((q(*num, *den).mul(q(*pn, *pd)), *dims));
+                }
+            }
+        }
+    }
     Err(format!("unknown unit {}", name))
+}
+
+fn target_unit(t: &str) -> R<(Q, Dims)> {
+    if !COMPOSITE {
+        return unit(t);
+    }
+    let bad = || Err::<(Q, Dims), String>("target".to_string());
+    let toks = match tokenize(t) {
+        Ok(v) => v,
+        Err(_) => return bad(),
+    };
+    let mut items: Vec<(i32, String, i32)> = Vec::new();
+    let (mut i, mut sign) = (0usize, 1i32);
+    loop {
+        let name = match toks.get(i) {
+            Some(Tok::Id(n)) => n.clone(),
+            _ => return bad(),
+        };
+        i += 1;
+        let mut e = 1;
+        if let Some(Tok::Sym('^')) = toks.get(i) {
+            i += 1;
+            let mut sg = 1;
+            if let Some(Tok::Sym('-')) = toks.get(i) {
+                i += 1;
+                sg = -1;
+            }
+            match toks.get(i) {
+                Some(Tok::Num(txt)) if txt.len() == 1 => {
+                    e = sg * txt.parse::<i32>().unwrap();
+                    i += 1;
+                }
+                _ => return bad(),
+            }
+        }
+        items.push((sign, name, e));
+        match toks.get(i) {
+            Some(Tok::Sym('*')) => {
+                i += 1;
+                sign = 1;
+            }
+            Some(Tok::Sym('/')) => {
+                i += 1;
+                sign = -1;
+            }
+            _ => break,
+        }
+    }
+    if i != toks.len() {
+        return bad();
+    }
+    let mut size = q(1, 1);
+    let mut dims: Dims = [0; ND];
+    for (sg, name, e) in items {
+        let (f, d) = powq(unit(&name)?, sg * e)?;
+        size = size.mul(f);
+        for k in 0..ND {
+            dims[k] += d[k];
+        }
+    }
+    Ok((size, dims))
 }
 
 fn ev(t: &Node) -> R<(Q, Dims)> {
@@ -1112,7 +1364,7 @@ fn run(expr: &str, target: &str) -> R<String> {
         }
         return Ok(fmt(r));
     }
-    let (f, td) = unit(target)?;
+    let (f, td) = target_unit(target)?;
     if td != d {
         return Err("dimension".to_string());
     }
@@ -1140,8 +1392,14 @@ def sol(lang, p):
     js = "[" + ", ".join(f'["{n}", {a}, {b}, {list(d)!r}]' for n, a, b, d in units) + "]"
     go = "[]unitDef{" + ", ".join(f'{{"{n}", {a}, {b}, [nd]int{{{", ".join(map(str, d))}}}}}' for n, a, b, d in units) + "}"
     rs = "[" + ", ".join(f'("{n}", {a}, {b}, [{", ".join(map(str, d))}])' for n, a, b, d in units) + "]"
-    return K.subst(src, ND=p["nd"], DIGITS=p["digits"], HAS_POW=_b(lang, p["pow"]),
-                   UNITS_PY=py, UNITS_JS=js, UNITS_GO=go, UNITS_RS=rs).lstrip("\n")
+    pf = p["prefixes"]
+    pf_py = "{" + ", ".join(f'"{k}": Fraction({a}, {b})' for k, (a, b) in pf.items()) + "}"
+    pf_js = "{" + ", ".join(f'{k}: [{a}, {b}]' for k, (a, b) in pf.items()) + "}"
+    pf_go = "map[byte][2]int64{" + ", ".join(f"'{k}': {{{a}, {b}}}" for k, (a, b) in pf.items()) + "}"
+    pf_rs = "[" + ", ".join(f"('{k}', {a}, {b})" for k, (a, b) in pf.items()) + "]"
+    return K.subst(src, ND=p["nd"], DIGITS=p["digits"], HAS_POW=_b(lang, p["pow"]), COMPOSITE=_b(lang, p["composite"]),
+                   UNITS_PY=py, UNITS_JS=js, UNITS_GO=go, UNITS_RS=rs, PREFIXES_PY=pf_py, PREFIXES_JS=pf_js, PREFIXES_GO=pf_go,
+                   PREFIXES_RS=pf_rs).lstrip("\n")
 
 
 # ---------------------------------------------------------------------------------------------------------------
@@ -1174,12 +1432,19 @@ def readme(p, api, lang, examples):
     for n, a, b, d in p["units"]:
         L.append(f"| `{n}` | {dims_text(p, d)} | {a if b == 1 else f'{a}/{b}'} |")
     L.append("")
-    L.append("A *magnitude* is stored as an exact fraction of the base units: `3 " + p["units"][0][0] + "` has magnitude `3 x (size of " + p["units"][0][0] + ")`.")
+    u0 = p["units"][0][0]
+    L.append("A *magnitude* is stored as an exact fraction of the base units: `3 " + u0 + "` has magnitude `3 x (size of " + u0 + ")`.")
     L.append("")
+    if p["prefixes"]:
+        L.append("**Prefixes.** A unit name may carry a one-letter prefix: " + ", ".join(f"`{k}` (x{a if b == 1 else f'{a}/{b}'})" for k, (a, b) in sorted(p["prefixes"].items())) +
+                 ". To look a name up: if the whole name is in the table, that unit is meant (even when it also looks like a prefix plus another unit); "
+                 "otherwise, if the name has at least two letters, its first letter is one of the prefixes and the rest is in the table, the unit is the table unit with its size multiplied by the prefix factor "
+                 "(same dimension); otherwise the name is unknown, and `NAME` in `unknown unit NAME` is the whole name as written. Prefixes never combine with each other.")
+        L.append("")
     L.append("## Expressions")
     L.append("")
     L.append("Tokens: numbers, unit names, the operators `+ - * /`" + (" `^`" if p["pow"] else "") + ", and parentheses. Spaces and tabs between tokens are ignored "
-             "(and may be left out wherever the tokens stay distinguishable: `3ell` is the same as `3 ell`). Any other character is a syntax error. "
+             "(and may be left out wherever the tokens stay distinguishable: `3" + p["units"][0][0] + "` is the same as `3 " + p["units"][0][0] + "`). Any other character is a syntax error. "
              "A **number** is one or more ASCII digits, optionally followed by `.` and one or more digits (`.5`, `5.` and `1.2.3` are not numbers). "
              "A **unit name** is a maximal run of lower-case ASCII letters `a`-`z`; names are matched case-sensitively against the table.")
     L.append("")
@@ -1227,8 +1492,15 @@ def readme(p, api, lang, examples):
              "Only when the expression evaluates, the target is examined:")
     L.append("")
     L.append("* `target` is `-`: the value must be a plain number (all dimensions 0) or the result is `error: dimension`; the output is the number.")
-    L.append("* otherwise `target` is a unit name: if it is not in the table the result is `error: unknown unit NAME`; if its dimension differs from the value's dimension the result is "
-             "`error: dimension`; otherwise the output is `NUMBER NAME` where the number is `magnitude / (size of NAME)`.")
+    if p["composite"]:
+        L.append("* otherwise `target` is a *unit expression*: `UNIT ['^' EXP] { ('*' | '/') UNIT ['^' EXP] }`, written with the same tokens as above (spaces and tabs are ignored; no numbers other than exponents, no parentheses, "
+                 "no unary minus). Text that does not fit this shape (empty, a number, upper-case letters, a missing or doubled operator, a bad exponent, ...) gives `error: target`. "
+                 "A valid target is then resolved from left to right: a unit that is not in the table gives `error: unknown unit NAME`. Its size is the product of the unit sizes raised to their exponents "
+                 "(a unit after `/` counts with the negated exponent) and its dimension is combined the same way. If the dimension differs from the value's dimension the result is `error: dimension`; "
+                 "otherwise the output is `NUMBER TARGET` where the number is `magnitude / size` and `TARGET` is the target text **exactly as it was given**, spaces included.")
+    else:
+        L.append("* otherwise `target` is a unit name: if it is not in the table the result is `error: unknown unit NAME`; if its dimension differs from the value's dimension the result is "
+                 "`error: dimension`; otherwise the output is `NUMBER NAME` where the number is `magnitude / (size of NAME)`.")
     L.append("")
     L.append(f"**Number format**: round to {p['digits']} digits after the decimal point, with halves rounded **away from zero** (computed exactly, on the exact fraction), "
              "write the digits without grouping, strip trailing zeros from the fractional part and drop the point when nothing is left. "
@@ -1290,6 +1562,8 @@ def make_cases(rng, p, ns):
         us = by_dims.get(dims)
         if us:
             u = rng.choice(us)
+            if p["prefixes"] and rng.random() < 0.3:
+                u = rng.choice(sorted(p["prefixes"])) + u
             return f"{num()} {u}"
         return f"{num()} {rng.choice(by_dims[rng.choice(avail)])}"
 
@@ -1312,6 +1586,9 @@ def make_cases(rng, p, ns):
     def wrap(s):
         return f"({s})" if any(c in s for c in "+-") and not s.startswith("(") else s
 
+    def wrapd(s):
+        return f"({s})" if any(c in s for c in "+-*/") and not (s.startswith("(") and s.endswith(")") and s.count("(") == 1) else s
+
     def gen(dims, depth):
         r = rng.random()
         if depth == 0 or r < 0.3:
@@ -1327,10 +1604,28 @@ def make_cases(rng, p, ns):
             sp = qsplits(dims)
             if sp:
                 a, b = rng.choice(sp)
-                return f"{wrap(gen(a, depth - 1))} / {wrap(gen(b, depth - 1))}"
+                return f"{wrap(gen(a, depth - 1))} / {wrapd(gen(b, depth - 1))}"
         if r < 0.95:
             return f"-{wrap(gen(dims, depth - 1))}"
         return f"({gen(dims, depth - 1)})"
+
+    def compose(d):
+        found = []
+        for a in avail:
+            for e1 in (1, 2, -1, 3):
+                for ua in by_dims[a][:2]:
+                    rem = tuple(x - e1 * y for x, y in zip(d, a))
+                    if all(x == 0 for x in rem):
+                        found.append(f"{ua}^{e1}" if e1 != 1 else ua)
+                    for b in avail:
+                        for e2 in (1, -1, 2):
+                            if tuple(x * 1 for x in rem) == tuple(e2 * y for y in b):
+                                ub = by_dims[b][0]
+                                t2 = f"{ub}^{abs(e2)}" if abs(e2) != 1 else ub
+                                t1 = f"{ua}^{e1}" if e1 != 1 else ua
+                                found.append(f"{t1} * {t2}" if e2 > 0 else f"{t1} / {t2}")
+        found = [f for f in found if f]
+        return rng.choice(found) if found else None
 
     def target_for(expr):
         try:
@@ -1341,6 +1636,12 @@ def make_cases(rng, p, ns):
         if d == zero:
             return rng.choice(["-", "-", "-"])
         us = by_dims.get(d)
+        if p["composite"] and (not us or rng.random() < 0.55):
+            t = compose(d)
+            if t:
+                if p["pow"] and "^-" not in t and rng.random() < 0.2:
+                    t = t.replace(" * ", "*").replace(" / ", "/")
+                return t
         return rng.choice(us) if us else "-"
 
     def add(expr, target=None):
@@ -1348,12 +1649,16 @@ def make_cases(rng, p, ns):
 
     lv = p["level"]
     depth = 1 if lv <= 2 else 2 if lv <= 4 else 3
-    # examples
+    # examples: three expressions that evaluate without error
     d0 = rng.choice(avail)
     add(f"{num()} {rng.choice(by_dims[d0])} + {num()} {rng.choice(by_dims[d0])}")
-    d1 = rng.choice(avail)
-    add(gen(d1, 1))
-    add(gen(rng.choice(avail), depth))
+    tries = 0
+    while len(cases) < 3 and tries < 200:
+        tries += 1
+        e = gen(rng.choice(avail), 1 if len(cases) == 1 else depth)
+        t = target_for(e)
+        if not calc(e, t).startswith("error") and (e, t) not in cases:
+            cases.append((e, t))
     nex = len(cases)
     # more generated
     for _ in range(14):
@@ -1374,6 +1679,11 @@ def make_cases(rng, p, ns):
     for expr in ["1/3", "2/3", "5/2", "1/8", "7/8", "1/16", "3/16"]:
         a, b = expr.split("/")
         add(f"{a} / {b}", "-")
+    dg = p["digits"]
+    for frac in ["4", "5", "6", "49", "51", "5000", "4999", "9", "95"]:
+        for ip in ["0", "12", "7"]:
+            add(f"{ip}.{'0' * dg}{frac}" if frac not in ("9", "95") else f"{ip}.{'9' * dg}{frac}", "-")
+            add(f"-{ip}.{'3' * dg}{frac}", "-")
     for expr in ["0.005", "0.004", "0.0049", "0.0051", "0.001", "0.0005", "1.005", "2.675", "123.456", "1000", "0", "0.00", "10.10"]:
         add(expr, "-")
         add("-" + expr, "-")
@@ -1433,11 +1743,43 @@ def make_cases(rng, p, ns):
     # target errors
     add(f"1 {u0}", "nosuch")
     add(f"1 {u0}", u0.upper())
+    if p["composite"]:
+        for t in ["", "1", "2 " + u0, u0 + "^", u0 + "^x", u0 + "^12", u0 + "^1.5", u0 + " " + u0, u0 + "*", "*" + u0, u0 + "//" + u0, u0 + "/", "/" + u0, "-" + u0, "(" + u0 + ")",
+                  u0 + "^-", u0 + " ^ 2", u0 + "^+1", "nosuch/" + u0, u0 + "*nosuch", "nosuch*", u0 + "^2^2", "-", u0 + "-" + u0, u0 + "+" + u0, u0 + "^2 / " + u0 + "^2 / " + u0]:
+            add(f"1 {u0}", t)
+        add(f"1 {u0} / 1 {u0}", u0 + "/" + u0)
+        add(f"2 {u0}", u0 + "^1")
+        add(f"2 {u0}", u0 + "^0")
+        add(f"3", u0 + "^0")
+        add(f"3", u0 + "/" + u0)
+        add(f"3", u0 + " * " + u0 + "^-1")
+        add(f"3 {u0}", "  " + u0 + "  ")
+        add(f"3 {u0}", u0 + "\t")
     add(f"1 zzz", "nosuch")
     add(f"1 {u0} +", "nosuch")
     add("5", u0)
     add("5", "nosuch")
     add(f"1 {u0}", "-")
+    if p["prefixes"]:
+        for letter, (a, b) in sorted(p["prefixes"].items()):
+            for n, ua, ub, d in units[:6]:
+                if (letter + n) in {u[0] for u in units}:
+                    add(f"1 {letter}{n}", n)
+                    add(f"3 {letter}{n}^2" if p["pow"] else f"3 {letter}{n}", n if not p["pow"] else "-")
+                    continue
+                add(f"1 {letter}{n}", n)
+                add(f"{num()} {letter}{n} + {num()} {n}", n)
+                add(f"1 {n}", letter + n)
+                add(f"({num()} {letter}{n})^2" if p["pow"] else f"{num()} {letter}{n}", "-")
+        add("1 zzz", "-")
+        add("1 kzzz", "-")
+        for letter in sorted(p["prefixes"]):
+            add(f"1 {letter}", "-")
+            add(f"1 {letter}{letter}{units[0][0]}", units[0][0])
+            add(f"1 {letter}{letter}", "-")
+        add(f"1 x{units[0][0]}", "-")
+        add(f"1 {units[0][0]}x", "-")
+        add(f"1 K{units[0][0]}", "-")
     # derived: every unit to every other with equal dims, and zero
     for n, a, b, d in units:
         add(f"{num()} {n}", n)

@@ -1,0 +1,74 @@
+[
+{
+"id": "feature-rb-gigcal-01-search",
+"ok": true
+},
+{
+"id": "feature-rb-gigcal-02-agenda-locale",
+"ok": true
+},
+{
+"id": "feature-rb-gigcal-03-recurring",
+"ok": true
+},
+{
+"id": "feature-rb-gigcal-04-fee-split-hooks",
+"ok": true
+},
+{
+"id": "feature-rb-gigcal-05-ics",
+"ok": true
+},
+{
+"id": "feature-rb-gigcal-06-setlist",
+"ok": true
+},
+{
+"id": "feature-rb-gigcal-07-conflicts",
+"ok": true
+},
+{
+"id": "feature-rb-gigcal-08-setlist-fee-split",
+"ok": true
+},
+{
+"id": "feature-rb-gigcal-09-agenda-locale",
+"ok": true
+},
+{
+"id": "feature-rb-gigcal-10-search",
+"ok": true
+},
+{
+"id": "feature-rb-gigcal-11-fee-split",
+"ok": true
+},
+{
+"id": "feature-rb-gigcal-12-setlist-conflicts-recurring",
+"ok": true
+},
+{
+"id": "feature-rb-gigcal-13-ics",
+"ok": true
+},
+{
+"id": "feature-rb-gigcal-14-conflicts",
+"ok": true
+},
+{
+"id": "feature-rb-gigcal-15-setlist",
+"ok": true
+},
+{
+"id": "feature-rb-gigcal-16-conflicts-hooks",
+"ok": true
+},
+{
+"id": "feature-rb-gigcal-17-conflicts",
+"ok": true
+},
+{
+"id": "feature-rb-gigcal-18-recurring",
+"ok": true
+}
+]

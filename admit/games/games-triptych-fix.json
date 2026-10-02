@@ -1,0 +1,62 @@
+[
+{
+"id": "games-triptych-fix-01-last-triple",
+"ok": true
+},
+{
+"id": "games-triptych-fix-02-score-base",
+"ok": true
+},
+{
+"id": "games-triptych-fix-03-spawn-rate",
+"ok": true
+},
+{
+"id": "games-triptych-fix-04-spawn-order",
+"ok": true
+},
+{
+"id": "games-triptych-fix-05-noop-move",
+"ok": true
+},
+{
+"id": "games-triptych-fix-06-down-as-up",
+"ok": true
+},
+{
+"id": "games-triptych-fix-07-walls-ignored",
+"ok": true
+},
+{
+"id": "games-triptych-fix-08-seed-zero",
+"ok": true
+},
+{
+"id": "games-triptych-fix-09-edge-spawn",
+"ok": true
+},
+{
+"id": "games-triptych-fix-10-width-per-row",
+"ok": true
+},
+{
+"id": "games-triptych-fix-11-over-early",
+"ok": true
+},
+{
+"id": "games-triptych-fix-12-column-major",
+"ok": true
+},
+{
+"id": "games-triptych-fix-13-no-merge-score-reset",
+"ok": true
+},
+{
+"id": "games-triptych-fix-14-score-base-over-early",
+"ok": true
+},
+{
+"id": "games-triptych-fix-15-last-triple-spawn-rate-noop-move",
+"ok": true
+}
+]

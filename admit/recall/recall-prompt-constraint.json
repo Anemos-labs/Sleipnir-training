@@ -1,0 +1,82 @@
+[
+{
+"id": "recall-prompt-constraint-01-forbid",
+"ok": true
+},
+{
+"id": "recall-prompt-constraint-02-prefix",
+"ok": true
+},
+{
+"id": "recall-prompt-constraint-03-width",
+"ok": true
+},
+{
+"id": "recall-prompt-constraint-04-width",
+"ok": true
+},
+{
+"id": "recall-prompt-constraint-05-tag",
+"ok": true
+},
+{
+"id": "recall-prompt-constraint-06-upper",
+"ok": true
+},
+{
+"id": "recall-prompt-constraint-07-upper",
+"ok": true
+},
+{
+"id": "recall-prompt-constraint-08-signature",
+"ok": true
+},
+{
+"id": "recall-prompt-constraint-09-tag",
+"ok": true
+},
+{
+"id": "recall-prompt-constraint-10-tag",
+"ok": true
+},
+{
+"id": "recall-prompt-constraint-11-signature",
+"ok": true
+},
+{
+"id": "recall-prompt-constraint-12-signature",
+"ok": true
+},
+{
+"id": "recall-prompt-constraint-13-prefix",
+"ok": true
+},
+{
+"id": "recall-prompt-constraint-14-signature",
+"ok": true
+},
+{
+"id": "recall-prompt-constraint-15-forbid",
+"ok": true
+},
+{
+"id": "recall-prompt-constraint-16-prefix",
+"ok": true
+},
+{
+"id": "recall-prompt-constraint-17-width",
+"ok": true
+},
+{
+"id": "recall-prompt-constraint-18-forbid",
+"ok": true
+},
+{
+"id": "recall-prompt-constraint-19-signature",
+"ok": true
+},
+{
+"id": "recall-prompt-constraint-20-tag",
+"ok": true
+}
+]

@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-keyring-01-cmp",
+"ok": true
+},
+{
+"id": "fix-py-keyring-02-delete",
+"ok": true
+},
+{
+"id": "fix-py-keyring-03-negate",
+"ok": true
+},
+{
+"id": "fix-py-keyring-04-logic",
+"ok": true
+},
+{
+"id": "fix-py-keyring-05-arith",
+"ok": true
+},
+{
+"id": "fix-py-keyring-06-const",
+"ok": true
+},
+{
+"id": "fix-py-keyring-07-cmp",
+"ok": true
+},
+{
+"id": "fix-py-keyring-08-delete",
+"ok": true
+},
+{
+"id": "fix-py-keyring-09-negate",
+"ok": true
+},
+{
+"id": "fix-py-keyring-10-arith",
+"ok": true
+}
+]

@@ -1,0 +1,50 @@
+[
+{
+"id": "swarm-contract-drift-01-marina-inv-not",
+"ok": true
+},
+{
+"id": "swarm-contract-drift-02-campsite-int-pri-not",
+"ok": true
+},
+{
+"id": "swarm-contract-drift-03-boatyard-int-pri-all",
+"ok": true
+},
+{
+"id": "swarm-contract-drift-04-airfield-int-pri-inv-not",
+"ok": true
+},
+{
+"id": "swarm-contract-drift-05-marina-pri-all-inv",
+"ok": true
+},
+{
+"id": "swarm-contract-drift-06-campsite-int-pri-all-not",
+"ok": true
+},
+{
+"id": "swarm-contract-drift-07-boatyard-int-pri-all-inv-not",
+"ok": true
+},
+{
+"id": "swarm-contract-drift-08-airfield-int-pri-all-inv",
+"ok": true
+},
+{
+"id": "swarm-contract-drift-09-marina-int-pri-all-inv-not",
+"ok": true
+},
+{
+"id": "swarm-contract-drift-10-campsite-int-pri-all-inv-not",
+"ok": true
+},
+{
+"id": "swarm-contract-drift-11-boatyard-int-all-inv-not",
+"ok": true
+},
+{
+"id": "swarm-contract-drift-12-airfield-int-pri-all-inv-not",
+"ok": true
+}
+]

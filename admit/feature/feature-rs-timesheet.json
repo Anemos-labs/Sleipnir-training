@@ -1,0 +1,66 @@
+[
+{
+"id": "feature-rs-timesheet-01-undo",
+"ok": true
+},
+{
+"id": "feature-rs-timesheet-02-overtime",
+"ok": true
+},
+{
+"id": "feature-rs-timesheet-03-rounding",
+"ok": true
+},
+{
+"id": "feature-rs-timesheet-04-overtime-tags-undo",
+"ok": true
+},
+{
+"id": "feature-rs-timesheet-05-lock",
+"ok": true
+},
+{
+"id": "feature-rs-timesheet-06-day-cap",
+"ok": true
+},
+{
+"id": "feature-rs-timesheet-07-csv-export",
+"ok": true
+},
+{
+"id": "feature-rs-timesheet-08-project-filter-day-cap",
+"ok": true
+},
+{
+"id": "feature-rs-timesheet-09-tags",
+"ok": true
+},
+{
+"id": "feature-rs-timesheet-10-rounding",
+"ok": true
+},
+{
+"id": "feature-rs-timesheet-11-csv-export",
+"ok": true
+},
+{
+"id": "feature-rs-timesheet-12-rounding-overtime-undo",
+"ok": true
+},
+{
+"id": "feature-rs-timesheet-13-day-cap",
+"ok": true
+},
+{
+"id": "feature-rs-timesheet-14-undo",
+"ok": true
+},
+{
+"id": "feature-rs-timesheet-15-lock",
+"ok": true
+},
+{
+"id": "feature-rs-timesheet-16-project-filter-rounding-csv-export",
+"ok": true
+}
+]

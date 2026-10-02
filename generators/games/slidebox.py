@@ -366,24 +366,95 @@ class Model:
 
 
 def solve(level: str, r: dict, cap: int = 60000):
-    """Shortest move string, or None (unsolvable or beyond ``cap`` states)."""
-    start = Model(level, r)
-    if start.solved():
+    """Shortest move string, or None (unsolvable or beyond ``cap`` states). A compact BFS; the result is replayed on the
+    readable ``Model`` to make sure both agree."""
+    rows = level.split("\n")
+    h, w = len(rows), len(rows[0])
+    n = h * w
+    wall = [False] * n
+    pad = [False] * n
+    water0 = [False] * n
+    crates0, p0 = [], 0
+    for y, row in enumerate(rows):
+        for x, ch in enumerate(row):
+            i = y * w + x
+            wall[i] = ch == "#"
+            water0[i] = ch == "~"
+            pad[i] = ch in "_+*"
+            if ch in "B*":
+                crates0.append(i)
+            if ch in "@+":
+                p0 = i
+    npads = sum(pad)
+    slide, maxp, exact = r["SLIDE"], r["MAX_PUSH"], r["EXACT"]
+    dirs = (("U", -1, 0), ("D", 1, 0), ("L", 0, -1), ("R", 0, 1))
+
+    def solved(cr):
+        return sum(1 for c in cr if pad[c]) == npads and (not exact or len(cr) == npads)
+
+    start = (p0, tuple(sorted(crates0)), 0)
+    if solved(start[1]):
         return ""
-    seen = {start.key()}
-    q = deque([(start, "")])
-    while q and len(seen) < cap:
-        m, path = q.popleft()
-        for mv in m.legal():
-            n = m.clone()
-            n.apply(mv)
-            k = n.key()
-            if k in seen:
+    parent = {start: None}
+    q = deque([start])
+    while q and len(parent) < cap:
+        st = q.popleft()
+        p, cr, filled = st
+        py, px = divmod(p, w)
+        for name, dy, dx in dirs:
+            ty, tx = py + dy, px + dx
+            if not (0 <= ty < h and 0 <= tx < w):
                 continue
-            if n.solved():
-                return path + mv
-            seen.add(k)
-            q.append((n, path + mv))
+            t = ty * w + tx
+            if wall[t] or (water0[t] and not (filled >> t) & 1):
+                continue
+            ncr, nfilled = cr, filled
+            if t in cr:
+                run, fy, fx = 0, ty, tx
+                while 0 <= fy < h and 0 <= fx < w and fy * w + fx in cr:
+                    run += 1
+                    fy, fx = fy + dy, fx + dx
+                if run > maxp or not (0 <= fy < h and 0 <= fx < w):
+                    continue
+                f = fy * w + fx
+                if wall[f]:
+                    continue
+                lst = [c for c in cr if c != t]
+                sank = water0[f] and not (filled >> f) & 1
+                if not sank and slide:
+                    while True:
+                        ny, nx = fy + dy, fx + dx
+                        if not (0 <= ny < h and 0 <= nx < w):
+                            break
+                        nn = ny * w + nx
+                        if wall[nn] or nn in lst:
+                            break
+                        fy, fx, f = ny, nx, nn
+                        if water0[nn] and not (nfilled >> nn) & 1:
+                            sank = True
+                            break
+                if sank:
+                    nfilled = filled | (1 << f)
+                else:
+                    lst.append(f)
+                ncr = tuple(sorted(lst))
+            nst = (t, ncr, nfilled)
+            if nst in parent:
+                continue
+            parent[nst] = (st, name)
+            if solved(ncr):
+                path, cur = [], nst
+                while parent[cur] is not None:
+                    cur, mv = parent[cur][0], parent[cur][1]
+                    path.append(mv)
+                path = "".join(reversed(path))
+                m = Model(level, r)
+                for mv in path:
+                    assert mv in m.legal(), "fast solver and model disagree"
+                    m.apply(mv)
+                assert m.solved(), "fast solver and model disagree"
+                return path
+            q.append(nst)
     return None
 
 
@@ -965,7 +1036,7 @@ def loader_readme(variant: str) -> str:
             * The file has an optional header followed by the rows. There is a header exactly when the first non-blank line (after removing comments) contains a `:`. The header lasts until the first
               blank line; every header line is `key: value` (split at the first colon, key and value trimmed). A header line without a colon is `bad header line '<the line as written>'`.
             * Known keys: `title` (any text, default `''`) and `par` (default `null`; it must match `[1-9][0-9]*` or the error is `par must be a positive integer`, and it is returned as a number).
-              An unknown key is `unknown header 'key'`; a repeated key is `duplicate header 'key'`. Header errors are reported in reading order, before any level validation.
+              An unknown key is `unknown header 'key'`; a repeated key is `duplicate header 'key'`. Header errors are reported in reading order, before any level validation; within one line the checks go: no colon, unknown key, repeated key, bad `par` value.
             * After the header (and its blank line) come the rows; blank lines at the start and the end are ignored.
         ''')
     elif variant == "pack":
@@ -1132,7 +1203,7 @@ def loader_cases(rng, variant: str) -> list[str]:
 def loader_scripts(rng, variant: str) -> dict[str, str]:
     verb = "pack" if variant == "pack" else "load"
     cases = loader_cases(rng, variant)
-    lines = ["# scenario files"]
+    lines = ["# scenario files", "> new #####|#@B_#|#####"]
     for c in cases:
         lines.append(f"> {verb} {_enc(c)}")
         if variant != "pack":
@@ -1168,9 +1239,189 @@ def gen_loader(rng, n):
             # scenario load and play
             > new #####|#@B_#|#####
             > render
-        ''') + ("> load #####\\n#@B_#\\n#####\n> render\n> do R\n> load #####\\n#@B_##\\n#####\n> load\n" if v["key"] != "pack" else "> pack == A\\n#####\\n#@B_#\\n#####\n> pack\n")
+        ''') + ("" if True else "") + ("> load #####\\n#@B_#\\n#####\n> render\n> do R\n> load #####\\n#@B_##\\n#####\n> load\n" if v["key"] != "pack" else "> pack == A\\n#####\\n#@B_#\\n#####\n> pack\n")
         vis = _kit.data_files(LANG, {"examples": example_scripts(), "loader": vis_script}, full_sol, adapter)
         start = {"README.md": readme(r, _readme_example(r, sol)).replace("## Tests\n", loader_readme(v["key"]) + "\n## Tests\n"), **sol,
                  **_scen.check_files(LANG, adapter), **vis}
         yield Task(slug=f"{i + 1:02d}-{v['key']}", prompt=v["ask"], difficulty=v["d"], start=start, hidden=hidden, solution={"src/level.js": level_js},
                    verify=_scen.VERIFY[LANG], tags=["parser", "validation", "feature"], notes={"variant": v["key"]})
+
+
+# ----------------------------------------------------------------------------------------------------- solver tournament
+
+SOLVER_STUB = dd(r'''
+    'use strict';
+    const { Game } = require('./slidebox');
+
+    // Return a string of moves (characters U, D, L, R) that solves `levelText`.
+    function solve(levelText) {
+      return '';
+    }
+
+    module.exports = { solve };
+''')
+
+GOLD_SOLVER = dd(r'''
+    'use strict';
+    const { Game } = require('./slidebox');
+
+    // Breadth-first search over game states: the first solution found is a shortest one.
+    function solve(levelText) {
+      const start = new Game(levelText);
+      if (start.solved()) return '';
+      const seen = new Set([start.key()]);
+      let frontier = [[start, '']];
+      while (frontier.length > 0) {
+        const next = [];
+        for (const [game, path] of frontier) {
+          for (const move of game.legalMoves()) {
+            const child = game.clone();
+            child.apply(move);
+            if (child.solved()) return path + move;
+            const key = child.key();
+            if (seen.has(key)) continue;
+            seen.add(key);
+            next.push([child, path + move]);
+          }
+        }
+        frontier = next;
+      }
+      return null;
+    }
+
+    module.exports = { solve };
+''')
+
+SCORE_JS = dd(r'''
+    'use strict';
+    const fs = require('fs');
+    const path = require('path');
+    const { Game } = require('../src/slidebox');
+    const { solve } = require('../src/solver');
+
+    const levels = JSON.parse(fs.readFileSync(path.join(__dirname, 'levels.json'), 'utf8'));
+    let solved = 0;
+    for (const { level, limit } of levels) {
+      let ok = false;
+      try {
+        const t0 = Date.now();
+        const moves = solve(level);
+        const ms = Date.now() - t0;
+        if (typeof moves === 'string' && moves.length <= limit && ms <= 15000) {
+          const game = new Game(level);
+          ok = true;
+          for (const m of moves) {
+            try {
+              game.apply(m);
+            } catch (e) {
+              ok = false;
+              break;
+            }
+          }
+          ok = ok && game.solved();
+        }
+      } catch (e) {
+        ok = false;
+      }
+      if (ok) solved++;
+    }
+    console.log('solved ' + solved + ' of ' + levels.length);
+    console.log(JSON.stringify({ score: Math.round((solved / levels.length) * 10000) / 10000 }));
+''')
+
+PLAY_JS = dd(r'''
+    'use strict';
+    // Local runner: node play.js [level file ...] solves the sample levels in levels/ (or the files you name) and replays your moves.
+    const fs = require('fs');
+    const path = require('path');
+    const { Game } = require('./src/slidebox');
+    const { solve } = require('./src/solver');
+
+    const files = process.argv.slice(2);
+    if (files.length === 0) for (const f of fs.readdirSync('levels').sort()) files.push(path.join('levels', f));
+    for (const f of files) {
+      const level = fs.readFileSync(f, 'utf8').replace(/\n+$/, '');
+      const t0 = Date.now();
+      const moves = solve(level);
+      const ms = Date.now() - t0;
+      const game = new Game(level);
+      let legal = typeof moves === 'string';
+      if (legal) {
+        for (const m of moves) {
+          try {
+            game.apply(m);
+          } catch (e) {
+            legal = false;
+            break;
+          }
+        }
+      }
+      console.log(f + ': ' + (legal && game.solved() ? 'solved' : 'NOT solved') + ' with ' + (typeof moves === 'string' ? moves.length : '?') + ' moves in ' + ms + ' ms');
+    }
+''')
+
+SOLVER_VARIANTS = [
+    dict(rules={}, d=2, sizes=[(6, 5), (6, 6)], cap=6000, count=8, minlen=8),
+    dict(rules=dict(SLIDE=True), d=3, sizes=[(7, 5), (7, 6)], cap=9000, count=8, minlen=8),
+    dict(rules=dict(MAX_PUSH=2, WATER=False, PUSH_COST=2), d=3, sizes=[(7, 6), (8, 6)], cap=14000, count=8, minlen=9),
+    dict(rules=dict(EXACT=True), d=4, sizes=[(7, 6), (8, 6)], cap=20000, count=8, minlen=12),
+    dict(rules=dict(SLIDE=True, EXACT=True), d=4, sizes=[(8, 6), (8, 7)], cap=24000, count=8, minlen=12),
+]
+
+
+def solver_readme(r: dict) -> str:
+    return readme(r).replace("## Tests\n", dd('''
+        ## Your task: a solver
+
+        The engine in `src/slidebox.js` also has two methods for search programs: `g.clone()` returns an independent copy of the game (the original is not affected by moves on the copy)
+        and `g.key()` returns a string that is equal for two states exactly when the rest of the game is identical (positions of the player and the crates, and which water is still water; the move
+        counter is not part of it). Do not edit the engine.
+
+        Write `solve(levelText)` in `src/solver.js`: it returns a string of moves (`U`, `D`, `L`, `R` characters) that solves the level, starting from the level as given.
+        `node play.js` runs it on the sample levels in `levels/` and replays the moves; the real check uses other levels of the same kind.
+
+        ## Scoring
+
+        The check calls `solve` on a set of levels (each solvable). A level counts as solved when the returned string is no longer than 3 times the shortest solution plus 10 moves, every move is
+        legal when replayed on a fresh game, the level is solved at the end, and `solve` returned within 15 seconds. The score is the fraction of levels solved (1.0 needs all of them).
+
+        ## Tests
+    '''), 1)
+
+
+@family("games-slidebox-solver", category="games", lang="javascript", kind="greenfield", n=5,
+        summary="write a Slidebox solver; a hidden set of generated levels is replayed on the engine (json-score = fraction solved)")
+def gen_solver(rng, n):
+    for i, v in enumerate(SOLVER_VARIANTS[:n]):
+        r = {**DEFAULT, **v["rules"]}
+        sol = project(r, extra=True)
+        levels = []
+        t = 0
+        while len(levels) < v["count"] + 3 and t < 20000:
+            t += 1
+            w, h = v["sizes"][rng.randrange(len(v["sizes"]))]
+            crates = rng.choice([2, 2, 3])
+            extra = 1 if (r["EXACT"] and r["WATER"]) else 0
+            water = rng.choice([1, 2, 3]) if r["WATER"] else 0
+            lv = random_level(rng, r, w, h, crates, extra, water)
+            if not lv:
+                continue
+            sol_moves = solve(lv, r, cap=v["cap"])
+            if sol_moves and len(sol_moves) >= v["minlen"]:
+                levels.append((lv, sol_moves))
+        if len(levels) < v["count"] + 3:
+            raise RuntimeError("slidebox solver: not enough levels")
+        samples, graded = levels[:3], levels[3:]
+        files = {"src/slidebox.js": sol["src/slidebox.js"], "src/solver.js": SOLVER_STUB, "play.js": PLAY_JS, ".gitignore": _kit.GITIGNORE[LANG],
+                 "README.md": solver_readme(r), **{f"levels/sample{k + 1}.txt": lv + "\n" for k, (lv, _) in enumerate(samples)}}
+        hidden = {".check/score.js": SCORE_JS, ".check/levels.json": json.dumps([{"level": lv, "limit": 3 * len(m) + 10} for lv, m in graded], indent=0) + "\n"}
+        s0, s1, out = _kit.check_scores(start=files, hidden=hidden, solution={"src/solver.js": GOLD_SOLVER}, verify="node .check/score.js", name=f"slidebox-solver-{i}")
+        feats = "-".join(k for k, val in (("slide", r["SLIDE"]), ("push%d" % r["MAX_PUSH"], r["MAX_PUSH"] > 1), ("water", r["WATER"]), ("exact", r["EXACT"])) if val)
+        voices = [
+            "Write a solver for Slidebox levels: `solve(levelText)` in `src/solver.js` must return a move string that solves the level. README.md describes the engine (with the `clone()` and `key()` helpers) and how the hidden levels are scored; `node play.js` tries it on the samples.",
+            "Our Slidebox levels are generated, and nobody has checked whether they can be solved. I need `solve` in `src/solver.js` to find solutions for them (README.md has the rules of this yard and the scoring). The samples in `levels/` are typical.",
+            "Implement the search for the Slidebox puzzle in `src/solver.js`. Mind the rules of this particular yard (README.md): they differ from the textbook crate game. It's graded on a set of levels you don't see, partial credit per level solved.",
+        ]
+        yield Task(slug=f"{i + 1:02d}-{feats or 'plain'}", prompt=voices[i % len(voices)], difficulty=v["d"], start={**files}, hidden=hidden,
+                   solution={"src/solver.js": GOLD_SOLVER}, verify="node .check/score.js", pass_mode="json-score", protected=["src/slidebox.js", "play.js"],
+                   tags=["puzzle", "search", "bot"], notes={"rules": r, "levels": len(graded), "gold": out.strip().splitlines()[-2]})

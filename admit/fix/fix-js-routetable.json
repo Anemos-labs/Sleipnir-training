@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-js-routetable-01-delete",
+"ok": true
+},
+{
+"id": "fix-js-routetable-02-arith",
+"ok": true
+},
+{
+"id": "fix-js-routetable-03-logic",
+"ok": true
+},
+{
+"id": "fix-js-routetable-04-const",
+"ok": true
+},
+{
+"id": "fix-js-routetable-05-negate",
+"ok": true
+},
+{
+"id": "fix-js-routetable-06-cmp",
+"ok": true
+},
+{
+"id": "fix-js-routetable-07-delete",
+"ok": true
+},
+{
+"id": "fix-js-routetable-08-arith",
+"ok": true
+}
+]

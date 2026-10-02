@@ -38,6 +38,7 @@ def register_libs3(libs, n: int = 10, category: str = "fix") -> None:
 def chain(ctor: str, calls: list[str]) -> str:
     """A probe expression that drives one stateful object through a list of calls and returns every result:
     ``chain("BayMap(16)", ["alloc(3)", "free_blocks()"])`` -> ``(lambda o: [o.alloc(3), o.free_blocks()])(BayMap(16))``.
+    A call that starts with ``!`` is used verbatim (it may refer to the object as ``o``).
     Only the public API shows up in the prompt, no private helper functions."""
-    items = ", ".join(f"o.{c}" for c in calls)
+    items = ", ".join(c[1:] if c.startswith("!") else f"o.{c}" for c in calls)
     return f"(lambda o: [{items}])({ctor})"

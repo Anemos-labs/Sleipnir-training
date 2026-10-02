@@ -500,7 +500,11 @@ def score_field(f, got):
         g = [norm(x) for x in got]
         w = [norm(x) for x in want]
         if kind == "list":
-            return 1.0 if g == w else 0.0
+            if g == w:
+                return 1.0
+            jac = len(set(g) & set(w)) / max(1, len(set(g) | set(w)))
+            pos = sum(1 for i in range(min(len(g), len(w))) if g[i] == w[i]) / max(1, len(w))
+            return min(0.9, 0.5 * jac + 0.5 * pos)
         gs, ws = set(g), set(w)
         return len(gs & ws) / max(1, len(gs | ws))
     if kind == "map":  # str -> number/str, graded per key
@@ -832,7 +836,7 @@ _LOWER_OK = {"Which", "Who", "What", "When", "How", "Is", "Are", "Did", "Was", "
              "Suppose", "Total", "Show", "Check", "With", "As", "By", "Name", "Where", "Why", "Should", "Would", "Will", "Has", "Have", "Had",
              "Reply", "Create", "Save", "Sum", "Pull", "Go", "Dig", "Look", "Pick", "Compile", "Draft", "Produce", "Summarise", "Extract",
              "Reconstruct", "Identify", "Determine", "Work", "Compare", "Cross-check", "Verify", "Trace", "Follow", "Start", "Open", "Locate",
-             "Assuming", "Given", "Under", "Per", "Regarding", "About", "Concerning", "Within", "Starting", "Counting", "Considering", "Taking", "Not", "Only", "My", "Our", "The", "A", "An", "Going", "Digging",
+             "Assuming", "Given", "We", "Under", "Per", "Regarding", "About", "Concerning", "Within", "Starting", "Counting", "Considering", "Taking", "Not", "Only", "My", "Our", "The", "A", "An", "Going", "Digging",
              "Searching", "Scanning", "Reading", "Judging", "Based", "According"}
 
 
@@ -843,14 +847,33 @@ def join_lead(lead: str, body: str) -> str:
     return lead.rstrip() + " " + body
 
 
-def voice(rng: random.Random, org: Org, body: str, closers: bool = True, lead: str = "") -> str:
+FILE_CLOSERS = ["", "", "", " Thanks!", " Thanks in advance.", " Please don't edit the source documents.", " Cheers.", " Leave the rest of the folder as it is.",
+                " The file is what I'll be checking."]
+
+
+def voice(rng: random.Random, org: Org, body: str, closers: bool = True, lead: str = "", sentence: bool = False) -> str:
     """Wrap ``body`` in a short human opener and sign-off (both often empty). ``lead`` is an optional clause such as
-    "In the archive folder," that the body continues."""
+    "In the archive folder," that the body continues. Sign-offs fit the kind of task: file-writing prompts get no "just the answer"."""
     if lead:
         body = join_lead(lead, body)
-    o = rng.choice(OPENERS).format(team=rng.choice(org.teams))
-    c = rng.choice(CLOSERS) if closers else ""
     first = body.split(" ", 1)[0].strip(",:")
+    pool = [x for x in OPENERS if not x or x.endswith((". ", "? ", "! "))] if sentence else OPENERS
+    o = ""
+    for _ in range(8):
+        cand = rng.choice(pool).format(team=rng.choice(org.teams))
+        if not cand:
+            break
+        mid = cand.rstrip().endswith((",", ":", "but"))
+        if mid and first not in _LOWER_OK:
+            continue
+        if cand.endswith(": ") and (":" in body[:70] or body.startswith(("I need", "I'd", "For the", "Two things"))):
+            continue
+        if "I need this" in cand and body.startswith(("I need", "I'd")):
+            continue
+        o = cand
+        break
+    is_file = re.search(r"`[\w/.-]+\.(json|csv|md|txt)`", body) is not None
+    c = (rng.choice(FILE_CLOSERS) if is_file else rng.choice(CLOSERS)) if closers else ""
     if o and o.rstrip().endswith((",", ":", "but")) and first in _LOWER_OK:
         body = body[:1].lower() + body[1:]
     elif (not o or o.endswith((". ", "? ", "! "))) and body[:1].islower():

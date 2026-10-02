@@ -306,13 +306,13 @@ HIDDEN = dd(r'''
     });
 
     test('literals are case sensitive by default', () => {
-      const r = router(['GET', '/Users/:id', 'U']);
-      assert.equal(r.match('GET', '/users/1').status, 404);
-      assert.equal(r.match('GET', '/Users/1').status, 200);
+      const r = router(['GET', '/Accounts/:id', 'U']);
+      assert.equal(r.match('GET', '/accounts/1').status, 404);
+      assert.equal(r.match('GET', '/Accounts/1').status, 200);
       const loose = new Router({ caseSensitive: false });
-      loose.add('GET', '/Users/:id', 'U').add('GET', '/ABOUT', 'about');
-      assert.equal(loose.match('GET', '/users/Ab').value, 'U');
-      assert.deepEqual(loose.match('GET', '/uSERS/Ab').params, { id: 'Ab' });
+      loose.add('GET', '/Accounts/:id', 'U').add('GET', '/ABOUT', 'about');
+      assert.equal(loose.match('GET', '/accounts/Ab').value, 'U');
+      assert.deepEqual(loose.match('GET', '/aCCOUNTS/Ab').params, { id: 'Ab' });
       assert.equal(loose.match('GET', '/about').value, 'about');
       assert.equal(new Router({ caseSensitive: true }).add('GET', '/a', 1).match('GET', '/A').status, 404);
     });
@@ -389,6 +389,48 @@ HIDDEN = dd(r'''
       const o = router(['GET', '/y/*z', 'wild'], ['GET', '/y/:o?', 'opt']);
       assert.equal(o.match('GET', '/y/1').value, 'opt');
       assert.equal(o.match('GET', '/y/1/2').value, 'wild');
+    });
+
+    test('a plain parameter beats an optional one', () => {
+      const r = router(['GET', '/y/:o?', 'opt'], ['GET', '/y/:p', 'param']);
+      assert.equal(r.match('GET', '/y/1').value, 'param');
+      assert.equal(r.match('GET', '/y').value, 'opt');
+      const re = router(['GET', '/y/:p', 'param'], ['GET', '/y/:n(\\d+)', 're'], ['GET', '/y/:o?', 'opt']);
+      assert.equal(re.match('GET', '/y/7').value, 're');
+      assert.equal(re.match('GET', '/y/seven').value, 'param');
+    });
+
+    test('method fit never depends on registration order', () => {
+      const all = [['*', '/p', 'any'], ['GET', '/p', 'get'], ['HEAD', '/p', 'head']];
+      const perms = [[0, 1, 2], [0, 2, 1], [1, 0, 2], [1, 2, 0], [2, 0, 1], [2, 1, 0]];
+      for (const perm of perms) {
+        const r = router(...perm.map((i) => all[i]));
+        assert.equal(r.match('HEAD', '/p').value, 'head', perm.join());
+        assert.equal(r.match('GET', '/p').value, 'get', perm.join());
+        assert.equal(r.match('POST', '/p').value, 'any', perm.join());
+      }
+      const noHead = [['*', '/p', 'any'], ['GET', '/p', 'get'], ['POST', '/p', 'post']];
+      for (const perm of perms) {
+        const r = router(...perm.map((i) => noHead[i]));
+        assert.equal(r.match('HEAD', '/p').value, 'get', perm.join());
+        assert.equal(r.match('POST', '/p').value, 'post', perm.join());
+        assert.equal(r.match('PUT', '/p').value, 'any', perm.join());
+      }
+    });
+
+    test('a missing segment is a miss, also when matching ignores case', () => {
+      const loose = new Router({ caseSensitive: false });
+      loose.add('GET', '/a/b', 1).add('GET', '/c/:d', 2).add('GET', '/e/:f(\\d+)', 3);
+      assert.equal(loose.match('GET', '/a').status, 404);
+      assert.equal(loose.match('GET', '/c').status, 404);
+      assert.equal(loose.match('GET', '/e').status, 404);
+      assert.equal(loose.match('GET', '/').status, 404);
+    });
+
+    test('parameter names may use upper case letters and digits', () => {
+      const r = router(['GET', '/:userId9/:Zed/:a_B0', 'v']);
+      assert.deepEqual(r.match('GET', '/1/2/3').params, { userId9: '1', Zed: '2', a_B0: '3' });
+      assert.throws(() => new Router().add('GET', '/:9a', 1), TypeError);
     });
 
     test('specificity is decided left to right', () => {
@@ -523,24 +565,24 @@ LIB = Lib(
     hidden_tests={"test/full.test.js": HIDDEN},
     mutate=["src/router.js"], difficulty=4, tags=["routing", "url", "http"],
     verify=JS_VERIFY,
-    probe_import="const { Router, buildPath } = require('./src/router');\nconst mk = (...routes) => { const r = new Router(); for (const [m, p, v] of routes) r.add(m, p, v); return r; };",
+    probe_import="const { Router, buildPath } = require('./src/router');",
     probes=[
-        "mk(['GET', '/files/:name', 'f']).match('GET', '/files/a%20b').params",
-        "mk(['GET', '/a/b', 'ab']).match('GET', '//a///b//').status",
-        "mk(['GET', '/a/b', 'ab']).match('GET', '/a/b?x=1').status",
-        "mk(['GET', '/users/:id(\\\\d+)', 'num'], ['GET', '/users/:name', 'name']).match('GET', '/users/42').value",
-        "mk(['GET', '/users/:id(\\\\d+)', 'num'], ['GET', '/users/:name', 'name']).match('GET', '/users/4x2').value",
-        "mk(['GET', '/blog/:slug?', 'blog']).match('GET', '/blog').params",
-        "mk(['GET', '/blog/:slug?', 'blog']).match('GET', '/blog/hello/more').status",
-        "mk(['GET', '/static/*path', 's']).match('GET', '/static/css/site%20x.css').params",
-        "mk(['GET', '/static/*path', 's']).match('GET', '/static').status",
-        "mk(['GET', '/x/*any', 'wild'], ['GET', '/x/:p', 'param'], ['GET', '/x/me', 'lit']).match('GET', '/x/abc').value",
-        "mk(['GET', '/:a/b', 'param-first'], ['GET', '/a/:b', 'literal-first']).match('GET', '/a/b').value",
-        "mk(['GET', '/a/:b?', 'opt'], ['GET', '/a', 'lit']).match('GET', '/a').value",
-        "mk(['PUT', '/a/:x', 1], ['DELETE', '/a/1', 2], ['PUT', '/a/:y', 3]).match('GET', '/a/1')",
-        "mk(['GET', '/page', 'get']).match('HEAD', '/page').status",
-        "mk(['*', '/ping', 'any'], ['GET', '/ping', 'get']).match('HEAD', '/ping').value",
-        "mk(['get', '/a', 'read']).match('DELETE', '/a')",
+        "new Router().add('GET', '/files/:name', 'f').match('GET', '/files/a%20b').params",
+        "new Router().add('GET', '/a/b', 'ab').match('GET', '//a///b//').status",
+        "new Router().add('GET', '/a/b', 'ab').match('GET', '/a/b?x=1').status",
+        "new Router().add('GET', '/users/:id(\\\\\\\\d+)', 'num').add('GET', '/users/:name', 'name').match('GET', '/users/42').value",
+        "new Router().add('GET', '/users/:id(\\\\\\\\d+)', 'num').add('GET', '/users/:name', 'name').match('GET', '/users/4x2').value",
+        "new Router().add('GET', '/blog/:slug?', 'blog').match('GET', '/blog').params",
+        "new Router().add('GET', '/blog/:slug?', 'blog').match('GET', '/blog/hello/more').status",
+        "new Router().add('GET', '/static/*path', 's').match('GET', '/static/css/site%20x.css').params",
+        "new Router().add('GET', '/static/*path', 's').match('GET', '/static').status",
+        "new Router().add('GET', '/x/*any', 'wild').add('GET', '/x/:p', 'param').add('GET', '/x/me', 'lit').match('GET', '/x/abc').value",
+        "new Router().add('GET', '/:a/b', 'param-first').add('GET', '/a/:b', 'literal-first').match('GET', '/a/b').value",
+        "new Router().add('GET', '/a/:b?', 'opt').add('GET', '/a', 'lit').match('GET', '/a').value",
+        "new Router().add('PUT', '/a/:x', 1).add('DELETE', '/a/1', 2).add('PUT', '/a/:y', 3).match('GET', '/a/1')",
+        "new Router().add('GET', '/page', 'get').match('HEAD', '/page').status",
+        "new Router().add('*', '/ping', 'any').add('GET', '/ping', 'get').match('HEAD', '/ping').value",
+        "new Router().add('get', '/a', 'read').match('DELETE', '/a')",
         "new Router({ caseSensitive: false }).add('GET', '/ABOUT', 1).match('GET', '/about').status",
         "buildPath('/users/:id/posts/:slug', { id: 'a b', slug: 'x/y' })",
         "buildPath('/blog/:slug?', {})",

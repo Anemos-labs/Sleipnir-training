@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-js-printrange-01-delete",
+"ok": true
+},
+{
+"id": "fix-js-printrange-02-cmp",
+"ok": true
+},
+{
+"id": "fix-js-printrange-03-swap",
+"ok": true
+},
+{
+"id": "fix-js-printrange-04-const",
+"ok": true
+},
+{
+"id": "fix-js-printrange-05-negate",
+"ok": true
+},
+{
+"id": "fix-js-printrange-06-arith",
+"ok": true
+},
+{
+"id": "fix-js-printrange-07-delete",
+"ok": true
+},
+{
+"id": "fix-js-printrange-08-cmp",
+"ok": true
+}
+]

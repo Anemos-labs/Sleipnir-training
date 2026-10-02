@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-ansispan-01-cmp",
+"ok": true
+},
+{
+"id": "fix-py-ansispan-02-const",
+"ok": true
+},
+{
+"id": "fix-py-ansispan-03-negate",
+"ok": true
+},
+{
+"id": "fix-py-ansispan-04-delete",
+"ok": true
+},
+{
+"id": "fix-py-ansispan-05-arith",
+"ok": true
+},
+{
+"id": "fix-py-ansispan-06-cmp",
+"ok": true
+},
+{
+"id": "fix-py-ansispan-07-const",
+"ok": true
+},
+{
+"id": "fix-py-ansispan-08-delete",
+"ok": true
+},
+{
+"id": "fix-py-ansispan-09-arith",
+"ok": true
+},
+{
+"id": "fix-py-ansispan-10-cmp",
+"ok": true
+}
+]

@@ -1,0 +1,42 @@
+[
+{
+"id": "chat-write-support-reply-01-machine-d3",
+"ok": true
+},
+{
+"id": "chat-write-support-reply-02-vacuum-d3",
+"ok": true
+},
+{
+"id": "chat-write-support-reply-03-purifier-d4",
+"ok": true
+},
+{
+"id": "chat-write-support-reply-04-mixer-d4",
+"ok": true
+},
+{
+"id": "chat-write-support-reply-05-purifier-d4",
+"ok": true
+},
+{
+"id": "chat-write-support-reply-06-grinder-d5",
+"ok": true
+},
+{
+"id": "chat-write-support-reply-07-grinder-d5",
+"ok": true
+},
+{
+"id": "chat-write-support-reply-08-kettle-d3",
+"ok": true
+},
+{
+"id": "chat-write-support-reply-09-purifier-d4",
+"ok": true
+},
+{
+"id": "chat-write-support-reply-10-purifier-d5",
+"ok": true
+}
+]

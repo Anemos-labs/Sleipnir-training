@@ -48,6 +48,10 @@ declare module "node:assert/strict" {
     notEqual(actual: unknown, expected: unknown, message?: string): void;
     deepEqual(actual: unknown, expected: unknown, message?: string): void;
     notDeepEqual(actual: unknown, expected: unknown, message?: string): void;
+    strictEqual(actual: unknown, expected: unknown, message?: string): void;
+    notStrictEqual(actual: unknown, expected: unknown, message?: string): void;
+    deepStrictEqual(actual: unknown, expected: unknown, message?: string): void;
+    fail(message?: string): never;
     throws(fn: () => unknown, expected?: unknown, message?: string): void;
     doesNotThrow(fn: () => unknown, message?: string): void;
     match(value: string, pattern: RegExp, message?: string): void;
@@ -278,6 +282,12 @@ def clean_excerpt(lang: str, excerpt: str) -> str:
         return ""
     if lang in ("javascript", "typescript") and "not ok " in excerpt:
         excerpt = clean_tap(excerpt)
+    if lang == "java":
+        fails = [x for x in excerpt.splitlines() if x.startswith("FAIL ")]
+        tail = [x for x in excerpt.splitlines() if x.endswith("checks failed")]
+        if len(fails) > 6:
+            fails = fails[:6] + ["..."]
+        excerpt = "\n".join(fails + tail)
     return excerpt if len([x for x in excerpt.splitlines() if x.strip()]) >= 2 else ""
 
 

@@ -1,0 +1,18 @@
+[
+{
+"id": "port-pack-stamp-01-go-to-java",
+"ok": true
+},
+{
+"id": "port-pack-stamp-02-java-to-python",
+"ok": true
+},
+{
+"id": "port-pack-stamp-03-python-to-go-stub",
+"ok": true
+},
+{
+"id": "port-pack-stamp-04-go-to-python-stub",
+"ok": true
+}
+]

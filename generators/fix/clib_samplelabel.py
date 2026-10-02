@@ -239,6 +239,7 @@ V4 = dd(r'''
 ''')
 
 H5 = dd(r'''
+    #include <stdio.h>
     #include <stdlib.h>
     #include <string.h>
 
@@ -267,11 +268,12 @@ H5 = dd(r'''
             {33554431UL, "ZZZZZ"},
         };
         size_t i;
-        char out[SL_SEQ_LEN + 1];
+        char out[SL_SEQ_LEN + 1], ctx[40];
         for (i = 0; i < sizeof cases / sizeof cases[0]; i++) {
             memset(out, '?', sizeof out);
-            CHECK_INT(sl_encode_seq(cases[i].seq, out), 0);
-            CHECK_STR(out, cases[i].text);
+            snprintf(ctx, sizeof ctx, "seq=%lu", cases[i].seq);
+            CHECK_INT_CTX(ctx, sl_encode_seq(cases[i].seq, out), 0);
+            CHECK_STR_CTX(ctx, out, cases[i].text);
         }
         memset(out, '?', sizeof out);
         CHECK_INT(sl_encode_seq(SL_SEQ_MAX + 1, out), -1);
@@ -355,7 +357,7 @@ H5 = dd(r'''
             {"KEL", 19, 3, 262143UL, "KEL-1903-07ZZZ-F"},
         };
         size_t i;
-        char buf[17];
+        char buf[17], ctx[64];
         for (i = 0; i < sizeof cases / sizeof cases[0]; i++) {
             sl_label l;
             memset(&l, 0, sizeof l);
@@ -364,8 +366,9 @@ H5 = dd(r'''
             l.week = cases[i].week;
             l.seq = cases[i].seq;
             memset(buf, '?', sizeof buf);
-            CHECK_INT(sl_format(&l, buf, sizeof buf), 16);
-            CHECK_STR(buf, cases[i].text);
+            snprintf(ctx, sizeof ctx, "%s year=%d week=%d seq=%lu", cases[i].site, l.year, l.week, l.seq);
+            CHECK_INT_CTX(ctx, sl_format(&l, buf, sizeof buf), 16);
+            CHECK_STR_CTX(ctx, buf, cases[i].text);
         }
     }
 
@@ -468,10 +471,10 @@ H5 = dd(r'''
         l.year = 55;
         strcpy(l.site, "ZZZ");
         for (i = 0; i < sizeof shape / sizeof shape[0]; i++) {
-            CHECK_INT(parse_text(shape[i], &l), SL_E_SHAPE);
+            CHECK_INT_CTX(shape[i], parse_text(shape[i], &l), SL_E_SHAPE);
         }
         for (i = 0; i < sizeof field / sizeof field[0]; i++) {
-            CHECK_INT(parse_text(field[i], &l), SL_E_FIELD);
+            CHECK_INT_CTX(field[i], parse_text(field[i], &l), SL_E_FIELD);
         }
         /* checksum mismatches */
         CHECK_INT(parse_text("NRW-2614-7M230-G", &l), SL_E_CHECK);

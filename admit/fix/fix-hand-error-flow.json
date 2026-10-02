@@ -1,0 +1,50 @@
+[
+{
+"id": "fix-hand-error-flow-01-sink-error-treated-as-rejection",
+"ok": true
+},
+{
+"id": "fix-hand-error-flow-02-abort-without-rollback",
+"ok": true
+},
+{
+"id": "fix-hand-error-flow-03-cause-dropped",
+"ok": true
+},
+{
+"id": "fix-hand-error-flow-04-retry-returns-none",
+"ok": true
+},
+{
+"id": "fix-hand-error-flow-05-missing-field-keyerror",
+"ok": true
+},
+{
+"id": "fix-hand-error-flow-06-retry-silent-and-no-rollback",
+"ok": true
+},
+{
+"id": "fix-hand-error-flow-07-missing-file-not-wrapped",
+"ok": true
+},
+{
+"id": "fix-hand-error-flow-08-include-error-names-wrong-file",
+"ok": true
+},
+{
+"id": "fix-hand-error-flow-09-typed-nil-error",
+"ok": true
+},
+{
+"id": "fix-hand-error-flow-10-include-error-cannot-unwrap",
+"ok": true
+},
+{
+"id": "fix-hand-error-flow-11-diamond-reported-as-cycle",
+"ok": true
+},
+{
+"id": "fix-hand-error-flow-12-no-unwrap-and-diamond",
+"ok": true
+}
+]

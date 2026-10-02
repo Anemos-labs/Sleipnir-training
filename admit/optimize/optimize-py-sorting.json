@@ -1,0 +1,50 @@
+[
+{
+"id": "optimize-py-sorting-01-is_ordered-manifest_is_sorted",
+"ok": true
+},
+{
+"id": "optimize-py-sorting-02-latest-last_login",
+"ok": true
+},
+{
+"id": "optimize-py-sorting-03-rank_of-older_members",
+"ok": true
+},
+{
+"id": "optimize-py-sorting-04-kth-runner_up_time",
+"ok": true
+},
+{
+"id": "optimize-py-sorting-05-cheapest-cheapest_offer",
+"ok": true
+},
+{
+"id": "optimize-py-sorting-06-rank_of-cheaper_listings",
+"ok": true
+},
+{
+"id": "optimize-py-sorting-07-top_k-busiest_hours",
+"ok": true
+},
+{
+"id": "optimize-py-sorting-08-cheapest-earliest_slot",
+"ok": true
+},
+{
+"id": "optimize-py-sorting-09-is_ordered-log_is_chronological",
+"ok": true
+},
+{
+"id": "optimize-py-sorting-10-is_ordered-ranking_is_valid",
+"ok": true
+},
+{
+"id": "optimize-py-sorting-11-rank_of-times_faster",
+"ok": true
+},
+{
+"id": "optimize-py-sorting-12-cheapest-lightest_parcel",
+"ok": true
+}
+]

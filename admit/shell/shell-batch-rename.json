@@ -1,0 +1,46 @@
+[
+{
+"id": "shell-batch-rename-01-fix-ls-loop",
+"ok": true
+},
+{
+"id": "shell-batch-rename-02-lowercase-extensions",
+"ok": true
+},
+{
+"id": "shell-batch-rename-03-zero-pad-numbers",
+"ok": true
+},
+{
+"id": "shell-batch-rename-04-date-prefix",
+"ok": true
+},
+{
+"id": "shell-batch-rename-05-flatten-tree",
+"ok": true
+},
+{
+"id": "shell-batch-rename-06-artist-title-year",
+"ok": true
+},
+{
+"id": "shell-batch-rename-07-sanitize-names",
+"ok": true
+},
+{
+"id": "shell-batch-rename-08-sniff-extensions",
+"ok": true
+},
+{
+"id": "shell-batch-rename-09-strip-version-suffix",
+"ok": true
+},
+{
+"id": "shell-batch-rename-10-undoable-prefix",
+"ok": true
+},
+{
+"id": "shell-batch-rename-11-remap-from-csv",
+"ok": true
+}
+]

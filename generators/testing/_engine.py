@@ -51,6 +51,13 @@ class TLib:
     renames: dict[str, str] = field(default_factory=dict)  # python: private name -> new name (refactor variant)
     max_pool: int = 0
     focus: str = ""  # what a careful suite has to pin down (used in some prompts)
+    wrong_edits: list = field(default_factory=list)  # non-python: (gold path, old snippet, new snippet) giving a wrong expectation
+    internals: dict = field(default_factory=dict)  # tests that poke private names / messages; pass on `files`
+    msg_swaps: dict = field(default_factory=dict)  # message text -> reworded text (refactored variant)
+    strip_keep: dict = field(default_factory=dict)  # files a "fresh" scenario needs after the agent's tests are stripped
+    py_groups: list = field(default_factory=list)  # python: the gold steps (to regenerate the suite with wrong expectations)
+    py_imports: str = ""
+    py_header: str = ""
 
     @property
     def comment(self) -> str:

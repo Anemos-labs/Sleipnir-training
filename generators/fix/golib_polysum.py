@@ -1,7 +1,7 @@
 """Sensor-bus checksums (go): a parameterised CRC register (width 1..16, reflect option) plus a prime-modulus tally."""
-from fx import Lib, dd, langs, register_libs
+from fx import Lib, dd, langs
 
-from generators.fix._lang1 import gosrc
+from generators.fix._lang1 import gosrc, register_libs
 
 README = dd('''
     # polysum

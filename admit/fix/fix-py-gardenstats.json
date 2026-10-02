@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-gardenstats-01-cmp",
+"ok": true
+},
+{
+"id": "fix-py-gardenstats-02-negate",
+"ok": true
+},
+{
+"id": "fix-py-gardenstats-03-const",
+"ok": true
+},
+{
+"id": "fix-py-gardenstats-04-swap",
+"ok": true
+},
+{
+"id": "fix-py-gardenstats-05-logic",
+"ok": true
+},
+{
+"id": "fix-py-gardenstats-06-delete",
+"ok": true
+},
+{
+"id": "fix-py-gardenstats-07-arith",
+"ok": true
+},
+{
+"id": "fix-py-gardenstats-08-cmp",
+"ok": true
+},
+{
+"id": "fix-py-gardenstats-09-const",
+"ok": true
+},
+{
+"id": "fix-py-gardenstats-10-delete",
+"ok": true
+}
+]

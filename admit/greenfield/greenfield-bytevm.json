@@ -1,0 +1,50 @@
+[
+{
+"id": "greenfield-bytevm-01-go-trap-trunc-l3",
+"ok": true
+},
+{
+"id": "greenfield-bytevm-02-rust-wrap-trunc-l3",
+"ok": true
+},
+{
+"id": "greenfield-bytevm-03-java-wrap-trunc-l4",
+"ok": true
+},
+{
+"id": "greenfield-bytevm-04-c-trap-floor-l4",
+"ok": true
+},
+{
+"id": "greenfield-bytevm-05-python-wrap-trunc-l4",
+"ok": true
+},
+{
+"id": "greenfield-bytevm-06-go-wrap-trunc-l4",
+"ok": true
+},
+{
+"id": "greenfield-bytevm-07-rust-wrap-floor-l5",
+"ok": true
+},
+{
+"id": "greenfield-bytevm-08-java-wrap-trunc-l5",
+"ok": true
+},
+{
+"id": "greenfield-bytevm-09-c-trap-floor-l3",
+"ok": true
+},
+{
+"id": "greenfield-bytevm-10-go-trap-floor-l4",
+"ok": true
+},
+{
+"id": "greenfield-bytevm-11-rust-wrap-floor-l5",
+"ok": true
+},
+{
+"id": "greenfield-bytevm-12-java-wrap-trunc-l4",
+"ok": true
+}
+]

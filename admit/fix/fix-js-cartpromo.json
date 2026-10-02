@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-js-cartpromo-01-const",
+"ok": true
+},
+{
+"id": "fix-js-cartpromo-02-delete",
+"ok": true
+},
+{
+"id": "fix-js-cartpromo-03-arith",
+"ok": true
+},
+{
+"id": "fix-js-cartpromo-04-swap",
+"ok": true
+},
+{
+"id": "fix-js-cartpromo-05-cmp",
+"ok": true
+},
+{
+"id": "fix-js-cartpromo-06-negate",
+"ok": true
+},
+{
+"id": "fix-js-cartpromo-07-const",
+"ok": true
+},
+{
+"id": "fix-js-cartpromo-08-delete",
+"ok": true
+}
+]

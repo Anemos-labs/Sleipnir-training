@@ -1,0 +1,50 @@
+[
+{
+"id": "shell-posix-portability-01-posix-upper-case",
+"ok": true
+},
+{
+"id": "shell-posix-portability-02-posix-media-kind",
+"ok": true
+},
+{
+"id": "shell-posix-portability-03-posix-repeat",
+"ok": true
+},
+{
+"id": "shell-posix-portability-04-posix-sorted-args",
+"ok": true
+},
+{
+"id": "shell-posix-portability-05-posix-echo-table",
+"ok": true
+},
+{
+"id": "shell-posix-portability-06-posix-source-library",
+"ok": true
+},
+{
+"id": "shell-posix-portability-07-posix-reverse-lines",
+"ok": true
+},
+{
+"id": "shell-posix-portability-08-posix-top-lines",
+"ok": true
+},
+{
+"id": "shell-posix-portability-09-posix-substring-tools",
+"ok": true
+},
+{
+"id": "shell-posix-portability-10-posix-join-with-separator",
+"ok": true
+},
+{
+"id": "shell-posix-portability-11-posix-hashtag-counts",
+"ok": true
+},
+{
+"id": "shell-posix-portability-12-posix-env-lookup",
+"ok": true
+}
+]

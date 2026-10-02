@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-rulebook-01-delete",
+"ok": true
+},
+{
+"id": "fix-py-rulebook-02-cmp",
+"ok": true
+},
+{
+"id": "fix-py-rulebook-03-negate",
+"ok": true
+},
+{
+"id": "fix-py-rulebook-04-const",
+"ok": true
+},
+{
+"id": "fix-py-rulebook-05-delete",
+"ok": true
+},
+{
+"id": "fix-py-rulebook-06-cmp",
+"ok": true
+},
+{
+"id": "fix-py-rulebook-07-negate",
+"ok": true
+},
+{
+"id": "fix-py-rulebook-08-const",
+"ok": true
+},
+{
+"id": "fix-py-rulebook-09-delete",
+"ok": true
+},
+{
+"id": "fix-py-rulebook-10-cmp",
+"ok": true
+}
+]

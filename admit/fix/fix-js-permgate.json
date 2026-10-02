@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-js-permgate-01-negate",
+"ok": true
+},
+{
+"id": "fix-js-permgate-02-delete",
+"ok": true
+},
+{
+"id": "fix-js-permgate-03-cmp",
+"ok": true
+},
+{
+"id": "fix-js-permgate-04-arith",
+"ok": true
+},
+{
+"id": "fix-js-permgate-05-swap",
+"ok": true
+},
+{
+"id": "fix-js-permgate-06-logic",
+"ok": true
+},
+{
+"id": "fix-js-permgate-07-negate",
+"ok": true
+},
+{
+"id": "fix-js-permgate-08-delete",
+"ok": true
+}
+]

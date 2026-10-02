@@ -1,7 +1,7 @@
 """Size and duration text (go): integer-only formatting and parsing with rounding and carry rules."""
-from fx import Lib, dd, langs, register_libs
+from fx import Lib, dd, langs
 
-from generators.fix._lang1 import gosrc
+from generators.fix._lang1 import gosrc, register_libs
 
 README = dd('''
     # unitfmt
@@ -342,6 +342,13 @@ HIDDEN = gosrc(dd(r'''
         if got := FormatBytes(1030); got != "1.01 KiB" {
             t.Errorf("1030: %q", got)
         }
+        // the last decimal digit can be 9 (10.9 KiB = 11161 B) and the whole part can exceed 9
+        if got := FormatBytes(11161); got != "10.9 KiB" {
+            t.Errorf("11161: %q", got)
+        }
+        if got := FormatBytes(102376); got != "100.0 KiB" {
+            t.Errorf("102376: %q", got)
+        }
         // 1023.5 KiB rounds to 1024 -> carries to MiB; 1023.4 KiB stays
         if got := FormatBytes(1048063); got != "1023 KiB" {
             t.Errorf("1048063: %q", got)
@@ -398,7 +405,7 @@ HIDDEN = gosrc(dd(r'''
     func TestParseBytesRange(t *testing.T) {
         bad := []string{
             "9223372036854775808", "99999999999999999999", "8192 PiB", "9000 PiB", "9223372036854775807.5", "10000 PB",
-            "9223373 TB", "8589934592 GiB",
+            "9223373 TB", "8589934592 GiB", "16384 PiB", "16385 PiB", "18446744073709551616", "18446744073709551615 B",
         }
         for _, s := range bad {
             if got, err := ParseBytes(s); !errors.Is(err, ErrRange) {

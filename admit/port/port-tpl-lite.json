@@ -1,0 +1,18 @@
+[
+{
+"id": "port-tpl-lite-01-python-to-php",
+"ok": true
+},
+{
+"id": "port-tpl-lite-02-python-to-go",
+"ok": true
+},
+{
+"id": "port-tpl-lite-03-go-to-php-stub",
+"ok": true
+},
+{
+"id": "port-tpl-lite-04-php-to-python-stub",
+"ok": true
+}
+]

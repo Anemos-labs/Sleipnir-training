@@ -161,7 +161,7 @@ def facts_for(w):
 def gen_report(rng, n):
     made = 0
     while made < n:
-        months = rng.choice([6, 7, 8, 9])
+        months = rng.choice([4, 5, 6, 8])
         w = build(rng, months)
         files = render(rng, w)
         facts = facts_for(w)
@@ -175,7 +175,7 @@ def gen_report(rng, n):
                 "forbid": forbid, "words": words, "bad_cites": ["RUM-1"]}
         topics = "; ".join(f["label"] for f in facts)
         intro = rng.choice([f"Write `report.md` for the programme board on the {w['proj']}.", f"The board meets Thursday and I need a one-page `report.md` on {w['proj']}.",
-                            f"Please draft `report.md`, a short status note for the steering group on the {w['proj']} project."])
+                            f"Please draft `report.md`, a short status note for the steering group on this project: {w['proj']}."])
         if kofn:
             cover = f" It should cover at least {k} of these six: {topics}."
         else:
@@ -185,7 +185,7 @@ def gen_report(rng, n):
         prompt = W.voice(rng, w["org"], intro + cover + rule)
         sol = "# Programme status\n\n" + "\n\n".join(f["text"] for f in facts) + "\n"
         made += 1
-        yield W.file_task(slug=f"{made:02d}-{'k' + str(k) + 'of6' if kofn else 'all6'}", prompt=prompt, difficulty=4 + (not kofn), start=files,
+        yield W.file_task(slug=f"{made:02d}-{'k' + str(k) + 'of6' if kofn else 'all6'}", prompt=prompt, difficulty=3 + (not kofn) + (months >= 8), start=files,
                           spec=spec, solution={"report.md": sol}, scored=True, tags=["report", "citations", "falsehoods"], notes={"months": months, "need": k})
 
 
@@ -196,10 +196,10 @@ def gen_report(rng, n):
 def gen_claims(rng, n):
     made = 0
     while made < n:
-        n_inc = rng.choice([14, 20, 26])
+        n_inc = rng.choice([8, 12, 20, 26])
         org, incs, lo, hi = INC.build_world(rng, n_inc)
         files = INC.make_files(rng, org, incs, lo, hi)
-        k = rng.choice([6, 8, 10])
+        k = rng.choice([4, 6, 8, 10])
         claims = []
         used = set()
         verdict_plan = rng.choices(["true", "false", "unsupported"], [45, 35, 20], k=k)
@@ -256,5 +256,5 @@ def gen_claims(rng, n):
         ph = [f"Please fact-check the numbered claims in `draft/press-release-claims.md` against the incident records. Write `verdicts.json` with two objects keyed by claim number: `verdicts` (each `true`, `false` or `unsupported`; use unsupported when the records say nothing about it) and `evidence` (for true and false claims, the path of one record file that settles it).",
               f"Comms drafted some claims about our incidents (`draft/press-release-claims.md`). For each numbered claim tell me if the archive makes it true, false, or unsupported (not covered at all). Save `verdicts.json`: {{\"verdicts\": {{\"1\": \"true\", ...}}, \"evidence\": {{\"1\": \"incidents/...\", ...}}}}; evidence is only needed for claims that are true or false and should be a file path from the archive that proves it."]
         made += 1
-        yield W.file_task(slug=f"{made:02d}-{k}-claims", prompt=W.voice(rng, org, rng.choice(ph)), difficulty=3 + (k >= 8) + (n_inc >= 26), start=files, spec=W.json_spec(fields),
+        yield W.file_task(slug=f"{made:02d}-{k}-claims", prompt=W.voice(rng, org, rng.choice(ph)), difficulty=2 + (k >= 8) + (n_inc >= 20), start=files, spec=W.json_spec(fields, file="verdicts.json"),
                           solution={"verdicts.json": W.dumps(sol)}, scored=True, tags=["fact-check", "evidence"], notes={"incidents": n_inc, "claims": k})

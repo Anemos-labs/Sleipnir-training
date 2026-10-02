@@ -182,7 +182,10 @@ class Fn:
 
 
 def functions(rel, lang):
-    src = read(rel)
+    return functions_text(read(rel), lang, rel)
+
+
+def functions_text(src, lang, rel="<mem>"):
     text = clean(src, lang)
     found = {}
     for pat in _PATTERNS[lang]:
@@ -252,6 +255,10 @@ def duplicate_functions(rels, lang, min_tokens=120):
             continue
         seen.setdefault(s, []).append(f"{fn.file}:{fn.name}")
     return [v for v in seen.values() if len(v) > 1]
+
+
+def total_loc_text(src, lang):
+    return sum(1 for ln in clean(src, lang).splitlines() if ln.strip())
 
 
 def count(text_or_rels, pattern, lang=None, flags=0):

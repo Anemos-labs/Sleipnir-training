@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-crateload-01-const",
+"ok": true
+},
+{
+"id": "fix-py-crateload-02-logic",
+"ok": true
+},
+{
+"id": "fix-py-crateload-03-arith",
+"ok": true
+},
+{
+"id": "fix-py-crateload-04-cmp",
+"ok": true
+},
+{
+"id": "fix-py-crateload-05-negate",
+"ok": true
+},
+{
+"id": "fix-py-crateload-06-delete",
+"ok": true
+},
+{
+"id": "fix-py-crateload-07-const",
+"ok": true
+},
+{
+"id": "fix-py-crateload-08-arith",
+"ok": true
+},
+{
+"id": "fix-py-crateload-09-negate",
+"ok": true
+},
+{
+"id": "fix-py-crateload-10-delete",
+"ok": true
+}
+]

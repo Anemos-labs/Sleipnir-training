@@ -1,0 +1,42 @@
+[
+{
+"id": "refactor-js-modernise-01-order-3blocks",
+"ok": true
+},
+{
+"id": "refactor-js-modernise-02-beehive-4blocks",
+"ok": true
+},
+{
+"id": "refactor-js-modernise-03-shelf-2blocks",
+"ok": true
+},
+{
+"id": "refactor-js-modernise-04-tram-4blocks",
+"ok": true
+},
+{
+"id": "refactor-js-modernise-05-stall-2blocks",
+"ok": true
+},
+{
+"id": "refactor-js-modernise-06-pump-7blocks",
+"ok": true
+},
+{
+"id": "refactor-js-modernise-07-loom-4blocks",
+"ok": true
+},
+{
+"id": "refactor-js-modernise-08-kiln-6blocks",
+"ok": true
+},
+{
+"id": "refactor-js-modernise-09-order-3blocks",
+"ok": true
+},
+{
+"id": "refactor-js-modernise-10-beehive-5blocks",
+"ok": true
+}
+]

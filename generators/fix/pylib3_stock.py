@@ -598,12 +598,12 @@ COSTLAYERS_HIDDEN_LEDGER = dd('''
 
         def test_return_last_part_first(self):
             led = fifo()
-            led.issue("A", 15, "o1")
+            iss = led.issue("A", 15, "o1")
             self.assertEqual(led.return_in("o1", 3), 390)
             self.assertEqual(led.on_hand("A"), 8)
             self.assertEqual(led.value("A"), 1040)
             self.assertEqual(led.cogs(), 1260)
-            self.assertEqual(led._issues["o1"].parts, [(10, 1000), (2, 260)])
+            self.assertEqual(iss.parts, [(10, 1000), (2, 260)])
 
         def test_second_return_spans_parts_and_restores_order(self):
             led = fifo()
@@ -613,11 +613,13 @@ COSTLAYERS_HIDDEN_LEDGER = dd('''
             self.assertEqual(led.on_hand("A"), 12)
             self.assertEqual(led.value("A"), 1500)
             self.assertEqual(led.cogs(), 800)
-            self.assertEqual(led._pools["A"].layers(), [(2, 100), (10, 130)])
+            self.assertEqual(led.issue("A", 12, "probe").parts, [(2, 200), (10, 1300)])
+            led.return_in("probe", 12)
             with self.assertRaises(ValueError):
                 led.return_in("o1", 9)
             self.assertEqual(led.return_in("o1", 8), 800)
-            self.assertEqual(led._pools["A"].layers(), [(10, 100), (10, 130)])
+            self.assertEqual(led.issue("A", 20, "all").parts, [(10, 1000), (10, 1300)])
+            led.return_in("all", 20)
             self.assertEqual(led.cogs(), 0)
             with self.assertRaises(ValueError):
                 led.return_in("o1", 1)
@@ -692,10 +694,10 @@ COSTLAYERS_HIDDEN_LEDGER = dd('''
 
         def test_return_rounds_each_step(self):
             led = self.make()
-            led.issue("B", 2, "x")
+            iss = led.issue("B", 2, "x")
             self.assertEqual(led.return_in("x", 1), 101)
             self.assertEqual((led.on_hand("B"), led.value("B")), (6, 604))
-            self.assertEqual(led._issues["x"].parts, [(1, 100)])
+            self.assertEqual(iss.parts, [(1, 100)])
             self.assertEqual(led.return_in("x", 1), 100)
             self.assertEqual((led.on_hand("B"), led.value("B")), (7, 704))
             self.assertEqual(led.cogs(), 0)
@@ -2124,8 +2126,8 @@ SEATBLOCK = Lib(
     hidden_tests={"tests/test_full.py": SEATBLOCK_HIDDEN},
     mutate=["seatblock/hall.py"], difficulty=1, tags=["booking", "heuristic"],
     probes=[
-        "Hall(['......'] * 3).best_block(2)", "Hall(['x......']).best_block(3)", "Hall(['x....x']).best_block(2)",
-        "Hall(['......', '......', 'xxxxxx', '......', '......']).best_block(2)",
+        "Hall(['......'] * 3).best_block(2)", "Hall(['*......']).best_block(3)", "Hall(['*....*']).best_block(2)",
+        "Hall(['......', '......', '******', '......', '......']).best_block(2)",
         "Hall(['..', '........']).best_block(2)", "Hall(['.#..']).candidates(2)",
         chain("Hall(['....', '....'])", ["book_groups([1, 4, 2])", "render()"]),
         chain("Hall(['....', '....'])", ["book_groups([1, 4, 2], largest_first=True)"]),

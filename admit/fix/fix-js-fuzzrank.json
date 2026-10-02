@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-js-fuzzrank-01-swap",
+"ok": true
+},
+{
+"id": "fix-js-fuzzrank-02-negate",
+"ok": true
+},
+{
+"id": "fix-js-fuzzrank-03-cmp",
+"ok": true
+},
+{
+"id": "fix-js-fuzzrank-04-const",
+"ok": true
+},
+{
+"id": "fix-js-fuzzrank-05-arith",
+"ok": true
+},
+{
+"id": "fix-js-fuzzrank-06-logic",
+"ok": true
+},
+{
+"id": "fix-js-fuzzrank-07-delete",
+"ok": true
+},
+{
+"id": "fix-js-fuzzrank-08-swap",
+"ok": true
+}
+]

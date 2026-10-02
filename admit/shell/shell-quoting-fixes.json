@@ -1,0 +1,50 @@
+[
+{
+"id": "shell-quoting-fixes-01-fix-argument-loop",
+"ok": true
+},
+{
+"id": "shell-quoting-fixes-02-fix-empty-test",
+"ok": true
+},
+{
+"id": "shell-quoting-fixes-03-fix-pattern-compare",
+"ok": true
+},
+{
+"id": "shell-quoting-fixes-04-fix-heredoc-expansion",
+"ok": true
+},
+{
+"id": "shell-quoting-fixes-05-fix-leading-zero-sum",
+"ok": true
+},
+{
+"id": "shell-quoting-fixes-06-fix-join-lines",
+"ok": true
+},
+{
+"id": "shell-quoting-fixes-07-fix-forwarded-arguments",
+"ok": true
+},
+{
+"id": "shell-quoting-fixes-08-fix-dir-list",
+"ok": true
+},
+{
+"id": "shell-quoting-fixes-09-fix-wrapper-log",
+"ok": true
+},
+{
+"id": "shell-quoting-fixes-10-fix-cleantmp",
+"ok": true
+},
+{
+"id": "shell-quoting-fixes-11-fix-run-inside",
+"ok": true
+},
+{
+"id": "shell-quoting-fixes-12-fix-search-eval",
+"ok": true
+}
+]

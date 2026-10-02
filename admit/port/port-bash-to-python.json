@@ -1,0 +1,34 @@
+[
+{
+"id": "port-bash-to-python-01-tally",
+"ok": true
+},
+{
+"id": "port-bash-to-python-02-csvcut",
+"ok": true
+},
+{
+"id": "port-bash-to-python-03-bump",
+"ok": true
+},
+{
+"id": "port-bash-to-python-04-tidynames",
+"ok": true
+},
+{
+"id": "port-bash-to-python-05-tally",
+"ok": true
+},
+{
+"id": "port-bash-to-python-06-retain",
+"ok": true
+},
+{
+"id": "port-bash-to-python-07-csvcut",
+"ok": true
+},
+{
+"id": "port-bash-to-python-08-tidynames",
+"ok": true
+}
+]

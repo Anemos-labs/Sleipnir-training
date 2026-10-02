@@ -1,0 +1,62 @@
+[
+{
+"id": "games-gloam-fix-01-monster-order",
+"ok": true
+},
+{
+"id": "games-gloam-fix-02-energy-cap",
+"ok": true
+},
+{
+"id": "games-gloam-fix-03-hero-dies-continue",
+"ok": true
+},
+{
+"id": "games-gloam-fix-04-sight-chebyshev",
+"ok": true
+},
+{
+"id": "games-gloam-fix-05-tie-break",
+"ok": true
+},
+{
+"id": "games-gloam-fix-06-trap-damage",
+"ok": true
+},
+{
+"id": "games-gloam-fix-07-potion-overheal",
+"ok": true
+},
+{
+"id": "games-gloam-fix-08-door-key",
+"ok": true
+},
+{
+"id": "games-gloam-fix-09-counter-energy",
+"ok": true
+},
+{
+"id": "games-gloam-fix-10-tick-on-win",
+"ok": true
+},
+{
+"id": "games-gloam-fix-11-regen-timing",
+"ok": true
+},
+{
+"id": "games-gloam-fix-12-monster-door",
+"ok": true
+},
+{
+"id": "games-gloam-fix-13-dead-id",
+"ok": true
+},
+{
+"id": "games-gloam-fix-14-trap-damage-potion-overheal",
+"ok": true
+},
+{
+"id": "games-gloam-fix-15-monster-order-tick-on-win-door-key",
+"ok": true
+}
+]

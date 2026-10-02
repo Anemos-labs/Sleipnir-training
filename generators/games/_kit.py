@@ -32,10 +32,25 @@ GITIGNORE = {
 
 
 def data_files(lang: str, scripts: dict[str, str], solution: dict[str, str], adapter: dict[str, str], pkg: str = "") -> dict[str, str]:
-    """{path: recorded scenario text} for each script ({file stem: script}); recorded on the reference solution."""
+    """{path: recorded scenario text} for each script ({file stem: script}); recorded on the reference solution.
+    All scripts are recorded in one run of the reference (compiled languages are slow to start) and split afterwards."""
+    stems = sorted(scripts)
+    combined = "\n".join(scripts[k].rstrip("\n") for k in stems) + "\n"
+    text = _scen.record(lang, solution, adapter, combined, pkg)
+    blocks: list[list[str]] = []
+    for line in text.split("\n"):
+        if line.startswith("# scenario"):
+            blocks.append([line])
+        elif blocks:
+            blocks[-1].append(line)
     out = {}
-    for stem, script in scripts.items():
-        out[f"{DATA[lang]}/{stem}.txt"] = _scen.record(lang, solution, adapter, script, pkg)
+    pos = 0
+    for k in stems:
+        n = sum(1 for ln in scripts[k].split("\n") if ln.startswith("# scenario"))
+        chunk = blocks[pos:pos + n]
+        pos += n
+        out[f"{DATA[lang]}/{k}.txt"] = "\n".join("\n".join(b).rstrip("\n") for b in chunk) + "\n"
+    assert pos == len(blocks), "scenario count mismatch while splitting recordings"
     return out
 
 
@@ -68,12 +83,32 @@ def combine(*bugs: Bug, title: str = "", difficulty: int = 4) -> Bug:
                edits=[e for b in bugs for e in b.edits], path=bugs[0].path, difficulty=difficulty, rules=rules)
 
 
+def _shift(text: str, k: int) -> str:
+    """Re-indent the continuation lines (not the first line) of a multi-line edit by k spaces."""
+    lines = text.split("\n")
+    out = [lines[0]]
+    for ln in lines[1:]:
+        if not ln.strip():
+            out.append(ln)
+        elif k >= 0:
+            out.append(" " * k + ln)
+        else:
+            lead = len(ln) - len(ln.lstrip(" "))
+            out.append(ln[min(lead, -k):])
+    return "\n".join(out)
+
+
 def apply_bug(src: str, bug: Bug) -> str:
+    """Apply the edits; an edit written for a different indentation depth is re-indented until it matches exactly once."""
     out = src
     for old, new in bug.edits:
-        if out.count(old) != 1:
+        for k in (0, -4, -8, 4, 8, -12, 12, -16, 16):
+            o, n = _shift(old, k), _shift(new, k)
+            if out.count(o) == 1:
+                out = out.replace(o, n)
+                break
+        else:
             raise RuntimeError(f"bug {bug.id}: edit target occurs {out.count(old)} times: {old!r}")
-        out = out.replace(old, new)
     return out
 
 
@@ -233,3 +268,25 @@ def check_scores(*, start: dict[str, str], hidden: dict[str, str], solution: dic
     if sa is not None and sa > max_start:
         raise RuntimeError(f"{name}: the untouched start already scores {sa}:\n{a.out[-800:]}")
     return (sa if sa is not None else 0.0), sb, b.out
+
+
+def tabs(src: str, width: int = 4) -> str:
+    """Convert leading groups of ``width`` spaces to tabs (so Go/C sources can be written with spaces in generators)."""
+    import re as _re
+    out = []
+    for line in src.split("\n"):
+        m = _re.match(r"^( +)", line)
+        if m and len(m.group(1)) >= width:
+            n = len(m.group(1)) // width
+            line = "\t" * n + " " * (len(m.group(1)) - n * width) + line[len(m.group(1)):]
+        out.append(line)
+    return "\n".join(out)
+
+
+def edit_once(src: str, *pairs: tuple[str, str]) -> str:
+    """Apply (old, new) replacements; every ``old`` must occur exactly once."""
+    for old, new in pairs:
+        if src.count(old) != 1:
+            raise RuntimeError(f"edit target occurs {src.count(old)} times: {old!r}")
+        src = src.replace(old, new)
+    return src

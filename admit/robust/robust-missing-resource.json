@@ -1,0 +1,34 @@
+[
+{
+"id": "robust-missing-resource-01-post-bands-csv",
+"ok": true
+},
+{
+"id": "robust-missing-resource-02-freight-units-json",
+"ok": true
+},
+{
+"id": "robust-missing-resource-03-labfees-flags-csv",
+"ok": true
+},
+{
+"id": "robust-missing-resource-04-liftpass-bands-json",
+"ok": true
+},
+{
+"id": "robust-missing-resource-05-post-units-csv",
+"ok": true
+},
+{
+"id": "robust-missing-resource-06-freight-flags-json",
+"ok": true
+},
+{
+"id": "robust-missing-resource-07-labfees-bands-csv",
+"ok": true
+},
+{
+"id": "robust-missing-resource-08-liftpass-units-json",
+"ok": true
+}
+]

@@ -575,7 +575,7 @@ LIB = Lib(
     hidden_tests={"test/full.test.js": HIDDEN},
     mutate=["src/cursor.js", "src/pager.js"], difficulty=3, tags=["pagination", "cursor", "api"],
     verify=JS_VERIFY,
-    probe_import="const { paginate, encodeCursor, decodeCursor } = require('./src/cursor');\nconst { clampLimit, pageCount, describeRange, pageWindow } = require('./src/pager');\nconst ROWS = [{ id: 1, score: 5 }, { id: 2, score: 9 }, { id: 3, score: 5 }, { id: 4, score: 1 }, { id: 5, score: 9 }];",
+    probe_import="const { paginate, encodeCursor, decodeCursor } = require('./src/cursor');\nconst { clampLimit, pageCount, describeRange, pageWindow } = require('./src/pager');",
     probes=[
         'clampLimit(500, 20, 50)',
         'clampLimit(null)',
@@ -592,13 +592,11 @@ LIB = Lib(
         'pageWindow(10, 20, 2)',
         "decodeCursor(encodeCursor({ key: 'ab', id: 7 }))",
         "decodeCursor('garbage')",
-        'paginate(ROWS, { limit: 2 }).items.map((r) => r.id)',
-        'decodeCursor(paginate(ROWS, { limit: 2 }).next)',
-        'paginate(ROWS, { limit: 2, after: encodeCursor({ key: 2, id: 2 }) }).items.map((r) => r.id)',
-        'paginate(ROWS, { limit: 2, before: encodeCursor({ key: 4, id: 4 }) }).items.map((r) => r.id)',
-        "paginate(ROWS, { sort: 'score', dir: 'desc', limit: 5 }).items.map((r) => r.id)",
-        'paginate(ROWS, { limit: 5 }).next',
-        'paginate(ROWS, { limit: 2, after: encodeCursor({ key: 4, id: 4 }) }).next',
+        'paginate(Array.from({ length: 5 }, (_, i) => ({ id: i + 1 })), { limit: 2 }).items.map((r) => r.id)',
+        'decodeCursor(paginate(Array.from({ length: 5 }, (_, i) => ({ id: i + 1 })), { limit: 2 }).next)',
+        'paginate(Array.from({ length: 5 }, (_, i) => ({ id: i + 1 })), { limit: 2, after: encodeCursor({ key: 2, id: 2 }) }).items.map((r) => r.id)',
+        'paginate(Array.from({ length: 5 }, (_, i) => ({ id: i + 1 })), { limit: 2, before: encodeCursor({ key: 4, id: 4 }) }).items.map((r) => r.id)',
+        'paginate(Array.from({ length: 5 }, (_, i) => ({ id: i + 1 })), { limit: 2, after: encodeCursor({ key: 4, id: 4 }) }).next',
     ],
 )
 

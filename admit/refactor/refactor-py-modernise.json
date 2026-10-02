@@ -1,0 +1,42 @@
+[
+{
+"id": "refactor-py-modernise-01-hive-4idioms",
+"ok": true
+},
+{
+"id": "refactor-py-modernise-02-crate-7idioms",
+"ok": true
+},
+{
+"id": "refactor-py-modernise-03-plot-7idioms",
+"ok": true
+},
+{
+"id": "refactor-py-modernise-04-berth-3idioms",
+"ok": true
+},
+{
+"id": "refactor-py-modernise-05-shelf-8idioms",
+"ok": true
+},
+{
+"id": "refactor-py-modernise-06-sensor-7idioms",
+"ok": true
+},
+{
+"id": "refactor-py-modernise-07-loom-4idioms",
+"ok": true
+},
+{
+"id": "refactor-py-modernise-08-kiln-8idioms",
+"ok": true
+},
+{
+"id": "refactor-py-modernise-09-shelf-8idioms",
+"ok": true
+},
+{
+"id": "refactor-py-modernise-10-loom-4idioms",
+"ok": true
+}
+]

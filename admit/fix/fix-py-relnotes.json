@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-relnotes-01-const",
+"ok": true
+},
+{
+"id": "fix-py-relnotes-02-delete",
+"ok": true
+},
+{
+"id": "fix-py-relnotes-03-swap",
+"ok": true
+},
+{
+"id": "fix-py-relnotes-04-arith",
+"ok": true
+},
+{
+"id": "fix-py-relnotes-05-negate",
+"ok": true
+},
+{
+"id": "fix-py-relnotes-06-const",
+"ok": true
+},
+{
+"id": "fix-py-relnotes-07-delete",
+"ok": true
+},
+{
+"id": "fix-py-relnotes-08-arith",
+"ok": true
+},
+{
+"id": "fix-py-relnotes-09-negate",
+"ok": true
+},
+{
+"id": "fix-py-relnotes-10-const",
+"ok": true
+}
+]

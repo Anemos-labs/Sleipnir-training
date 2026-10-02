@@ -1,0 +1,34 @@
+[
+{
+"id": "robust-ask-underspecified-01-partner-format",
+"ok": true
+},
+{
+"id": "robust-ask-underspecified-02-new-categories",
+"ok": true
+},
+{
+"id": "robust-ask-underspecified-03-raise-limit",
+"ok": true
+},
+{
+"id": "robust-ask-underspecified-04-support-locale",
+"ok": true
+},
+{
+"id": "robust-ask-underspecified-05-faster-search",
+"ok": true
+},
+{
+"id": "robust-ask-underspecified-06-notify-owner",
+"ok": true
+},
+{
+"id": "robust-ask-underspecified-07-rounding-rule",
+"ok": true
+},
+{
+"id": "robust-ask-underspecified-08-retention-days",
+"ok": true
+}
+]

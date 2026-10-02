@@ -1,0 +1,58 @@
+[
+{
+"id": "chat-premise-fact-01-stack",
+"ok": true
+},
+{
+"id": "chat-premise-fact-02-stack",
+"ok": true
+},
+{
+"id": "chat-premise-fact-03-month_days",
+"ok": true
+},
+{
+"id": "chat-premise-fact-04-weekday",
+"ok": true
+},
+{
+"id": "chat-premise-fact-05-month_days",
+"ok": true
+},
+{
+"id": "chat-premise-fact-06-units",
+"ok": true
+},
+{
+"id": "chat-premise-fact-07-leap",
+"ok": true
+},
+{
+"id": "chat-premise-fact-08-leap",
+"ok": true
+},
+{
+"id": "chat-premise-fact-09-leap",
+"ok": true
+},
+{
+"id": "chat-premise-fact-10-combo_units_month",
+"ok": true
+},
+{
+"id": "chat-premise-fact-11-combo_units_month",
+"ok": true
+},
+{
+"id": "chat-premise-fact-12-units",
+"ok": true
+},
+{
+"id": "chat-premise-fact-13-month_days",
+"ok": true
+},
+{
+"id": "chat-premise-fact-14-leap",
+"ok": true
+}
+]

@@ -24,7 +24,7 @@
 "ok": true
 },
 {
-"id": "chat-timesheet-sum-07-compact-d4",
+"id": "chat-timesheet-sum-07-ampm-d4",
 "ok": true
 },
 {
@@ -32,19 +32,19 @@
 "ok": true
 },
 {
-"id": "chat-timesheet-sum-09-compact-d5",
+"id": "chat-timesheet-sum-09-plain-d5",
 "ok": true
 },
 {
-"id": "chat-timesheet-sum-10-plain-d2",
+"id": "chat-timesheet-sum-10-compact-d2",
 "ok": true
 },
 {
-"id": "chat-timesheet-sum-11-plain-d3",
+"id": "chat-timesheet-sum-11-dot-d3",
 "ok": true
 },
 {
-"id": "chat-timesheet-sum-12-dot-d4",
+"id": "chat-timesheet-sum-12-plain-d4",
 "ok": true
 }
 ]

@@ -1,0 +1,50 @@
+[
+{
+"id": "optimize-py-memoize-01-total_price-basket_total",
+"ok": true
+},
+{
+"id": "optimize-py-memoize-02-usable_values-live_prices",
+"ok": true
+},
+{
+"id": "optimize-py-memoize-03-total_price-invoice_sum",
+"ok": true
+},
+{
+"id": "optimize-py-memoize-04-cheapest_route-least_effort_trail",
+"ok": true
+},
+{
+"id": "optimize-py-memoize-05-cheapest_route-cheapest_crossing",
+"ok": true
+},
+{
+"id": "optimize-py-memoize-06-depths-folder_depths",
+"ok": true
+},
+{
+"id": "optimize-py-memoize-07-usable_values-usable_readings",
+"ok": true
+},
+{
+"id": "optimize-py-memoize-08-depths-reporting_levels",
+"ok": true
+},
+{
+"id": "optimize-py-memoize-09-best_items-worth_visiting",
+"ok": true
+},
+{
+"id": "optimize-py-memoize-10-total_price-order_value",
+"ok": true
+},
+{
+"id": "optimize-py-memoize-11-best_items-ranked_offers",
+"ok": true
+},
+{
+"id": "optimize-py-memoize-12-usable_values-approved_totals",
+"ok": true
+}
+]

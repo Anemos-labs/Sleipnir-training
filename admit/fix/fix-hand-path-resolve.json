@@ -1,0 +1,54 @@
+[
+{
+"id": "fix-hand-path-resolve-01-same-prefix-sibling-allowed",
+"ok": true
+},
+{
+"id": "fix-hand-path-resolve-02-symlinks-not-resolved",
+"ok": true
+},
+{
+"id": "fix-hand-path-resolve-03-decoded-twice",
+"ok": true
+},
+{
+"id": "fix-hand-path-resolve-04-directory-not-mapped-to-index",
+"ok": true
+},
+{
+"id": "fix-hand-path-resolve-05-nul-bytes-crash",
+"ok": true
+},
+{
+"id": "fix-hand-path-resolve-06-string-checks-instead-of-resolution",
+"ok": true
+},
+{
+"id": "fix-hand-path-resolve-07-junk-directory-extracted",
+"ok": true
+},
+{
+"id": "fix-hand-path-resolve-08-absolute-names-accepted",
+"ok": true
+},
+{
+"id": "fix-hand-path-resolve-09-any-dotdot-is-unsafe",
+"ok": true
+},
+{
+"id": "fix-hand-path-resolve-10-backslashes-kept",
+"ok": true
+},
+{
+"id": "fix-hand-path-resolve-11-collisions-are-case-sensitive",
+"ok": true
+},
+{
+"id": "fix-hand-path-resolve-12-escape-check-by-string-prefix",
+"ok": true
+},
+{
+"id": "fix-hand-path-resolve-13-windows-zip-two-causes",
+"ok": true
+}
+]

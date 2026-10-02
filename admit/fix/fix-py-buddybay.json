@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-buddybay-01-cmp",
+"ok": true
+},
+{
+"id": "fix-py-buddybay-02-swap",
+"ok": true
+},
+{
+"id": "fix-py-buddybay-03-arith",
+"ok": true
+},
+{
+"id": "fix-py-buddybay-04-const",
+"ok": true
+},
+{
+"id": "fix-py-buddybay-05-negate",
+"ok": true
+},
+{
+"id": "fix-py-buddybay-06-delete",
+"ok": true
+},
+{
+"id": "fix-py-buddybay-07-cmp",
+"ok": true
+},
+{
+"id": "fix-py-buddybay-08-arith",
+"ok": true
+},
+{
+"id": "fix-py-buddybay-09-const",
+"ok": true
+},
+{
+"id": "fix-py-buddybay-10-delete",
+"ok": true
+}
+]

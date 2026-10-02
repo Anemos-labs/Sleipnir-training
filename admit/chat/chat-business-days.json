@@ -8,11 +8,11 @@
 "ok": true
 },
 {
-"id": "chat-business-days-03-count",
+"id": "chat-business-days-03-deadline",
 "ok": true
 },
 {
-"id": "chat-business-days-04-count",
+"id": "chat-business-days-04-deadline",
 "ok": true
 },
 {
@@ -20,7 +20,7 @@
 "ok": true
 },
 {
-"id": "chat-business-days-06-deadline",
+"id": "chat-business-days-06-count",
 "ok": true
 },
 {
@@ -36,7 +36,7 @@
 "ok": true
 },
 {
-"id": "chat-business-days-10-count",
+"id": "chat-business-days-10-deadline",
 "ok": true
 },
 {

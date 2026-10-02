@@ -1,0 +1,50 @@
+[
+{
+"id": "fix-hand-text-encoding-01-utf8-bom-kept",
+"ok": true
+},
+{
+"id": "fix-hand-text-encoding-02-bare-cr-left-alone",
+"ok": true
+},
+{
+"id": "fix-hand-text-encoding-03-latin1-tried-first",
+"ok": true
+},
+{
+"id": "fix-hand-text-encoding-04-truncate-leaves-replacement",
+"ok": true
+},
+{
+"id": "fix-hand-text-encoding-05-cr-replaced-before-crlf",
+"ok": true
+},
+{
+"id": "fix-hand-text-encoding-06-csv-normalises-cells",
+"ok": true
+},
+{
+"id": "fix-hand-text-encoding-07-bom-and-csv-newlines",
+"ok": true
+},
+{
+"id": "fix-hand-text-encoding-08-shorten-compares-bytes",
+"ok": true
+},
+{
+"id": "fix-hand-text-encoding-09-pad-center-by-bytes",
+"ok": true
+},
+{
+"id": "fix-hand-text-encoding-10-shorten-slices-bytes",
+"ok": true
+},
+{
+"id": "fix-hand-text-encoding-11-initials-first-byte",
+"ok": true
+},
+{
+"id": "fix-hand-text-encoding-12-find-returns-byte-offset",
+"ok": true
+}
+]

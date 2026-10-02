@@ -229,7 +229,7 @@ README = dd("""
 def gen(rng, n):
     made = 0
     while made < n:
-        k = rng.choice([4, 5, 6, 8])
+        k = rng.choice([2, 3, 4, 5, 6, 8])
         org, classes, d0, v0, notices, corr = build(rng, k)
         horizon = max(nn.eff for nn in notices) + dt.timedelta(days=60)
         accts, readings, rfiles = accounts_and_readings(rng, org, classes, d0, horizon)
@@ -237,9 +237,18 @@ def gen(rng, n):
         files.update(rfiles)
         W.pad_files(rng, org, files, rng.randint(3, 7), "notes", d0, horizon)
         files["README.md"] = README
-        qk = rng.choice(["rate_on", "standing_on", "which_notice", "bill", "bill"])
+        qk = rng.choice(["initial", "rate_on", "standing_on", "which_notice", "bill", "bill"])
         cls = rng.choice(classes)
-        if qk in ("rate_on", "standing_on"):
+        if qk == "initial":
+            fld = rng.choice(["rate", "standing"])
+            v = v0[cls][fld]
+            what = "volume rate (cents per kilolitre)" if fld == "rate" else "daily standing charge (cents)"
+            ins, c = W.numfmt(rng, v, ("Answer", "Result", "Cents"))
+            ph = [f"What did the initial tariff schedule give as the {what} for {cls} customers?{ins}",
+                  f"In the very first schedule (before any notice), what was the {what} for the {cls} class?{ins}"]
+            prompt, contains, gold = rng.choice(ph), [c], f"The initial {cls} {what} was {v}. {c}"
+            diff = 1 + (k >= 5)
+        elif qk in ("rate_on", "standing_on"):
             fld = "rate" if qk == "rate_on" else "standing"
             d = d0 + dt.timedelta(days=rng.randint(0, (horizon - d0).days))
             v, ch = value_at(v0, notices, cls, fld, d)
@@ -248,7 +257,7 @@ def gen(rng, n):
             ph = [f"What was the {what} for {cls} customers on {W.d_long(d)}?{ins}",
                   f"A customer on the {cls} tariff asks what the {what.split(' (')[0]} was on {W.d_us(d)}. Give me the figure in cents.{ins}"]
             prompt, contains, gold = rng.choice(ph), [c], f"On {W.d_long(d)} the {cls} {what} was {v}. {c}"
-            diff = 3 + (any(x.withdrawn_by or x.withdraws for x in notices)) + bool(corr)
+            diff = 2 + (any(x.withdrawn_by or x.withdraws for x in notices)) + bool(corr) + (k >= 6)
         elif qk == "which_notice":
             fld = rng.choice(["rate", "standing"])
             end = horizon
@@ -259,7 +268,7 @@ def gen(rng, n):
             ph = [f"Which tariff notice set the {cls} {what} that applies today ({W.d_long(end)})? Reply with TN-<number>.",
                   f"Today is {W.d_long(end)}. Which notice is responsible for the current {cls} {what}? (TN-<number>)"]
             prompt, contains, gold = rng.choice(ph), [f"TN-{ch.notice}"], f"TN-{ch.notice} set it ({v} cents)."
-            diff = 3 + bool(corr) + (any(x.withdrawn_by for x in notices))
+            diff = 2 + bool(corr) + (any(x.withdrawn_by for x in notices)) + (k >= 6)
         else:
             a = rng.choice(sorted(accts))
             lst = readings[a]
@@ -277,7 +286,7 @@ def gen(rng, n):
                   f"Customer account {a} was read on {W.d_long(d1)} and again at the next reading. I need the exact amount to charge for that period (credits, two decimals).",
                   f"Please work out the invoice amount for {a} covering the period that starts with the {W.d_iso(d1)} meter reading. Credits, two decimal places, as per the README."]
             prompt, contains, gold = rng.choice(ph), [amount], f"The bill for {a} (class {c_}) from {W.d_iso(d1)} to {W.d_iso(d2)} is {amount} credits."
-            diff = 4 + (crossing > 2)
+            diff = 3 + (crossing > 1) + (crossing > 3)
         made += 1
         yield W.say_task(slug=f"{made:02d}-{qk.replace('_', '-')}", prompt=W.voice(rng, org, prompt), difficulty=min(5, diff), start=files, contains=contains,
                          gold=gold, tags=["tariff", "temporal", "arithmetic"], notes={"notices": k, "question": qk})

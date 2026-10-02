@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-parktariff-01-arith",
+"ok": true
+},
+{
+"id": "fix-py-parktariff-02-delete",
+"ok": true
+},
+{
+"id": "fix-py-parktariff-03-swap",
+"ok": true
+},
+{
+"id": "fix-py-parktariff-04-negate",
+"ok": true
+},
+{
+"id": "fix-py-parktariff-05-cmp",
+"ok": true
+},
+{
+"id": "fix-py-parktariff-06-const",
+"ok": true
+},
+{
+"id": "fix-py-parktariff-07-arith",
+"ok": true
+},
+{
+"id": "fix-py-parktariff-08-delete",
+"ok": true
+},
+{
+"id": "fix-py-parktariff-09-swap",
+"ok": true
+},
+{
+"id": "fix-py-parktariff-10-negate",
+"ok": true
+}
+]

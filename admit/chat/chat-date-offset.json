@@ -12,11 +12,11 @@
 "ok": true
 },
 {
-"id": "chat-date-offset-04-iso_week",
+"id": "chat-date-offset-04-nth_weekday",
 "ok": true
 },
 {
-"id": "chat-date-offset-05-iso_week",
+"id": "chat-date-offset-05-month_clamp",
 "ok": true
 },
 {
@@ -24,7 +24,7 @@
 "ok": true
 },
 {
-"id": "chat-date-offset-07-leap_birthday",
+"id": "chat-date-offset-07-on_or_after",
 "ok": true
 },
 {
@@ -36,7 +36,7 @@
 "ok": true
 },
 {
-"id": "chat-date-offset-10-iso_week",
+"id": "chat-date-offset-10-age_days",
 "ok": true
 },
 {
@@ -52,7 +52,7 @@
 "ok": true
 },
 {
-"id": "chat-date-offset-14-on_or_after",
+"id": "chat-date-offset-14-leap_birthday",
 "ok": true
 },
 {

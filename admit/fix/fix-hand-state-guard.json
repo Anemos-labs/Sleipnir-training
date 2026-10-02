@@ -1,0 +1,58 @@
+[
+{
+"id": "fix-hand-state-guard-01-author-can-approve",
+"ok": true
+},
+{
+"id": "fix-hand-state-guard-02-approvals-counted-per-click",
+"ok": true
+},
+{
+"id": "fix-hand-state-guard-03-rejection-keeps-approvals",
+"ok": true
+},
+{
+"id": "fix-hand-state-guard-04-admin-publish-skips-review",
+"ok": true
+},
+{
+"id": "fix-hand-state-guard-05-edit-keeps-approval",
+"ok": true
+},
+{
+"id": "fix-hand-state-guard-06-duplicate-approvals-and-edit",
+"ok": true
+},
+{
+"id": "fix-hand-state-guard-07-shipped-orders-can-be-cancelled",
+"ok": true
+},
+{
+"id": "fix-hand-state-guard-08-overpayment-accepted",
+"ok": true
+},
+{
+"id": "fix-hand-state-guard-09-packed-cancel-without-refund",
+"ok": true
+},
+{
+"id": "fix-hand-state-guard-10-deliver-from-packed",
+"ok": true
+},
+{
+"id": "fix-hand-state-guard-11-cancel-event-id-not-remembered",
+"ok": true
+},
+{
+"id": "fix-hand-state-guard-12-register-restarts-the-device",
+"ok": true
+},
+{
+"id": "fix-hand-state-guard-13-activate-ignores-firmware",
+"ok": true
+},
+{
+"id": "fix-hand-state-guard-14-heartbeat-in-any-live-state",
+"ok": true
+}
+]

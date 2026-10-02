@@ -1,0 +1,42 @@
+[
+{
+"id": "port-stdlib-modernize-01-3fn-1mod",
+"ok": true
+},
+{
+"id": "port-stdlib-modernize-02-4fn-2mod",
+"ok": true
+},
+{
+"id": "port-stdlib-modernize-03-3fn-1mod",
+"ok": true
+},
+{
+"id": "port-stdlib-modernize-04-5fn-2mod",
+"ok": true
+},
+{
+"id": "port-stdlib-modernize-05-6fn-2mod",
+"ok": true
+},
+{
+"id": "port-stdlib-modernize-06-4fn-3mod",
+"ok": true
+},
+{
+"id": "port-stdlib-modernize-07-5fn-3mod",
+"ok": true
+},
+{
+"id": "port-stdlib-modernize-08-7fn-3mod",
+"ok": true
+},
+{
+"id": "port-stdlib-modernize-09-8fn-4mod",
+"ok": true
+},
+{
+"id": "port-stdlib-modernize-10-10fn-4mod",
+"ok": true
+}
+]

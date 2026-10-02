@@ -37,7 +37,7 @@ _MISSPELL = {
     "which": "wich", "through": "thru", "something": "somthing", "different": "diffrent", "usually": "usualy",
     "business": "buisness", "actually": "actualy", "experience": "experiance", "thought": "thougt", "should": "shoud",
     "would": "woud", "people": "poeple", "quickly": "quicky", "answer": "anwser", "enough": "enuf", "tonight": "tonite",
-    "everything": "everthing", "second": "secnod", "minutes": "minuets", "accidentally": "accidently", "apparently": "apparantly",
+    "everything": "everthing", "accidentally": "accidently", "apparently": "apparantly",
     "whether": "wether", "sure": "shure", "whole": "wole", "again": "agian", "might": "migth", "friday": "firday",
 }
 _CONTRACT = {"don't": "dont", "can't": "cant", "it's": "its", "I'm": "im", "I've": "ive", "isn't": "isnt", "doesn't": "doesnt",
@@ -159,7 +159,7 @@ def chat(rng, intro: str, ask: str = "", data: str | None = None, reg: str | Non
         body.append(op)
     if intro:
         ip = prose(rng, intro, reg)
-        if op and op.rstrip().endswith((",", ":")) and ip[:1].isupper():
+        if op and not op.rstrip().endswith((".", "!", "?")) and ip[:1].isupper():
             w0 = re.match(r"[A-Za-z']+", ip)
             if (w0 and w0.group(0) not in ("I", "I'm", "I've", "I'd", "I'll") and w0.group(0) not in FIRST and w0.group(0) not in LAST
                     and not (len(w0.group(0)) > 1 and w0.group(0).isupper()) and not re.match(r"[A-Z][a-z]*[A-Z]", ip)):

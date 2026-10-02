@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-aclwalk-01-swap",
+"ok": true
+},
+{
+"id": "fix-py-aclwalk-02-negate",
+"ok": true
+},
+{
+"id": "fix-py-aclwalk-03-logic",
+"ok": true
+},
+{
+"id": "fix-py-aclwalk-04-delete",
+"ok": true
+},
+{
+"id": "fix-py-aclwalk-05-cmp",
+"ok": true
+},
+{
+"id": "fix-py-aclwalk-06-arith",
+"ok": true
+},
+{
+"id": "fix-py-aclwalk-07-const",
+"ok": true
+},
+{
+"id": "fix-py-aclwalk-08-swap",
+"ok": true
+},
+{
+"id": "fix-py-aclwalk-09-negate",
+"ok": true
+},
+{
+"id": "fix-py-aclwalk-10-delete",
+"ok": true
+}
+]

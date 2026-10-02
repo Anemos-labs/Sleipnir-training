@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import difflib
 import re
+import textwrap
 from dataclasses import dataclass, field
 
 from fx import dd
@@ -29,6 +30,7 @@ class Bad:
     kw: tuple = ()  # words a good answer plausibly uses (identifiers, concepts)
     kind: str = ""  # debug taxonomy value (defaults from cat)
     obs: bool = False  # python: the module's scenario output differs from the correct one
+    imports: str = ""  # replacement text of the module's "imports" slot when this variant needs different imports
 
 
 @dataclass
@@ -63,7 +65,7 @@ class Module:
 
     def changed(self) -> list:
         """Slots that belong to the change under review (all of them for a new file)."""
-        return [s for s in self.slots if self.new_file or s.old is not None]
+        return [s for s in self.slots if s.name != "imports" and (self.new_file or s.old is not None)]
 
     def slot(self, name: str) -> Slot:
         for s in self.slots:
@@ -81,8 +83,14 @@ KIND_OF_CAT = {
 _MARK = re.compile(r"^(\s*)@@(\w+)@@\s*$")
 
 
-def render(template: str, texts: dict[str, str]) -> tuple[str, dict[str, tuple[int, int]]]:
-    """Fill the template; returns (text, {slot: (first_line, last_line)}) with 1-based inclusive lines."""
+def _tabs(line: str) -> str:
+    n = len(line) - len(line.lstrip(" "))
+    return "\t" * (n // 4) + " " * (n % 4) + line[n:]
+
+
+def render(template: str, texts: dict[str, str], lang: str = "") -> tuple[str, dict[str, tuple[int, int]]]:
+    """Fill the template; returns (text, {slot: (first_line, last_line)}) with 1-based inclusive lines.
+    Go sources are written with 4-space indentation and converted to tabs here."""
     out: list[str] = []
     spans: dict[str, tuple[int, int]] = {}
     for line in template.split("\n"):
@@ -98,8 +106,32 @@ def render(template: str, texts: dict[str, str]) -> tuple[str, dict[str, tuple[i
         for b in body:
             out.append(m.group(1) + b if b.strip() else "")
         spans[m.group(2)] = (start, len(out))
+    if lang == "go":
+        out = [_tabs(x) for x in out]
     text = "\n".join(out).rstrip("\n") + "\n"
     return text, spans
+
+
+_COMMENT = {"python": "#", "go": "//", "javascript": "//", "java": "//", "rust": "//", "typescript": "//"}
+_NIT_TEXT = ("TODO: tidy this up", "XXX: revisit the naming here", "FIXME: not pretty, but it works")
+
+
+def auto_nit(text: str, lang: str, salt: int = 0) -> str:
+    """A harmless style nit for any block: a stray TODO-style comment after the signature line ("" if there is no such line)."""
+    c = _COMMENT.get(lang)
+    lines = text.rstrip("\n").split("\n")
+    if not c:
+        return ""
+    for i, ln in enumerate(lines):
+        t = ln.strip()
+        if t.startswith(("//", "///", "/*", "*", "#", "@")) or not t:
+            continue
+        if t.endswith(("{", ":")) and i + 1 < len(lines):
+            indent = len(lines[i + 1]) - len(lines[i + 1].lstrip())
+            note = _NIT_TEXT[(len(text) + salt) % len(_NIT_TEXT)]
+            return "\n".join(lines[: i + 1] + [" " * indent + f"{c} {note}"] + lines[i + 1:]) + "\n"
+        return ""
+    return ""
 
 
 def slot_texts(mod: Module, choice: dict, base: bool = False) -> dict[str, str]:
@@ -113,11 +145,14 @@ def slot_texts(mod: Module, choice: dict, base: bool = False) -> dict[str, str]:
         if c == "good":
             out[s.name] = s.good
         elif c == "nit":
-            out[s.name] = s.nit or s.good
+            out[s.name] = s.nit or auto_nit(s.good, mod.lang) or s.good
         elif c == "trap":
             out[s.name] = s.trap or s.good
         else:
-            out[s.name] = s.bad[c[1]].text
+            b = s.bad[c[1]]
+            out[s.name] = b.text
+            if b.imports:
+                out["imports"] = b.imports
     return out
 
 
@@ -147,11 +182,36 @@ def validate_module(mod: Module) -> None:
     names = [s.name for s in mod.slots]
     assert marks == set(names), (mod.name, marks ^ set(names))
     assert len(set(names)) == len(names), mod.name
+    problems = []
     for s in mod.slots:
-        for b in s.bad:
-            assert b.text != s.good, (mod.name, s.name, "bad == good")
-            assert b.cat in KIND_OF_CAT, (mod.name, s.name, b.cat)
-        assert not s.nit or s.nit != s.good, (mod.name, s.name, "nit == good")
-        assert not s.trap or s.trap != s.good, (mod.name, s.name, "trap == good")
-        if s.old is not None and s.old != "":
-            assert s.old != s.good, (mod.name, s.name, "old == good")
+        for bi, b in enumerate(s.bad):
+            if b.text == s.good:
+                problems.append((s.name, "bad", bi, "== good", b.why[:40]))
+            if b.cat not in KIND_OF_CAT:
+                problems.append((s.name, "bad", bi, "category", b.cat))
+        if s.nit and s.nit == s.good:
+            problems.append((s.name, "nit == good"))
+        if s.trap and s.trap == s.good:
+            problems.append((s.name, "trap == good"))
+        if s.old is not None and s.old != "" and s.old == s.good:
+            problems.append((s.name, "old == good"))
+    assert not problems, (mod.name, problems)
+
+
+def sub(text: str, old: str, new: str) -> str:
+    """Edit helper for authoring variants: replace a block of lines, ignoring indentation.
+
+    The lines of ``old`` are matched against consecutive lines of ``text`` after stripping both; the matched block is
+    replaced by ``new`` (dedented, then indented like the first matched line).  A one-line ``old`` that is not a whole
+    line is replaced as plain text.  Raises when nothing matches, so a variant can never silently equal the original."""
+    old_lines = [x.strip() for x in old.strip("\n").split("\n")]
+    t = text.split("\n")
+    for i in range(len(t) - len(old_lines) + 1):
+        if [x.strip() for x in t[i:i + len(old_lines)]] == old_lines:
+            indent = t[i][: len(t[i]) - len(t[i].lstrip())]
+            body = textwrap.dedent(new.strip("\n")).split("\n") if new.strip() else []
+            repl = [(indent + b) if b.strip() else "" for b in body]
+            return "\n".join(t[:i] + repl + t[i + len(old_lines):])
+    if len(old_lines) == 1 and old in text:
+        return text.replace(old, new, 1)
+    raise AssertionError(f"sub: pattern not found: {old!r}")

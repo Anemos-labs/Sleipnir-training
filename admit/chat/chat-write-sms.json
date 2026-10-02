@@ -1,0 +1,50 @@
+[
+{
+"id": "chat-write-sms-01-meet-85",
+"ok": true
+},
+{
+"id": "chat-write-sms-02-keys-100",
+"ok": true
+},
+{
+"id": "chat-write-sms-03-late-150",
+"ok": true
+},
+{
+"id": "chat-write-sms-04-cancel-100",
+"ok": true
+},
+{
+"id": "chat-write-sms-05-bring-130",
+"ok": true
+},
+{
+"id": "chat-write-sms-06-meet-95",
+"ok": true
+},
+{
+"id": "chat-write-sms-07-keys-100",
+"ok": true
+},
+{
+"id": "chat-write-sms-08-late-115",
+"ok": true
+},
+{
+"id": "chat-write-sms-09-cancel-110",
+"ok": true
+},
+{
+"id": "chat-write-sms-10-bring-140",
+"ok": true
+},
+{
+"id": "chat-write-sms-11-meet-90",
+"ok": true
+},
+{
+"id": "chat-write-sms-12-keys-105",
+"ok": true
+}
+]

@@ -1,0 +1,34 @@
+[
+{
+"id": "swarm-port-allocation-01-k4-mo100",
+"ok": true
+},
+{
+"id": "swarm-port-allocation-02-k5-mo1",
+"ok": true
+},
+{
+"id": "swarm-port-allocation-03-k5-mo1",
+"ok": true
+},
+{
+"id": "swarm-port-allocation-04-k6-mo10",
+"ok": true
+},
+{
+"id": "swarm-port-allocation-05-k6-mo2",
+"ok": true
+},
+{
+"id": "swarm-port-allocation-06-k7-mo1",
+"ok": true
+},
+{
+"id": "swarm-port-allocation-07-k8-mo2",
+"ok": true
+},
+{
+"id": "swarm-port-allocation-08-k8-mo1",
+"ok": true
+}
+]

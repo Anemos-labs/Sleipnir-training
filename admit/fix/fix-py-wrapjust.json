@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-wrapjust-01-cmp",
+"ok": true
+},
+{
+"id": "fix-py-wrapjust-02-swap",
+"ok": true
+},
+{
+"id": "fix-py-wrapjust-03-const",
+"ok": true
+},
+{
+"id": "fix-py-wrapjust-04-negate",
+"ok": true
+},
+{
+"id": "fix-py-wrapjust-05-delete",
+"ok": true
+},
+{
+"id": "fix-py-wrapjust-06-arith",
+"ok": true
+},
+{
+"id": "fix-py-wrapjust-07-cmp",
+"ok": true
+},
+{
+"id": "fix-py-wrapjust-08-const",
+"ok": true
+},
+{
+"id": "fix-py-wrapjust-09-negate",
+"ok": true
+},
+{
+"id": "fix-py-wrapjust-10-delete",
+"ok": true
+}
+]

@@ -35,6 +35,24 @@ def load_structlib():
     return mod
 
 
+def load_clike():
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location("fx_clike", ASSETS / "clike.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def tabify(text: str) -> str:
+    """Leading groups of four spaces become tabs (gofmt style)."""
+    out = []
+    for ln in text.split("\n"):
+        n = len(ln) - len(ln.lstrip(" "))
+        out.append("\t" * (n // 4) + " " * (n % 4) + ln.lstrip(" "))
+    return "\n".join(out)
+
+
 def asset(name: str) -> str:
     return (ASSETS / name).read_text(encoding="utf-8")
 

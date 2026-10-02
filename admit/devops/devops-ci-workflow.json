@@ -1,0 +1,46 @@
+[
+{
+"id": "devops-ci-workflow-01-needs-typo",
+"ok": true
+},
+{
+"id": "devops-ci-workflow-02-cache-key",
+"ok": true
+},
+{
+"id": "devops-ci-workflow-03-unpinned-permissions",
+"ok": true
+},
+{
+"id": "devops-ci-workflow-04-matrix-exclude",
+"ok": true
+},
+{
+"id": "devops-ci-workflow-05-cycle-timeout",
+"ok": true
+},
+{
+"id": "devops-ci-workflow-06-deploy-unguarded-artifact-name",
+"ok": true
+},
+{
+"id": "devops-ci-workflow-07-secret-echo-no-concurrency",
+"ok": true
+},
+{
+"id": "devops-ci-workflow-08-matrix-float-unpinned",
+"ok": true
+},
+{
+"id": "devops-ci-workflow-09-needs-typo-matrix-exclude",
+"ok": true
+},
+{
+"id": "devops-ci-workflow-10-cycle-artifact-name",
+"ok": true
+},
+{
+"id": "devops-ci-workflow-11-no-pr-deploy-unguarded",
+"ok": true
+}
+]

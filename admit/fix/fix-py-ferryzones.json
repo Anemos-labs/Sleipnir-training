@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-ferryzones-01-delete",
+"ok": true
+},
+{
+"id": "fix-py-ferryzones-02-arith",
+"ok": true
+},
+{
+"id": "fix-py-ferryzones-03-const",
+"ok": true
+},
+{
+"id": "fix-py-ferryzones-04-negate",
+"ok": true
+},
+{
+"id": "fix-py-ferryzones-05-swap",
+"ok": true
+},
+{
+"id": "fix-py-ferryzones-06-cmp",
+"ok": true
+},
+{
+"id": "fix-py-ferryzones-07-delete",
+"ok": true
+},
+{
+"id": "fix-py-ferryzones-08-const",
+"ok": true
+},
+{
+"id": "fix-py-ferryzones-09-swap",
+"ok": true
+},
+{
+"id": "fix-py-ferryzones-10-cmp",
+"ok": true
+}
+]

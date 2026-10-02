@@ -1,0 +1,58 @@
+[
+{
+"id": "optimize-py-membership-01-join-loan_borrowers",
+"ok": true
+},
+{
+"id": "optimize-py-membership-02-repeated-duplicate_scans",
+"ok": true
+},
+{
+"id": "optimize-py-membership-03-difference-unsent_recipients",
+"ok": true
+},
+{
+"id": "optimize-py-membership-04-tidy-tidy_catalogue",
+"ok": true
+},
+{
+"id": "optimize-py-membership-05-positions-slot_numbers",
+"ok": true
+},
+{
+"id": "optimize-py-membership-06-positions-queue_places",
+"ok": true
+},
+{
+"id": "optimize-py-membership-07-positions-column_indexes",
+"ok": true
+},
+{
+"id": "optimize-py-membership-08-dedupe-first_seen_sensors",
+"ok": true
+},
+{
+"id": "optimize-py-membership-09-difference-missing_parts",
+"ok": true
+},
+{
+"id": "optimize-py-membership-10-reconcile-compare_inventory",
+"ok": true
+},
+{
+"id": "optimize-py-membership-11-reconcile-reconcile_payments",
+"ok": true
+},
+{
+"id": "optimize-py-membership-12-positions-column_indexes",
+"ok": true
+},
+{
+"id": "optimize-py-membership-13-join-order_names",
+"ok": true
+},
+{
+"id": "optimize-py-membership-14-repeated-clashing_names",
+"ok": true
+}
+]

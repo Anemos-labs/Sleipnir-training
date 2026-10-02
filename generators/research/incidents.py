@@ -242,7 +242,7 @@ def _q_final_cause(rng, org, incs):
     else:
         ph = [f"Which incident was ultimately classified as \"{inc.final_cause}\"? Give the id.",
               f"One incident in the archive ended up with the root cause \"{inc.final_cause}\" (after any review). Which one?"]
-    return rng.choice(ph), [inc.id], f"{inc.id} carries the final root cause \"{inc.final_cause}\".", 4
+    return rng.choice(ph), [inc.id], f"{inc.id} carries the final root cause \"{inc.final_cause}\".", 3
 
 
 def _q_cmd_longest(rng, org, incs):
@@ -253,7 +253,7 @@ def _q_cmd_longest(rng, org, incs):
         if best and best is not ref:
             ph = [f"The person who commanded {ref.id} has run several incidents. Which of theirs lasted the longest? Give the incident id.",
                   f"Take whoever was incident commander on {ref.id}: among all incidents they commanded, which was the longest-running (id)?"]
-            return rng.choice(ph), [best.id], f"{ref.ic.full} commanded {best.id} ({best.minutes} min), their longest.", 4
+            return rng.choice(ph), [best.id], f"{ref.ic.full} commanded {best.id} ({best.minutes} min), their longest.", 3
     return None
 
 
@@ -279,12 +279,12 @@ def _q_impact_cause(rng, org, incs):
         if best:
             ph = [f"Among the incidents whose final root cause is \"{cause}\", which affected the most people/units? Reply with the id.",
                   f"Looking only at incidents finally attributed to \"{cause}\": which had the largest impact figure? Id, please."]
-            return rng.choice(ph), [best.id], f"{best.id} (impact {best.impact}).", 4 + (len(sub) > 4)
+            return rng.choice(ph), [best.id], f"{best.id} (impact {best.impact}).", 3 + (len(sub) > 4)
     return None
 
 
 Q_LOOKUP = [_q_ic, _q_followup, _q_longest, _q_month_minutes, _q_sev1_count, _q_final_cause, _q_cmd_longest, _q_most_responder, _q_impact_cause]
-Q_WEIGHTS = [2, 2, 3, 3, 2, 3, 2, 1, 2]
+Q_WEIGHTS = [4, 3, 3, 3, 2, 3, 2, 1, 2]
 
 
 @family("research-incident-lookup", category="research", lang="text", kind="lookup", n=20, mode="answer",
@@ -294,7 +294,7 @@ def gen_lookup(rng, n):
     k = 0
     while made < n:
         k += 1
-        n_inc = rng.choice([14, 20, 26, 34, 42])
+        n_inc = rng.choice([8, 10, 14, 20, 26, 34, 42])
         org, incs, lo, hi = build_world(rng, n_inc)
         files = make_files(rng, org, incs, lo, hi)
         q = None
@@ -309,6 +309,8 @@ def gen_lookup(rng, n):
         prompt = W.voice(rng, org, body, lead=rng.choice(["", "", "Going by the incident archive (README.md explains the layout),", "In `incidents/` and the other folders here,"]))
         if n_inc >= 34:
             d = min(5, d + 1)
+        elif n_inc <= 10:
+            d = max(1, d - 1)
         made += 1
         yield W.say_task(slug=f"{made:02d}-{fn.__name__[3:].replace('_', '-')}", prompt=prompt, difficulty=d, start=files, contains=contains, gold=gold,
                          tags=["incidents", fn.__name__[3:]], notes={"theme": org.theme, "incidents": n_inc, "question": fn.__name__})
@@ -330,7 +332,7 @@ def _tally_assets(rng, org, incs):
                   f"`worst_severity` (the SEV number of the worst one; 1 is worst) and `longest` (id of the longest incident).",
                   f"I'm preparing an asset review of {asset}. Please create `answer.json` in the repo root: {{\"incidents\": <count>, \"total_minutes\": <sum of durations>, "
                   f"\"worst_severity\": <number 1-3>, \"longest\": \"<incident id>\"}}, covering every incident on that asset in the archive."]
-            return rng.choice(ph), W.json_spec(fields), W.dumps(exp), 3 + (len(sub) > 5), "asset"
+            return rng.choice(ph), W.json_spec(fields), W.dumps(exp), 2 + (len(incs) > 20) + (len(sub) > 5), "asset"
     return None
 
 
@@ -342,7 +344,7 @@ def _tally_commanders(rng, org, incs):
     fields = {"commanded": W.jf("map", cnt, sub="int")}
     ph = ["Make me a tally of how many incidents each person commanded. Write it to `answer.json` as {\"commanded\": {\"<surname>\": <count>, ...}}, one entry per commander (surname only).",
           "Please write `answer.json` with a single key `commanded`: an object mapping the surname of every incident commander to the number of incidents they commanded."]
-    return rng.choice(ph), W.json_spec(fields), W.dumps({"commanded": cnt}), 3 + (len(incs) > 30), "commanders"
+    return rng.choice(ph), W.json_spec(fields), W.dumps({"commanded": cnt}), 2 + (len(incs) > 14) + (len(incs) > 30), "commanders"
 
 
 def _tally_final_causes(rng, org, incs):
@@ -356,7 +358,7 @@ def _tally_final_causes(rng, org, incs):
     spec = W.csv_spec(["root_cause", "incidents", "total_minutes"], ["str", "int", "int"], rows, key=[0])
     ph = ["Summarise the archive by *final* root cause (after addenda): write `out.csv` with the header `root_cause,incidents,total_minutes` and one row per cause that occurs at least once.",
           "I need `out.csv` listing each final root cause with how many incidents it explains and their combined downtime in minutes. Columns: root_cause, incidents, total_minutes. Header row required."]
-    return rng.choice(ph), spec, csvt, 4, "causes"
+    return rng.choice(ph), spec, csvt, 3 + (len(incs) > 20), "causes"
 
 
 def _tally_month(rng, org, incs):
@@ -369,7 +371,7 @@ def _tally_month(rng, org, incs):
     fields = {"per_month": W.jf("map", cnt, sub="int")}
     ph = ["Count SEV-1 and SEV-2 incidents per calendar month. Save it as `answer.json`: {\"per_month\": {\"YYYY-MM\": count}}; leave out months with none.",
           "For the board pack: how many SEV-1 or SEV-2 incidents happened in each month? Put it in `answer.json` under the key `per_month` (keys like `2031-04`, only months that have at least one)."]
-    return rng.choice(ph), W.json_spec(fields), W.dumps({"per_month": cnt}), 3, "months"
+    return rng.choice(ph), W.json_spec(fields), W.dumps({"per_month": cnt}), 2 + (len(incs) > 14) + (len(incs) > 30), "months"
 
 
 Q_TALLY = [_tally_assets, _tally_commanders, _tally_final_causes, _tally_month]
@@ -380,7 +382,7 @@ Q_TALLY = [_tally_assets, _tally_commanders, _tally_final_causes, _tally_month]
 def gen_tally(rng, n):
     made = 0
     while made < n:
-        n_inc = rng.choice([14, 20, 26, 34, 42])
+        n_inc = rng.choice([8, 12, 16, 22, 30, 40])
         org, incs, lo, hi = build_world(rng, n_inc)
         files = make_files(rng, org, incs, lo, hi)
         fn = Q_TALLY[made % len(Q_TALLY)]

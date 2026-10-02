@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-tollroute-01-arith",
+"ok": true
+},
+{
+"id": "fix-py-tollroute-02-delete",
+"ok": true
+},
+{
+"id": "fix-py-tollroute-03-cmp",
+"ok": true
+},
+{
+"id": "fix-py-tollroute-04-negate",
+"ok": true
+},
+{
+"id": "fix-py-tollroute-05-logic",
+"ok": true
+},
+{
+"id": "fix-py-tollroute-06-const",
+"ok": true
+},
+{
+"id": "fix-py-tollroute-07-arith",
+"ok": true
+},
+{
+"id": "fix-py-tollroute-08-delete",
+"ok": true
+},
+{
+"id": "fix-py-tollroute-09-negate",
+"ok": true
+},
+{
+"id": "fix-py-tollroute-10-const",
+"ok": true
+}
+]

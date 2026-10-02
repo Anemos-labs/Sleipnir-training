@@ -210,7 +210,16 @@ def ferry(rng) -> TLib:
         ("party_exactly_at_cap", [("eq", f"quote({exact[0]!r}, {exact[1]!r}, {exact[2]}, {exact[3]})")] if exact else []),
         ("party_under_cap_not_flagged", [("eq", f"quote('{r0}', [{adult}] + [0] * {g - 1})"), ("eq", f"quote('{r0}', [{adult}, {P['child']}] + [0] * {g})")]),
     ]
-    gold = gold_tests(files, "from ferryfare.fares import *\nfrom ferryfare import fares", steps)
+    imp = "from ferryfare.fares import *\nfrom ferryfare import fares"
+    gold = gold_tests(files, imp, steps, path="tests/test_fares.py", cls="FareTests")
+    rr = [("round_up_helper", [("eq", f"fares._round_up({n}, {d})") for n, d in ((1001, 100), (1000, 100), (1, 1), (5 * 7, 1), (96 * 100, 100), (101, 100))]),
+          ("price_helper", [("eq", f"fares._price({b}, {pct}, {r_}, {p_})") for b in (fares[r1], fares[r2]) for pct in (50, 100) for r_ in (False, True) for p_ in (False, True)]),
+          ("messages", [("raisesre", "ValueError", f"passenger_fare('{r0}', -1)", "age out of range"), ("raisesre", "ValueError", f"passenger_fare('{r0}', 150)", "age out of range: 150"),
+                        ("raisesre", "ValueError", "bike_charge(99)", "bikes out of range")]),
+          ("call_count", [("do", "calls = []"), ("do", "orig = fares._price"),
+                          ("do", "with mock.patch.object(fares, '_price', side_effect=lambda *a: calls.append(a) or orig(*a)):\n    fares.quote('" + r0 + "', [30, 31, 32])"),
+                          ("do", "self.assertEqual(len(calls), 3)")])]
+    internal = gold_tests(files, imp, rr, header="from unittest import mock", path="tests/test_internals.py", cls="InternalsTests")
     probes = [f"passenger_fare('{r0}', {P['child']})", f"passenger_fare('{r0}', {P['child'] + 1})", f"passenger_fare('{r1}', {P['senior']}, True)",
               f"quote('{r2}', [{adult}] * {g})['total']", f"quote('{r2}', [{adult}] * {g - 1})['subtotal']", f"bike_charge(1, True)",
               f"passenger_fare('{r3}', {adult}, False, True)", f"quote('{r1}', [{P['child']}] * {g})['capped']"]
@@ -218,4 +227,6 @@ def ferry(rng) -> TLib:
         name="py-ferryfare", lang="python", title="the Skerry Sound ferry fare calculator", blurb="The ticket office and the website both price bookings with `ferryfare`.",
         files=files, stub=stub, gold=gold, mutate=["ferryfare/fares.py"], cmd="python3 -m unittest discover -s tests -t .",
         where=WHERE_PY, difficulty=3, probes=probes, probe_import="from ferryfare.fares import *", renames={"_price": "_compose_fare", "_round_up": "_ceil_to_step"},
+        py_groups=steps, py_imports=imp, internals=internal, msg_swaps={"age out of range": "invalid age", "bikes out of range": "invalid bike count"},
+        focus="the age-band edges, rounding up to the step, return/peak ordering, bicycles, and the party cap",
     )

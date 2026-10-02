@@ -1,0 +1,46 @@
+[
+{
+"id": "shell-strict-mode-fixes-01-fix-silent-diff",
+"ok": true
+},
+{
+"id": "shell-strict-mode-fixes-02-fix-grep-count",
+"ok": true
+},
+{
+"id": "shell-strict-mode-fixes-03-fix-post-increment",
+"ok": true
+},
+{
+"id": "shell-strict-mode-fixes-04-fix-unset-argument",
+"ok": true
+},
+{
+"id": "shell-strict-mode-fixes-05-fix-line-reader",
+"ok": true
+},
+{
+"id": "shell-strict-mode-fixes-06-fix-sigpipe",
+"ok": true
+},
+{
+"id": "shell-strict-mode-fixes-07-fix-masked-status",
+"ok": true
+},
+{
+"id": "shell-strict-mode-fixes-08-fix-trap-unbound",
+"ok": true
+},
+{
+"id": "shell-strict-mode-fixes-09-fix-pipeline-subshell",
+"ok": true
+},
+{
+"id": "shell-strict-mode-fixes-10-fix-unknown-key",
+"ok": true
+},
+{
+"id": "shell-strict-mode-fixes-11-fix-log-digest",
+"ok": true
+}
+]

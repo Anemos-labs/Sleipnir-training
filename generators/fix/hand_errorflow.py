@@ -338,7 +338,6 @@ def _base_a() -> Base:
     good = {"README.md": A_README, "importer/__init__.py": '"""Batch importer."""\n', "importer/errors.py": A_ERRORS,
             "importer/sink.py": A_SINK, "importer/validate.py": A_VALIDATE, "importer/retry.py": A_RETRY, "importer/batch.py": A_BATCH}
     b, v, r = "importer/batch.py", "importer/validate.py", "importer/retry.py"
-    no_rb = ("        except SinkError as exc:\n        sink.rollback()\n", "")
     no_rb = ("        sink.rollback()\n        raise ImportAborted(", "        raise ImportAborted(")
     retry_bug = ("    raise last\n", "    return None\n")
     bugs = [
@@ -346,7 +345,7 @@ def _base_a() -> Base:
             "            try:\n                validate(rec)\n            except ValidationError as exc:\n                report[\"rejected\"].append((index, str(exc)))\n                continue\n            call_with_retry(lambda: sink.insert(rec), attempts, SinkError)\n            report[\"inserted\"] += 1\n",
             "            try:\n                validate(rec)\n                call_with_retry(lambda: sink.insert(rec), attempts, SinkError)\n            except Exception as exc:\n                report[\"rejected\"].append((index, str(exc)))\n                continue\n            report[\"inserted\"] += 1\n")]}, P["swallowed"]),
         Bug("abort-without-rollback", 3, {b: [no_rb]}, P["no-rollback"]),
-        Bug("cause-dropped", 2, {b: [("), report) from exc", "), report)")]}, P["lost-cause"]),
+        Bug("cause-dropped", 2, {b: [('", report) from exc', '", report)')]}, P["lost-cause"]),
         Bug("retry-returns-none", 3, {r: [retry_bug]}, P["retry-silent"]),
         Bug("missing-field-keyerror", 3, {v: [("    for field in REQUIRED:\n        if field not in rec:\n            raise ValidationError(f\"missing field: {field}\")\n    qty = rec[\"qty\"]\n",
                                                "    rec[\"id\"], rec[\"name\"]\n    qty = rec[\"qty\"]\n")]}, P["keyerror"]),

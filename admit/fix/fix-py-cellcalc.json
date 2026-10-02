@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-cellcalc-01-cmp",
+"ok": true
+},
+{
+"id": "fix-py-cellcalc-02-arith",
+"ok": true
+},
+{
+"id": "fix-py-cellcalc-03-negate",
+"ok": true
+},
+{
+"id": "fix-py-cellcalc-04-const",
+"ok": true
+},
+{
+"id": "fix-py-cellcalc-05-delete",
+"ok": true
+},
+{
+"id": "fix-py-cellcalc-06-cmp",
+"ok": true
+},
+{
+"id": "fix-py-cellcalc-07-negate",
+"ok": true
+},
+{
+"id": "fix-py-cellcalc-08-const",
+"ok": true
+},
+{
+"id": "fix-py-cellcalc-09-delete",
+"ok": true
+},
+{
+"id": "fix-py-cellcalc-10-cmp",
+"ok": true
+}
+]

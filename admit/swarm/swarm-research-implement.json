@@ -1,0 +1,42 @@
+[
+{
+"id": "swarm-research-implement-01-k3-pilotage",
+"ok": true
+},
+{
+"id": "swarm-research-implement-02-k3-inspection",
+"ok": true
+},
+{
+"id": "swarm-research-implement-03-k4-berth",
+"ok": true
+},
+{
+"id": "swarm-research-implement-04-k4-pilotage",
+"ok": true
+},
+{
+"id": "swarm-research-implement-05-k5-waste",
+"ok": true
+},
+{
+"id": "swarm-research-implement-06-k4-inspection",
+"ok": true
+},
+{
+"id": "swarm-research-implement-07-k5-berth",
+"ok": true
+},
+{
+"id": "swarm-research-implement-08-k6-storage",
+"ok": true
+},
+{
+"id": "swarm-research-implement-09-k5-berth",
+"ok": true
+},
+{
+"id": "swarm-research-implement-10-k6-pilotage",
+"ok": true
+}
+]

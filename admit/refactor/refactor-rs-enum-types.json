@@ -1,0 +1,38 @@
+[
+{
+"id": "refactor-rs-enum-types-01-soil-5",
+"ok": true
+},
+{
+"id": "refactor-rs-enum-types-02-tier-6",
+"ok": true
+},
+{
+"id": "refactor-rs-enum-types-03-tier-5",
+"ok": true
+},
+{
+"id": "refactor-rs-enum-types-04-tier-5",
+"ok": true
+},
+{
+"id": "refactor-rs-enum-types-05-soil-5",
+"ok": true
+},
+{
+"id": "refactor-rs-enum-types-06-soil-6",
+"ok": true
+},
+{
+"id": "refactor-rs-enum-types-07-parcel-5",
+"ok": true
+},
+{
+"id": "refactor-rs-enum-types-08-parcel-3",
+"ok": true
+},
+{
+"id": "refactor-rs-enum-types-09-parcel-5",
+"ok": true
+}
+]

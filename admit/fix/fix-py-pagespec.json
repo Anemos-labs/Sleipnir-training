@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-pagespec-01-negate",
+"ok": true
+},
+{
+"id": "fix-py-pagespec-02-const",
+"ok": true
+},
+{
+"id": "fix-py-pagespec-03-swap",
+"ok": true
+},
+{
+"id": "fix-py-pagespec-04-delete",
+"ok": true
+},
+{
+"id": "fix-py-pagespec-05-arith",
+"ok": true
+},
+{
+"id": "fix-py-pagespec-06-negate",
+"ok": true
+},
+{
+"id": "fix-py-pagespec-07-const",
+"ok": true
+},
+{
+"id": "fix-py-pagespec-08-delete",
+"ok": true
+},
+{
+"id": "fix-py-pagespec-09-arith",
+"ok": true
+},
+{
+"id": "fix-py-pagespec-10-negate",
+"ok": true
+}
+]

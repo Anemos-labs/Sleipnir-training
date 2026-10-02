@@ -1,0 +1,46 @@
+[
+{
+"id": "fix-hand-retry-twice-01-retry-with-a-new-key",
+"ok": true
+},
+{
+"id": "fix-hand-retry-twice-02-permanent-errors-retried",
+"ok": true
+},
+{
+"id": "fix-hand-retry-twice-03-sleeps-after-the-last-try",
+"ok": true
+},
+{
+"id": "fix-hand-retry-twice-04-backoff-without-cap",
+"ok": true
+},
+{
+"id": "fix-hand-retry-twice-05-event-remembered-before-delivery",
+"ok": true
+},
+{
+"id": "fix-hand-retry-twice-06-new-key-and-early-memory",
+"ok": true
+},
+{
+"id": "fix-hand-retry-twice-07-failure-restarts-the-batch",
+"ok": true
+},
+{
+"id": "fix-hand-retry-twice-08-attempt-budget-shared",
+"ok": true
+},
+{
+"id": "fix-hand-retry-twice-09-any-error-is-retried",
+"ok": true
+},
+{
+"id": "fix-hand-retry-twice-10-giving-up-reports-zero-sent",
+"ok": true
+},
+{
+"id": "fix-hand-retry-twice-11-duplicates-are-resent",
+"ok": true
+}
+]

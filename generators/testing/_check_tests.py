@@ -18,6 +18,7 @@ mutant for free, so nothing else may count).  Otherwise the score is the share o
 import fnmatch
 import json
 import os
+import re
 import shutil
 import signal
 import subprocess
@@ -152,7 +153,16 @@ def main():
                 env = dict(env0)
                 env.update(sc.get("env", {}))
                 t0 = time.time()
-                rc, out, timed_out = run_cmd(sc.get("cmd") or SPEC["cmd"], w, env, sc.get("timeout", SPEC.get("timeout", 40)))
+                if sc.get("grep"):
+                    g = sc["grep"]
+                    hits = []
+                    for r in list_files(w):
+                        if any(fnmatch.fnmatch(r, pat) for pat in g["globs"]):
+                            text = open(os.path.join(w, r), encoding="utf-8", errors="replace").read()
+                            hits += [f"{r}: {rx}" for rx in g["forbid"] if re.search(rx, text)]
+                    rc, out, timed_out = (1 if hits else 0), "\n".join(hits), False
+                else:
+                    rc, out, timed_out = run_cmd(sc.get("cmd") or SPEC["cmd"], w, env, sc.get("timeout", SPEC.get("timeout", 40)))
                 dt = time.time() - t0
             finally:
                 for kind, path, data in reversed(undo):

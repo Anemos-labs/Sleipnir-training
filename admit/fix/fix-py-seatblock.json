@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-seatblock-01-cmp",
+"ok": true
+},
+{
+"id": "fix-py-seatblock-02-negate",
+"ok": true
+},
+{
+"id": "fix-py-seatblock-03-const",
+"ok": true
+},
+{
+"id": "fix-py-seatblock-04-arith",
+"ok": true
+},
+{
+"id": "fix-py-seatblock-05-delete",
+"ok": true
+},
+{
+"id": "fix-py-seatblock-06-cmp",
+"ok": true
+},
+{
+"id": "fix-py-seatblock-07-negate",
+"ok": true
+},
+{
+"id": "fix-py-seatblock-08-const",
+"ok": true
+},
+{
+"id": "fix-py-seatblock-09-arith",
+"ok": true
+},
+{
+"id": "fix-py-seatblock-10-delete",
+"ok": true
+}
+]

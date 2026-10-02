@@ -1,0 +1,30 @@
+[
+{
+"id": "games-gloam-build-01-energy",
+"ok": true
+},
+{
+"id": "games-gloam-build-02-energy-counter",
+"ok": true
+},
+{
+"id": "games-gloam-build-03-fixed",
+"ok": true
+},
+{
+"id": "games-gloam-build-04-energy-regen",
+"ok": true
+},
+{
+"id": "games-gloam-build-05-energy-counter-regen",
+"ok": true
+},
+{
+"id": "games-gloam-build-06-fixed-counter-regen",
+"ok": true
+},
+{
+"id": "games-gloam-build-07-energy-regen",
+"ok": true
+}
+]

@@ -87,7 +87,7 @@ def oracle_lower(s, res, tree):
             out.append("exists: " + n)
             continue
         move(cur, n, new)
-    return cmp_oracle("".join(l + "\n" for l in out), {k: v for k, v in cur.items() if v["t"] != "d" or True} if False else {k: v for k, v in cur.items()}, res, tree) if False else _o_lower(cur, out, res, tree)
+    return _o_lower(cur, out, res, tree)
 
 
 def _o_lower(cur, out, res, tree):
@@ -96,7 +96,7 @@ def _o_lower(cur, out, res, tree):
     probs = []
     if res[-1]["stdout"] != "".join(l + "\n" for l in out):
         probs.append("stdout differs")
-    names = lambda t: {k: (v.get("c"), v.get("to")) for k, v in t.items() if v["t"] != "d"}
+    names = lambda t: {k: (v.get("c"), v.get("b"), v.get("to")) for k, v in t.items() if v["t"] != "d"}
     if names(exp) != names(got):
         probs.append("files differ")
     return probs
@@ -172,8 +172,8 @@ def make_date(rng):
     # 1700000000 = 2023-11-14 22:13:20 UTC
     ex = scn("example", {"holiday.txt": F(content("h"), m=1700000000), "-notes": F(content("n"), m=1700100000), "2031-01-01_old.txt": F(content("o"), m=1700000000)}, Run())
     day = 86400
-    a = {"two words.txt": F(content("1"), m=1700000000), "late night.log": F(content("2"), m=1700000000 + day - 1 - 80000),
-         "midnight.dat": F(content("3"), m=1700000000 + 6000 + 1), "-rf": F(content("4"), m=1735689599), "it's here": F(content("5"), m=1735689600),
+    a = {"two words.txt": F(content("1"), m=1700000000), "late night.log": F(content("2"), m=1700006399),
+         "midnight.dat": F(content("3"), m=1700006400), "-rf": F(content("4"), m=1735689599), "it's here": F(content("5"), m=1735689600),
          "naïve.txt": F(content("6"), m=951782400), "2020-02-30_bad.txt": F(content("7"), m=1700000000), "2020-02-29_ok.txt": F(content("8"), m=1700000000)}
     b = {"x.txt": F("1\n", m=1709251199), "y.txt": F("2\n", m=1709251200), "z.txt": F("3\n", m=1709164800), "sub/inner.txt": F("4\n", m=1700000000)}
     return ex, [scn("awkward names", a, Run()), scn("day boundaries (leap day)", b, Run(), dirs="all"), scn("empty", {}, Run())]
@@ -195,7 +195,7 @@ def oracle_date(s, res, tree):
 REF_FLATTEN = dd('''
     #!/usr/bin/env bash
     # Move every file below the current directory into ./flat, resolving name clashes with -1, -2, ...
-    shopt -s globstar nullglob dotglob
+    shopt -s nullglob dotglob
     mkdir -p flat
     files=()
     while IFS= read -r -d '' f; do
@@ -218,8 +218,7 @@ REF_FLATTEN = dd('''
       mv -- "$f" "flat/$target"
     done
     # remove directories that are now empty (but keep flat itself)
-    find . -mindepth 1 -type d -empty -not -path ./flat -not -path './flat/*' -delete 2>/dev/null
-    find . -mindepth 1 -type d -empty -not -path ./flat -not -path './flat/*' -delete 2>/dev/null
+    find . -mindepth 1 -type d -empty -not -path ./flat -not -path './flat/*' -delete
     exit 0
 ''')
 
@@ -278,15 +277,16 @@ def oracle_swap(s, res, tree):
 REF_SANITIZE = dd('''
     #!/usr/bin/env bash
     # Make file names safe: [A-Za-z0-9._-] only, runs of '_' collapsed, no leading '-' or '.' .
-    shopt -s nullglob
+    shopt -s nullglob dotglob extglob
     for f in *; do
       [ -f "$f" ] || continue
-      new=$(printf '%s' "$f" | sed -E 's/[^A-Za-z0-9._-]/_/g; s/_+/_/g; s/^[-.]+/_/')
+      new=${f//[^A-Za-z0-9._-]/_}
+      while [[ $new == *__* ]]; do new=${new//__/_}; done
+      new=${new/#+([-.])/_}
       [ "$new" = "$f" ] && continue
-      base=${new%.*}
+      base=$new
       ext=
-      case $new in ?*.*) ext=.${new##*.} ;; esac
-      [ -n "$ext" ] || base=$new
+      case $new in ?*.*) base=${new%.*}; ext=.${new##*.} ;; esac
       i=1
       cand=$new
       while [ -e "$cand" ]; do
@@ -314,9 +314,7 @@ def oracle_sanitize(s, res, tree):
         new = re.sub(r"^[-.]+", "_", new)
         if new == n:
             continue
-        base, ext = (new.rsplit(".", 1)[0], "." + new.rsplit(".", 1)[1]) if re.match(r"^.+\.[^.]*$", new) and not new.startswith(".") else (new, "")
-        # emulate the shell: ext only when new has a dot after at least one char
-        if "." in new and new.index(".") > 0:
+        if "." in new:
             base, ext = new.rsplit(".", 1)[0], "." + new.rsplit(".", 1)[1]
         else:
             base, ext = new, ""
@@ -405,14 +403,14 @@ REF_SNIFF = dd('''
     done
 ''')
 
-PNG = "\x89PNG\r\n\x1a\n"
 
 
 def make_sniff(rng):
     # file contents are text in the scenario format, so use only magics that are valid UTF-8: gif, pdf, zip, sh, plus a utf-8 safe stand-in for jpg is impossible
-    ex = scn("example", {"blob1": F("GIF89a...."), "blob2": F("%PDF-1.7\n"), "blob3": F("hello\n"), "keep.txt": F("x")}, Run())
-    a = {"report": F("%PDF-1.4\n%abc"), "anim": F("GIF87a\x01\x00"), "archive": F("PK\x03\x04rest"), "run me": F("#!/bin/sh\necho\n"), "-odd": F("%PDF-"),
-         "empty": F(""), "notes": F("plain text\n"), "pic": F("GIF8"), "short": F("%PD"), ".dotfile": F("PK\x03\x04"), "dir.d/inside": F("PK\x03\x04")}
+    ex = scn("example", {"blob1": F("GIF89a...."), "blob2": F("%PDF-1.7\n"), "blob3": F("hello\n"), "keep.txt": F("x"), "logo": K.FB(b"\x89PNG\r\n\x1a\n....")}, Run())
+    a = {"report": F("%PDF-1.4\n%abc"), "anim": F("GIF87a\x01\x00"), "archive": K.FB(b"PK\x03\x04\x14\x00rest"), "run me": F("#!/bin/sh\necho\n"), "-odd": F("%PDF-"),
+         "empty": F(""), "notes": F("plain text\n"), "pic": F("GIF8"), "short": F("%PD"), ".dotfile": K.FB(b"PK\x03\x04"), "dir.d/inside": K.FB(b"PK\x03\x04"),
+         "shot": K.FB(b"\x89PNG\r\n\x1a\n\x00\x00\rIHDR"), "almost png": K.FB(b"\x89PNG\r\n\x1a"), "photo": K.FB(b"\xff\xd8\xff\xe0\x00\x10JFIF"), "not photo": K.FB(b"\xff\xd8\xfe")}
     b = {"x": F("%PDF-1"), "x.pdf": F("already\n"), "y": F("#!/bin/bash\n")}
     return ex, [scn("assorted magics", a, Run(), dirs="all"), scn("target exists", b, Run())]
 
@@ -464,32 +462,6 @@ def oracle_strip(s, res, tree):
 
 REF_MAP = dd('''
     #!/usr/bin/env bash
-    # Apply renames listed in a CSV (old,new), even when they swap or chain.
-    # usage: remap.sh MAPPING.csv
-    set -eu
-    map=$1
-    tmp=$(mktemp -d ./.remap.XXXXXX)
-    olds=()
-    news=()
-    while IFS=, read -r a b; do
-      a=${a#\\"}; a=${a%\\"}; a=${a//\\"\\"/\\"}
-      b=${b#\\"}; b=${b%\\"}; b=${b//\\"\\"/\\"}
-      olds+=("$a")
-      news+=("$b")
-    done < <(python3 - "$map" <<'PY'
-    import csv, sys
-    for row in csv.reader(open(sys.argv[1], newline="")):
-        if len(row) == 2 and row[0] != "old":
-            print(row[0].replace("\\\\", "\\\\\\\\") + "," + row[1])
-    PY
-    )
-    echo placeholder > /dev/null
-    rm -rf "$tmp"
-''')
-
-# The CSV-mapping reference is easier and less error prone in pure bash with a small awk quoting parser; written below.
-REF_MAP = dd('''
-    #!/usr/bin/env bash
     # remap.sh MAPPING.csv : apply "old,new" renames from a CSV file, even when they swap or chain.
     # Fields may be double-quoted (with "" for a quote); no field contains a line break.
     set -eu
@@ -515,11 +487,11 @@ REF_MAP = dd('''
             if (c == "," && !q) { f[++n] = cur; cur = "" } else cur = cur c
           }
           f[++n] = cur
-          printf "%s\\0%s\\0", field(f[1]), field(f[2])
+          print field(f[1]); print field(f[2])
         }' "$map"
     }
     olds=(); news=()
-    while IFS= read -r -d '' a && IFS= read -r -d '' b; do
+    while IFS= read -r a && IFS= read -r b; do
       olds+=("$a"); news+=("$b")
     done < <(parse)
     # step 1: move every source that exists to a unique temporary name
@@ -584,7 +556,7 @@ def make_fix(rng):
 def oracle_fix(s, res, tree):
     cur = dict(s["files"])
     for n in sorted(k for k, e in s["files"].items() if "/" not in k and e["t"] == "f"):
-        if n.endswith(".txt"):
+        if n.endswith(".txt") and not n.startswith("."):
             move(cur, n, n[:-4] + ".md")
     return _o_lower(cur, [], res, tree)
 
@@ -594,7 +566,7 @@ def oracle_fix(s, res, tree):
 SPECS = [
     S("fix-ls-loop", 1,
       "`tidy.sh` is supposed to turn every `.txt` file in the folder into `.md`, and it works until somebody has a file with a space or a dash in its name. Fix it so it handles any file name.",
-      "`tidy.sh` renames every `*.txt` file in the current directory to the same name with `.md` instead. It must work for every file name: spaces, leading dashes, glob characters, quotes, even line breaks. Only files whose name ends in `.txt` are touched; a name that is just `.txt` is a valid (hidden) file and becomes `.md`.",
+      "`tidy.sh` renames every `*.txt` file in the current directory to the same name with `.md` instead. It must work for every file name: spaces, leading dashes, glob characters, quotes, even line breaks. Only files whose name ends in `.txt` are touched; hidden files (names starting with a dot, such as `.txt`) are left alone, as are directories.",
       REF_FIX, make_fix, buggy=BUGGY_FIX, oracle=oracle_fix, title="Rename .txt to .md", wrong=(BUGGY_FIX,)),
     S("lowercase-extensions", 1,
       "Write `tidy.sh` so that it lowercases the extension of every file in the current directory (`IMG_01.JPG` becomes `IMG_01.jpg`). Details, including what to do when the lowercase name is already taken, are in the README.",

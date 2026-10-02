@@ -4,11 +4,11 @@
 "ok": true
 },
 {
-"id": "chat-price-traps-02-stack_two",
+"id": "chat-price-traps-02-tax_rev",
 "ok": true
 },
 {
-"id": "chat-price-traps-03-tax_rev",
+"id": "chat-price-traps-03-annual",
 "ok": true
 },
 {
@@ -16,19 +16,19 @@
 "ok": true
 },
 {
-"id": "chat-price-traps-05-stack_two",
+"id": "chat-price-traps-05-margin",
 "ok": true
 },
 {
-"id": "chat-price-traps-06-stack_two",
+"id": "chat-price-traps-06-margin",
 "ok": true
 },
 {
-"id": "chat-price-traps-07-stack_rev",
+"id": "chat-price-traps-07-margin",
 "ok": true
 },
 {
-"id": "chat-price-traps-08-margin",
+"id": "chat-price-traps-08-tax_rev",
 "ok": true
 },
 {
@@ -40,19 +40,19 @@
 "ok": true
 },
 {
-"id": "chat-price-traps-11-annual",
+"id": "chat-price-traps-11-margin",
 "ok": true
 },
 {
-"id": "chat-price-traps-12-margin",
+"id": "chat-price-traps-12-tax_rev",
 "ok": true
 },
 {
-"id": "chat-price-traps-13-margin",
+"id": "chat-price-traps-13-stack_two",
 "ok": true
 },
 {
-"id": "chat-price-traps-14-stack_rev",
+"id": "chat-price-traps-14-margin",
 "ok": true
 }
 ]

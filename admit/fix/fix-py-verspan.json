@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-verspan-01-negate",
+"ok": true
+},
+{
+"id": "fix-py-verspan-02-cmp",
+"ok": true
+},
+{
+"id": "fix-py-verspan-03-const",
+"ok": true
+},
+{
+"id": "fix-py-verspan-04-arith",
+"ok": true
+},
+{
+"id": "fix-py-verspan-05-delete",
+"ok": true
+},
+{
+"id": "fix-py-verspan-06-swap",
+"ok": true
+},
+{
+"id": "fix-py-verspan-07-negate",
+"ok": true
+},
+{
+"id": "fix-py-verspan-08-cmp",
+"ok": true
+},
+{
+"id": "fix-py-verspan-09-const",
+"ok": true
+},
+{
+"id": "fix-py-verspan-10-delete",
+"ok": true
+}
+]

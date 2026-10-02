@@ -1,0 +1,54 @@
+[
+{
+"id": "fix-hand-shared-state-01-default-inventory-shared",
+"ok": true
+},
+{
+"id": "fix-hand-shared-state-02-clone-shares-containers",
+"ok": true
+},
+{
+"id": "fix-hand-shared-state-03-constructor-shares-item-dicts",
+"ok": true
+},
+{
+"id": "fix-hand-shared-state-04-snapshot-by-reference",
+"ok": true
+},
+{
+"id": "fix-hand-shared-state-05-give-all-same-dict",
+"ok": true
+},
+{
+"id": "fix-hand-shared-state-06-items-and-snapshot-shallow",
+"ok": true
+},
+{
+"id": "fix-hand-shared-state-07-notes-hash-default-array",
+"ok": true
+},
+{
+"id": "fix-hand-shared-state-08-label-mutates-argument",
+"ok": true
+},
+{
+"id": "fix-hand-shared-state-09-verbose-or-equals",
+"ok": true
+},
+{
+"id": "fix-hand-shared-state-10-unique-bang-returns-nil",
+"ok": true
+},
+{
+"id": "fix-hand-shared-state-11-default-bins-shared",
+"ok": true
+},
+{
+"id": "fix-hand-shared-state-12-snapshot-shares-entries",
+"ok": true
+},
+{
+"id": "fix-hand-shared-state-13-bins-and-snapshot",
+"ok": true
+}
+]

@@ -10,7 +10,7 @@ from fx import Task, run
 from fx.lib import BUILD
 from fx.run import merged
 
-from ._slots import Module, description, render, slot_texts, unified_diff
+from ._slots import Module, auto_nit, description, render, slot_texts, unified_diff
 
 CHECKER = Path(__file__).with_name("_check_review.py").read_text(encoding="utf-8")
 VERIFY = "python3 _verify/check.py"
@@ -42,10 +42,8 @@ def build_pr(parts: list[Part], title: str | None = None, extra_ctx: dict | None
     intros, outros = [], []
     for part in parts:
         mod = part.mod
-        texts = slot_texts(mod, {})  # all good
-        for name in part.changed:
-            texts.update({name: slot_texts(mod, {name: part.choice.get(name, "good")})[name]})
-        head, spans = render(mod.template, texts)
+        texts = slot_texts(mod, {n: part.choice.get(n, "good") for n in part.changed})
+        head, spans = render(mod.template, texts, mod.lang)
         if mod.new_file:
             base = None
         else:
@@ -53,7 +51,7 @@ def build_pr(parts: list[Part], title: str | None = None, extra_ctx: dict | None
             for name in part.changed:
                 s = mod.slot(name)
                 btexts[name] = s.good if s.old is None else s.old
-            base, _ = render(mod.template, btexts)
+            base, _ = render(mod.template, btexts, mod.lang)
         files[mod.path] = head
         paths.append(mod.path)
         for k, v in mod.ctx.items():
@@ -179,6 +177,9 @@ PROFILES = {
 }
 
 
+OOS_CATS = {"logic", "off-by-one", "performance"}  # what a security-only review may leave alone without anyone arguing
+
+
 def _pick_parts(rng, mods: list[Module], d: int, mode: str, clean: bool = False) -> list[Part]:
     prof = PROFILES[d]
     chosen_mods = [rng.choice(mods)]
@@ -189,26 +190,33 @@ def _pick_parts(rng, mods: list[Module], d: int, mode: str, clean: bool = False)
     parts: list[Part] = []
     nslots = rng.randint(*prof["changed"])
     k_total = 0 if clean else rng.randint(*prof["k"])
-    # distribute defects over the modules
     per_mod = [0] * len(chosen_mods)
     for i in range(k_total):
         per_mod[i % len(chosen_mods)] += 1
-    sec_needed = mode == "security"
-    for mod, kk in zip(chosen_mods, per_mod):
-        cand = [s for s in mod.changed()]
+    security = mode == "security"
+    for mi, (mod, kk) in enumerate(zip(chosen_mods, per_mod)):
+        cand = mod.changed()
         with_bad = [s for s in cand if s.bad]
         rng.shuffle(with_bad)
-        k_here = min(kk, len(with_bad))
-        picks = []
-        if sec_needed:
+        picks: list = []
+        choice: dict = {}
+        if security:
+            # one or two security defects (in scope) and one or two clearly non-security ones (out of scope)
             sec = [s for s in with_bad if any(b.cat == "security" for b in s.bad)]
-            if sec:
-                picks.append(sec[0])
-        for s in with_bad:
-            if len(picks) >= k_here:
-                break
-            if s not in picks:
+            oos = [s for s in with_bad if any(b.cat in OOS_CATS for b in s.bad) and s not in sec[:2]]
+            n_sec = min(len(sec), 1 if kk <= 2 else 2) if (mi == 0 or sec) else 0
+            for s in sec[:n_sec]:
                 picks.append(s)
+                choice[s.name] = ("bad", rng.choice([i for i, b in enumerate(s.bad) if b.cat == "security"]))
+            for s in oos[: max(1, kk - n_sec) if mi == 0 else max(0, kk - n_sec)]:
+                if s in picks:
+                    continue
+                picks.append(s)
+                choice[s.name] = ("bad", rng.choice([i for i, b in enumerate(s.bad) if b.cat in OOS_CATS]))
+        else:
+            for s in with_bad[: min(kk, len(with_bad))]:
+                picks.append(s)
+                choice[s.name] = ("bad", rng.randrange(len(s.bad)))
         changed = list(picks)
         for s in list(changed):
             for dep in s.deps:
@@ -226,13 +234,6 @@ def _pick_parts(rng, mods: list[Module], d: int, mode: str, clean: bool = False)
                 ds = mod.slot(dep)
                 if ds not in changed:
                     changed.append(ds)
-        choice: dict = {}
-        for s in picks:
-            if sec_needed and s is picks[0] and any(b.cat == "security" for b in s.bad) and mode == "security" and not parts and mod is chosen_mods[0]:
-                opts = [i for i, b in enumerate(s.bad) if b.cat == "security"]
-            else:
-                opts = list(range(len(s.bad)))
-            choice[s.name] = ("bad", rng.choice(opts))
         nit_n, trap_n = prof["nit"], prof["trap"]
         for s in changed:
             if s.name in choice:
@@ -240,10 +241,11 @@ def _pick_parts(rng, mods: list[Module], d: int, mode: str, clean: bool = False)
             if trap_n and s.trap:
                 choice[s.name] = "trap"
                 trap_n -= 1
-            elif nit_n and s.nit:
+            elif nit_n and (s.nit or auto_nit(s.good, mod.lang)):
                 choice[s.name] = "nit"
                 nit_n -= 1
-        parts.append(Part(mod, [s.name for s in sorted(changed, key=lambda x: [y.name for y in mod.slots].index(x.name))], choice))
+        order = [y.name for y in mod.slots]
+        parts.append(Part(mod, [s.name for s in sorted(changed, key=lambda x: order.index(x.name))], choice))
     return parts
 
 

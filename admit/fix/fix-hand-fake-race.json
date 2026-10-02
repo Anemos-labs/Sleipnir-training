@@ -1,0 +1,46 @@
+[
+{
+"id": "fix-hand-fake-race-01-sell-without-lock",
+"ok": true
+},
+{
+"id": "fix-hand-fake-race-02-refused-sale-keeps-the-lock",
+"ok": true
+},
+{
+"id": "fix-hand-fake-race-03-sold-counter-unlocked",
+"ok": true
+},
+{
+"id": "fix-hand-fake-race-04-transfer-locks-in-argument-order",
+"ok": true
+},
+{
+"id": "fix-hand-fake-race-05-sell-unlocked-and-transfer-order",
+"ok": true
+},
+{
+"id": "fix-hand-fake-race-06-claim-without-lock",
+"ok": true
+},
+{
+"id": "fix-hand-fake-race-07-complete-ignores-owner",
+"ok": true
+},
+{
+"id": "fix-hand-fake-race-08-reap-requeues-done-jobs",
+"ok": true
+},
+{
+"id": "fix-hand-fake-race-09-reap-boundary-exclusive",
+"ok": true
+},
+{
+"id": "fix-hand-fake-race-10-empty-claim-keeps-lock",
+"ok": true
+},
+{
+"id": "fix-hand-fake-race-11-claim-race-and-stale-owner",
+"ok": true
+}
+]

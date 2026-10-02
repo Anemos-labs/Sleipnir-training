@@ -1,0 +1,58 @@
+[
+{
+"id": "fix-hand-sort-order-01-median-of-unsorted",
+"ok": true
+},
+{
+"id": "fix-hand-sort-order-02-member-compared-as-text",
+"ok": true
+},
+{
+"id": "fix-hand-sort-order-03-reverse-flips-time",
+"ok": true
+},
+{
+"id": "fix-hand-sort-order-04-one-sort-per-criterion",
+"ok": true
+},
+{
+"id": "fix-hand-sort-order-05-dense-ranks",
+"ok": true
+},
+{
+"id": "fix-hand-sort-order-06-top-cuts-ties",
+"ok": true
+},
+{
+"id": "fix-hand-sort-order-07-median-sorted-as-text",
+"ok": true
+},
+{
+"id": "fix-hand-sort-order-08-sort-mutates-input",
+"ok": true
+},
+{
+"id": "fix-hand-sort-order-09-missing-values-compare-as-nan",
+"ok": true
+},
+{
+"id": "fix-hand-sort-order-10-first-direction-for-all-keys",
+"ok": true
+},
+{
+"id": "fix-hand-sort-order-11-one-pass-per-key",
+"ok": true
+},
+{
+"id": "fix-hand-sort-order-12-size-difference-cast-to-int",
+"ok": true
+},
+{
+"id": "fix-hand-sort-order-13-distinct-by-size-only",
+"ok": true
+},
+{
+"id": "fix-hand-sort-order-14-names-compared-case-sensitively",
+"ok": true
+}
+]

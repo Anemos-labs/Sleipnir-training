@@ -1,0 +1,42 @@
+[
+{
+"id": "robust-contradictory-spec-01-chapters-format_stamp",
+"ok": true
+},
+{
+"id": "robust-contradictory-spec-02-rentshare-weights",
+"ok": true
+},
+{
+"id": "robust-contradictory-spec-03-chapters-parse_stamp",
+"ok": true
+},
+{
+"id": "robust-contradictory-spec-04-meterbill-daily_estimate",
+"ok": true
+},
+{
+"id": "robust-contradictory-spec-05-chapters-parse_stamp",
+"ok": true
+},
+{
+"id": "robust-contradictory-spec-06-lockers-assign",
+"ok": true
+},
+{
+"id": "robust-contradictory-spec-07-sowcal-next_opening",
+"ok": true
+},
+{
+"id": "robust-contradictory-spec-08-initiative-drop",
+"ok": true
+},
+{
+"id": "robust-contradictory-spec-09-sowcal-open_on",
+"ok": true
+},
+{
+"id": "robust-contradictory-spec-10-holdqueue-cancel",
+"ok": true
+}
+]

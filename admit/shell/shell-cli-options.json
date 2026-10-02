@@ -1,0 +1,46 @@
+[
+{
+"id": "shell-cli-options-01-greeter-flags",
+"ok": true
+},
+{
+"id": "shell-cli-options-02-unit-converter",
+"ok": true
+},
+{
+"id": "shell-cli-options-03-lines-filter",
+"ok": true
+},
+{
+"id": "shell-cli-options-04-tag-names",
+"ok": true
+},
+{
+"id": "shell-cli-options-05-required-env",
+"ok": true
+},
+{
+"id": "shell-cli-options-06-retry-wrapper",
+"ok": true
+},
+{
+"id": "shell-cli-options-07-column-picker",
+"ok": true
+},
+{
+"id": "shell-cli-options-08-long-options-parser",
+"ok": true
+},
+{
+"id": "shell-cli-options-09-fix-sendmsg-options",
+"ok": true
+},
+{
+"id": "shell-cli-options-10-todo-subcommands",
+"ok": true
+},
+{
+"id": "shell-cli-options-11-humanize-sizes",
+"ok": true
+}
+]

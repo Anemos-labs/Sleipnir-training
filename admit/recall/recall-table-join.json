@@ -1,0 +1,58 @@
+[
+{
+"id": "recall-table-join-01-customer-month",
+"ok": true
+},
+{
+"id": "recall-table-join-02-customer-month",
+"ok": true
+},
+{
+"id": "recall-table-join-03-top-customer",
+"ok": true
+},
+{
+"id": "recall-table-join-04-top-customer",
+"ok": true
+},
+{
+"id": "recall-table-join-05-order",
+"ok": true
+},
+{
+"id": "recall-table-join-06-order",
+"ok": true
+},
+{
+"id": "recall-table-join-07-top-customer",
+"ok": true
+},
+{
+"id": "recall-table-join-08-order",
+"ok": true
+},
+{
+"id": "recall-table-join-09-customer-month",
+"ok": true
+},
+{
+"id": "recall-table-join-10-order",
+"ok": true
+},
+{
+"id": "recall-table-join-11-top-customer",
+"ok": true
+},
+{
+"id": "recall-table-join-12-order",
+"ok": true
+},
+{
+"id": "recall-table-join-13-top-customer",
+"ok": true
+},
+{
+"id": "recall-table-join-14-customer-month",
+"ok": true
+}
+]

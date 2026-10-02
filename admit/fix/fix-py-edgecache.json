@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-edgecache-01-cmp",
+"ok": true
+},
+{
+"id": "fix-py-edgecache-02-logic",
+"ok": true
+},
+{
+"id": "fix-py-edgecache-03-const",
+"ok": true
+},
+{
+"id": "fix-py-edgecache-04-arith",
+"ok": true
+},
+{
+"id": "fix-py-edgecache-05-swap",
+"ok": true
+},
+{
+"id": "fix-py-edgecache-06-delete",
+"ok": true
+},
+{
+"id": "fix-py-edgecache-07-negate",
+"ok": true
+},
+{
+"id": "fix-py-edgecache-08-cmp",
+"ok": true
+},
+{
+"id": "fix-py-edgecache-09-const",
+"ok": true
+},
+{
+"id": "fix-py-edgecache-10-arith",
+"ok": true
+}
+]

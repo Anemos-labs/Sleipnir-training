@@ -1,0 +1,42 @@
+[
+{
+"id": "robust-unsatisfiable-plan-01-ports",
+"ok": true
+},
+{
+"id": "robust-unsatisfiable-plan-02-cycle",
+"ok": true
+},
+{
+"id": "robust-unsatisfiable-plan-03-budget",
+"ok": true
+},
+{
+"id": "robust-unsatisfiable-plan-04-meetings",
+"ok": true
+},
+{
+"id": "robust-unsatisfiable-plan-05-versions",
+"ok": true
+},
+{
+"id": "robust-unsatisfiable-plan-06-ports",
+"ok": true
+},
+{
+"id": "robust-unsatisfiable-plan-07-cycle",
+"ok": true
+},
+{
+"id": "robust-unsatisfiable-plan-08-budget",
+"ok": true
+},
+{
+"id": "robust-unsatisfiable-plan-09-meetings",
+"ok": true
+},
+{
+"id": "robust-unsatisfiable-plan-10-versions",
+"ok": true
+}
+]

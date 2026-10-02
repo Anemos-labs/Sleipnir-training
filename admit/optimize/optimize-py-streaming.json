@@ -1,0 +1,50 @@
+[
+{
+"id": "optimize-py-streaming-01-totals-csv",
+"ok": true
+},
+{
+"id": "optimize-py-streaming-02-first-spaced",
+"ok": true
+},
+{
+"id": "optimize-py-streaming-03-top-pipe",
+"ok": true
+},
+{
+"id": "optimize-py-streaming-04-totals-csv",
+"ok": true
+},
+{
+"id": "optimize-py-streaming-05-run-spaced",
+"ok": true
+},
+{
+"id": "optimize-py-streaming-06-totals-pipe",
+"ok": true
+},
+{
+"id": "optimize-py-streaming-07-run-csv",
+"ok": true
+},
+{
+"id": "optimize-py-streaming-08-distinct-spaced",
+"ok": true
+},
+{
+"id": "optimize-py-streaming-09-first-pipe",
+"ok": true
+},
+{
+"id": "optimize-py-streaming-10-convert-csv",
+"ok": true
+},
+{
+"id": "optimize-py-streaming-11-convert-spaced",
+"ok": true
+},
+{
+"id": "optimize-py-streaming-12-run-pipe",
+"ok": true
+}
+]

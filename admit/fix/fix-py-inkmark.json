@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-inkmark-01-cmp",
+"ok": true
+},
+{
+"id": "fix-py-inkmark-02-arith",
+"ok": true
+},
+{
+"id": "fix-py-inkmark-03-const",
+"ok": true
+},
+{
+"id": "fix-py-inkmark-04-logic",
+"ok": true
+},
+{
+"id": "fix-py-inkmark-05-negate",
+"ok": true
+},
+{
+"id": "fix-py-inkmark-06-delete",
+"ok": true
+},
+{
+"id": "fix-py-inkmark-07-cmp",
+"ok": true
+},
+{
+"id": "fix-py-inkmark-08-arith",
+"ok": true
+},
+{
+"id": "fix-py-inkmark-09-const",
+"ok": true
+},
+{
+"id": "fix-py-inkmark-10-logic",
+"ok": true
+}
+]

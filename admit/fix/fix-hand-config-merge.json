@@ -1,0 +1,54 @@
+[
+{
+"id": "fix-hand-config-merge-01-environment-below-file",
+"ok": true
+},
+{
+"id": "fix-hand-config-merge-02-bool-from-truthiness",
+"ok": true
+},
+{
+"id": "fix-hand-config-merge-03-falsy-overrides-ignored",
+"ok": true
+},
+{
+"id": "fix-hand-config-merge-04-lists-are-concatenated",
+"ok": true
+},
+{
+"id": "fix-hand-config-merge-05-merge-modifies-its-base",
+"ok": true
+},
+{
+"id": "fix-hand-config-merge-06-env-names-not-lowered-and-base-modified",
+"ok": true
+},
+{
+"id": "fix-hand-config-merge-07-pick-uses-or",
+"ok": true
+},
+{
+"id": "fix-hand-config-merge-08-arrays-merged-by-index",
+"ok": true
+},
+{
+"id": "fix-hand-config-merge-09-undefined-overrides",
+"ok": true
+},
+{
+"id": "fix-hand-config-merge-10-prototype-keys-allowed",
+"ok": true
+},
+{
+"id": "fix-hand-config-merge-11-hashes-not-merged-deeply",
+"ok": true
+},
+{
+"id": "fix-hand-config-merge-12-to-int-is-lenient",
+"ok": true
+},
+{
+"id": "fix-hand-config-merge-13-fetch-falls-back-on-falsy",
+"ok": true
+}
+]

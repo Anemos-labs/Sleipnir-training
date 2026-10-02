@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-linepatch-01-logic",
+"ok": true
+},
+{
+"id": "fix-py-linepatch-02-arith",
+"ok": true
+},
+{
+"id": "fix-py-linepatch-03-swap",
+"ok": true
+},
+{
+"id": "fix-py-linepatch-04-negate",
+"ok": true
+},
+{
+"id": "fix-py-linepatch-05-delete",
+"ok": true
+},
+{
+"id": "fix-py-linepatch-06-const",
+"ok": true
+},
+{
+"id": "fix-py-linepatch-07-arith",
+"ok": true
+},
+{
+"id": "fix-py-linepatch-08-negate",
+"ok": true
+},
+{
+"id": "fix-py-linepatch-09-delete",
+"ok": true
+},
+{
+"id": "fix-py-linepatch-10-const",
+"ok": true
+}
+]

@@ -1,0 +1,22 @@
+[
+{
+"id": "games-slidebox-solver-01-water",
+"ok": true
+},
+{
+"id": "games-slidebox-solver-02-slide-water",
+"ok": true
+},
+{
+"id": "games-slidebox-solver-03-push2",
+"ok": true
+},
+{
+"id": "games-slidebox-solver-04-water-exact",
+"ok": true
+},
+{
+"id": "games-slidebox-solver-05-slide-water-exact",
+"ok": true
+}
+]

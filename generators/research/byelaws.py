@@ -317,7 +317,7 @@ def _pick_day(rng, orders, made0):
 def gen_lookup(rng, n):
     made = 0
     while made < n:
-        n_orders = rng.choice([4, 6, 8, 10])
+        n_orders = rng.choice([2, 3, 4, 6, 8, 10])
         org, title, kind, secs, orders, corrs, made0 = build(rng, n_orders)
         files = render(rng, org, title, kind, secs, orders, corrs, made0)
         eff_orders = [o for o in orders if not o.revoked]
@@ -326,9 +326,18 @@ def gen_lookup(rng, n):
             continue
         sid = rng.choice(touched)
         s = next(x for x in secs if x.sid == sid)
-        qk = rng.choice(["value_on", "value_on", "which_order", "current_since", "n_changed"])
+        qk = rng.choice(["original", "value_on", "value_on", "which_order", "current_since", "n_changed"])
         end = max(op.commence for o in eff_orders for op in o.ops)
-        if qk == "value_on":
+        if qk == "original":
+            s0 = next(x for x in secs if x.v0 is not None)
+            sid = s0.sid
+            s = s0
+            ins, c = W.numfmt(rng, s.v0, ("Answer", "Result", "Figure"))
+            ph = [f"What did the {title} originally say for the {title_of(s)} (the text as first made, before any amendment)?{ins}",
+                  f"In the byelaws as first made, what is the figure for \"{title_of(s)}\"?{ins}"]
+            prompt, contains, gold = rng.choice(ph), [c], f"Originally {s.v0} {s.unit}. {c}"
+            diff = 1 + (n_orders >= 6)
+        elif qk == "value_on":
             for _ in range(30):
                 d = _pick_day(rng, orders, made0)
                 v, op = value_at(secs, orders, d, sid)
@@ -340,7 +349,7 @@ def gen_lookup(rng, n):
             ph = [f"Under the {title}, what was the {title_of(s)} figure on {W.d_long(d)}?{ins}",
                   f"What number did the section on \"{title_of(s)}\" give on {W.d_us(d)}, counting every amendment in force by then?{ins}",
                   f"A visitor was told something about \"{title_of(s)}\" on {W.d_long(d)}. What did the law actually say that day (the figure)?{ins}"]
-            diff = 3 + (len(orders) >= 8) + (any(o.revoked for o in orders)) + (any(op.printed for o in orders for op in o.ops if op.sec == sid))
+            diff = 2 + (len(orders) >= 6) + (any(o.revoked for o in orders)) + (any(op.printed for o in orders for op in o.ops if op.sec == sid))
             prompt, contains, gold = rng.choice(ph), [c], f"On {W.d_long(d)} section {sid} ({s.title}) gave {v} {s.unit}. {c}"
         elif qk == "which_order":
             v, op = value_at(secs, orders, end + dt.timedelta(days=1), sid)
@@ -350,7 +359,7 @@ def gen_lookup(rng, n):
                   f"Which order last changed \"{title_of(s)}\" in a way that is still in force today ({W.d_long(end + dt.timedelta(days=1))})? Reply AO-<number>."]
             prompt = rng.choice(ph)
             contains, gold = [f"AO-{op.order}"], f"AO-{op.order} set the current figure ({v} {s.unit})."
-            diff = 3 + (len(orders) >= 8) + any(o.revoked for o in orders)
+            diff = 2 + (len(orders) >= 6) + any(o.revoked for o in orders)
         elif qk == "current_since":
             v, op = value_at(secs, orders, end + dt.timedelta(days=1), sid)
             if op is None or v is None:
@@ -358,7 +367,7 @@ def gen_lookup(rng, n):
             ph = [f"Since which date has the current {title_of(s)} figure been in force? Treat {W.d_long(end + dt.timedelta(days=1))} as today and answer YYYY-MM-DD.",
                   f"What is the commencement date (ISO) of the change that gave the {title_of(s)} its present figure? 'Present' means {W.d_long(end + dt.timedelta(days=1))}."]
             prompt, contains, gold = rng.choice(ph), [W.d_iso(op.commence)], f"It has applied since {W.d_iso(op.commence)}."
-            diff = 4
+            diff = 3 + (len(orders) >= 8)
         else:
             d = _pick_day(rng, orders, made0)
             cnt = 0
@@ -374,7 +383,7 @@ def gen_lookup(rng, n):
             ph = [f"Of the {sum(1 for x in secs if x.v0 is not None)} sections in the original text, how many differ on {W.d_long(d)} from the original (a different figure, or repealed)?{ins}",
                   f"On {W.d_long(d)}, how many of the original sections no longer read as first made, either because the figure changed or because they were repealed? (Sections inserted later don't count; a figure that went up and came back counts as unchanged.){ins}"]
             prompt, contains, gold = rng.choice(ph), [c], f"{cnt} original sections differed on {W.d_long(d)}. {c}"
-            diff = 5 if len(orders) >= 8 else 4
+            diff = 3 + (len(orders) >= 6) + (len(orders) >= 9)
         made += 1
         yield W.say_task(slug=f"{made:02d}-{qk.replace('_', '-')}", prompt=W.voice(rng, org, prompt, lead=rng.choice(["", "", "Using the legal archive in this folder,"])),
                          difficulty=min(5, diff), start=files, contains=contains, gold=gold, tags=["byelaws", "temporal", "amendments"],
@@ -386,7 +395,7 @@ def gen_lookup(rng, n):
 def gen_consolidate(rng, n):
     made = 0
     while made < n:
-        n_orders = rng.choice([5, 7, 9])
+        n_orders = rng.choice([3, 4, 5, 7, 9])
         org, title, kind, secs, orders, corrs, made0 = build(rng, n_orders)
         files = render(rng, org, title, kind, secs, orders, corrs, made0)
         eff = [o for o in orders if not o.revoked]
@@ -407,6 +416,6 @@ def gen_consolidate(rng, n):
               f"I need a consolidated snapshot of the {title} for {W.d_iso(d)}. `answer.json`: key `sections`, an object from section number (like \"3\" or \"4A\") to the figure in force that day, or \"repealed\". "
               f"Only include sections that were part of the law on that day."]
         made += 1
-        yield W.file_task(slug=f"{made:02d}-snapshot", prompt=W.voice(rng, org, rng.choice(ph)), difficulty=5 if n_orders >= 7 else 4, start=files,
+        yield W.file_task(slug=f"{made:02d}-snapshot", prompt=W.voice(rng, org, rng.choice(ph)), difficulty=3 + (n_orders >= 5) + (n_orders >= 8), start=files,
                           spec=W.json_spec(fields), solution={"answer.json": W.dumps({"sections": {k: (v if v is not None else "repealed") for k, v in exp.items()}})},
                           scored=True, tags=["byelaws", "temporal", "consolidation"], notes={"scenario": kind, "orders": n_orders, "date": W.d_iso(d)})

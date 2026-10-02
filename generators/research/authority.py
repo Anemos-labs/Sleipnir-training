@@ -189,11 +189,11 @@ def render(rng, org, key, dom, ents, truth, claims, lo, hi):
 def gen_lookup(rng, n):
     made = 0
     while made < n:
-        n_ent = rng.choice([6, 8, 10, 12])
+        n_ent = rng.choice([4, 5, 6, 8, 10, 12])
         org, key, dom, ents, truth, claims, lo, hi = build(rng, n_ent)
         files = render(rng, org, key, dom, ents, truth, claims, lo, hi)
         attrs = dom["attrs"]
-        qk = rng.choice(["value", "value", "extreme", "count", "diff"])
+        qk = rng.choice(["value", "value", "value", "extreme", "count", "diff"])
         a = rng.randrange(3)
         lab, unit, (a_lo, a_hi) = attrs[a]
         vals = [truth[(e, a)] for e in range(n_ent)]
@@ -205,7 +205,8 @@ def gen_lookup(rng, n):
                   f"Please settle an argument: how big is the {ents[e]}'s {lab}{' (' + unit + ')' if unit else ''}? The sources don't agree.{ins}",
                   f"Our dossier has several figures for the {lab} of the {ents[e]}. Which one should we publish?{ins}"]
             prompt, contains, gold = rng.choice(ph), [c], f"The {lab} of the {ents[e]} is {v}" + (f" {unit}" if unit else "") + f". {c}"
-            diff = 3 + (sum(1 for c_ in claims if (c_.ent, c_.attr) == (e, a)) >= 4)
+            ncl = sum(1 for c_ in claims if (c_.ent, c_.attr) == (e, a))
+            diff = 1 + (ncl >= 3) + (ncl >= 5)
         elif qk == "extreme":
             hi_v, lo_v = max(vals), min(vals)
             if vals.count(hi_v) != 1 or vals.count(lo_v) != 1:
@@ -215,7 +216,7 @@ def gen_lookup(rng, n):
             ph = [f"Which of the {dom['title']} in the dossier has the {which} {lab}? Name it.",
                   f"Across all the {dom['title']} here, which has the {which} {lab}, going by the figure the README says to trust?"]
             prompt, contains, gold = rng.choice(ph), [ents[tgt].split()[0]], f"The {ents[tgt]} has the {which} {lab} ({vals[tgt]})."
-            diff = 4 + (n_ent >= 10)
+            diff = 3 + (n_ent >= 10)
         elif qk == "count":
             thr = sorted(vals)[len(vals) // 2] + rng.choice([0, 1])
             cnt = sum(1 for v in vals if v > thr)
@@ -223,7 +224,7 @@ def gen_lookup(rng, n):
             ph = [f"How many of the {dom['title']} have a {lab} above {thr}{' ' + unit if unit else ''}?{ins}",
                   f"Count the {dom['title']} whose {lab} is greater than {thr}{' ' + unit if unit else ''} (strictly).{ins}"]
             prompt, contains, gold = rng.choice(ph), [c], f"{cnt} of them. {c}"
-            diff = 4 + (n_ent >= 10)
+            diff = 3 + (n_ent >= 10)
         else:
             e1, e2 = rng.sample(range(n_ent), 2)
             d_ = abs(truth[(e1, a)] - truth[(e2, a)])
@@ -233,7 +234,7 @@ def gen_lookup(rng, n):
             ph = [f"By how much do the {ents[e1]} and the {ents[e2]} differ in {lab}?{ins}",
                   f"What is the absolute difference between the {lab} of the {ents[e1]} and that of the {ents[e2]}?{ins}"]
             prompt, contains, gold = rng.choice(ph), [c], f"They differ by {d_}. {c}"
-            diff = 4
+            diff = 3
         made += 1
         yield W.say_task(slug=f"{made:02d}-{qk}", prompt=W.voice(rng, org, prompt, lead=rng.choice(["", "", "Using the dossier in this folder,"])), difficulty=min(5, diff),
                          start=files, contains=contains, gold=gold, tags=["conflict", "authority"], notes={"domain": key, "entities": n_ent, "question": qk})
@@ -244,7 +245,7 @@ def gen_lookup(rng, n):
 def gen_table(rng, n):
     made = 0
     while made < n:
-        n_ent = rng.choice([5, 6, 7, 8])
+        n_ent = rng.choice([3, 4, 5, 6, 8])
         org, key, dom, ents, truth, claims, lo, hi = build(rng, n_ent)
         files = render(rng, org, key, dom, ents, truth, claims, lo, hi)
         attrs = dom["attrs"]
@@ -256,5 +257,5 @@ def gen_table(rng, n):
               f"I need a clean table for the printers: `out.csv`, columns {', '.join(cols)}. One row per site; each figure must be the authoritative one under the README's rules (not the most common one).",
               f"Please consolidate the dossier into `out.csv` ({','.join(cols)}). Resolve disagreements as described in README.md."]
         made += 1
-        yield W.file_task(slug=f"{made:02d}-consolidated", prompt=W.voice(rng, org, rng.choice(ph)), difficulty=4 + (n_ent >= 7), start=files, spec=spec,
+        yield W.file_task(slug=f"{made:02d}-consolidated", prompt=W.voice(rng, org, rng.choice(ph)), difficulty=3 + (n_ent >= 5) + (n_ent >= 8), start=files, spec=spec,
                           solution={"out.csv": W.csv_text(cols, rows)}, scored=True, tags=["conflict", "authority", "table"], notes={"domain": key, "entities": n_ent})

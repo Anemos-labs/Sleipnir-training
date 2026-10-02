@@ -1,0 +1,74 @@
+[
+{
+"id": "review-security-01-reportfiles-1d",
+"ok": true
+},
+{
+"id": "review-security-02-hookrelay-1d",
+"ok": true
+},
+{
+"id": "review-security-03-chapterfile-1d",
+"ok": true
+},
+{
+"id": "review-security-04-hookrelay-1d",
+"ok": true
+},
+{
+"id": "review-security-05-sessions-1d",
+"ok": true
+},
+{
+"id": "review-security-06-printinvoice-lockers-shiftroster-2d",
+"ok": true
+},
+{
+"id": "review-security-07-portalauth-1d",
+"ok": true
+},
+{
+"id": "review-security-08-lockers-1d",
+"ok": true
+},
+{
+"id": "review-security-09-shiftroster-1d",
+"ok": true
+},
+{
+"id": "review-security-10-hookrelay-1d",
+"ok": true
+},
+{
+"id": "review-security-11-linden-cart-2d",
+"ok": true
+},
+{
+"id": "review-security-12-printinvoice-1d",
+"ok": true
+},
+{
+"id": "review-security-13-lockers-2d",
+"ok": true
+},
+{
+"id": "review-security-14-linden-cart-1d",
+"ok": true
+},
+{
+"id": "review-security-15-quantities-deployfiles-ringlog-1d",
+"ok": true
+},
+{
+"id": "review-security-16-reportfiles-1d",
+"ok": true
+},
+{
+"id": "review-security-17-linden-cart-1d",
+"ok": true
+},
+{
+"id": "review-security-18-printinvoice-1d",
+"ok": true
+}
+]

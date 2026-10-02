@@ -29,9 +29,12 @@ from typing import Callable
 from fx import Task, merged, run
 
 HARNESS_SRC = r'''
+import base64
 import difflib
+import gzip
 import json
 import os
+import re
 import shutil
 import signal
 import subprocess
@@ -42,9 +45,13 @@ EPOCH = 1700000000
 
 
 def apply_tree(box, tree):
+    later = []
     for path, ent in tree.items():
         full = os.path.join(box, path)
         t = ent.get("t", "f")
+        if t == "h":
+            later.append((full, ent))
+            continue
         if t == "d":
             os.makedirs(full, exist_ok=True)
         elif t == "l":
@@ -53,9 +60,13 @@ def apply_tree(box, tree):
         else:
             os.makedirs(os.path.dirname(full), exist_ok=True)
             with open(full, "wb") as f:
-                f.write(ent.get("c", "").encode("utf-8"))
+                raw = base64.b64decode(ent["b"]) if "b" in ent else ent.get("c", "").encode("utf-8")
+                f.write(gzip.compress(raw, mtime=0) if ent.get("gz") else raw)
             os.chmod(full, 0o755 if ent.get("x") else 0o644)
             os.utime(full, (ent.get("m", EPOCH), ent.get("m", EPOCH)))
+    for full, ent in later:
+        os.makedirs(os.path.dirname(full), exist_ok=True)
+        os.link(os.path.join(box, ent["to"]), full)
 
 
 def apply_ops(box, ops):
@@ -70,6 +81,16 @@ def apply_ops(box, ops):
                 os.utime(full, (op["m"], op["m"]))
         elif kind == "touch":
             os.utime(full, (op["m"], op["m"]))
+        elif kind == "touchall":
+            if os.path.isdir(full):
+                for d, dns, fns in os.walk(full, topdown=False):
+                    for n in fns + dns:
+                        q = os.path.join(d, n)
+                        if not os.path.islink(q):
+                            os.utime(q, (op["m"], op["m"]))
+                os.utime(full, (op["m"], op["m"]))
+            elif os.path.exists(full):
+                os.utime(full, (op["m"], op["m"]))
         elif kind == "rm":
             if os.path.isdir(full) and not os.path.islink(full):
                 shutil.rmtree(full)
@@ -81,7 +102,7 @@ def apply_ops(box, ops):
             os.chmod(full, op["mode"])
 
 
-def snapshot(box, mtimes, dirs):
+def snapshot(box, mtimes, dirs, nlink=False, sorted_paths=()):
     out = {}
     for d, dirnames, files in os.walk(box):
         dirnames.sort()
@@ -101,11 +122,27 @@ def snapshot(box, mtimes, dirs):
                 out[r] = {"t": "l", "to": os.readlink(p)}
                 continue
             with open(p, "rb") as fh:
-                ent = {"t": "f", "c": fh.read().decode("utf-8", "replace")}
+                raw = fh.read()
+            gz = False
+            if fn.endswith(".gz"):
+                try:
+                    raw, gz = gzip.decompress(raw), True
+                except Exception:
+                    pass
+            try:
+                ent = {"t": "f", "c": raw.decode("utf-8")}
+            except UnicodeDecodeError:
+                ent = {"t": "f", "b": base64.b64encode(raw).decode()}
+            if gz:
+                ent["gz"] = True
+            if r in sorted_paths and "c" in ent:
+                ent["c"] = "\n".join(sorted(ent["c"].split("\n")))
             if os.access(p, os.X_OK):
                 ent["x"] = True
             if r in mtimes:
                 ent["m"] = int(os.stat(p).st_mtime)
+            if nlink:
+                ent["n"] = os.stat(p).st_nlink
             out[r] = ent
     return out
 
@@ -124,6 +161,8 @@ def run_scenario(repo, spec, scn, timeout=20):
             apply_ops(box, r.get("ops", []))
             if spec.get("kind") == "make":
                 argv = ["make", "--no-print-directory"] + list(r.get("args", []))
+            elif spec.get("runner"):
+                argv = list(spec["runner"]) + [script] + list(r.get("args", []))
             else:
                 argv = [spec.get("shell", "bash"), script] + list(r.get("args", []))
             env = {"PATH": os.environ.get("PATH", "/usr/bin:/bin"), "HOME": tmp, "LC_ALL": "C.UTF-8", "TZ": "UTC", "USER": "tester"}
@@ -138,7 +177,7 @@ def run_scenario(repo, spec, scn, timeout=20):
                 out, err = p.communicate()
                 rc = 124
             results.append({"rc": rc, "stdout": out.decode("utf-8", "replace"), "stderr": err.decode("utf-8", "replace")})
-        tree = snapshot(box, set(scn.get("mtimes", [])), scn.get("dirs", "empty"))
+        tree = snapshot(box, set(scn.get("mtimes", [])), scn.get("dirs", "empty"), scn.get("nlink", False), set(scn.get("sorted", [])))
         return results, tree
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
@@ -198,6 +237,11 @@ def main(repo=None):
     if not os.path.isfile(script):
         print(f"FAIL: {spec['script']} does not exist")
         sys.exit(1)
+    code = "\n".join(l for l in open(script, encoding="utf-8", errors="replace").read().splitlines() if not l.lstrip().startswith("#"))
+    for pat in spec.get("forbid", []):
+        if re.search(pat, code):
+            print(f"FAIL: {spec['script']} must not rely on {pat!r} (it has to run with plain `{spec.get('shell', 'sh')}`)")
+            sys.exit(1)
     bad = 0
     for scn in spec["scenarios"]:
         results, tree = run_scenario(repo, spec, scn)
@@ -236,13 +280,30 @@ def harness():
 # scenario builders
 
 
-def F(text: str = "", m: int | None = None, x: bool = False) -> dict:
+def F(text: str = "", m: int | None = None, x: bool = False, gz: bool = False) -> dict:
     d = {"t": "f", "c": text}
+    if gz:
+        d["gz"] = True
     if m is not None:
         d["m"] = m
     if x:
         d["x"] = True
     return d
+
+
+def FB(data: bytes, m: int | None = None, x: bool = False) -> dict:
+    import base64
+    d = {"t": "f", "b": base64.b64encode(data).decode()}
+    if m is not None:
+        d["m"] = m
+    if x:
+        d["x"] = True
+    return d
+
+
+def HL(to: str) -> dict:
+    """a hard link to another fixture file"""
+    return {"t": "h", "to": to}
 
 
 def D() -> dict:
@@ -272,8 +333,12 @@ def Run(*args, stdin: str = "", env: dict | None = None, cwd: str = ".", ops: li
     return r
 
 
-def scn(name: str, files: dict, *runs: dict, mtimes: list | None = None, dirs: str = "empty") -> dict:
+def scn(name: str, files: dict, *runs: dict, mtimes: list | None = None, dirs: str = "empty", nlink: bool = False, sorted_files: list | None = None) -> dict:
     s = {"name": name, "files": files, "runs": list(runs) or [Run()]}
+    if sorted_files:
+        s["sorted"] = list(sorted_files)
+    if nlink:
+        s["nlink"] = True
     if mtimes:
         s["mtimes"] = list(mtimes)
     if dirs != "empty":
@@ -307,6 +372,9 @@ class ShellSpec:
     wrong: tuple = ()
     oracle: Callable | None = None  # (scenario, results, tree) -> list of problems; independent check of the reference
     extra: dict = field(default_factory=dict)  # additional start files (helper libs, fixtures)
+    ref_extra: dict = field(default_factory=dict)  # files the reference solution changes or adds besides the script
+    forbid: tuple = ()  # regexes that must not match the (comment-free) script text
+    runner: tuple = ()  # e.g. ("awk", "-f"): the artefact is run as `<runner> <script> <args>` instead of through a shell
     title: str = ""
     tags: tuple = ()
     lang: str = "bash"
@@ -325,6 +393,8 @@ def _render_example(spec: ShellSpec, s: dict, results: list, tree: dict) -> str:
             out.append(_fmt_name(p) + "/")
         elif e["t"] == "l":
             out.append(f"{_fmt_name(p)} -> {e['to']}")
+        elif e["t"] == "h":
+            out.append(f"{_fmt_name(p)}    [hard link to {_fmt_name(e['to'])}]")
         else:
             body = e.get("c", "")
             first = body.split("\n")[0][:50]
@@ -334,7 +404,10 @@ def _render_example(spec: ShellSpec, s: dict, results: list, tree: dict) -> str:
         for op in r.get("ops", []):
             out.append(f"\n(then: {op['op']} `{_fmt_name(op['path'])}`)")
         shell = spec.shell if spec.kind == "script" else "make"
-        cmd = (f"{shell} {spec.script} " if spec.kind == "script" else "make ") + " ".join(_q(a) for a in r.get("args", []))
+        if spec.runner:
+            cmd = " ".join(spec.runner) + f" {spec.script} " + " ".join(_q(a) for a in r.get("args", []))
+        else:
+            cmd = (f"{shell} {spec.script} " if spec.kind == "script" else "make ") + " ".join(_q(a) for a in r.get("args", []))
         out += ["", f"running `{cmd.strip()}`" + (" with this on standard input:" if r.get("stdin") else ""), ""]
         if r.get("stdin"):
             out += ["```", r["stdin"].rstrip("\n"), "```", ""]
@@ -368,11 +441,15 @@ def shell_tasks(family_key: str, specs: list[ShellSpec], rng: random.Random, n: 
         srng = random.Random(rng.random())
         example, hidden_scns = spec.make(srng)
         spec_json = {"script": spec.script, "shell": spec.shell, "kind": spec.kind}
+        if spec.forbid:
+            spec_json["forbid"] = list(spec.forbid)
+        if spec.runner:
+            spec_json["runner"] = list(spec.runner)
         ref_repo = tempfile.mkdtemp(prefix="shref-")
         try:
             with open(os.path.join(ref_repo, spec.script), "w", encoding="utf-8") as f:
                 f.write(spec.ref)
-            for k, v in spec.extra.items():
+            for k, v in {**spec.extra, **spec.ref_extra}.items():
                 p = os.path.join(ref_repo, k)
                 os.makedirs(os.path.dirname(p) or ref_repo, exist_ok=True)
                 open(p, "w", encoding="utf-8").write(v)
@@ -398,17 +475,20 @@ def shell_tasks(family_key: str, specs: list[ShellSpec], rng: random.Random, n: 
             shutil.rmtree(ref_repo, ignore_errors=True)
         spec_json["scenarios"] = built
         readme = f"# {spec.title or family_key}\n\n{spec.doc.strip()}\n\n" + _render_example(spec, example, ex_res, ex_tree)
-        if spec.kind == "script":
+        if spec.runner:
+            readme += (f"\nThe tests run `{' '.join(spec.runner)} {spec.script} ...` in a fresh scratch directory, with a minimal environment "
+                       f"(`PATH`, `HOME`, `LC_ALL=C.UTF-8`, `TZ=UTC`); only the working directory and the files it contains matter.\n")
+        elif spec.kind == "script":
             readme += (f"\nThe tests run `{spec.shell} {spec.script} ...` in a fresh scratch directory, with a minimal environment "
                        f"(`PATH`, `HOME`, `LC_ALL=C.UTF-8`, `TZ=UTC`); only the working directory and the files it contains matter."
                        f" File names in the real tests are nastier than the example.\n")
         else:
             readme += "\nThe tests copy your `Makefile` into a fresh scratch directory next to the project files and run `make` there, several times when a scenario needs it.\n"
-        stub = spec.buggy or (f"#!/usr/bin/env {spec.shell}\n# TODO: see README.md\n" if spec.kind == "script" else "# TODO: see README.md\n")
+        stub = spec.buggy or (f"#!/usr/bin/env {spec.shell}\n# TODO: see README.md\n" if spec.kind == "script" and not spec.runner else "# TODO: see README.md\n")
         start = {"README.md": readme, spec.script: stub.strip("\n") + "\n", **spec.extra}
         hidden = {"tests/check_shell.py": CHECK_SHELL, "tests/shx.py": HARNESS_SRC, "tests/spec.json": json.dumps(spec_json, indent=1, ensure_ascii=False) + "\n"}
         t = Task(slug=f"{si + 1:02d}-{spec.slug}", prompt=spec.prompt.strip(), difficulty=spec.d, start=start, hidden=hidden,
-                 solution={spec.script: spec.ref.strip("\n") + "\n"}, verify="python3 tests/check_shell.py", kind="fix" if spec.buggy else "feature",
+                 solution={spec.script: spec.ref.strip("\n") + "\n", **spec.ref_extra}, verify="python3 tests/check_shell.py", kind="fix" if spec.buggy else "feature",
                  lang=spec.lang, tags=["shell", *spec.tags], notes={"family": family_key, "spec": spec.slug, **({"shell": spec.shell} if spec.shell != "bash" else {})})
         # guards: the start state fails; every `wrong` script fails
         res = run(merged(start, hidden), t.verify, timeout=120, cache=False)
