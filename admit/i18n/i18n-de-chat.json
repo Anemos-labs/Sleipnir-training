@@ -1,0 +1,46 @@
+[
+{
+"id": "i18n-de-chat-01-dauer-zeit",
+"ok": true
+},
+{
+"id": "i18n-de-chat-02-name-umdrehen",
+"ok": true
+},
+{
+"id": "i18n-de-chat-03-python-ausgabe",
+"ok": true
+},
+{
+"id": "i18n-de-chat-04-diff-zeilen",
+"ok": true
+},
+{
+"id": "i18n-de-chat-05-kurs-tage",
+"ok": true
+},
+{
+"id": "i18n-de-chat-06-bestell-export",
+"ok": true
+},
+{
+"id": "i18n-de-chat-07-sicherungen",
+"ok": true
+},
+{
+"id": "i18n-de-chat-08-regex-findall",
+"ok": true
+},
+{
+"id": "i18n-de-chat-09-sql-null-avg",
+"ok": true
+},
+{
+"id": "i18n-de-chat-10-namensliste",
+"ok": true
+},
+{
+"id": "i18n-de-chat-11-sitzordnung",
+"ok": true
+}
+]

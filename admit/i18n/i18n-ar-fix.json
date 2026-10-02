@@ -1,0 +1,38 @@
+[
+{
+"id": "i18n-ar-fix-01-typical-price",
+"ok": true
+},
+{
+"id": "i18n-ar-fix-02-bare-cr",
+"ok": true
+},
+{
+"id": "i18n-ar-fix-03-app-debug",
+"ok": true
+},
+{
+"id": "i18n-ar-fix-04-list-override",
+"ok": true
+},
+{
+"id": "i18n-ar-fix-05-arabic-search",
+"ok": true
+},
+{
+"id": "i18n-ar-fix-06-billing-day-31",
+"ok": true
+},
+{
+"id": "i18n-ar-fix-07-tax-per-class",
+"ok": true
+},
+{
+"id": "i18n-ar-fix-08-snapshot-keys",
+"ok": true
+},
+{
+"id": "i18n-ar-fix-09-importer-two-symptoms",
+"ok": true
+}
+]

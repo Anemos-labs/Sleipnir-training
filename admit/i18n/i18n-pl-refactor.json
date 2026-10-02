@@ -1,0 +1,38 @@
+[
+{
+"id": "i18n-pl-refactor-01-offpeak-wyciagniecie",
+"ok": true
+},
+{
+"id": "i18n-pl-refactor-02-tabela-zamiast-if",
+"ok": true
+},
+{
+"id": "i18n-pl-refactor-03-raport-async",
+"ok": true
+},
+{
+"id": "i18n-pl-refactor-04-strategia-zwroty",
+"ok": true
+},
+{
+"id": "i18n-pl-refactor-05-wstrzykiwanie-zaleznosci",
+"ok": true
+},
+{
+"id": "i18n-pl-refactor-06-podzial-util",
+"ok": true
+},
+{
+"id": "i18n-pl-refactor-07-martwy-kod",
+"ok": true
+},
+{
+"id": "i18n-pl-refactor-08-kompozycja-zamiast-dziedziczenia",
+"ok": true
+},
+{
+"id": "i18n-pl-refactor-09-zmiana-nazw-z-aliasami",
+"ok": true
+}
+]

@@ -1,0 +1,38 @@
+[
+{
+"id": "i18n-ar-fix-arnorm-01-delete",
+"ok": true
+},
+{
+"id": "i18n-ar-fix-arnorm-02-swap",
+"ok": true
+},
+{
+"id": "i18n-ar-fix-arnorm-03-const",
+"ok": true
+},
+{
+"id": "i18n-ar-fix-arnorm-04-cmp",
+"ok": true
+},
+{
+"id": "i18n-ar-fix-arnorm-05-negate",
+"ok": true
+},
+{
+"id": "i18n-ar-fix-arnorm-06-arith",
+"ok": true
+},
+{
+"id": "i18n-ar-fix-arnorm-07-delete",
+"ok": true
+},
+{
+"id": "i18n-ar-fix-arnorm-08-swap",
+"ok": true
+},
+{
+"id": "i18n-ar-fix-arnorm-09-const",
+"ok": true
+}
+]

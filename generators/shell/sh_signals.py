@@ -112,9 +112,13 @@ REF_TIMEOUT = dd('''
 
 def make_timeout(rng):
     ex = scn("example", {}, Run("1", "sh", "-c", "sleep 5; echo never"))
-    return ex, [scn("finishes in time, status passes", {}, Run("3", "sh", "-c", "echo quick; exit 9"), Run("3", "true"), Run("0.5", "false")),
-                scn("timeouts", {}, Run("1", "sh", "-c", "echo start; sleep 5; echo never", stderr="nonempty"), Run("1", "sleep", "10")),
-                scn("descendants are killed too", {}, Run("1", "sh", "-c", "(sleep 2; touch late) & wait"), Run("3", "true", ops=[{"op": "sleep", "s": 2.5}])),
+    # generous margins: commands that must finish get seconds to spare, commands that must be killed sleep far longer than the deadline,
+    # and the survivor check polls (up to 10 s) instead of sleeping a fixed time
+    watch = 'sleep 30 & echo $! > pid; wait'
+    probe = 'i=0; while kill -0 "$(cat pid)" 2>/dev/null; do i=$((i + 1)); [ "$i" -gt 100 ] && break; sleep 0.1; done; if kill -0 "$(cat pid)" 2>/dev/null; then echo alive; else echo dead; fi; rm -f pid'
+    return ex, [scn("finishes in time, status passes", {}, Run("10", "sh", "-c", "echo quick; exit 9"), Run("10", "true"), Run("5", "false")),
+                scn("timeouts", {}, Run("1", "sh", "-c", "echo start; sleep 30; echo never", stderr="nonempty"), Run("1", "sleep", "60")),
+                scn("descendants are killed too", {}, Run("1", "sh", "-c", watch), Run("10", "sh", "-c", probe)),
                 scn("usage", {}, Run(stderr="nonempty"), Run("1"), Run("soon", "true"))]
 
 
@@ -192,9 +196,14 @@ REF_PAR = dd('''
 ''')
 
 
+# job 3 finishes first, job 2 waits for it, job 1 waits for job 2: only copies that really run at the same time can finish
+# (a serial runner would wait 15 s for a marker that cannot appear and give up)
+ORDER = 'wait_for() { i=0; until grep -qx "$1" order 2>/dev/null; do i=$((i + 1)); if [ "$i" -gt 150 ]; then echo "gave up $JOB" >> order; exit 1; fi; sleep 0.1; done; }; case "$JOB" in 3) echo 3 >> order ;; 2) wait_for 3; echo 2 >> order ;; 1) wait_for 2; echo 1 >> order ;; esac'
+
+
 def make_par(rng):
     ex = scn("example", {}, Run("3", "sh", "-c", 'echo "$JOB" > "out.$JOB"'))
-    return ex, [scn("statuses", {}, Run("4", "sh", "-c", 'echo "job $JOB ran" > "out.$JOB"; exit $((JOB % 2 * 5))')), scn("really concurrent", {}, Run("3", "sh", "-c", 'sleep "0.$((9 - 3 * JOB))"; echo "$JOB" >> order')),
+    return ex, [scn("statuses", {}, Run("4", "sh", "-c", 'echo "job $JOB ran" > "out.$JOB"; exit $((JOB % 2 * 5))')), scn("really concurrent", {}, Run("3", "sh", "-c", ORDER)),
                 scn("single job and all ok", {}, Run("1", "echo", "solo"), Run("2", "true")), scn("usage", {}, Run(stderr="nonempty"), Run("0", "true"), Run("17", "true"), Run("x", "true"), Run("2"))]
 
 
@@ -219,9 +228,14 @@ REF_SIG = dd('''
 ''')
 
 
+# send a signal, then wait (up to 10 s) until the kernel has delivered it to the script (it is no longer pending in /proc/PPID/status)
+# before sending the next one, so that signals cannot merge into one under load; without /proc a fixed pause is used
+SEND = 'send() { kill -USR1 $PPID; i=0; while [ "$i" -lt 100 ]; do m=$(awk \'/^ShdPnd:/ { print $2 }\' /proc/$PPID/status 2>/dev/null); [ -n "$m" ] || { sleep 0.3; return; }; [ $(( 0x$m & 0x200 )) -eq 0 ] && return; i=$((i + 1)); sleep 0.1; done; }; '
+
+
 def make_sig(rng):
-    ex = scn("example", {}, Run("sh", "-c", "for i in 1 2; do kill -USR1 $PPID; sleep 0.2; done"))
-    return ex, [scn("signals during the command", {}, Run("sh", "-c", "for i in 1 2 3 4; do kill -USR1 $PPID; sleep 0.2; done; echo sent 4; exit 6"), Run("sh", "-c", "kill -USR1 $PPID; sleep 0.3"), Run("true")),
+    ex = scn("example", {}, Run("sh", "-c", SEND + "send; send"))
+    return ex, [scn("signals during the command", {}, Run("sh", "-c", SEND + "for i in 1 2 3 4; do send; done; echo sent 4; exit 6"), Run("sh", "-c", SEND + "send; sleep 0.3"), Run("true")),
                 scn("output passes through and stdin is not stolen", {}, Run("cat", stdin="through\n"), Run("sh", "-c", "echo $((1+1))")), scn("usage", {}, Run(stderr="nonempty"))]
 
 

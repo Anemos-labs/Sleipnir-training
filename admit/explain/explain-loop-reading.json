@@ -1,0 +1,42 @@
+[
+{
+"id": "explain-loop-reading-01-python-summary-2loops",
+"ok": true
+},
+{
+"id": "explain-loop-reading-02-javascript-output-1loops",
+"ok": true
+},
+{
+"id": "explain-loop-reading-03-ruby-output-1loops",
+"ok": true
+},
+{
+"id": "explain-loop-reading-04-go-output-1loops",
+"ok": true
+},
+{
+"id": "explain-loop-reading-05-python-output-1loops",
+"ok": true
+},
+{
+"id": "explain-loop-reading-06-ruby-summary-2loops",
+"ok": true
+},
+{
+"id": "explain-loop-reading-07-go-output-2loops",
+"ok": true
+},
+{
+"id": "explain-loop-reading-08-javascript-summary-2loops",
+"ok": true
+},
+{
+"id": "explain-loop-reading-09-ruby-summary-3loops",
+"ok": true
+},
+{
+"id": "explain-loop-reading-10-python-summary-2loops",
+"ok": true
+}
+]

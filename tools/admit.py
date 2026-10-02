@@ -163,6 +163,7 @@ def main() -> int:
     ap.add_argument("--keep", action="store_true", help="keep the build directory")
     ap.add_argument("--build-dir")
     ap.add_argument("--dist", help="leave tasks.jsonl, blobs/ and repos/ of the admitted tasks in this directory")
+    ap.add_argument("--keep-weak", action="store_true", help="with --dist: also keep answer-mode tasks whose check strings are all <= 3 characters")
     ap.add_argument("--no-write", action="store_true", help="do not write admit/ verdict files")
     args = ap.parse_args()
 
@@ -241,6 +242,11 @@ def main() -> int:
         dist = Path(args.dist)
         dist.mkdir(parents=True, exist_ok=True)
         good = {i for i, v in verdicts.items() if v["ok"]}
+        if not args.keep_weak:
+            weak = {r["id"] for r in recs if r["mode"] == "answer" and all(len(c.strip()) <= 3 for c in r["answer"]["contains"])}
+            if weak:
+                print(f"admit: leaving {len(weak)} weak-check answer tasks out of dist (use --keep-weak to include them)")
+            good -= weak
         with (dist / "tasks.jsonl").open("w", encoding="utf-8") as g:
             for t in checkable:
                 if t["id"] in good:

@@ -1,0 +1,38 @@
+[
+{
+"id": "i18n-fr-fixbug-01-merge-undefined",
+"ok": true
+},
+{
+"id": "i18n-fr-fixbug-02-prune-dry-run",
+"ok": true
+},
+{
+"id": "i18n-fr-fixbug-03-coupon-negatif",
+"ok": true
+},
+{
+"id": "i18n-fr-fixbug-04-semaine-iso",
+"ok": true
+},
+{
+"id": "i18n-fr-fixbug-05-erreur-nil-typee",
+"ok": true
+},
+{
+"id": "i18n-fr-fixbug-06-anniversaire-29-fevrier",
+"ok": true
+},
+{
+"id": "i18n-fr-fixbug-07-compta-coupons",
+"ok": true
+},
+{
+"id": "i18n-fr-fixbug-08-vue-figee",
+"ok": true
+},
+{
+"id": "i18n-fr-fixbug-09-stock-concurrence",
+"ok": true
+}
+]

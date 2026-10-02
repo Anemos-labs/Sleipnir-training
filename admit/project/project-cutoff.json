@@ -1,0 +1,34 @@
+[
+{
+"id": "project-cutoff-01-stoke-digest-go",
+"ok": true
+},
+{
+"id": "project-cutoff-02-kiln-clock-python",
+"ok": true
+},
+{
+"id": "project-cutoff-03-anvil-clock-go",
+"ok": true
+},
+{
+"id": "project-cutoff-04-weft-digest-python",
+"ok": true
+},
+{
+"id": "project-cutoff-05-smelt-digest-go",
+"ok": true
+},
+{
+"id": "project-cutoff-06-rivet-clock-go",
+"ok": true
+},
+{
+"id": "project-cutoff-07-mortar-digest-python",
+"ok": true
+},
+{
+"id": "project-cutoff-08-quarry-digest-go",
+"ok": true
+}
+]

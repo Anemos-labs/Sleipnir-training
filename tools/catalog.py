@@ -73,6 +73,8 @@ def main() -> int:
                 row["verify"] = r["verify"]
             if r.get("answer"):
                 row["answer_check"] = "final message contains " + json.dumps(r["answer"]["contains"], ensure_ascii=False)
+                if is_weak(r):
+                    row["weak_check"] = True
             if r.get("rubric"):
                 row["rubric"] = r["rubric"]
                 row["checks"] = r.get("checks", {})
@@ -80,12 +82,21 @@ def main() -> int:
             f.write(json.dumps(row, ensure_ascii=False) + "\n")
 
     write_stats(kept, dropped)
+    write_families(kept)
     print(f"catalog: {len(kept)} tasks, {len(dropped)} left out")
     for i, why in dropped[:20]:
         print("  left out", i, why)
     if args.strict and dropped:
         return 1
     return 0
+
+
+def is_weak(r: dict) -> bool:
+    """An answer-mode check every string of which is 3 characters or shorter ("7", "ant"): any message that mentions the
+    string passes, so a policy could learn to list candidates instead of answering. Such tasks stay in the catalog,
+    flagged, and are left out of `make dist` unless asked for."""
+    a = r.get("answer")
+    return bool(a) and all(len(c.strip()) <= 3 for c in a["contains"])
 
 
 def table(title: str, header: list[str], rows: list[list]) -> list[str]:
@@ -107,8 +118,9 @@ def write_stats(kept: list[dict], dropped: list[tuple[str, str]]) -> None:
     kinds = Counter(r["kind"] for r in kept)
     fams = Counter(r["family"] for r in kept)
     swarm = sum(1 for r in kept if r["team"].get("mode") == "swarm")
+    weak = sum(1 for r in kept if is_weak(r))
     lines = ["# Corpus statistics", "", f"**{n} tasks** in **{len(fams)} families** across **{len(by_cat)} categories**; "
-             f"{modes['fixture']} fixtures, {modes['answer']} answer-mode, {modes['rubric']} rubric; {swarm} for a swarm.", ""]
+             f"{modes['fixture']} fixtures, {modes['answer']} answer-mode ({weak} with a weak check, flagged `weak_check`), {modes['rubric']} rubric; {swarm} for a swarm.", ""]
     rows = []
     for cat in CATEGORIES:
         c = by_cat.get(cat)
@@ -127,6 +139,46 @@ def write_stats(kept: list[dict], dropped: list[tuple[str, str]]) -> None:
     if dropped:
         lines += [f"{len(dropped)} generated tasks are not in the catalog (admission failed, not admitted yet, or quarantined).", ""]
     (ROOT / "catalog" / "STATS.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def write_families(kept: list[dict]) -> None:
+    """catalog/FAMILIES.md: every family with its size, languages, difficulty range and the generator's one-line summary."""
+    sys.path.insert(0, str(ROOT / "tools"))
+    sys.path.insert(0, str(ROOT))
+    import contextlib
+    import io
+
+    summaries: dict[str, str] = {}
+    try:
+        import build  # tools/build.py
+
+        with contextlib.redirect_stderr(io.StringIO()), contextlib.redirect_stdout(io.StringIO()):
+            build.discover()
+        import fx
+
+        summaries = {n: f.summary for n, f in fx.REGISTRY.items()}
+    except Exception:  # noqa: BLE001
+        pass
+    from fx import CATEGORIES
+
+    by_fam: dict[str, list[dict]] = defaultdict(list)
+    for r in kept:
+        by_fam[r["family"]].append(r)
+    lines = ["# Families", "", "Every family in the catalog: its task count, languages, difficulty range and what varies between its tasks.", ""]
+    for cat, desc in CATEGORIES.items():
+        fams = sorted(f for f, rs in by_fam.items() if rs[0]["category"] == cat)
+        if not fams:
+            continue
+        total = sum(len(by_fam[f]) for f in fams)
+        lines += [f"## {cat} ({total} tasks, {len(fams)} families)", "", f"_{desc}_", "", "| family | tasks | langs | d | what varies |", "|---|---|---|---|---|"]
+        for f in fams:
+            rs = by_fam[f]
+            ds = sorted({r["difficulty"] for r in rs})
+            langs = ",".join(sorted({r["lang"] for r in rs}))
+            summ = summaries.get(f, "").replace("|", "/").replace("\n", " ")[:140]
+            lines.append(f"| {f} | {len(rs)} | {langs} | {ds[0]}-{ds[-1]} | {summ} |")
+        lines.append("")
+    (ROOT / "catalog" / "FAMILIES.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 if __name__ == "__main__":

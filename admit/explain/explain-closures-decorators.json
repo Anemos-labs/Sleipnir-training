@@ -1,0 +1,42 @@
+[
+{
+"id": "explain-closures-decorators-01-javascript-loop",
+"ok": true
+},
+{
+"id": "explain-closures-decorators-02-python-stack",
+"ok": true
+},
+{
+"id": "explain-closures-decorators-03-ruby-prepend",
+"ok": true
+},
+{
+"id": "explain-closures-decorators-04-python-stack",
+"ok": true
+},
+{
+"id": "explain-closures-decorators-05-python-stack",
+"ok": true
+},
+{
+"id": "explain-closures-decorators-06-ruby-proc",
+"ok": true
+},
+{
+"id": "explain-closures-decorators-07-javascript-loop",
+"ok": true
+},
+{
+"id": "explain-closures-decorators-08-python-wraps",
+"ok": true
+},
+{
+"id": "explain-closures-decorators-09-javascript-hof",
+"ok": true
+},
+{
+"id": "explain-closures-decorators-10-ruby-proc",
+"ok": true
+}
+]

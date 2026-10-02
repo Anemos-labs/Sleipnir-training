@@ -1,0 +1,38 @@
+[
+{
+"id": "i18n-de-shell-01-tidy-leerzeichen",
+"ok": true
+},
+{
+"id": "i18n-de-shell-02-heredoc-expandiert",
+"ok": true
+},
+{
+"id": "i18n-de-shell-03-make-cd-stage",
+"ok": true
+},
+{
+"id": "i18n-de-shell-04-sum-sizes-stirbt",
+"ok": true
+},
+{
+"id": "i18n-de-shell-05-status-141",
+"ok": true
+},
+{
+"id": "i18n-de-shell-06-revlines-dash",
+"ok": true
+},
+{
+"id": "i18n-de-shell-07-musik-umbenennen",
+"ok": true
+},
+{
+"id": "i18n-de-shell-08-baum-flachklopfen",
+"ok": true
+},
+{
+"id": "i18n-de-shell-09-envmerge",
+"ok": true
+}
+]

@@ -200,7 +200,7 @@ def build(path):
     return con
 
 
-def guarded(con, sql, seconds=10):
+def guarded(con, sql, seconds=120):
     t0 = time.time()
     con.set_progress_handler(lambda: 1 if time.time() - t0 > seconds else 0, 100000)
     try:

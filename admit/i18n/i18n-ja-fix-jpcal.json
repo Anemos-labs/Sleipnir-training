@@ -1,0 +1,38 @@
+[
+{
+"id": "i18n-ja-fix-jpcal-01-arith",
+"ok": true
+},
+{
+"id": "i18n-ja-fix-jpcal-02-cmp",
+"ok": true
+},
+{
+"id": "i18n-ja-fix-jpcal-03-const",
+"ok": true
+},
+{
+"id": "i18n-ja-fix-jpcal-04-delete",
+"ok": true
+},
+{
+"id": "i18n-ja-fix-jpcal-05-negate",
+"ok": true
+},
+{
+"id": "i18n-ja-fix-jpcal-06-arith",
+"ok": true
+},
+{
+"id": "i18n-ja-fix-jpcal-07-cmp",
+"ok": true
+},
+{
+"id": "i18n-ja-fix-jpcal-08-const",
+"ok": true
+},
+{
+"id": "i18n-ja-fix-jpcal-09-delete",
+"ok": true
+}
+]

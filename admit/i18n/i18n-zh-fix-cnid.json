@@ -1,0 +1,38 @@
+[
+{
+"id": "i18n-zh-fix-cnid-01-arith",
+"ok": true
+},
+{
+"id": "i18n-zh-fix-cnid-02-cmp",
+"ok": true
+},
+{
+"id": "i18n-zh-fix-cnid-03-delete",
+"ok": true
+},
+{
+"id": "i18n-zh-fix-cnid-04-const",
+"ok": true
+},
+{
+"id": "i18n-zh-fix-cnid-05-negate",
+"ok": true
+},
+{
+"id": "i18n-zh-fix-cnid-06-arith",
+"ok": true
+},
+{
+"id": "i18n-zh-fix-cnid-07-cmp",
+"ok": true
+},
+{
+"id": "i18n-zh-fix-cnid-08-delete",
+"ok": true
+},
+{
+"id": "i18n-zh-fix-cnid-09-const",
+"ok": true
+}
+]

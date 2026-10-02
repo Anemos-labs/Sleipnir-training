@@ -1,0 +1,58 @@
+[
+{
+"id": "explain-sql-rows-01-harbor-order-null-hypo",
+"ok": true
+},
+{
+"id": "explain-sql-rows-02-seeds-union",
+"ok": true
+},
+{
+"id": "explain-sql-rows-03-observatory-not-in-null-hypo",
+"ok": true
+},
+{
+"id": "explain-sql-rows-04-bells-left-join-count",
+"ok": true
+},
+{
+"id": "explain-sql-rows-05-hives-correlated",
+"ok": true
+},
+{
+"id": "explain-sql-rows-06-tram-distinct-join-hypo",
+"ok": true
+},
+{
+"id": "explain-sql-rows-07-seeds-like-case",
+"ok": true
+},
+{
+"id": "explain-sql-rows-08-observatory-integer-division",
+"ok": true
+},
+{
+"id": "explain-sql-rows-09-bells-window-running",
+"ok": true
+},
+{
+"id": "explain-sql-rows-10-hives-self-join",
+"ok": true
+},
+{
+"id": "explain-sql-rows-11-tram-like-case",
+"ok": true
+},
+{
+"id": "explain-sql-rows-12-harbor-distinct-join",
+"ok": true
+},
+{
+"id": "explain-sql-rows-13-observatory-self-join",
+"ok": true
+},
+{
+"id": "explain-sql-rows-14-bells-left-join-count",
+"ok": true
+}
+]

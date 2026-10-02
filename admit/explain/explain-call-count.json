@@ -1,0 +1,38 @@
+[
+{
+"id": "explain-call-count-01-python-tier-batch",
+"ok": true
+},
+{
+"id": "explain-call-count-02-rust-hull-bonus",
+"ok": true
+},
+{
+"id": "explain-call-count-03-ruby-grain-penalty",
+"ok": true
+},
+{
+"id": "explain-call-count-04-javascript-ventshare",
+"ok": true
+},
+{
+"id": "explain-call-count-05-go-capcurtain",
+"ok": true
+},
+{
+"id": "explain-call-count-06-java-capyoke",
+"ok": true
+},
+{
+"id": "explain-call-count-07-go-weightceiling",
+"ok": true
+},
+{
+"id": "explain-call-count-08-python-snap-slot",
+"ok": true
+},
+{
+"id": "explain-call-count-09-javascript-capbatch",
+"ok": true
+}
+]

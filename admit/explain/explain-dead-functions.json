@@ -1,0 +1,46 @@
+[
+{
+"id": "explain-dead-functions-01-ruby-test-only",
+"ok": true
+},
+{
+"id": "explain-dead-functions-02-go-unreachable",
+"ok": true
+},
+{
+"id": "explain-dead-functions-03-python-unreachable",
+"ok": true
+},
+{
+"id": "explain-dead-functions-04-rust-unreachable",
+"ok": true
+},
+{
+"id": "explain-dead-functions-05-java-test-only",
+"ok": true
+},
+{
+"id": "explain-dead-functions-06-javascript-test-only",
+"ok": true
+},
+{
+"id": "explain-dead-functions-07-python-no-callers",
+"ok": true
+},
+{
+"id": "explain-dead-functions-08-rust-unreachable",
+"ok": true
+},
+{
+"id": "explain-dead-functions-09-java-no-callers",
+"ok": true
+},
+{
+"id": "explain-dead-functions-10-go-no-callers",
+"ok": true
+},
+{
+"id": "explain-dead-functions-11-javascript-no-callers",
+"ok": true
+}
+]

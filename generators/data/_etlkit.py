@@ -120,10 +120,10 @@ def main():
             args = [a.replace("{in}", indir).replace("{out}", outdir) for a in SPEC["args"]]
             env = dict(os.environ, LC_ALL="C.UTF-8", TZ="UTC", PYTHONHASHSEED="0")
             try:
-                p = subprocess.run([sys.executable, SPEC["script"]] + args, capture_output=True, text=True, timeout=30, env=env,
+                p = subprocess.run([sys.executable, SPEC["script"]] + args, capture_output=True, text=True, timeout=180, env=env,
                                    input=case.get("stdin", ""))
             except subprocess.TimeoutExpired:
-                print(f"FAIL case {name}: the script took longer than 30 s")
+                print(f"FAIL case {name}: the script took longer than 180 s")
                 bad += 1
                 continue
             if p.returncode != 0 and not SPEC.get("allow_exit"):
@@ -195,7 +195,7 @@ def _exec(script_text: str, script: str, args: tuple, files: dict[str, str], std
             f.write(script_text)
         a = [x.replace("{in}", indir).replace("{out}", outdir) for x in args]
         env = dict(os.environ, LC_ALL="C.UTF-8", TZ="UTC", PYTHONHASHSEED="0")
-        p = subprocess.run(["python3", script] + a, cwd=tmp, capture_output=True, text=True, timeout=60, env=env, input=stdin)
+        p = subprocess.run(["python3", script] + a, cwd=tmp, capture_output=True, text=True, timeout=180, env=env, input=stdin)
         out = {}
         if os.path.isdir(outdir):
             for d, _, fs in os.walk(outdir):

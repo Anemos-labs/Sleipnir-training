@@ -141,6 +141,12 @@ def _probe_diffs(lib: Lib, good: dict[str, str], bad: dict[str, str]) -> list[tu
     return [(e, gd[e], bd[e]) for e in lib.probes if e in gd and e in bd and gd[e] != bd[e]]
 
 
+def _got_want(good: str, bad: str) -> tuple[str, str]:
+    got = f"raises `{bad[7:]}`" if bad.startswith("raises ") else f"returns `{bad}`"
+    want = f"raise `{good[7:]}`" if good.startswith("raises ") else f"return `{good}`"
+    return got, want
+
+
 def _diff_line(e: str, good: str, bad: str) -> str:
     if bad.startswith("raises "):
         return f"- `{e}` raises `{bad[7:]}`, but it should return `{good}`"
@@ -163,35 +169,86 @@ def _prompt(style: str, lib: Lib, m, excerpt: str, diffs, visible_fail: bool, rn
     end = rng.choice(_ENDINGS)
     title = lib.title
     path = m.path
+    blurb = lib.blurb
+    c = rng.choice
     if style == "ci" and excerpt:
-        return (f"The checks for {title} started failing after a recent change. {lib.blurb}\n\n"
-                f"This is what the failing run reports (it is a subset of the output):\n\n```\n{excerpt}\n```\n\n"
-                f"Find the root cause and fix it. {end}").strip()
+        return c([
+            f"The checks for {title} started failing after a recent change. {blurb}\n\nThis is what the failing run reports (it is a subset of the output):\n\n```\n{excerpt}\n```\n\nFind the root cause and fix it. {end}",
+            f"CI is red on {title}. {blurb}\n\nRelevant part of the log:\n\n```\n{excerpt}\n```\n\nCan you find what broke and fix it? {end}",
+            f"{title[:1].upper() + title[1:]}: the pipeline went red on main this morning. Output of the failing job:\n\n```\n{excerpt}\n```\n\n{blurb} Please track down the cause and fix it. {end}",
+            f"nightly build failed for {title}, log excerpt below.\n\n```\n{excerpt}\n```\n\n{blurb} I have no idea what changed. {end}",
+            f"Tests for {title} are failing and I can't see why. {blurb} This is what I get:\n\n```\n{excerpt}\n```\n\n{end}",
+        ]).strip()
     if style == "report" and diffs:
         lines = "\n".join(_diff_line(e, g, b) for e, g, b in diffs[: lib.max_probe_diffs])
-        return (f"{lib.blurb} A user reports wrong results from {title}:\n\n{lines}\n\n"
-                f"Track down the bug in the code and fix it. {end}").strip()
+        return c([
+            f"{blurb} A user reports wrong results from {title}:\n\n{lines}\n\nTrack down the bug in the code and fix it. {end}",
+            f"Support ticket: customers are seeing wrong numbers from {title}. {blurb}\n\n{lines}\n\nPlease find and fix the defect. {end}",
+            f"Hi, a colleague noticed {title} misbehaving:\n\n{lines}\n\n{blurb} Could you fix it? {end}",
+            f"Bug report from QA:\n{lines}\n\nContext: {blurb} {end}",
+        ]).strip()
     if style == "visible" and visible_fail:
-        return (f"`{lib.verify}` fails on the current checkout of {title}. Make the code correct. "
-                f"There are more checks than the ones in the repository; `README.md` describes the intended behaviour. {end}").strip()
+        return c([
+            f"`{lib.verify}` fails on the current checkout of {title}. Make the code correct. "
+            f"There are more checks than the ones in the repository; `README.md` describes the intended behaviour. {end}",
+            f"Running `{lib.verify}` on {title} fails for me. Please make it pass for the right reasons: `README.md` has the behaviour spec, and there are extra checks beyond the repo's tests. {end}",
+            f"Red test run in {title} (`{lib.verify}`). {blurb} Fix the code so it matches `README.md`; hidden checks go beyond the visible ones. {end}",
+        ]).strip()
     if style == "spec":
-        return (f"{lib.blurb} After a recent edit, {title} no longer behaves as `README.md` says in at least one case. "
-                f"The change touched `{path}`. Compare the code with the specification, find the discrepancy and fix it. {end}").strip()
+        return c([
+            f"{blurb} After a recent edit, {title} no longer behaves as `README.md` says in at least one case. "
+            f"The change touched `{path}`. Compare the code with the specification, find the discrepancy and fix it. {end}",
+            f"Heads-up: the README for {title} and the code disagree somewhere in `{path}`. {blurb} Find where, and make the code match the spec. {end}",
+            f"`README.md` is the source of truth for {title}. Something in `{path}` was changed and now breaks it. Please restore the specified behaviour. {end}",
+        ]).strip()
     if style == "vague":
-        return (f"Something in {title} has drifted from its specification (`README.md`). I don't know which behaviour is wrong; "
-                f"hidden checks cover the documented behaviour. Find and fix the defect. {end}").strip()
+        return c([
+            f"Something in {title} has drifted from its specification (`README.md`). I don't know which behaviour is wrong; "
+            f"hidden checks cover the documented behaviour. Find and fix the defect. {end}",
+            f"{title[:1].upper() + title[1:]} feels off. {blurb} I can't point at an example; the spec is `README.md`. Can you audit the code against it and fix what's wrong? {end}",
+            f"Something regressed in {title} but nobody knows what. There are checks beyond the visible tests, and `README.md` is the spec. {end}",
+        ]).strip()
     if style == "terse" and diffs:
         e, g, b = diffs[0]
-        return f"Bug in {title}: " + _diff_line(e, g, b)[2:] + f". Fix it. {end}".strip()
+        d = _diff_line(e, g, b)[2:]
+        return c([
+            f"Bug in {title}: {d}. Fix it. {end}",
+            f"{title}: {d}. pls fix. {end}",
+            f"Wrong output from {title}, {d}. {end}",
+        ]).strip()
     if style == "review" and excerpt:
         sal = [ln for ln in excerpt.splitlines() if re.search(r"Error|error|expected|got|want|panick|!==|!=", ln)] or excerpt.splitlines()
-        return (f"A teammate's last commit touched `{path}` and the suite for {title} has been red since. "
-                f"One failure says: `{sal[-1].strip()[:160]}`. Please repair it. {end}").strip()
+        one = sal[-1].strip()[:160]
+        return c([
+            f"A teammate's last commit touched `{path}` and the suite for {title} has been red since. One failure says: `{one}`. Please repair it. {end}",
+            f"Since the last merge to `{path}`, the suite for {title} fails. One failure says `{one}`. Can you work out what went wrong and repair it? {end}",
+            f"Regression alert: someone changed `{path}` and the {title} checks no longer pass (message: `{one}`). Please fix it. {end}",
+            f"git blame points at `{path}`. The suite for {title} complains with `{one}`. {end}",
+        ]).strip()
+    if style == "ticket" and diffs:
+        e, g, b = diffs[0]
+        sev = c(["low", "medium", "high"])
+        return (f"**Title:** wrong result in {title}\n**Severity:** {sev}\n**Observed:** " + _diff_line(e, g, b)[2:] + f"\n**Notes:** {blurb}\n\nPlease fix. {end}").strip()
+    if style == "question" and diffs:
+        e, g, b = diffs[0]
+        got, want = _got_want(g, b)
+        return c([
+            f"Is it expected that `{e}` {got.replace('returns', 'gives', 1) if got.startswith('returns') else got}? I read `README.md` and thought it should {want}. {blurb} If it's a bug, please fix it. {end}",
+            f"Quick question about {title}: `{e}` {got} for me, but the spec says it should {want}. Bug or my misreading? If it's a bug, fix it. {end}",
+        ]).strip()
+    if style == "handover" and (excerpt or diffs):
+        if diffs:
+            e, g, b = diffs[0]
+            sym = "`" + e + "`" + (f" raised `{b[7:]}`" if b.startswith("raises ") else f" returned `{b}` instead of `{g}`")
+        else:
+            sym = "the suite is red (" + excerpt.splitlines()[0].strip()[:120] + ")"
+        return (f"I'm out from tomorrow, so I'm handing this over. {blurb} Last thing I saw: {sym}. I never got to the root cause. "
+                f"Please find it and fix it, and keep the tests as they are. {end}").strip()
     return ""
 
 
-_STYLES = ["ci", "report", "visible", "spec", "vague", "terse", "review"]
-_STYLE_D = {"ci": 0, "report": 0, "visible": -1, "spec": 1, "vague": 1, "terse": 0, "review": 0}
+_STYLES = ["ci", "report", "visible", "spec", "vague", "terse", "review", "ticket", "question", "handover"]
+_STYLE_D = {"ci": 0, "report": 0, "visible": -1, "spec": 1, "vague": 1, "terse": 0, "review": 0, "ticket": 0, "question": 0, "handover": 1}
 
 
 def mutation_tasks(lib: Lib, rng: random.Random, n: int, max_candidates: int | None = None) -> list[Task]:

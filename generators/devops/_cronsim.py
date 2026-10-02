@@ -168,9 +168,9 @@ def guard_runs(job, token, t):
         raise CronError(f"line {job['line']}: unsupported guard (use `[ ... ] && program`, with only date substitutions inside)")
     env = {"PATH": fakebin() + ":/usr/bin:/bin", "FAKE_NOW": t.strftime("%Y-%m-%d %H:%M:%S"), "TZ": "UTC", "HOME": "/nonexistent"}
     try:
-        r = subprocess.run(["sh", "-c", prefix + "echo RAN"], capture_output=True, text=True, timeout=5, env=env, cwd=tempfile.gettempdir())
+        r = subprocess.run(["sh", "-c", prefix + "echo RAN"], capture_output=True, text=True, timeout=60, env=env, cwd=tempfile.gettempdir())
     except subprocess.TimeoutExpired:
-        return False
+        raise CronError(f"line {job['line']}: the guard did not finish within 60 s")
     return "RAN" in r.stdout
 
 

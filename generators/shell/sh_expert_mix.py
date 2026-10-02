@@ -423,7 +423,7 @@ def make_pool(rng):
     jobs["queue/has space.job"] = F("echo spaced >> log.txt\necho 'two words'\n")
     jobs["queue/fails.job"] = F("echo failing >> log.txt\necho oops >&2\nexit 3\n")
     jobs["queue/ignored.txt"] = F("not a job\n")
-    barrier = "mkdir -p barrier\n: > barrier/b{n}\nwhile [ \"$(ls barrier | wc -l)\" -lt 3 ]; do sleep 0.05; done\necho passed {n}\n"
+    barrier = "mkdir -p barrier\n: > barrier/b{n}\ni=0\nwhile [ \"$(ls barrier | wc -l)\" -lt 3 ]; do i=$((i + 1)); [ \"$i\" -gt 150 ] && { echo gave up {n}; exit 1; }; sleep 0.1; done\necho passed {n}\n"
     bj = {f"queue/b{i}.job": F(barrier.format(n=i)) for i in (1, 2, 3)}
     bj.update({f"queue/c{i}.job": F(f"echo plain {i}\n") for i in (1, 2)})
     slot = "mkdir -p slots\nmkdir \"slots/$$\"\n[ \"$(ls slots | wc -l)\" -le 2 ] || echo violation >> violations.log\nsleep 0.25\nrmdir \"slots/$$\"\necho slot {n}\n"

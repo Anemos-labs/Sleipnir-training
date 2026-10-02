@@ -1,0 +1,50 @@
+[
+{
+"id": "explain-migration-schema-01-seeds-manifest-columns",
+"ok": true
+},
+{
+"id": "explain-migration-schema-02-observatory-numeric-columns",
+"ok": true
+},
+{
+"id": "explain-migration-schema-03-tram-manifest-columns",
+"ok": true
+},
+{
+"id": "explain-migration-schema-04-harbor-numeric-columns",
+"ok": true
+},
+{
+"id": "explain-migration-schema-05-observatory-skip-order",
+"ok": true
+},
+{
+"id": "explain-migration-schema-06-bells-numeric-columns",
+"ok": true
+},
+{
+"id": "explain-migration-schema-07-hives-lex-columns",
+"ok": true
+},
+{
+"id": "explain-migration-schema-08-seeds-numeric-columns",
+"ok": true
+},
+{
+"id": "explain-migration-schema-09-harbor-numeric-columns",
+"ok": true
+},
+{
+"id": "explain-migration-schema-10-tram-numeric-columns",
+"ok": true
+},
+{
+"id": "explain-migration-schema-11-tram-manifest-columns",
+"ok": true
+},
+{
+"id": "explain-migration-schema-12-bells-manifest-order",
+"ok": true
+}
+]

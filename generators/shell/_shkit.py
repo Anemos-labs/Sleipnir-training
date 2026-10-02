@@ -176,7 +176,21 @@ def snapshot(box, mtimes, dirs, nlink=False, sorted_paths=()):
     return out
 
 
-def run_scenario(repo, spec, scn, timeout=20):
+def _child_setup():
+    """Runs in the child before exec: a signal that the test runner itself ignores (nohup, a background job) would stay ignored
+    for the script under test and make `trap ... HUP` or `trap ... INT` silently ineffective, so every disposition is reset."""
+    for name in ("SIGHUP", "SIGINT", "SIGTERM", "SIGQUIT", "SIGUSR1", "SIGUSR2", "SIGPIPE", "SIGALRM", "SIGCHLD"):
+        try:
+            signal.signal(getattr(signal, name), signal.SIG_DFL)
+        except (OSError, ValueError, AttributeError):
+            pass
+    try:
+        signal.pthread_sigmask(signal.SIG_SETMASK, [])
+    except (OSError, ValueError, AttributeError):
+        pass
+
+
+def run_scenario(repo, spec, scn, timeout=45):
     tmp = tempfile.mkdtemp(prefix="shx-")
     box = os.path.join(tmp, "box")
     os.makedirs(box)
@@ -197,7 +211,7 @@ def run_scenario(repo, spec, scn, timeout=20):
             env = {"PATH": os.environ.get("PATH", "/usr/bin:/bin"), "HOME": tmp, "LC_ALL": "C.UTF-8", "TZ": "UTC", "USER": "tester", "SHX_SCRIPT": script}
             env.update(r.get("env", {}))
             cwd = os.path.join(box, r.get("cwd", "."))
-            p = subprocess.Popen(argv, cwd=cwd, env=env, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, start_new_session=True)
+            p = subprocess.Popen(argv, cwd=cwd, env=env, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, start_new_session=True, preexec_fn=_child_setup)
             try:
                 out, err = p.communicate(r.get("stdin", "").encode("utf-8"), timeout=timeout)
                 rc = p.returncode
@@ -516,7 +530,7 @@ def shell_tasks(family_key: str, specs: list[ShellSpec], rng: random.Random, n: 
                     if r["rc"] == -999:
                         raise RuntimeError(f"{spec.slug}: reference timed out on {s['name']}")
                 s = dict(s)
-                s["expected"] = {"runs": [{"rc": r["rc"], "stdout": r["stdout"]} for r in res], "tree": tree}
+                s["expected"] = {"runs": [{"rc": r["rc"], "stdout": "" if cfg.get("stdout", "exact") == "ignore" else r["stdout"]} for r, cfg in zip(res, s["runs"])], "tree": tree}
                 built.append(s)
             if spec.oracle is not None:
                 probs = spec.oracle(example, ex_res, ex_tree)

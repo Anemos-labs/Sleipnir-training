@@ -1,0 +1,38 @@
+[
+{
+"id": "i18n-pt-fix-docbr-01-arith",
+"ok": true
+},
+{
+"id": "i18n-pt-fix-docbr-02-delete",
+"ok": true
+},
+{
+"id": "i18n-pt-fix-docbr-03-negate",
+"ok": true
+},
+{
+"id": "i18n-pt-fix-docbr-04-const",
+"ok": true
+},
+{
+"id": "i18n-pt-fix-docbr-05-cmp",
+"ok": true
+},
+{
+"id": "i18n-pt-fix-docbr-06-swap",
+"ok": true
+},
+{
+"id": "i18n-pt-fix-docbr-07-arith",
+"ok": true
+},
+{
+"id": "i18n-pt-fix-docbr-08-delete",
+"ok": true
+},
+{
+"id": "i18n-pt-fix-docbr-09-negate",
+"ok": true
+}
+]

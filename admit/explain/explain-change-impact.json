@@ -1,0 +1,50 @@
+[
+{
+"id": "explain-change-impact-01-ruby-stub",
+"ok": true
+},
+{
+"id": "explain-change-impact-02-javascript-stub",
+"ok": true
+},
+{
+"id": "explain-change-impact-03-rust-const",
+"ok": true
+},
+{
+"id": "explain-change-impact-04-python-const",
+"ok": true
+},
+{
+"id": "explain-change-impact-05-java-const",
+"ok": true
+},
+{
+"id": "explain-change-impact-06-go-const",
+"ok": true
+},
+{
+"id": "explain-change-impact-07-java-const",
+"ok": true
+},
+{
+"id": "explain-change-impact-08-ruby-const",
+"ok": true
+},
+{
+"id": "explain-change-impact-09-python-const",
+"ok": true
+},
+{
+"id": "explain-change-impact-10-go-const",
+"ok": true
+},
+{
+"id": "explain-change-impact-11-javascript-stub",
+"ok": true
+},
+{
+"id": "explain-change-impact-12-rust-const",
+"ok": true
+}
+]

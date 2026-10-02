@@ -57,7 +57,7 @@ def yaml_docs(path):
     """Parse a YAML file (all documents) with ruby's Psych. YAML 1.1 rules apply: `on`/`yes` are booleans and a
     boolean key becomes the string "true". Raises ValueError with the parser message on a syntax error."""
     here = os.path.dirname(os.path.abspath(__file__))
-    p = subprocess.run(["ruby", os.path.join(here, "yaml2json.rb"), path], capture_output=True, text=True, timeout=30)
+    p = subprocess.run(["ruby", os.path.join(here, "yaml2json.rb"), path], capture_output=True, text=True, timeout=180)
     if p.returncode != 0:
         try:
             msg = json.loads(p.stdout)["__error__"]

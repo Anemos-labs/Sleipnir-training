@@ -1,12 +1,12 @@
 # Corpus statistics
 
-**7650 tasks** in **764 families** across **20 categories**; 6629 fixtures, 892 answer-mode, 129 rubric; 152 for a swarm.
+**8465 tasks** in **853 families** across **23 categories**; 7242 fixtures, 1094 answer-mode (159 with a weak check, flagged `weak_check`), 129 rubric; 153 for a swarm.
 
 ### By category and difficulty
 
 | category | tasks | d1 | d2 | d3 | d4 | d5 | families |
 |---|---|---|---|---|---|---|---|
-| fix | 2455 | 315 | 599 | 792 | 554 | 195 | 253 |
+| fix | 2447 | 295 | 596 | 801 | 556 | 199 | 252 |
 | feature | 530 | 72 | 124 | 140 | 102 | 92 | 31 |
 | greenfield | 258 | 40 | 63 | 78 | 53 | 24 | 26 |
 | games | 335 | 63 | 66 | 122 | 63 | 21 | 39 |
@@ -26,22 +26,25 @@
 | swarm | 144 | 0 | 11 | 32 | 69 | 32 | 12 |
 | robust | 280 | 19 | 106 | 92 | 45 | 18 | 33 |
 | chat | 701 | 102 | 168 | 209 | 153 | 69 | 83 |
-| **total** | 7650 | 950 | 1863 | 2460 | 1690 | 687 | 764 |
+| explain | 337 | 36 | 89 | 108 | 68 | 36 | 33 |
+| i18n | 390 | 34 | 82 | 169 | 81 | 24 | 45 |
+| project | 96 | 0 | 0 | 3 | 55 | 38 | 12 |
+| **total** | 8465 | 1000 | 2031 | 2749 | 1896 | 789 | 853 |
 
 ### By language
 
 | language | tasks |
 |---|---|
-| python | 2972 |
-| text | 1574 |
-| javascript | 547 |
-| go | 514 |
-| rust | 398 |
-| java | 383 |
-| sql | 372 |
-| bash | 305 |
+| python | 3303 |
+| text | 1727 |
+| javascript | 636 |
+| go | 568 |
+| rust | 444 |
+| java | 437 |
+| sql | 380 |
+| bash | 328 |
 | c | 203 |
-| ruby | 135 |
+| ruby | 192 |
 | typescript | 94 |
 | php | 77 |
 | cpp | 56 |
@@ -51,14 +54,16 @@
 
 | kind | tasks |
 |---|---|
-| fix | 3598 |
-| feature | 1886 |
-| greenfield | 885 |
-| lookup | 786 |
-| refactor | 260 |
+| fix | 3786 |
+| feature | 1951 |
+| greenfield | 1211 |
+| lookup | 873 |
+| refactor | 294 |
 | advice | 129 |
+| calc | 64 |
 | restraint | 52 |
-| premise | 38 |
+| trace | 48 |
+| premise | 41 |
 | puzzle | 16 |
 
 ### Largest families
@@ -91,5 +96,7 @@
 | fix-hand-room-plan | 19 |
 | devops-k8s-manifests | 18 |
 
-Prompt length (characters): median 309, p10 158, p90 833, max 3564.
+Prompt length (characters): median 315, p10 157, p90 787, max 3564.
+
+8 generated tasks are not in the catalog (admission failed, not admitted yet, or quarantined).
 

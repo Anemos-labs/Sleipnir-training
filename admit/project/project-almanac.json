@@ -1,0 +1,34 @@
+[
+{
+"id": "project-almanac-01-almanac-day-clamp",
+"ok": true
+},
+{
+"id": "project-almanac-02-sundial-month-spill",
+"ok": true
+},
+{
+"id": "project-almanac-03-ephemeris-day-error",
+"ok": true
+},
+{
+"id": "project-almanac-04-calendrix-day-spill",
+"ok": true
+},
+{
+"id": "project-almanac-05-hourbook-month-clamp",
+"ok": true
+},
+{
+"id": "project-almanac-06-datelore-month-error",
+"ok": true
+},
+{
+"id": "project-almanac-07-reckoner-day-spill",
+"ok": true
+},
+{
+"id": "project-almanac-08-tithe-day-clamp",
+"ok": true
+}
+]

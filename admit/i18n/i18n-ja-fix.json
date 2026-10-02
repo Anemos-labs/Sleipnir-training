@@ -1,0 +1,42 @@
+[
+{
+"id": "i18n-ja-fix-01-casefold-strasse",
+"ok": true
+},
+{
+"id": "i18n-ja-fix-02-sql-quote",
+"ok": true
+},
+{
+"id": "i18n-ja-fix-03-center-pad-cjk",
+"ok": true
+},
+{
+"id": "i18n-ja-fix-04-ranking-ties",
+"ok": true
+},
+{
+"id": "i18n-ja-fix-05-dotfiles-restore",
+"ok": true
+},
+{
+"id": "i18n-ja-fix-06-zenkaku-admin",
+"ok": true
+},
+{
+"id": "i18n-ja-fix-07-truncate-utf8",
+"ok": true
+},
+{
+"id": "i18n-ja-fix-08-refund-half-cent",
+"ok": true
+},
+{
+"id": "i18n-ja-fix-09-dst-1-jikan",
+"ok": true
+},
+{
+"id": "i18n-ja-fix-10-excel-csv-bom",
+"ok": true
+}
+]

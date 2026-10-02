@@ -1,0 +1,38 @@
+[
+{
+"id": "explain-surface-count-01-java-21",
+"ok": true
+},
+{
+"id": "explain-surface-count-02-javascript-12",
+"ok": true
+},
+{
+"id": "explain-surface-count-03-ruby-20",
+"ok": true
+},
+{
+"id": "explain-surface-count-04-python-7",
+"ok": true
+},
+{
+"id": "explain-surface-count-05-rust-36",
+"ok": true
+},
+{
+"id": "explain-surface-count-06-go-18",
+"ok": true
+},
+{
+"id": "explain-surface-count-07-ruby-11",
+"ok": true
+},
+{
+"id": "explain-surface-count-08-javascript-19",
+"ok": true
+},
+{
+"id": "explain-surface-count-09-python-18",
+"ok": true
+}
+]

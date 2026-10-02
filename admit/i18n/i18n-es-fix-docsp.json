@@ -1,0 +1,38 @@
+[
+{
+"id": "i18n-es-fix-docsp-01-const",
+"ok": true
+},
+{
+"id": "i18n-es-fix-docsp-02-arith",
+"ok": true
+},
+{
+"id": "i18n-es-fix-docsp-03-swap",
+"ok": true
+},
+{
+"id": "i18n-es-fix-docsp-04-negate",
+"ok": true
+},
+{
+"id": "i18n-es-fix-docsp-05-cmp",
+"ok": true
+},
+{
+"id": "i18n-es-fix-docsp-06-delete",
+"ok": true
+},
+{
+"id": "i18n-es-fix-docsp-07-const",
+"ok": true
+},
+{
+"id": "i18n-es-fix-docsp-08-arith",
+"ok": true
+},
+{
+"id": "i18n-es-fix-docsp-09-swap",
+"ok": true
+}
+]

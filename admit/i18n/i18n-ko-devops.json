@@ -1,0 +1,38 @@
+[
+{
+"id": "i18n-ko-devops-01-compose-version",
+"ok": true
+},
+{
+"id": "i18n-ko-devops-02-ingress-api-version",
+"ok": true
+},
+{
+"id": "i18n-ko-devops-03-docker-layer-cache",
+"ok": true
+},
+{
+"id": "i18n-ko-devops-04-ci-cache-key",
+"ok": true
+},
+{
+"id": "i18n-ko-devops-05-doctest-examples",
+"ok": true
+},
+{
+"id": "i18n-ko-devops-06-cli-help",
+"ok": true
+},
+{
+"id": "i18n-ko-devops-07-systemd-backup-timer",
+"ok": true
+},
+{
+"id": "i18n-ko-devops-08-nginx-canary",
+"ok": true
+},
+{
+"id": "i18n-ko-devops-09-ssh-config-policy",
+"ok": true
+}
+]

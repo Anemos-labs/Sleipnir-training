@@ -1,0 +1,38 @@
+[
+{
+"id": "i18n-tr-fix-trmetin-01-negate",
+"ok": true
+},
+{
+"id": "i18n-tr-fix-trmetin-02-const",
+"ok": true
+},
+{
+"id": "i18n-tr-fix-trmetin-03-arith",
+"ok": true
+},
+{
+"id": "i18n-tr-fix-trmetin-04-cmp",
+"ok": true
+},
+{
+"id": "i18n-tr-fix-trmetin-05-swap",
+"ok": true
+},
+{
+"id": "i18n-tr-fix-trmetin-06-delete",
+"ok": true
+},
+{
+"id": "i18n-tr-fix-trmetin-07-negate",
+"ok": true
+},
+{
+"id": "i18n-tr-fix-trmetin-08-const",
+"ok": true
+},
+{
+"id": "i18n-tr-fix-trmetin-09-arith",
+"ok": true
+}
+]

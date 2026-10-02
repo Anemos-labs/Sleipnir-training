@@ -1,0 +1,42 @@
+[
+{
+"id": "explain-text-transform-01-go-new-input",
+"ok": true
+},
+{
+"id": "explain-text-transform-02-ruby-new-input",
+"ok": true
+},
+{
+"id": "explain-text-transform-03-python-new-input",
+"ok": true
+},
+{
+"id": "explain-text-transform-04-javascript-new-input",
+"ok": true
+},
+{
+"id": "explain-text-transform-05-ruby-new-input",
+"ok": true
+},
+{
+"id": "explain-text-transform-06-javascript-new-input",
+"ok": true
+},
+{
+"id": "explain-text-transform-07-go-new-input",
+"ok": true
+},
+{
+"id": "explain-text-transform-08-python-new-input",
+"ok": true
+},
+{
+"id": "explain-text-transform-09-python-new-input",
+"ok": true
+},
+{
+"id": "explain-text-transform-10-go-new-input",
+"ok": true
+}
+]

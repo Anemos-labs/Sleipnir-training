@@ -1,0 +1,34 @@
+[
+{
+"id": "project-codemod-go-01-18mods-eur",
+"ok": true
+},
+{
+"id": "project-codemod-go-02-22mods-gbp",
+"ok": true
+},
+{
+"id": "project-codemod-go-03-24mods-usd-common",
+"ok": true
+},
+{
+"id": "project-codemod-go-04-26mods-chf",
+"ok": true
+},
+{
+"id": "project-codemod-go-05-28mods-eur-common",
+"ok": true
+},
+{
+"id": "project-codemod-go-06-20mods-gbp-common",
+"ok": true
+},
+{
+"id": "project-codemod-go-07-32mods-usd",
+"ok": true
+},
+{
+"id": "project-codemod-go-08-36mods-chf-common",
+"ok": true
+}
+]

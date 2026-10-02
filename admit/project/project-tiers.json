@@ -1,0 +1,34 @@
+[
+{
+"id": "project-tiers-01-tiers-all-rust",
+"ok": true
+},
+{
+"id": "project-tiers-02-strata-oldest2-python",
+"ok": true
+},
+{
+"id": "project-tiers-03-sedimentd-oldest2-rust",
+"ok": true
+},
+{
+"id": "project-tiers-04-layercake-all-python",
+"ok": true
+},
+{
+"id": "project-tiers-05-seamstore-all-rust",
+"ok": true
+},
+{
+"id": "project-tiers-06-shelvedb-oldest2-python",
+"ok": true
+},
+{
+"id": "project-tiers-07-lodestore-oldest2-rust",
+"ok": true
+},
+{
+"id": "project-tiers-08-cairn-all-python",
+"ok": true
+}
+]

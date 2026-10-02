@@ -1,0 +1,34 @@
+[
+{
+"id": "project-codemod-py-01-18mods-eur",
+"ok": true
+},
+{
+"id": "project-codemod-py-02-22mods-usd",
+"ok": true
+},
+{
+"id": "project-codemod-py-03-24mods-gbp-common",
+"ok": true
+},
+{
+"id": "project-codemod-py-04-26mods-eur-common",
+"ok": true
+},
+{
+"id": "project-codemod-py-05-30mods-chf",
+"ok": true
+},
+{
+"id": "project-codemod-py-06-28mods-usd-common",
+"ok": true
+},
+{
+"id": "project-codemod-py-07-34mods-gbp",
+"ok": true
+},
+{
+"id": "project-codemod-py-08-36mods-chf-common",
+"ok": true
+}
+]

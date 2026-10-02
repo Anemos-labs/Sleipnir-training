@@ -1,0 +1,38 @@
+[
+{
+"id": "i18n-pl-fix-polskie-numery-01-const",
+"ok": true
+},
+{
+"id": "i18n-pl-fix-polskie-numery-02-cmp",
+"ok": true
+},
+{
+"id": "i18n-pl-fix-polskie-numery-03-negate",
+"ok": true
+},
+{
+"id": "i18n-pl-fix-polskie-numery-04-arith",
+"ok": true
+},
+{
+"id": "i18n-pl-fix-polskie-numery-05-delete",
+"ok": true
+},
+{
+"id": "i18n-pl-fix-polskie-numery-06-logic",
+"ok": true
+},
+{
+"id": "i18n-pl-fix-polskie-numery-07-const",
+"ok": true
+},
+{
+"id": "i18n-pl-fix-polskie-numery-08-negate",
+"ok": true
+},
+{
+"id": "i18n-pl-fix-polskie-numery-09-arith",
+"ok": true
+}
+]

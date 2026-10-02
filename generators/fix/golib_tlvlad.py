@@ -570,7 +570,7 @@ HIDDEN = gosrc(dd(r'''
     }
 
     func TestPad(t *testing.T) {
-        cases := []struct{ n, align, want int }{{0, 4, 0}, {1, 4, 4}, {4, 4, 4}, {5, 4, 8}, {7, 8, 8}, {9, 1, 9}, {9, 0, 9}, {9, -3, 9}, {10, 3, 12}}
+        cases := []struct{ n, align, want int }{{0, 4, 0}, {1, 4, 4}, {4, 4, 4}, {5, 4, 8}, {7, 8, 8}, {9, 1, 9}, {9, 0, 9}, {9, -3, 9}, {10, 3, 12}, {1, 2, 2}, {3, 2, 4}, {4, 2, 4}, {0, 2, 0}, {11, 2, 12}}
         for _, c := range cases {
             got := Pad(bytes.Repeat([]byte{7}, c.n), c.align)
             if len(got) != c.want {

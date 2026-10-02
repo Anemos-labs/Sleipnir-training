@@ -1,0 +1,50 @@
+[
+{
+"id": "explain-method-dispatch-01-ruby-trace",
+"ok": true
+},
+{
+"id": "explain-method-dispatch-02-javascript-trace",
+"ok": true
+},
+{
+"id": "explain-method-dispatch-03-java-trace",
+"ok": true
+},
+{
+"id": "explain-method-dispatch-04-python-trace",
+"ok": true
+},
+{
+"id": "explain-method-dispatch-05-javascript-trace",
+"ok": true
+},
+{
+"id": "explain-method-dispatch-06-ruby-trace",
+"ok": true
+},
+{
+"id": "explain-method-dispatch-07-java-trace",
+"ok": true
+},
+{
+"id": "explain-method-dispatch-08-python-trace",
+"ok": true
+},
+{
+"id": "explain-method-dispatch-09-java-trace",
+"ok": true
+},
+{
+"id": "explain-method-dispatch-10-python-first",
+"ok": true
+},
+{
+"id": "explain-method-dispatch-11-ruby-first",
+"ok": true
+},
+{
+"id": "explain-method-dispatch-12-javascript-trace",
+"ok": true
+}
+]

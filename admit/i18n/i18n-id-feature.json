@@ -1,0 +1,34 @@
+[
+{
+"id": "i18n-id-feature-01-tidelog-rata-rata",
+"ok": true
+},
+{
+"id": "i18n-id-feature-02-labelmaker-catatan-desain",
+"ok": true
+},
+{
+"id": "i18n-id-feature-03-meterreads-bulanan",
+"ok": true
+},
+{
+"id": "i18n-id-feature-04-seatmap-peta-teks",
+"ok": true
+},
+{
+"id": "i18n-id-feature-05-notepad-kata-event",
+"ok": true
+},
+{
+"id": "i18n-id-feature-06-etlpipe-from-spec",
+"ok": true
+},
+{
+"id": "i18n-id-feature-07-kvmem-ttl-watch",
+"ok": true
+},
+{
+"id": "i18n-id-feature-08-meterreads-config",
+"ok": true
+}
+]

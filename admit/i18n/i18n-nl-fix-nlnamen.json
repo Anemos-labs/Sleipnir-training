@@ -1,0 +1,38 @@
+[
+{
+"id": "i18n-nl-fix-nlnamen-01-const",
+"ok": true
+},
+{
+"id": "i18n-nl-fix-nlnamen-02-cmp",
+"ok": true
+},
+{
+"id": "i18n-nl-fix-nlnamen-03-negate",
+"ok": true
+},
+{
+"id": "i18n-nl-fix-nlnamen-04-arith",
+"ok": true
+},
+{
+"id": "i18n-nl-fix-nlnamen-05-delete",
+"ok": true
+},
+{
+"id": "i18n-nl-fix-nlnamen-06-swap",
+"ok": true
+},
+{
+"id": "i18n-nl-fix-nlnamen-07-logic",
+"ok": true
+},
+{
+"id": "i18n-nl-fix-nlnamen-08-const",
+"ok": true
+},
+{
+"id": "i18n-nl-fix-nlnamen-09-negate",
+"ok": true
+}
+]

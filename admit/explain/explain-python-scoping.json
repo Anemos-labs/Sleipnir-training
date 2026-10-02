@@ -1,0 +1,42 @@
+[
+{
+"id": "explain-python-scoping-01-star",
+"ok": true
+},
+{
+"id": "explain-python-scoping-02-order",
+"ok": true
+},
+{
+"id": "explain-python-scoping-03-order",
+"ok": true
+},
+{
+"id": "explain-python-scoping-04-class",
+"ok": true
+},
+{
+"id": "explain-python-scoping-05-class",
+"ok": true
+},
+{
+"id": "explain-python-scoping-06-rebind",
+"ok": true
+},
+{
+"id": "explain-python-scoping-07-order",
+"ok": true
+},
+{
+"id": "explain-python-scoping-08-cycle",
+"ok": true
+},
+{
+"id": "explain-python-scoping-09-rebind",
+"ok": true
+},
+{
+"id": "explain-python-scoping-10-cycle",
+"ok": true
+}
+]

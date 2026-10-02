@@ -1,0 +1,38 @@
+[
+{
+"id": "i18n-id-fix-idtools-01-negate",
+"ok": true
+},
+{
+"id": "i18n-id-fix-idtools-02-logic",
+"ok": true
+},
+{
+"id": "i18n-id-fix-idtools-03-cmp",
+"ok": true
+},
+{
+"id": "i18n-id-fix-idtools-04-arith",
+"ok": true
+},
+{
+"id": "i18n-id-fix-idtools-05-delete",
+"ok": true
+},
+{
+"id": "i18n-id-fix-idtools-06-const",
+"ok": true
+},
+{
+"id": "i18n-id-fix-idtools-07-arith",
+"ok": true
+},
+{
+"id": "i18n-id-fix-idtools-08-delete",
+"ok": true
+},
+{
+"id": "i18n-id-fix-idtools-09-const",
+"ok": true
+}
+]

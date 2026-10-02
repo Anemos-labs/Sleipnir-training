@@ -1,0 +1,34 @@
+[
+{
+"id": "i18n-zh-fix-01-excel-bom",
+"ok": true
+},
+{
+"id": "i18n-zh-fix-02-emoji-truncate",
+"ok": true
+},
+{
+"id": "i18n-zh-fix-03-handle-length",
+"ok": true
+},
+{
+"id": "i18n-zh-fix-04-avatar-initials",
+"ok": true
+},
+{
+"id": "i18n-zh-fix-05-mac-search",
+"ok": true
+},
+{
+"id": "i18n-zh-fix-06-mojibake",
+"ok": true
+},
+{
+"id": "i18n-zh-fix-07-highlight-nfd",
+"ok": true
+},
+{
+"id": "i18n-zh-fix-08-fullwidth-and-rename",
+"ok": true
+}
+]

@@ -1,0 +1,38 @@
+[
+{
+"id": "i18n-de-fix-feiertage-01-const",
+"ok": true
+},
+{
+"id": "i18n-de-fix-feiertage-02-cmp",
+"ok": true
+},
+{
+"id": "i18n-de-fix-feiertage-03-arith",
+"ok": true
+},
+{
+"id": "i18n-de-fix-feiertage-04-negate",
+"ok": true
+},
+{
+"id": "i18n-de-fix-feiertage-05-delete",
+"ok": true
+},
+{
+"id": "i18n-de-fix-feiertage-06-const",
+"ok": true
+},
+{
+"id": "i18n-de-fix-feiertage-07-cmp",
+"ok": true
+},
+{
+"id": "i18n-de-fix-feiertage-08-arith",
+"ok": true
+},
+{
+"id": "i18n-de-fix-feiertage-09-negate",
+"ok": true
+}
+]

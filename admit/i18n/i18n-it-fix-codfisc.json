@@ -1,0 +1,38 @@
+[
+{
+"id": "i18n-it-fix-codfisc-01-negate",
+"ok": true
+},
+{
+"id": "i18n-it-fix-codfisc-02-const",
+"ok": true
+},
+{
+"id": "i18n-it-fix-codfisc-03-cmp",
+"ok": true
+},
+{
+"id": "i18n-it-fix-codfisc-04-delete",
+"ok": true
+},
+{
+"id": "i18n-it-fix-codfisc-05-arith",
+"ok": true
+},
+{
+"id": "i18n-it-fix-codfisc-06-logic",
+"ok": true
+},
+{
+"id": "i18n-it-fix-codfisc-07-const",
+"ok": true
+},
+{
+"id": "i18n-it-fix-codfisc-08-cmp",
+"ok": true
+},
+{
+"id": "i18n-it-fix-codfisc-09-delete",
+"ok": true
+}
+]

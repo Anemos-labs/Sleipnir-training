@@ -1,0 +1,38 @@
+[
+{
+"id": "i18n-fr-fix-typofr-01-negate",
+"ok": true
+},
+{
+"id": "i18n-fr-fix-typofr-02-swap",
+"ok": true
+},
+{
+"id": "i18n-fr-fix-typofr-03-delete",
+"ok": true
+},
+{
+"id": "i18n-fr-fix-typofr-04-arith",
+"ok": true
+},
+{
+"id": "i18n-fr-fix-typofr-05-const",
+"ok": true
+},
+{
+"id": "i18n-fr-fix-typofr-06-logic",
+"ok": true
+},
+{
+"id": "i18n-fr-fix-typofr-07-cmp",
+"ok": true
+},
+{
+"id": "i18n-fr-fix-typofr-08-negate",
+"ok": true
+},
+{
+"id": "i18n-fr-fix-typofr-09-swap",
+"ok": true
+}
+]

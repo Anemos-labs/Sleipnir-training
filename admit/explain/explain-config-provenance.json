@@ -1,0 +1,34 @@
+[
+{
+"id": "explain-config-provenance-01-ruby-4-keys",
+"ok": true
+},
+{
+"id": "explain-config-provenance-02-go-4-keys",
+"ok": true
+},
+{
+"id": "explain-config-provenance-03-python-5-keys",
+"ok": true
+},
+{
+"id": "explain-config-provenance-04-javascript-7-keys",
+"ok": true
+},
+{
+"id": "explain-config-provenance-05-go-7-keys",
+"ok": true
+},
+{
+"id": "explain-config-provenance-06-python-5-keys",
+"ok": true
+},
+{
+"id": "explain-config-provenance-07-javascript-5-keys",
+"ok": true
+},
+{
+"id": "explain-config-provenance-08-ruby-9-keys",
+"ok": true
+}
+]

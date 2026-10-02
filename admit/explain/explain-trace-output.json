@@ -1,0 +1,50 @@
+[
+{
+"id": "explain-trace-output-01-python-full",
+"ok": true
+},
+{
+"id": "explain-trace-output-02-ruby-last",
+"ok": true
+},
+{
+"id": "explain-trace-output-03-java-nth",
+"ok": true
+},
+{
+"id": "explain-trace-output-04-go-nth",
+"ok": true
+},
+{
+"id": "explain-trace-output-05-rust-nth",
+"ok": true
+},
+{
+"id": "explain-trace-output-06-javascript-nth",
+"ok": true
+},
+{
+"id": "explain-trace-output-07-java-full",
+"ok": true
+},
+{
+"id": "explain-trace-output-08-rust-full",
+"ok": true
+},
+{
+"id": "explain-trace-output-09-python-nth",
+"ok": true
+},
+{
+"id": "explain-trace-output-10-go-nth",
+"ok": true
+},
+{
+"id": "explain-trace-output-11-javascript-last",
+"ok": true
+},
+{
+"id": "explain-trace-output-12-ruby-full",
+"ok": true
+}
+]

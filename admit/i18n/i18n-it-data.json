@@ -1,0 +1,38 @@
+[
+{
+"id": "i18n-it-data-01-zone-per-coltura",
+"ok": true
+},
+{
+"id": "i18n-it-data-02-forme-mai-controllate",
+"ok": true
+},
+{
+"id": "i18n-it-data-03-ultima-lettura",
+"ok": true
+},
+{
+"id": "i18n-it-data-04-slot-liberi-bug",
+"ok": true
+},
+{
+"id": "i18n-it-data-05-corse-overbooking",
+"ok": true
+},
+{
+"id": "i18n-it-data-06-etl-giorni-mancanti",
+"ok": true
+},
+{
+"id": "i18n-it-data-07-escursioni-umidita",
+"ok": true
+},
+{
+"id": "i18n-it-data-08-pazienti-doppi",
+"ok": true
+},
+{
+"id": "i18n-it-data-09-episodi-secchezza",
+"ok": true
+}
+]

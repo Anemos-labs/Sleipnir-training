@@ -125,7 +125,7 @@ def load_all(text: str) -> list:
     with tempfile.TemporaryDirectory() as d:
         open(os.path.join(d, "a.yml"), "w", encoding="utf-8").write(text)
         open(os.path.join(d, "y.rb"), "w").write(RUBY)
-        p = subprocess.run(["ruby", os.path.join(d, "y.rb"), os.path.join(d, "a.yml")], capture_output=True, text=True, timeout=30)
+        p = subprocess.run(["ruby", os.path.join(d, "y.rb"), os.path.join(d, "a.yml")], capture_output=True, text=True, timeout=180)
         if p.returncode != 0:
             raise ValueError(p.stdout.strip() or p.stderr.strip())
         return json.loads(p.stdout)

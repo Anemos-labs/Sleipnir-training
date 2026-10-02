@@ -1,0 +1,50 @@
+[
+{
+"id": "explain-implementers-01-rust-coded",
+"ok": true
+},
+{
+"id": "explain-implementers-02-java-coded",
+"ok": true
+},
+{
+"id": "explain-implementers-03-python-ranked",
+"ok": true
+},
+{
+"id": "explain-implementers-04-go-resettable",
+"ok": true
+},
+{
+"id": "explain-implementers-05-java-describer",
+"ok": true
+},
+{
+"id": "explain-implementers-06-rust-ranked",
+"ok": true
+},
+{
+"id": "explain-implementers-07-go-resettable",
+"ok": true
+},
+{
+"id": "explain-implementers-08-python-resettable",
+"ok": true
+},
+{
+"id": "explain-implementers-09-rust-labelled",
+"ok": true
+},
+{
+"id": "explain-implementers-10-java-resettable",
+"ok": true
+},
+{
+"id": "explain-implementers-11-python-checkable",
+"ok": true
+},
+{
+"id": "explain-implementers-12-go-resettable",
+"ok": true
+}
+]

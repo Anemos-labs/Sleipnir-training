@@ -1,0 +1,34 @@
+[
+{
+"id": "project-trials-01-trials-100ms-javascript",
+"ok": true
+},
+{
+"id": "project-trials-02-assayer-50ms-python",
+"ok": true
+},
+{
+"id": "project-trials-03-proving-200ms-javascript",
+"ok": true
+},
+{
+"id": "project-trials-04-probatio-80ms-python",
+"ok": true
+},
+{
+"id": "project-trials-05-touchstone-30ms-javascript",
+"ok": true
+},
+{
+"id": "project-trials-06-crucible-150ms-python",
+"ok": true
+},
+{
+"id": "project-trials-07-litmus-60ms-javascript",
+"ok": true
+},
+{
+"id": "project-trials-08-bench-120ms-python",
+"ok": true
+}
+]

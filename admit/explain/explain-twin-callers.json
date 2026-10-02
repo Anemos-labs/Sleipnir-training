@@ -1,0 +1,34 @@
+[
+{
+"id": "explain-twin-callers-01-java-crewscore",
+"ok": true
+},
+{
+"id": "explain-twin-callers-02-javascript-bucketslot",
+"ok": true
+},
+{
+"id": "explain-twin-callers-03-ruby-prop-offset",
+"ok": true
+},
+{
+"id": "explain-twin-callers-04-rust-cap-cue",
+"ok": true
+},
+{
+"id": "explain-twin-callers-05-go-snapbell",
+"ok": true
+},
+{
+"id": "explain-twin-callers-06-python-spread-clapper",
+"ok": true
+},
+{
+"id": "explain-twin-callers-07-ruby-pad-group",
+"ok": true
+},
+{
+"id": "explain-twin-callers-08-python-blend-guest",
+"ok": true
+}
+]

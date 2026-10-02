@@ -1,0 +1,42 @@
+[
+{
+"id": "explain-exception-escape-01-ruby-2",
+"ok": true
+},
+{
+"id": "explain-exception-escape-02-python-1",
+"ok": true
+},
+{
+"id": "explain-exception-escape-03-java-1",
+"ok": true
+},
+{
+"id": "explain-exception-escape-04-javascript-1",
+"ok": true
+},
+{
+"id": "explain-exception-escape-05-ruby-1",
+"ok": true
+},
+{
+"id": "explain-exception-escape-06-python-1",
+"ok": true
+},
+{
+"id": "explain-exception-escape-07-java-1",
+"ok": true
+},
+{
+"id": "explain-exception-escape-08-javascript-2",
+"ok": true
+},
+{
+"id": "explain-exception-escape-09-ruby-1",
+"ok": true
+},
+{
+"id": "explain-exception-escape-10-python-1",
+"ok": true
+}
+]

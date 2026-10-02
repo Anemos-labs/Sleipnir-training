@@ -1,0 +1,38 @@
+[
+{
+"id": "explain-log-origin-01-java-line1",
+"ok": true
+},
+{
+"id": "explain-log-origin-02-rust-line5",
+"ok": true
+},
+{
+"id": "explain-log-origin-03-javascript-line1",
+"ok": true
+},
+{
+"id": "explain-log-origin-04-python-line3",
+"ok": true
+},
+{
+"id": "explain-log-origin-05-ruby-line3",
+"ok": true
+},
+{
+"id": "explain-log-origin-06-go-line1",
+"ok": true
+},
+{
+"id": "explain-log-origin-07-javascript-line2",
+"ok": true
+},
+{
+"id": "explain-log-origin-08-go-line5",
+"ok": true
+},
+{
+"id": "explain-log-origin-09-python-line1",
+"ok": true
+}
+]
