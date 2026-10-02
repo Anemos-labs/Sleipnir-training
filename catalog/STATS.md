@@ -1,12 +1,12 @@
 # Corpus statistics
 
-**8465 tasks** in **853 families** across **23 categories**; 7242 fixtures, 1094 answer-mode (159 with a weak check, flagged `weak_check`), 129 rubric; 153 for a swarm.
+**8457 tasks** in **853 families** across **23 categories**; 7234 fixtures, 1094 answer-mode (159 with a weak check, flagged `weak_check`), 129 rubric; 153 for a swarm.
 
 ### By category and difficulty
 
 | category | tasks | d1 | d2 | d3 | d4 | d5 | families |
 |---|---|---|---|---|---|---|---|
-| fix | 2447 | 295 | 596 | 801 | 556 | 199 | 252 |
+| fix | 2447 | 297 | 601 | 799 | 554 | 196 | 252 |
 | feature | 530 | 72 | 124 | 140 | 102 | 92 | 31 |
 | greenfield | 258 | 40 | 63 | 78 | 53 | 24 | 26 |
 | games | 335 | 63 | 66 | 122 | 63 | 21 | 39 |
@@ -16,7 +16,7 @@
 | review | 160 | 23 | 37 | 50 | 34 | 16 | 8 |
 | debug | 207 | 25 | 57 | 64 | 42 | 19 | 12 |
 | data | 376 | 50 | 74 | 127 | 96 | 29 | 41 |
-| shell | 235 | 26 | 63 | 88 | 47 | 11 | 23 |
+| shell | 211 | 25 | 60 | 77 | 39 | 10 | 21 |
 | devops | 173 | 21 | 29 | 63 | 41 | 19 | 14 |
 | port | 217 | 28 | 59 | 70 | 43 | 17 | 47 |
 | security | 240 | 26 | 65 | 87 | 42 | 20 | 35 |
@@ -28,21 +28,21 @@
 | chat | 701 | 102 | 168 | 209 | 153 | 69 | 83 |
 | explain | 337 | 36 | 89 | 108 | 68 | 36 | 33 |
 | i18n | 390 | 34 | 82 | 169 | 81 | 24 | 45 |
-| project | 96 | 0 | 0 | 3 | 55 | 38 | 12 |
-| **total** | 8465 | 1000 | 2031 | 2749 | 1896 | 789 | 853 |
+| project | 112 | 0 | 0 | 5 | 66 | 41 | 14 |
+| **total** | 8457 | 1001 | 2033 | 2738 | 1897 | 788 | 853 |
 
 ### By language
 
 | language | tasks |
 |---|---|
-| python | 3303 |
+| python | 3307 |
 | text | 1727 |
 | javascript | 636 |
 | go | 568 |
-| rust | 444 |
-| java | 437 |
+| rust | 450 |
+| java | 443 |
 | sql | 380 |
-| bash | 328 |
+| bash | 304 |
 | c | 203 |
 | ruby | 192 |
 | typescript | 94 |
@@ -54,9 +54,9 @@
 
 | kind | tasks |
 |---|---|
-| fix | 3786 |
-| feature | 1951 |
-| greenfield | 1211 |
+| fix | 3784 |
+| feature | 1929 |
+| greenfield | 1227 |
 | lookup | 873 |
 | refactor | 294 |
 | advice | 129 |
@@ -96,7 +96,5 @@
 | fix-hand-room-plan | 19 |
 | devops-k8s-manifests | 18 |
 
-Prompt length (characters): median 315, p10 157, p90 787, max 3564.
-
-8 generated tasks are not in the catalog (admission failed, not admitted yet, or quarantined).
+Prompt length (characters): median 317, p10 158, p90 785, max 3564.
 

@@ -79,21 +79,21 @@ _find and repair a bug in existing code (injected regressions, logic bugs, spec 
 | fix-hand-trail-plan | 17 | rust | 2-5 | a layered rust crate that plans hikes (parse, pace rules, climb dead band, plan summary) with cross-module defects and review tickets |
 | fix-hand-tz-wallclock | 11 | python | 2-5 | wall-clock versus UTC arithmetic around daylight-saving changes in invented zones |
 | fix-hand-unicode-fold | 14 | javascript,python | 1-5 | unicode normalisation, case folding and code point handling: a handle registry (python), text helpers (js) |
-| fix-java-ballotcount | 8 | java | 4-5 | injected bugs in the ballotcount library (java) |
+| fix-java-ballotcount | 8 | java | 3-5 | injected bugs in the ballotcount library (java) |
 | fix-java-billsplit | 8 | java | 1-2 | injected bugs in the billsplit library (java) |
 | fix-java-binslot | 8 | java | 4-5 | injected bugs in the binslot library (java) |
 | fix-java-fleetdue | 8 | java | 2-3 | injected bugs in the fleetdue library (java) |
-| fix-java-invoicer | 8 | java | 2-4 | injected bugs in the invoicer library (java) |
-| fix-java-lanedraw | 8 | java | 1-3 | injected bugs in the lanedraw library (java) |
+| fix-java-invoicer | 8 | java | 3-4 | injected bugs in the invoicer library (java) |
+| fix-java-lanedraw | 8 | java | 2-3 | injected bugs in the lanedraw library (java) |
 | fix-java-loandesk | 8 | java | 3-4 | injected bugs in the loandesk library (java) |
-| fix-java-markbook | 8 | java | 1-3 | injected bugs in the markbook library (java) |
-| fix-java-receiptfmt | 8 | java | 1-2 | injected bugs in the receiptfmt layout library (java) |
-| fix-java-seatbook | 8 | java | 3-4 | injected bugs in the seatbook engine (java) |
+| fix-java-markbook | 8 | java | 2-3 | injected bugs in the markbook library (java) |
+| fix-java-receiptfmt | 8 | java | 1-1 | injected bugs in the receiptfmt layout library (java) |
+| fix-java-seatbook | 8 | java | 2-4 | injected bugs in the seatbook engine (java) |
 | fix-java-ticketcode | 8 | java | 1-2 | injected bugs in the ticketcode library (java) |
 | fix-java-timetable | 8 | java | 2-4 | injected bugs in the timetable checker (java) |
-| fix-js-calmtimer | 8 | javascript | 3-4 | injected bugs in the calmtimer timing library (javascript) |
-| fix-js-cartpromo | 8 | javascript | 2-4 | injected bugs in the cartpromo pricing engine (javascript) |
-| fix-js-cursorpage | 8 | javascript | 1-3 | injected bugs in the cursorpage pagination library (javascript) |
+| fix-js-calmtimer | 8 | javascript | 2-4 | injected bugs in the calmtimer timing library (javascript) |
+| fix-js-cartpromo | 8 | javascript | 3-4 | injected bugs in the cartpromo pricing engine (javascript) |
+| fix-js-cursorpage | 8 | javascript | 2-3 | injected bugs in the cursorpage pagination library (javascript) |
 | fix-js-editlog | 8 | javascript | 2-3 | injected bugs in the editlog document model (javascript) |
 | fix-js-formcheck | 8 | javascript | 2-3 | injected bugs in the formcheck validator (javascript) |
 | fix-js-fuzzrank | 8 | javascript | 3-4 | injected bugs in the fuzzrank matcher (javascript) |
@@ -102,7 +102,7 @@ _find and repair a bug in existing code (injected regressions, logic bugs, spec 
 | fix-js-pluralis | 8 | javascript | 1-2 | injected bugs in the pluralis library (javascript) |
 | fix-js-printrange | 8 | javascript | 1-2 | injected bugs in the printrange library (javascript) |
 | fix-js-recipescale | 8 | javascript | 1-2 | injected bugs in the recipescale library (javascript) |
-| fix-js-routetable | 8 | javascript | 3-5 | injected bugs in the routetable router (javascript) |
+| fix-js-routetable | 8 | javascript | 4-5 | injected bugs in the routetable router (javascript) |
 | fix-js-stayquote | 8 | javascript | 3-4 | injected bugs in the stayquote pricing library (javascript) |
 | fix-js-wherekit | 8 | javascript | 2-3 | injected bugs in the wherekit query builder (javascript) |
 | fix-php-basketcalc | 8 | php | 4-5 | injected bugs in the basketcalc pricing engine (php) |
@@ -253,11 +253,11 @@ _find and repair a bug in existing code (injected regressions, logic bugs, spec 
 | fix-ts-flagrules | 8 | typescript | 3-4 | injected bugs in the flagrules evaluator (typescript) |
 | fix-ts-haulcal | 8 | typescript | 4-5 | injected bugs in the haulcal pick-up calendar library (typescript) |
 | fix-ts-mailrules | 8 | typescript | 2-3 | injected bugs in the mailrules filter engine (typescript) |
-| fix-ts-numfmt | 8 | typescript | 2-3 | injected bugs in the numfmt formatting library (typescript) |
-| fix-ts-ratecard | 8 | typescript | 2-3 | injected bugs in the ratecard pricing library (typescript) |
-| fix-ts-slotgrid | 8 | typescript | 3-4 | injected bugs in the slotgrid calendar library (typescript) |
+| fix-ts-numfmt | 8 | typescript | 1-3 | injected bugs in the numfmt formatting library (typescript) |
+| fix-ts-ratecard | 8 | typescript | 1-3 | injected bugs in the ratecard pricing library (typescript) |
+| fix-ts-slotgrid | 8 | typescript | 2-4 | injected bugs in the slotgrid calendar library (typescript) |
 | fix-ts-stepper | 8 | typescript | 2-3 | injected bugs in the stepper flow library (typescript) |
-| fix-ts-stocklog | 8 | typescript | 2-4 | injected bugs in the stocklog ledger (typescript) |
+| fix-ts-stocklog | 8 | typescript | 3-4 | injected bugs in the stocklog ledger (typescript) |
 | fix-ts-tagquery | 8 | typescript | 4-5 | injected bugs in the tagquery filter language (typescript) |
 | fix-ts-wordshape | 8 | typescript | 1-2 | injected bugs in the wordshape case converter (typescript) |
 
@@ -539,24 +539,22 @@ _SQL, ETL, CSV/JSON wrangling, reports, spreadsheets-as-code_
 | data-warmup-tools | 8 | sql | 1-1 | easy SQL warm-ups on the tool library database: counts, simple filters, top lists |
 | data-warmup-trams | 8 | sql | 1-1 | easy SQL warm-ups on the tram operator database: counts, simple filters, top lists |
 
-## shell (235 tasks, 23 families)
+## shell (211 tasks, 21 families)
 
 _shell, text-processing pipelines, Makefiles, small CLI tools_
 
 | family | tasks | langs | d | what varies |
 |---|---|---|---|---|
-| shell-awk-algorithms | 6 | bash | 4-5 | expert awk programs: exact digit-string arithmetic, multi-line quoted CSV records, an RPN calculator, alphabetical topological order with cy |
+| shell-awk-algorithms | 4 | bash | 4-5 | expert awk programs: exact digit-string arithmetic, multi-line quoted CSV records, an RPN calculator, alphabetical topological order with cy |
 | shell-awk-programs | 12 | bash | 2-4 | awk programs with exact output: ledgers in cents, sessions, joins, aligned tables, wrapping, job logs, quoted key=value parsing |
 | shell-backup-tools | 10 | bash | 2-4 | backup scripts: tar snapshots, selective restore, rsync-like mirror, hard-linked snapshots, verification, rotation and pruning |
 | shell-batch-rename | 11 | bash | 1-5 | renaming files in bulk with awkward names: extensions, padding, dates, flattening, sanitising, undo, CSV mappings |
 | shell-cli-options | 11 | bash | 1-4 | small command-line tools in bash: getopts, long options, subcommands, usage errors and exit codes |
-| shell-csv-tools | 11 | bash | 2-4 | CSV tools with quoted fields in bash/awk: columns, sums, stable sort, filter, join, TSV, validation, grouping, dedupe, JSON |
 | shell-date-arithmetic | 11 | bash | 1-4 | calendar and duration arithmetic in bash with date(1): day counts, weekdays, business days, calendars, ages, ISO weeks, durations |
 | shell-dedupe-audit | 11 | bash | 2-4 | duplicate files and tree audits in shell: hashing, keep rules, hard links, manifests, size-first scanning |
 | shell-expert-tools | 4 | bash | 5-5 | expert tools: an awk spreadsheet evaluator with cycles and errors, a sed incrementer with carries, a jq JSON patch generator, a bash worker  |
 | shell-find-xargs | 11 | bash | 2-3 | find/xargs-style tree tools with awkward names: size and age filters, extension counts, pruning, exec bits, empty dirs, symlink audits |
 | shell-first-steps | 8 | bash | 1-1 | warm-up bash scripts: default arguments, line counts, column sums, whole-word search, column swaps, head and tail previews, path kinds, maxi |
-| shell-ini-tools | 11 | bash | 1-4 | INI file tools in bash/awk: get, set, delete, sections, env export, merge, lint, semantic diff, expansion, typed values |
 | shell-jq-programs | 12 | bash | 2-4 | jq programs with exact output: CSV flattening, grouping, latest-per-key, dotted paths, joins via --slurpfile, validation, ISO weeks, trees |
 | shell-log-retention | 11 | bash | 1-5 | log rotation and retention scripts: dates in names, tiers, caps, compression, dry runs, with deterministic --today |
 | shell-makefile-authoring | 12 | bash | 2-4 | write Makefiles whose incremental behaviour is proven by touching files and re-running make against logging tools |
@@ -997,7 +995,7 @@ _prompts written in other languages (the repository and the checks are the same 
 | i18n-zh-fix | 8 | javascript,python,rust | 1-5 | derived: Unicode and text-encoding bug reports written in Simplified Chinese (python, js, rust), d1-d5 |
 | i18n-zh-fix-cnid | 9 | python | 2-4 | native: injected bugs in a Chinese ID-number/amount library, reports in Chinese |
 
-## project (96 tasks, 12 families)
+## project (112 tasks, 14 families)
 
 _long-horizon builds and migrations: several modules, hundreds of hidden checks, d4-d5_
 
@@ -1015,4 +1013,6 @@ _long-horizon builds and migrations: several modules, hundreds of hidden checks,
 | project-songsheet | 8 | javascript,python | 3-5 | a chord-sheet markup to aligned text/HTML converter: transposition with key-dependent spelling, capo shapes, recalls, repeats, escaping |
 | project-tiers | 8 | python,rust | 3-5 | a tiered key-value store simulator: memtable flushes, cascading compactions (merge selection, tombstone dropping, in-place merges), probe-co |
 | project-trials | 8 | javascript,python | 4-5 | a fixture-based test runner for suites in an invented format: scoped fixtures with dependencies, exact setup/teardown ordering, retries, tim |
+| project-turnstile | 8 | java,python | 3-5 | a door-access controller: zones with levels, caps and weekday opening hours (some crossing midnight), anti-passback modes, escorts, lockdown |
+| project-typeset | 8 | python,rust | 3-5 | a line-printer typesetter: markup reading, greedy wrapping and justification, underlined headings, quotes, tight/loose lists, figures, pagin |
 

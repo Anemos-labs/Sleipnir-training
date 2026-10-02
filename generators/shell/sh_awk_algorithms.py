@@ -523,4 +523,6 @@ for _s in SPECS:
 @family("shell-awk-algorithms", category="shell", lang="bash", kind="feature", n=len(SPECS),
         summary="expert awk programs: exact digit-string arithmetic, multi-line quoted CSV records, an RPN calculator, alphabetical topological order with cycle reports, a unified-diff patcher")
 def awk_algorithms(rng, n):
-    return K.shell_tasks("shell-awk-algorithms", SPECS, rng, n)
+    # the RPN calculator spec is generated (it keeps the other specs' random draws stable) but not published: that
+    # subject belongs to Sleipnir's own bench (rs-rpn); likewise the quoted-CSV converter (js-csv)
+    return [t for t in K.shell_tasks("shell-awk-algorithms", SPECS, rng, n) if not any(x in t.slug for x in ("rpn-line-calculator", "quoted-csv-records-to-tsv"))]

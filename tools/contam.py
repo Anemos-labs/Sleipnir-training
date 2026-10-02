@@ -161,6 +161,20 @@ def local_sources() -> dict[str, dict]:
                     t = p.read_text(encoding="utf-8", errors="replace")
                     out["code"].append(t)
                     out["names"] |= rare_names(t)
+    # the Go standard-library copies that Sleipnir's mutation bench is built from ("std-mini")
+    pk = SLEIPNIR / "bench" / "stdmini" / "packages.txt"
+    goroot = Path(os.environ.get("GOROOT", "/usr/local/go1.24.7"))
+    if not goroot.is_dir():
+        r = subprocess.run(["go", "env", "GOROOT"], capture_output=True, text=True, env={**os.environ, "GOTOOLCHAIN": "local"})
+        goroot = Path(r.stdout.strip() or "/usr/local/go")
+    if pk.exists() and (goroot / "src").is_dir():
+        for line in pk.read_text().splitlines():
+            line = line.split("#")[0].strip()
+            if not line:
+                continue
+            pkg = line.split()[0]
+            for p in (goroot / "src" / pkg).glob("*.go"):
+                out["code"].append(p.read_text(encoding="utf-8", errors="replace"))
     src = SLEIPNIR / "internal"
     if src.is_dir():
         for p in src.rglob("*.go"):

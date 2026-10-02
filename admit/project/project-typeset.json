@@ -1,0 +1,34 @@
+[
+{
+"id": "project-typeset-01-typeset-keep-rust",
+"ok": true
+},
+{
+"id": "project-typeset-02-galley-keep-python",
+"ok": true
+},
+{
+"id": "project-typeset-03-pagecraft-free-rust",
+"ok": true
+},
+{
+"id": "project-typeset-04-folio-keep-rust",
+"ok": true
+},
+{
+"id": "project-typeset-05-presswork-keep-python",
+"ok": true
+},
+{
+"id": "project-typeset-06-leadingd-keep-rust",
+"ok": true
+},
+{
+"id": "project-typeset-07-lineset-free-rust",
+"ok": true
+},
+{
+"id": "project-typeset-08-imposer-keep-rust",
+"ok": true
+}
+]

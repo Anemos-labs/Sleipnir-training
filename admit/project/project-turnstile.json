@@ -1,0 +1,34 @@
+[
+{
+"id": "project-turnstile-01-turnstile-soft-java",
+"ok": true
+},
+{
+"id": "project-turnstile-02-gatewarden-strict-python",
+"ok": true
+},
+{
+"id": "project-turnstile-03-badgeline-soft-java",
+"ok": true
+},
+{
+"id": "project-turnstile-04-portcullis-off-java",
+"ok": true
+},
+{
+"id": "project-turnstile-05-ingress-strict-python",
+"ok": true
+},
+{
+"id": "project-turnstile-06-wicketd-soft-java",
+"ok": true
+},
+{
+"id": "project-turnstile-07-doorman-strict-java",
+"ok": true
+},
+{
+"id": "project-turnstile-08-tollgate-soft-java",
+"ok": true
+}
+]
