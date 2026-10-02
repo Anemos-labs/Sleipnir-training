@@ -273,7 +273,7 @@ HIDDEN = dd(r'''
 ''')
 
 LIB = Lib(
-    name="printrange", lang="javascript", title="the printrange helpers",
+    name="printrange", lang="javascript", title="the printrange library",
     blurb="The report viewer's print dialog uses printrange to read the page ranges people type and to count the sheets of paper.",
     files={"package.json": PACKAGE_JSON % "printrange", "src/ranges.js": RANGES, "README.md": README, ".gitignore": "node_modules/\n"},
     visible_tests={"test/basic.test.js": VISIBLE},

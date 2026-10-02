@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-java-ballotcount-01-delete",
+"ok": true
+},
+{
+"id": "fix-java-ballotcount-02-negate",
+"ok": true
+},
+{
+"id": "fix-java-ballotcount-03-const",
+"ok": true
+},
+{
+"id": "fix-java-ballotcount-04-logic",
+"ok": true
+},
+{
+"id": "fix-java-ballotcount-05-cmp",
+"ok": true
+},
+{
+"id": "fix-java-ballotcount-06-delete",
+"ok": true
+},
+{
+"id": "fix-java-ballotcount-07-negate",
+"ok": true
+},
+{
+"id": "fix-java-ballotcount-08-const",
+"ok": true
+}
+]

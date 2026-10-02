@@ -218,7 +218,7 @@ def _clone_js():
     return ("function clone(args) {\n  return args.map((x) => (Array.isArray(x) ? x.map((y) => (typeof y === 'object' && y !== null ? JSON.parse(JSON.stringify(y)) : y)) : x));\n}\n")
 
 
-@family("optimize-js-scale", category="optimize", lang="javascript", kind="feature", n=14,
+@family("optimize-js-scale", category="optimize", lang="javascript", kind="feature", n=10,
         summary="quadratic javascript (includes/indexOf/find in loops, object spread and concat in reduce, splice insertion): large input in a child process with a generous timeout")
 def gen(rng, n):
     order = list(SHAPES) * 3

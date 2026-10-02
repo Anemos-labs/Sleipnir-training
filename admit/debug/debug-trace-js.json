@@ -1,0 +1,34 @@
+[
+{
+"id": "debug-trace-js-01-linden-cart-sort",
+"ok": true
+},
+{
+"id": "debug-trace-js-02-timesheet-summary",
+"ok": true
+},
+{
+"id": "debug-trace-js-03-linden-cart-line",
+"ok": true
+},
+{
+"id": "debug-trace-js-04-timesheet-between",
+"ok": true
+},
+{
+"id": "debug-trace-js-05-linden-cart-escape",
+"ok": true
+},
+{
+"id": "debug-trace-js-06-timesheet-parse",
+"ok": true
+},
+{
+"id": "debug-trace-js-07-linden-cart-total",
+"ok": true
+},
+{
+"id": "debug-trace-js-08-timesheet-parse",
+"ok": true
+}
+]

@@ -1,0 +1,34 @@
+[
+{
+"id": "refactor-go-generics-dedupe-01-3ops-8copies",
+"ok": true
+},
+{
+"id": "refactor-go-generics-dedupe-02-2ops-5copies",
+"ok": true
+},
+{
+"id": "refactor-go-generics-dedupe-03-5ops-11copies",
+"ok": true
+},
+{
+"id": "refactor-go-generics-dedupe-04-5ops-12copies",
+"ok": true
+},
+{
+"id": "refactor-go-generics-dedupe-05-3ops-6copies",
+"ok": true
+},
+{
+"id": "refactor-go-generics-dedupe-06-4ops-8copies",
+"ok": true
+},
+{
+"id": "refactor-go-generics-dedupe-07-6ops-14copies",
+"ok": true
+},
+{
+"id": "refactor-go-generics-dedupe-08-3ops-7copies",
+"ok": true
+}
+]

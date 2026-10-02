@@ -1,0 +1,34 @@
+[
+{
+"id": "testing-regress-js-01-recipe-const",
+"ok": true
+},
+{
+"id": "testing-regress-js-02-recipe-const",
+"ok": true
+},
+{
+"id": "testing-regress-js-03-cronlite-delete",
+"ok": true
+},
+{
+"id": "testing-regress-js-04-cronlite-const",
+"ok": true
+},
+{
+"id": "testing-regress-js-05-recipe-negate",
+"ok": true
+},
+{
+"id": "testing-regress-js-06-recipe-arith",
+"ok": true
+},
+{
+"id": "testing-regress-js-07-cronlite-delete",
+"ok": true
+},
+{
+"id": "testing-regress-js-08-cronlite-cmp",
+"ok": true
+}
+]

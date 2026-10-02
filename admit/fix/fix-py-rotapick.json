@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-rotapick-01-arith",
+"ok": true
+},
+{
+"id": "fix-py-rotapick-02-negate",
+"ok": true
+},
+{
+"id": "fix-py-rotapick-03-swap",
+"ok": true
+},
+{
+"id": "fix-py-rotapick-04-delete",
+"ok": true
+},
+{
+"id": "fix-py-rotapick-05-const",
+"ok": true
+},
+{
+"id": "fix-py-rotapick-06-arith",
+"ok": true
+},
+{
+"id": "fix-py-rotapick-07-negate",
+"ok": true
+},
+{
+"id": "fix-py-rotapick-08-delete",
+"ok": true
+},
+{
+"id": "fix-py-rotapick-09-const",
+"ok": true
+},
+{
+"id": "fix-py-rotapick-10-negate",
+"ok": true
+}
+]

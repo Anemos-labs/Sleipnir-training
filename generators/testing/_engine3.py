@@ -248,7 +248,7 @@ def order_task(lib: TLib, rng: random.Random, dirty: set[str], chosen: list[E.Ca
         raise RuntimeError(f"{lib.name}: dirty suite {sorted(dirty)} does not depend on the order (reverse ok={rev.ok}, alone ok={alone.ok})")
     spec = E.base_spec(lib, order_scenarios(), E.mutant_specs(chosen))
     n_dirty_tests = sum(len(x["groups"][g]["slots"]) for g in dirty)
-    d = lib.difficulty - 1 + (len(dirty) >= 2) + (n_dirty_tests >= 7)
+    d = lib.difficulty - 2 + (len(dirty) >= 2) + (len(dirty) >= 3) + (n_dirty_tests >= 7)
     return Task(
         slug=slug, prompt=order_prompt(rng, lib, _summary_from(rev.out), len(dirty)), difficulty=max(1, min(5, d)), kind="fix", start=start, hidden=hidden_files(spec),
         solution=dict(lib.gold), verify=E.VERIFY, pass_mode="json-score", protect_tests=False, protected=protect_globs(lib),

@@ -167,10 +167,15 @@ def trace_prompt(rng, mod: Module, crash: bool, out: str, good: str, extra_schem
     return rng.choice(voices)
 
 
+TRACE_SPREAD = [0.28, 0.28, 0.24, 0.14, 0.06]  # share of d1..d5
+FIX_SPREAD = [0.0, 0.13, 0.33, 0.33, 0.21]
+
+
 def trace_family(mods: list[Module], rng: random.Random, n: int, tag: str = "", fix_too: bool = False):
     """Diagnosis tasks from python slot modules: pick an observable defect, run the scenario, hand over the log."""
     pools = {m.name: observable_bads(m) for m in mods}
     used: dict[str, set] = {m.name: set() for m in mods}
+    made: list[tuple[float, Task]] = []
     i = 0
     guard = 0
     while i < n and guard < n * 20:
@@ -228,10 +233,22 @@ def trace_family(mods: list[Module], rng: random.Random, n: int, tag: str = "", 
             spec["run"] = {"cmd": f"PYTHONHASHSEED=0 python3 -u {mod.scenario_path} 2>&1", "expect": good.strip(), "timeout": 60}
             d = min(5, d + 1)
         i += 1
-        yield Task(
+        hardness = 2 * mod.difficulty + (0 if crash else 1) + (2 if deceptive else 0) + len(choice) - 1 + (1 if fix_too else 0) + (i * 7919 % 100) / 100.0
+        made.append((hardness, Task(
             slug=f"{i:02d}-{mod.name.split('-', 1)[-1]}-{slot_name}-{'crash' if crash else 'wrong'}",
             prompt=prompt, difficulty=d, kind="fix", lang="python", start=files, hidden=hidden_diag(spec),
             solution=solution, verify=VERIFY, pass_mode="json-score",
             protected=protected, timeout_s=90 if fix_too else 60, tags=["diagnosis", "trace" if crash else "wrong-output", *(["fix-too"] if fix_too else []), *([tag] if tag else [])],
             notes={"module": mod.name, "slot": slot_name, "bad": bad.why, "crash": crash, "deceptive": bool(deceptive), "decoys": sorted(k for k in choice if k != slot_name)},
-        )
+        )))
+    # difficulty is relative to the family: rank the tasks by how much there is to untangle and cut the ranking into the target spread
+    dist = FIX_SPREAD if fix_too else TRACE_SPREAD
+    ranked = sorted(range(len(made)), key=lambda j: made[j][0])
+    cuts, acc = [], 0.0
+    for share in dist:
+        acc += share
+        cuts.append(round(acc * len(made)))
+    for rank, j in enumerate(ranked):
+        made[j][1].difficulty = next(lvl for lvl, c in enumerate(cuts, 1) if rank < c)
+    for _, task in made:
+        yield task

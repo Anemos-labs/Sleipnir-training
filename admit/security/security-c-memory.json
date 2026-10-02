@@ -1,0 +1,74 @@
+[
+{
+"id": "security-c-memory-01-greeting-strcpy",
+"ok": true
+},
+{
+"id": "security-c-memory-02-log-format-string",
+"ok": true
+},
+{
+"id": "security-c-memory-03-prefix-fencepost",
+"ok": true
+},
+{
+"id": "security-c-memory-04-score-index",
+"ok": true
+},
+{
+"id": "security-c-memory-05-join-path-boundary",
+"ok": true
+},
+{
+"id": "security-c-memory-06-config-line-parser",
+"ok": true
+},
+{
+"id": "security-c-memory-07-strncpy-terminator",
+"ok": true
+},
+{
+"id": "security-c-memory-08-word-splitter",
+"ok": true
+},
+{
+"id": "security-c-memory-09-repeat-allocation",
+"ok": true
+},
+{
+"id": "security-c-memory-10-snprintf-accumulator",
+"ok": true
+},
+{
+"id": "security-c-memory-11-string-builder-growth",
+"ok": true
+},
+{
+"id": "security-c-memory-12-list-remove-uaf",
+"ok": true
+},
+{
+"id": "security-c-memory-13-cache-double-free",
+"ok": true
+},
+{
+"id": "security-c-memory-14-hash-bucket-overflow",
+"ok": true
+},
+{
+"id": "security-c-memory-15-image-size-overflow",
+"ok": true
+},
+{
+"id": "security-c-memory-16-record-length-checks",
+"ok": true
+},
+{
+"id": "security-c-memory-17-base64-output-bound",
+"ok": true
+},
+{
+"id": "security-c-memory-18-archive-reader",
+"ok": true
+}
+]

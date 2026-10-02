@@ -38,13 +38,5 @@
 {
 "id": "refactor-go-extract-steps-10-seeds-all",
 "ok": true
-},
-{
-"id": "refactor-go-extract-steps-11-seeds-all",
-"ok": true
-},
-{
-"id": "refactor-go-extract-steps-12-sauna-all",
-"ok": true
 }
 ]

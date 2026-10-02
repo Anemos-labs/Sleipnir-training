@@ -394,7 +394,7 @@ RATES = Module(
         Slot("lookup", "price_for", _RS_LOOKUP, [
             Bad(_RS_LOOKUP.replace("grams <= b.max_grams", "grams < b.max_grams"), "off-by-one", "a parcel of exactly max_grams is moved to the next (dearer) band", ("<", "<=", "max_grams", "boundary")),
             Bad(sub(_RS_LOOKUP, "if grams == 0 {\nreturn None;\n}", ""), "validation", "a weight of 0 gets the cheapest band's price instead of no price", ("zero", "weight", "None")),
-            Bad(_RS_LOOKUP.replace(".find(|b| grams <= b.max_grams)", ".rev().find(|b| grams <= b.max_grams)"), "logic", "searching the bands from the heaviest end returns the *last* band that fits, i.e. the dearest one", ("rev", "first band", "order")),
+            Bad(_RS_LOOKUP.replace(".find(|b| grams <= b.max_grams)", ".rev().find(|b| grams <= b.max_grams)"), "logic", "searching the bands from the heaviest end returns the *last* band that fits, i.e. the dearest one", ("rev", "first band", "order", "last band", "heaviest", "dearest")),
         ], note="adds `price_for()`"),
         Slot("cheapest", "cheapest", _RS_CHEAPEST, [
             Bad(_RS_CHEAPEST.replace("q.cents < b.cents", "q.cents <= b.cents"), "off-by-one", "with `<=` the *last* of equally cheap quotes wins instead of the first", ("<=", "tie", "first", "last")),

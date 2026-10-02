@@ -1,0 +1,50 @@
+[
+{
+"id": "testing-write-go-rules-01-meter-10m",
+"ok": true
+},
+{
+"id": "testing-write-go-rules-02-meter-6m",
+"ok": true
+},
+{
+"id": "testing-write-go-rules-03-meter-5m",
+"ok": true
+},
+{
+"id": "testing-write-go-rules-04-bells-8m",
+"ok": true
+},
+{
+"id": "testing-write-go-rules-05-bells-4m",
+"ok": true
+},
+{
+"id": "testing-write-go-rules-06-bells-9m",
+"ok": true
+},
+{
+"id": "testing-write-go-rules-07-meter-7m",
+"ok": true
+},
+{
+"id": "testing-write-go-rules-08-meter-9m",
+"ok": true
+},
+{
+"id": "testing-write-go-rules-09-meter-4m",
+"ok": true
+},
+{
+"id": "testing-write-go-rules-10-bells-12m",
+"ok": true
+},
+{
+"id": "testing-write-go-rules-11-bells-3m",
+"ok": true
+},
+{
+"id": "testing-write-go-rules-12-bells-7m",
+"ok": true
+}
+]

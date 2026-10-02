@@ -126,7 +126,7 @@ CFG = dict(
     tags=["sliding-window", "prefix-sums", "access-counter"])
 
 
-@family("optimize-py-windows", category="optimize", lang="python", kind="feature", n=12,
+@family("optimize-py-windows", category="optimize", lang="python", kind="feature", n=8,
         summary="windows, prefix sums and threshold counts over an expensive lazily read series: counted element reads must stay linear")
 def gen(rng, n):
     yield from shape_family(rng, n, SHAPES, CFG)

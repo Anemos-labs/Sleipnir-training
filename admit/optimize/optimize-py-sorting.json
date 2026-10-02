@@ -30,21 +30,5 @@
 {
 "id": "optimize-py-sorting-08-cheapest-earliest_slot",
 "ok": true
-},
-{
-"id": "optimize-py-sorting-09-is_ordered-log_is_chronological",
-"ok": true
-},
-{
-"id": "optimize-py-sorting-10-is_ordered-ranking_is_valid",
-"ok": true
-},
-{
-"id": "optimize-py-sorting-11-rank_of-times_faster",
-"ok": true
-},
-{
-"id": "optimize-py-sorting-12-cheapest-lightest_parcel",
-"ok": true
 }
 ]

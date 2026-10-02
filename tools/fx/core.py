@@ -214,7 +214,7 @@ def jaccard(a: set, b: set) -> float:
 
 
 _BAD_VERIFY = re.compile(r"\b(curl|wget|pip3? install|npm (i|install)|apt(-get)?|yarn add|go get|cargo (add|install)|git clone|ssh|scp)\b")
-_ABS_HOME = re.compile(r"/home/|/root/|/tmp/claude|/Users/")
+_ABS_HOME = re.compile(r"(?<![\w.~/-])/(?:home/[A-Za-z0-9_.-]+|root|Users/[A-Za-z0-9_.-]+)(?=/)|/tmp/claude")
 
 
 def validate_task(t: Task, fam: Family) -> list[str]:

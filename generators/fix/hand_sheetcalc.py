@@ -1080,7 +1080,7 @@ def _base() -> Base:
     bugs = [
         Bug("leading-dot-numbers-rejected", 2, {tk: [dot]}, P["dot"]),
         Bug("doubled-quotes-not-unescaped", 2, {tk: [quotes]}, P["quotes"]),
-        Bug("lowercase-references-read-nothing", 3, {tk: [lowercase]}, P["lowercase"]),
+        Bug("lowercase-references-read-nothing", 4, {tk: [lowercase]}, P["lowercase"]),
         Bug("power-associates-left", 3, {pa: [power_left]}, P["power-left"], reported=REPORTED_POWER),
         Bug("minus-binds-tighter-than-power", 3, {pa: minus}, P["minus"]),
         Bug("comparison-as-tight-as-plus", 3, {pa: [compare]}, P["compare"]),

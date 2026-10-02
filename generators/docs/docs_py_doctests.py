@@ -52,7 +52,7 @@ PROMPTS = [
 ]
 
 
-@family("docs-py-doctests", category="docs", lang="python", kind="feature", n=10,
+@family("docs-py-doctests", category="docs", lang="python", kind="feature", n=6,
         summary="add passing doctest examples (including error examples) to every public function of a small module; code must stay unchanged")
 def gen(rng, n):
     mods = list(P.MODULES) * 3

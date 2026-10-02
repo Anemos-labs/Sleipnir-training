@@ -4,199 +4,111 @@
 "ok": true
 },
 {
-"id": "debug-trace-py-02-quayplan-export-wrong",
+"id": "debug-trace-py-02-quayplan-height-wrong",
 "ok": true
 },
 {
-"id": "debug-trace-py-03-isleduty-money-wrong",
+"id": "debug-trace-py-03-isleduty-relief-wrong",
 "ok": true
 },
 {
-"id": "debug-trace-py-04-chapterfile-parse-wrong",
+"id": "debug-trace-py-04-chapterfile-webvtt-wrong",
 "ok": true
 },
 {
-"id": "debug-trace-py-05-shiftroster-parse-wrong",
+"id": "debug-trace-py-05-shiftroster-rest-wrong",
 "ok": true
 },
 {
-"id": "debug-trace-py-06-hookrelay-enqueue-wrong",
+"id": "debug-trace-py-06-hookrelay-target-wrong",
 "ok": true
 },
 {
-"id": "debug-trace-py-07-printinvoice-tax-wrong",
+"id": "debug-trace-py-07-printinvoice-deposit-wrong",
 "ok": true
 },
 {
-"id": "debug-trace-py-08-jobqueue-fail-wrong",
+"id": "debug-trace-py-08-jobqueue-done-crash",
 "ok": true
 },
 {
-"id": "debug-trace-py-09-portalauth-login-wrong",
+"id": "debug-trace-py-09-portalauth-hash-crash",
 "ok": true
 },
 {
-"id": "debug-trace-py-10-lockers-store-wrong",
+"id": "debug-trace-py-10-lockers-validate-crash",
 "ok": true
 },
 {
-"id": "debug-trace-py-11-quayplan-safe-wrong",
+"id": "debug-trace-py-11-quayplan-windows-wrong",
 "ok": true
 },
 {
-"id": "debug-trace-py-12-isleduty-relief-wrong",
+"id": "debug-trace-py-12-isleduty-bands-wrong",
 "ok": true
 },
 {
-"id": "debug-trace-py-13-chapterfile-slug-wrong",
+"id": "debug-trace-py-13-chapterfile-timecode-wrong",
 "ok": true
 },
 {
-"id": "debug-trace-py-14-shiftroster-consts-wrong",
+"id": "debug-trace-py-14-shiftroster-pay-wrong",
 "ok": true
 },
 {
-"id": "debug-trace-py-15-hookrelay-sign-wrong",
+"id": "debug-trace-py-15-hookrelay-enqueue-wrong",
 "ok": true
 },
 {
-"id": "debug-trace-py-16-printinvoice-line-wrong",
+"id": "debug-trace-py-16-printinvoice-money-wrong",
 "ok": true
 },
 {
-"id": "debug-trace-py-17-jobqueue-pop-wrong",
+"id": "debug-trace-py-17-jobqueue-push-wrong",
 "ok": true
 },
 {
-"id": "debug-trace-py-18-portalauth-hash-crash",
+"id": "debug-trace-py-18-portalauth-login-wrong",
 "ok": true
 },
 {
-"id": "debug-trace-py-19-lockers-release-wrong",
+"id": "debug-trace-py-19-lockers-free-wrong",
 "ok": true
 },
 {
-"id": "debug-trace-py-20-quayplan-fmt-wrong",
+"id": "debug-trace-py-20-quayplan-cancel-wrong",
 "ok": true
 },
 {
-"id": "debug-trace-py-21-isleduty-parse-wrong",
+"id": "debug-trace-py-21-isleduty-quote-wrong",
 "ok": true
 },
 {
-"id": "debug-trace-py-22-chapterfile-durations-crash",
+"id": "debug-trace-py-22-chapterfile-timecode-wrong",
 "ok": true
 },
 {
-"id": "debug-trace-py-23-shiftroster-consts-wrong",
+"id": "debug-trace-py-23-shiftroster-parse-wrong",
 "ok": true
 },
 {
-"id": "debug-trace-py-24-hookrelay-target-wrong",
+"id": "debug-trace-py-24-hookrelay-verify-wrong",
 "ok": true
 },
 {
-"id": "debug-trace-py-25-printinvoice-line-wrong",
+"id": "debug-trace-py-25-printinvoice-late-wrong",
 "ok": true
 },
 {
-"id": "debug-trace-py-26-jobqueue-push-wrong",
+"id": "debug-trace-py-26-jobqueue-pop-wrong",
 "ok": true
 },
 {
-"id": "debug-trace-py-27-portalauth-hash-wrong",
+"id": "debug-trace-py-27-portalauth-session-wrong",
 "ok": true
 },
 {
-"id": "debug-trace-py-28-lockers-audit-crash",
-"ok": true
-},
-{
-"id": "debug-trace-py-29-quayplan-parse-wrong",
-"ok": true
-},
-{
-"id": "debug-trace-py-30-isleduty-quote-wrong",
-"ok": true
-},
-{
-"id": "debug-trace-py-31-chapterfile-timecode-wrong",
-"ok": true
-},
-{
-"id": "debug-trace-py-32-shiftroster-pay-wrong",
-"ok": true
-},
-{
-"id": "debug-trace-py-33-hookrelay-verify-wrong",
-"ok": true
-},
-{
-"id": "debug-trace-py-34-printinvoice-line-crash",
-"ok": true
-},
-{
-"id": "debug-trace-py-35-jobqueue-fail-wrong",
-"ok": true
-},
-{
-"id": "debug-trace-py-36-portalauth-redirect-wrong",
-"ok": true
-},
-{
-"id": "debug-trace-py-37-lockers-release-wrong",
-"ok": true
-},
-{
-"id": "debug-trace-py-38-quayplan-windows-wrong",
-"ok": true
-},
-{
-"id": "debug-trace-py-39-isleduty-validate-wrong",
-"ok": true
-},
-{
-"id": "debug-trace-py-40-chapterfile-parse-crash",
-"ok": true
-},
-{
-"id": "debug-trace-py-41-shiftroster-rest-wrong",
-"ok": true
-},
-{
-"id": "debug-trace-py-42-hookrelay-verify-wrong",
-"ok": true
-},
-{
-"id": "debug-trace-py-43-printinvoice-late-wrong",
-"ok": true
-},
-{
-"id": "debug-trace-py-44-jobqueue-pop-wrong",
-"ok": true
-},
-{
-"id": "debug-trace-py-45-portalauth-login-wrong",
-"ok": true
-},
-{
-"id": "debug-trace-py-46-lockers-validate-crash",
-"ok": true
-},
-{
-"id": "debug-trace-py-47-quayplan-book-wrong",
-"ok": true
-},
-{
-"id": "debug-trace-py-48-isleduty-bands-wrong",
-"ok": true
-},
-{
-"id": "debug-trace-py-49-chapterfile-fmt-wrong",
-"ok": true
-},
-{
-"id": "debug-trace-py-50-shiftroster-rest-wrong",
+"id": "debug-trace-py-28-lockers-pick-crash",
 "ok": true
 }
 ]

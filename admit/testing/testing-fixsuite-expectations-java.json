@@ -1,0 +1,18 @@
+[
+{
+"id": "testing-fixsuite-expectations-java-01-gradebook-3wrong",
+"ok": true
+},
+{
+"id": "testing-fixsuite-expectations-java-02-gradebook-2wrong",
+"ok": true
+},
+{
+"id": "testing-fixsuite-expectations-java-03-booklet-3wrong",
+"ok": true
+},
+{
+"id": "testing-fixsuite-expectations-java-04-booklet-2wrong",
+"ok": true
+}
+]

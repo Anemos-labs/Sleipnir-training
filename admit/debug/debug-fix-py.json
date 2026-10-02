@@ -8,23 +8,23 @@
 "ok": true
 },
 {
-"id": "debug-fix-py-03-isleduty-parse-wrong",
+"id": "debug-fix-py-03-isleduty-bands-wrong",
 "ok": true
 },
 {
-"id": "debug-fix-py-04-chapterfile-parse-wrong",
+"id": "debug-fix-py-04-chapterfile-durations-crash",
 "ok": true
 },
 {
-"id": "debug-fix-py-05-shiftroster-overtime-wrong",
+"id": "debug-fix-py-05-shiftroster-night-wrong",
 "ok": true
 },
 {
-"id": "debug-fix-py-06-hookrelay-backoff-wrong",
+"id": "debug-fix-py-06-hookrelay-drain-wrong",
 "ok": true
 },
 {
-"id": "debug-fix-py-07-printinvoice-late-wrong",
+"id": "debug-fix-py-07-printinvoice-line-wrong",
 "ok": true
 },
 {
@@ -32,15 +32,15 @@
 "ok": true
 },
 {
-"id": "debug-fix-py-09-portalauth-login-wrong",
+"id": "debug-fix-py-09-portalauth-checksession-wrong",
 "ok": true
 },
 {
-"id": "debug-fix-py-10-lockers-release-wrong",
+"id": "debug-fix-py-10-lockers-expire-wrong",
 "ok": true
 },
 {
-"id": "debug-fix-py-11-quayplan-fmt-wrong",
+"id": "debug-fix-py-11-quayplan-parse-wrong",
 "ok": true
 },
 {
@@ -48,15 +48,15 @@
 "ok": true
 },
 {
-"id": "debug-fix-py-13-chapterfile-paths-wrong",
+"id": "debug-fix-py-13-chapterfile-timecode-wrong",
 "ok": true
 },
 {
-"id": "debug-fix-py-14-shiftroster-pay-wrong",
+"id": "debug-fix-py-14-shiftroster-consts-wrong",
 "ok": true
 },
 {
-"id": "debug-fix-py-15-hookrelay-drain-wrong",
+"id": "debug-fix-py-15-hookrelay-verify-wrong",
 "ok": true
 }
 ]

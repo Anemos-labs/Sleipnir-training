@@ -1,0 +1,94 @@
+[
+{
+"id": "fix-hand-backup-ctl-01-missing-source-exits-one",
+"ok": true
+},
+{
+"id": "fix-hand-backup-ctl-02-unknown-command-exits-zero",
+"ok": true
+},
+{
+"id": "fix-hand-backup-ctl-03-stamp-in-local-time",
+"ok": true
+},
+{
+"id": "fix-hand-backup-ctl-04-snapshot-overwritten-when-the-stamp-repeats",
+"ok": true
+},
+{
+"id": "fix-hand-backup-ctl-05-hidden-files-left-out",
+"ok": true
+},
+{
+"id": "fix-hand-backup-ctl-06-list-shows-oldest-first",
+"ok": true
+},
+{
+"id": "fix-hand-backup-ctl-07-dry-run-deletes",
+"ok": true
+},
+{
+"id": "fix-hand-backup-ctl-08-prune-leaves-the-manifest",
+"ok": true
+},
+{
+"id": "fix-hand-backup-ctl-09-restore-into-a-used-directory",
+"ok": true
+},
+{
+"id": "fix-hand-backup-ctl-10-file-names-with-spaces-break-the-manifest",
+"ok": true
+},
+{
+"id": "fix-hand-backup-ctl-11-exclude-matches-whole-paths",
+"ok": true
+},
+{
+"id": "fix-hand-backup-ctl-12-failed-create-leaves-partial-files",
+"ok": true
+},
+{
+"id": "fix-hand-backup-ctl-13-exclude-value-is-not-shifted",
+"ok": true
+},
+{
+"id": "fix-hand-backup-ctl-14-keep-daily-counts-snapshots",
+"ok": true
+},
+{
+"id": "fix-hand-backup-ctl-15-leading-zeros-are-octal",
+"ok": true
+},
+{
+"id": "fix-hand-backup-ctl-16-prune-mixes-names",
+"ok": true
+},
+{
+"id": "fix-hand-backup-ctl-17-verify-ignores-extra-files",
+"ok": true
+},
+{
+"id": "fix-hand-backup-ctl-18-verify-exits-zero-on-problems",
+"ok": true
+},
+{
+"id": "fix-hand-backup-ctl-19-names-split-at-the-first-dash",
+"ok": true
+},
+{
+"id": "fix-hand-backup-ctl-20-dashed-names-incident",
+"ok": true
+},
+{
+"id": "fix-hand-backup-ctl-21-release-night",
+"ok": true
+},
+{
+"id": "fix-hand-backup-ctl-22-create-review",
+"ok": true
+},
+{
+"id": "fix-hand-backup-ctl-23-prune-policy-review",
+"ok": true
+}
+]

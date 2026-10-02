@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-barcut-01-cmp",
+"ok": true
+},
+{
+"id": "fix-py-barcut-02-delete",
+"ok": true
+},
+{
+"id": "fix-py-barcut-03-const",
+"ok": true
+},
+{
+"id": "fix-py-barcut-04-arith",
+"ok": true
+},
+{
+"id": "fix-py-barcut-05-swap",
+"ok": true
+},
+{
+"id": "fix-py-barcut-06-cmp",
+"ok": true
+},
+{
+"id": "fix-py-barcut-07-delete",
+"ok": true
+},
+{
+"id": "fix-py-barcut-08-const",
+"ok": true
+},
+{
+"id": "fix-py-barcut-09-arith",
+"ok": true
+},
+{
+"id": "fix-py-barcut-10-cmp",
+"ok": true
+}
+]

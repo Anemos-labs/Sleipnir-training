@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-java-timetable-01-arith",
+"ok": true
+},
+{
+"id": "fix-java-timetable-02-negate",
+"ok": true
+},
+{
+"id": "fix-java-timetable-03-logic",
+"ok": true
+},
+{
+"id": "fix-java-timetable-04-cmp",
+"ok": true
+},
+{
+"id": "fix-java-timetable-05-swap",
+"ok": true
+},
+{
+"id": "fix-java-timetable-06-const",
+"ok": true
+},
+{
+"id": "fix-java-timetable-07-arith",
+"ok": true
+},
+{
+"id": "fix-java-timetable-08-negate",
+"ok": true
+}
+]

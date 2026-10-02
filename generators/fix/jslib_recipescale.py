@@ -394,7 +394,7 @@ HIDDEN = dd(r'''
 ''')
 
 LIB = Lib(
-    name="recipescale", lang="javascript", title="the recipescale helpers",
+    name="recipescale", lang="javascript", title="the recipescale library",
     blurb="The recipe site resizes ingredient lists for more or fewer servings with recipescale.",
     files={"package.json": PACKAGE_JSON % "recipescale", "src/qty.js": QTY, "src/scale.js": SCALE, "README.md": README, ".gitignore": "node_modules/\n"},
     visible_tests={"test/basic.test.js": VISIBLE},

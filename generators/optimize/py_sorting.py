@@ -130,7 +130,7 @@ CFG = dict(
     tags=["sorting", "selection", "heap", "comparison-counter"])
 
 
-@family("optimize-py-sorting", category="optimize", lang="python", kind="feature", n=12,
+@family("optimize-py-sorting", category="optimize", lang="python", kind="feature", n=8,
         summary="full sorts used to find a minimum, top-k, rank or ordering check: comparison counts on tracked values must stay near n")
 def gen(rng, n):
     yield from shape_family(rng, n, SHAPES, CFG)

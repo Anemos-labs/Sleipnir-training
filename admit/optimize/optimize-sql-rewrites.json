@@ -1,0 +1,50 @@
+[
+{
+"id": "optimize-sql-rewrites-01-latest-clinic",
+"ok": true
+},
+{
+"id": "optimize-sql-rewrites-02-sargable_date-clinic",
+"ok": true
+},
+{
+"id": "optimize-sql-rewrites-03-sargable_prefix-board",
+"ok": true
+},
+{
+"id": "optimize-sql-rewrites-04-exists-route",
+"ok": true
+},
+{
+"id": "optimize-sql-rewrites-05-keyset-board",
+"ok": true
+},
+{
+"id": "optimize-sql-rewrites-06-exists-author",
+"ok": true
+},
+{
+"id": "optimize-sql-rewrites-07-keyset-clinic",
+"ok": true
+},
+{
+"id": "optimize-sql-rewrites-08-latest-board",
+"ok": true
+},
+{
+"id": "optimize-sql-rewrites-09-sargable_date-lab",
+"ok": true
+},
+{
+"id": "optimize-sql-rewrites-10-sargable_date-lab",
+"ok": true
+},
+{
+"id": "optimize-sql-rewrites-11-exists-route",
+"ok": true
+},
+{
+"id": "optimize-sql-rewrites-12-sargable_prefix-lab",
+"ok": true
+}
+]

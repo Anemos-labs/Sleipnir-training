@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-quorumcheck-01-cmp",
+"ok": true
+},
+{
+"id": "fix-py-quorumcheck-02-negate",
+"ok": true
+},
+{
+"id": "fix-py-quorumcheck-03-const",
+"ok": true
+},
+{
+"id": "fix-py-quorumcheck-04-arith",
+"ok": true
+},
+{
+"id": "fix-py-quorumcheck-05-delete",
+"ok": true
+},
+{
+"id": "fix-py-quorumcheck-06-cmp",
+"ok": true
+},
+{
+"id": "fix-py-quorumcheck-07-negate",
+"ok": true
+},
+{
+"id": "fix-py-quorumcheck-08-const",
+"ok": true
+},
+{
+"id": "fix-py-quorumcheck-09-arith",
+"ok": true
+},
+{
+"id": "fix-py-quorumcheck-10-delete",
+"ok": true
+}
+]

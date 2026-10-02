@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-java-receiptfmt-01-negate",
+"ok": true
+},
+{
+"id": "fix-java-receiptfmt-02-cmp",
+"ok": true
+},
+{
+"id": "fix-java-receiptfmt-03-const",
+"ok": true
+},
+{
+"id": "fix-java-receiptfmt-04-delete",
+"ok": true
+},
+{
+"id": "fix-java-receiptfmt-05-swap",
+"ok": true
+},
+{
+"id": "fix-java-receiptfmt-06-arith",
+"ok": true
+},
+{
+"id": "fix-java-receiptfmt-07-cmp",
+"ok": true
+},
+{
+"id": "fix-java-receiptfmt-08-const",
+"ok": true
+}
+]

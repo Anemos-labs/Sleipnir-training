@@ -567,7 +567,7 @@ HIDDEN = dd(r'''
 ''')
 
 LIB = Lib(
-    name="cursorpage", lang="javascript", title="the cursorpage helpers",
+    name="cursorpage", lang="javascript", title="the cursorpage pagination library",
     blurb="The list endpoints of the admin API use these helpers to page through records with opaque cursors and to render page links.",
     files={"package.json": PACKAGE_JSON % "cursorpage", "src/cursor.js": CURSOR,
            "src/pager.js": PAGER, "README.md": README, ".gitignore": "node_modules/\n"},

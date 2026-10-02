@@ -499,6 +499,30 @@ HIDDEN = dd('''
         assert!(s.items.is_empty());
         assert!(s.day_totals.is_empty());
     }
+
+    #[test]
+    fn every_cap_level_is_reached_exactly() {
+        // on a Saturday: n journeys from zone 1 to zone `span`, an hour apart, no transfers, until the daily cap bites
+        let table: [(u8, &[&str]); 6] = [
+            (1, &["5@100 1>1 180/180", "5@160 1>1 180/180", "5@220 1>1 180/90 C", "5@280 1>1 180/0 C"]),
+            (2, &["5@100 1>2 260/260", "5@160 1>2 260/260", "5@220 1>2 260/130 C", "5@280 1>2 260/0 C"]),
+            (3, &["5@100 1>3 330/330", "5@160 1>3 330/330", "5@220 1>3 330/140 C", "5@280 1>3 330/0 C"]),
+            (4, &["5@100 1>4 390/390", "5@160 1>4 390/390", "5@220 1>4 390/170 C", "5@280 1>4 390/0 C"]),
+            (5, &["5@100 1>5 440/440", "5@160 1>5 440/440", "5@220 1>5 440/170 C", "5@280 1>5 440/0 C"]),
+            (6, &["5@100 1>6 480/480", "5@160 1>6 480/480", "5@220 1>6 480/180 C", "5@280 1>6 480/0 C"]),
+        ];
+        for (span, want) in table {
+            let n = want.len() as u32;
+            let mut taps = Vec::new();
+            for k in 0..n {
+                taps.push(tap(5, 100 + 60 * k, 1, I));
+                taps.push(tap(5, 110 + 60 * k, span, O));
+            }
+            let (items, totals) = run(&taps);
+            assert_eq!(items, want, "span {}", span);
+            assert_eq!(totals, [(5, [450, 650, 800, 950, 1050, 1140][span as usize - 1])], "span {}", span);
+        }
+    }
 ''')
 
 LIB = Lib(

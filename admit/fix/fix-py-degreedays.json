@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-degreedays-01-arith",
+"ok": true
+},
+{
+"id": "fix-py-degreedays-02-swap",
+"ok": true
+},
+{
+"id": "fix-py-degreedays-03-negate",
+"ok": true
+},
+{
+"id": "fix-py-degreedays-04-const",
+"ok": true
+},
+{
+"id": "fix-py-degreedays-05-cmp",
+"ok": true
+},
+{
+"id": "fix-py-degreedays-06-delete",
+"ok": true
+},
+{
+"id": "fix-py-degreedays-07-arith",
+"ok": true
+},
+{
+"id": "fix-py-degreedays-08-negate",
+"ok": true
+},
+{
+"id": "fix-py-degreedays-09-const",
+"ok": true
+},
+{
+"id": "fix-py-degreedays-10-delete",
+"ok": true
+}
+]

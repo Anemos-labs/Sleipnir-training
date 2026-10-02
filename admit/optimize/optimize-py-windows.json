@@ -30,21 +30,5 @@
 {
 "id": "optimize-py-windows-08-cumulative-running_balance",
 "ok": true
-},
-{
-"id": "optimize-py-windows-09-cumulative-cumulative_rainfall",
-"ok": true
-},
-{
-"id": "optimize-py-windows-10-range_sums-usage_between",
-"ok": true
-},
-{
-"id": "optimize-py-windows-11-count_over-pages_slower_than",
-"ok": true
-},
-{
-"id": "optimize-py-windows-12-count_over-orders_above",
-"ok": true
 }
 ]

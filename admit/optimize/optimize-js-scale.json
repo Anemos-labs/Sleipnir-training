@@ -1,0 +1,42 @@
+[
+{
+"id": "optimize-js-scale-01-difference-unsentrecipients",
+"ok": true
+},
+{
+"id": "optimize-js-scale-02-concat-alltags",
+"ok": true
+},
+{
+"id": "optimize-js-scale-03-spread-settingsmap",
+"ok": true
+},
+{
+"id": "optimize-js-scale-04-intersect-stockeditems",
+"ok": true
+},
+{
+"id": "optimize-js-scale-05-dupes-echoedevents",
+"ok": true
+},
+{
+"id": "optimize-js-scale-06-dedupe-firstseenhosts",
+"ok": true
+},
+{
+"id": "optimize-js-scale-07-dupes-repeatscans",
+"ok": true
+},
+{
+"id": "optimize-js-scale-08-intersect-repliedguests",
+"ok": true
+},
+{
+"id": "optimize-js-scale-09-dedupe-uniqueplates",
+"ok": true
+},
+{
+"id": "optimize-js-scale-10-spread-indexbyid",
+"ok": true
+}
+]

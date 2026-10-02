@@ -327,7 +327,7 @@ CREWPLAN_README = dd('''
 
     ## `crewplan.jobs`
 
-    `Job(name, duration, deps)` is a frozen dataclass; `deps` is a tuple of job names.
+    `Job(name, duration, deps=())` is a frozen dataclass; `deps` is a tuple of job names.
 
     `parse_jobs(text) -> list[Job]`: one job per line, `name duration` or `name duration after dep1,dep2` (the
     dependencies are comma separated without spaces). Names consist of lower-case letters, digits and `-`; the

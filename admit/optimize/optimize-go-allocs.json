@@ -1,0 +1,58 @@
+[
+{
+"id": "optimize-go-allocs-01-cut-hostof",
+"ok": true
+},
+{
+"id": "optimize-go-allocs-02-submatch-parsesetting",
+"ok": true
+},
+{
+"id": "optimize-go-allocs-03-equalfold-samename",
+"ok": true
+},
+{
+"id": "optimize-go-allocs-04-regex-isversion",
+"ok": true
+},
+{
+"id": "optimize-go-allocs-05-prealloc-offsets",
+"ok": true
+},
+{
+"id": "optimize-go-allocs-06-lines-counterrorlines",
+"ok": true
+},
+{
+"id": "optimize-go-allocs-07-itoa_join-idlist",
+"ok": true
+},
+{
+"id": "optimize-go-allocs-08-prealloc-weights",
+"ok": true
+},
+{
+"id": "optimize-go-allocs-09-equalfold-samecommand",
+"ok": true
+},
+{
+"id": "optimize-go-allocs-10-concat-csvline",
+"ok": true
+},
+{
+"id": "optimize-go-allocs-11-concat-jointags",
+"ok": true
+},
+{
+"id": "optimize-go-allocs-12-submatch-parsequota",
+"ok": true
+},
+{
+"id": "optimize-go-allocs-13-bytes-countmarkers",
+"ok": true
+},
+{
+"id": "optimize-go-allocs-14-itoa_join-formatreadings",
+"ok": true
+}
+]

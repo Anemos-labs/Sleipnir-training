@@ -1,6 +1,6 @@
 [
 {
-"id": "fix-js-cartpromo-01-const",
+"id": "fix-js-cartpromo-01-negate",
 "ok": true
 },
 {
@@ -8,27 +8,27 @@
 "ok": true
 },
 {
-"id": "fix-js-cartpromo-03-arith",
+"id": "fix-js-cartpromo-03-cmp",
 "ok": true
 },
 {
-"id": "fix-js-cartpromo-04-swap",
+"id": "fix-js-cartpromo-04-const",
 "ok": true
 },
 {
-"id": "fix-js-cartpromo-05-cmp",
+"id": "fix-js-cartpromo-05-swap",
 "ok": true
 },
 {
-"id": "fix-js-cartpromo-06-negate",
+"id": "fix-js-cartpromo-06-delete",
 "ok": true
 },
 {
-"id": "fix-js-cartpromo-07-const",
+"id": "fix-js-cartpromo-07-cmp",
 "ok": true
 },
 {
-"id": "fix-js-cartpromo-08-delete",
+"id": "fix-js-cartpromo-08-const",
 "ok": true
 }
 ]

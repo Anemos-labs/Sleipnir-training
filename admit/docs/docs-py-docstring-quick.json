@@ -1,0 +1,38 @@
+[
+{
+"id": "docs-py-docstring-quick-01-seedbank-remove_lot",
+"ok": true
+},
+{
+"id": "docs-py-docstring-quick-02-duty-split_evenly",
+"ok": true
+},
+{
+"id": "docs-py-docstring-quick-03-seedbank-reorder_plan",
+"ok": true
+},
+{
+"id": "docs-py-docstring-quick-04-duty-parse_money",
+"ok": true
+},
+{
+"id": "docs-py-docstring-quick-05-seedbank-parse_sku-low_stock",
+"ok": true
+},
+{
+"id": "docs-py-docstring-quick-06-ferry-overlap",
+"ok": true
+},
+{
+"id": "docs-py-docstring-quick-07-tidelab-to_metres-clamp",
+"ok": true
+},
+{
+"id": "docs-py-docstring-quick-08-tidelab-bucketize",
+"ok": true
+},
+{
+"id": "docs-py-docstring-quick-09-duty-apply_relief-round_to",
+"ok": true
+}
+]

@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-java-invoicer-01-const",
+"ok": true
+},
+{
+"id": "fix-java-invoicer-02-delete",
+"ok": true
+},
+{
+"id": "fix-java-invoicer-03-cmp",
+"ok": true
+},
+{
+"id": "fix-java-invoicer-04-negate",
+"ok": true
+},
+{
+"id": "fix-java-invoicer-05-arith",
+"ok": true
+},
+{
+"id": "fix-java-invoicer-06-const",
+"ok": true
+},
+{
+"id": "fix-java-invoicer-07-cmp",
+"ok": true
+},
+{
+"id": "fix-java-invoicer-08-arith",
+"ok": true
+}
+]

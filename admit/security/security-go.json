@@ -1,0 +1,26 @@
+[
+{
+"id": "security-go-01-card-template",
+"ok": true
+},
+{
+"id": "security-go-02-label-exec",
+"ok": true
+},
+{
+"id": "security-go-03-login-next",
+"ok": true
+},
+{
+"id": "security-go-04-file-handler",
+"ok": true
+},
+{
+"id": "security-go-05-archive-extract",
+"ok": true
+},
+{
+"id": "security-go-06-stats-race",
+"ok": true
+}
+]

@@ -1,0 +1,34 @@
+[
+{
+"id": "greenfield-stencil-01-c-glob-l1",
+"ok": true
+},
+{
+"id": "greenfield-stencil-02-javascript-glob-l1",
+"ok": true
+},
+{
+"id": "greenfield-stencil-03-rust-class-l2",
+"ok": true
+},
+{
+"id": "greenfield-stencil-04-python-class-l2",
+"ok": true
+},
+{
+"id": "greenfield-stencil-05-c-caps-l3",
+"ok": true
+},
+{
+"id": "greenfield-stencil-06-rust-caps-l3",
+"ok": true
+},
+{
+"id": "greenfield-stencil-07-javascript-groups-l4",
+"ok": true
+},
+{
+"id": "greenfield-stencil-08-rust-refs-l5",
+"ok": true
+}
+]

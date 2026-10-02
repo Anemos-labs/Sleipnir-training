@@ -1,0 +1,34 @@
+[
+{
+"id": "testing-regress-go-01-meter-arith",
+"ok": true
+},
+{
+"id": "testing-regress-go-02-meter-cmp",
+"ok": true
+},
+{
+"id": "testing-regress-go-03-bells-const",
+"ok": true
+},
+{
+"id": "testing-regress-go-04-bells-const",
+"ok": true
+},
+{
+"id": "testing-regress-go-05-meter-delete",
+"ok": true
+},
+{
+"id": "testing-regress-go-06-meter-const",
+"ok": true
+},
+{
+"id": "testing-regress-go-07-bells-const",
+"ok": true
+},
+{
+"id": "testing-regress-go-08-bells-cmp",
+"ok": true
+}
+]

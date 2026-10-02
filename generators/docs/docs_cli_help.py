@@ -162,7 +162,7 @@ PROMPTS = [
 ]
 
 
-@family("docs-cli-help", category="docs", lang="python", kind="feature", n=8,
+@family("docs-cli-help", category="docs", lang="python", kind="feature", n=6,
         summary="complete argparse help (descriptions, per-argument help, metavars, shown defaults, epilog) by walking the parser; parsing behaviour must not change")
 def gen(rng, n):
     tools = list(TOOLS) * 2

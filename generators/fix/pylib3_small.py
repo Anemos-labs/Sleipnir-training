@@ -17,8 +17,8 @@ ROTAPICK_README = dd('''
 
     ## `Roster(people)`
 
-    `people` is a non-empty list of distinct, non-empty names (`ValueError` otherwise). The roster keeps `pos`, the
-    index of the person the pointer is on (starting at 0), and `owed`, a dict with a counter for every person (all 0).
+    `people` is a non-empty list of distinct, non-empty names (`ValueError` otherwise). The roster keeps its own copy as
+    `people`, `pos`, the index of the person the pointer is on (starting at 0), and `owed`, a dict with a counter for every person (all 0).
 
     * `pick(unavailable=()) -> str | None`: choose who is on duty today. Names in `unavailable` that are not on the
       roster are ignored.
@@ -654,11 +654,11 @@ QUORUMCHECK = Lib(
 )
 
 # ======================================================================================================================
-# lanedraw: heats and lanes for a swimming meet
+# heatlanes: heats and lanes for a swimming meet
 # ======================================================================================================================
 
 LANEDRAW_README = dd('''
-    # lanedraw
+    # heatlanes
 
     The draw for a swimming meet: swimmers are split into heats by their entry times and given lanes, the fastest in the
     middle.
@@ -768,7 +768,7 @@ LANEDRAW_SRC = dd('''
 LANEDRAW_VISIBLE = dd('''
     import unittest
 
-    from lanedraw.draw import fmt_time, lane_order
+    from heatlanes.draw import fmt_time, lane_order
 
 
     class BasicTests(unittest.TestCase):
@@ -786,7 +786,7 @@ LANEDRAW_VISIBLE = dd('''
 LANEDRAW_HIDDEN = dd('''
     import unittest
 
-    from lanedraw.draw import build_heats, fmt_time, format_heats, lane_order
+    from heatlanes.draw import build_heats, fmt_time, format_heats, lane_order
 
     TEN = [(chr(ord("A") + i), 50000 + 1000 * i) for i in range(10)]      # A is the fastest
 
@@ -927,12 +927,12 @@ LANEDRAW_HIDDEN = dd('''
 ''')
 
 LANEDRAW = Lib(
-    name="lanedraw", lang="python", title="the lanedraw heat builder (`lanedraw/draw.py`)",
-    blurb="The swimming club's meet manager uses lanedraw to split entries into heats, assign lanes and print the start lists.",
-    files={"lanedraw/__init__.py": "", "lanedraw/draw.py": LANEDRAW_SRC, "README.md": LANEDRAW_README, ".gitignore": GITIGNORE},
+    name="heatlanes", lang="python", title="the heatlanes heat builder (`heatlanes/draw.py`)",
+    blurb="The swimming club's meet manager uses heatlanes to split entries into heats, assign lanes and print the start lists.",
+    files={"heatlanes/__init__.py": "", "heatlanes/draw.py": LANEDRAW_SRC, "README.md": LANEDRAW_README, ".gitignore": GITIGNORE},
     visible_tests={"tests/test_basic.py": LANEDRAW_VISIBLE},
     hidden_tests={"tests/test_full.py": LANEDRAW_HIDDEN},
-    mutate=["lanedraw/draw.py"], difficulty=2, tags=["sport", "seeding"],
+    mutate=["heatlanes/draw.py"], difficulty=2, tags=["sport", "seeding"],
     probes=[
         "lane_order(8)", "lane_order(5)", "lane_order(6)", "lane_order(7)",
         "[fmt_time(m) for m in (62500, 5000, 59990, 59995, 9995, 62505, 3599990)]", "fmt_time(None)",
@@ -943,7 +943,7 @@ LANEDRAW = Lib(
         "build_heats([('Solo', 1)])", "build_heats([('A', 1), ('A', 2)])",
         "format_heats(build_heats([('Ann', 62500), ('Bea', 59990), ('Cat', None)], lanes=4, min_heat=1))",
     ],
-    probe_import="from lanedraw.draw import lane_order, fmt_time, build_heats, format_heats\n",
+    probe_import="from heatlanes.draw import lane_order, fmt_time, build_heats, format_heats\n",
 )
 
 # ======================================================================================================================

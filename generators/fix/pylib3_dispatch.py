@@ -57,6 +57,7 @@ LIFTSIM_README = dd('''
        then the passengers waiting here for *this* car board (`boarded = t`) in arrival order (arrival tick, then id)
        and each boarding passenger's destination is added to `stops`. Otherwise the car calls `move()`.
 
+    The cars are modified in place: after the run they stand where they stopped, with no stops left and nobody on board.
     The simulation ends at the tick in which the last passenger is delivered. Only the ticks `0 .. max_ticks - 1` are
     simulated: if somebody is still undelivered after the last of them, `RuntimeError`. With no passengers the result
     is `[]`.
@@ -1010,7 +1011,7 @@ TOLLROUTE_README = dd('''
 
     ## `tollroute.graph`
 
-    `Road(a, b, minutes, toll, kind, oneway)` is a frozen dataclass. `RoadMap` stores roads:
+    `Road(a, b, minutes, toll, kind="street", oneway=False)` is a frozen dataclass. `RoadMap` stores roads:
 
     * `add_road(a, b, minutes, toll=0, kind="street", oneway=False)`: `kind` is `"street"`, `"highway"` or
       `"narrow"`. `ValueError` for `minutes < 1`, `toll < 0`, an unknown kind or `a == b`. A road is usable from `a`

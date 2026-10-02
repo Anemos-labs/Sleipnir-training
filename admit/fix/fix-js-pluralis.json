@@ -1,18 +1,18 @@
 [
 {
-"id": "fix-js-pluralis-01-delete",
+"id": "fix-js-pluralis-01-const",
 "ok": true
 },
 {
-"id": "fix-js-pluralis-02-negate",
+"id": "fix-js-pluralis-02-cmp",
 "ok": true
 },
 {
-"id": "fix-js-pluralis-03-cmp",
+"id": "fix-js-pluralis-03-negate",
 "ok": true
 },
 {
-"id": "fix-js-pluralis-04-arith",
+"id": "fix-js-pluralis-04-delete",
 "ok": true
 },
 {
@@ -20,7 +20,7 @@
 "ok": true
 },
 {
-"id": "fix-js-pluralis-06-delete",
+"id": "fix-js-pluralis-06-cmp",
 "ok": true
 },
 {
@@ -28,7 +28,7 @@
 "ok": true
 },
 {
-"id": "fix-js-pluralis-08-cmp",
+"id": "fix-js-pluralis-08-delete",
 "ok": true
 }
 ]

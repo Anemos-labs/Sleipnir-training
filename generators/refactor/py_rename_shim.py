@@ -3,11 +3,12 @@ from __future__ import annotations
 
 import json
 import re
+from string import Template
 
-from fx import Task, dd, family, merged, run
+from fx import Task, family, merged, run
 
 from . import _kit
-from ._kit import prove, py_behaviour, py_golden
+from ._kit import prove, py_behaviour
 from ._py_rename import SKELETONS
 
 KIND_ORDER = ["function", "class", "method", "module", "param"]
@@ -55,8 +56,9 @@ def solution_files(sk, picks):
                 f'    warnings.warn("{old} is deprecated, use {new}", DeprecationWarning, stacklevel=2)\n    return {new}(*args, **kwargs)\n')
         elif kind == "class":
             text = _add_import_warnings(text).rstrip("\n") + (
-                f'\n\n\nclass {old}({new}):\n    """Deprecated alias of {new}."""\n\n    def __init__(self, *args, **kwargs):\n'
-                f'        warnings.warn("{old} is deprecated, use {new}", DeprecationWarning, stacklevel=2)\n        super().__init__(*args, **kwargs)\n')
+                f'\n\n\ndef __getattr__(name):\n    """Deprecated alias {old} of {new} (PEP 562), so that isinstance checks keep working."""\n    if name == "{old}":\n'
+                f'        warnings.warn("{old} is deprecated, use {new}", DeprecationWarning, stacklevel=2)\n        return {new}\n'
+                f'    raise AttributeError("module %r has no attribute %r" % (__name__, name))\n')
         elif kind == "method":
             cls = class_new.get(sym["cls"], sym["cls"])
             text = _add_import_warnings(text)
@@ -88,14 +90,13 @@ def new_harness(sk, picks):
     return h
 
 
-def probes(sk, picks):
+def probes(picks):
     return {sym["old"]: sym["probe"] for kind, sym, new in picks}
 
 
 STRUCT = '''import ast
 import json
 import os
-import re
 import subprocess
 import sys
 import unittest
@@ -117,6 +118,11 @@ def package_files():
     return out
 
 
+def read(path):
+    with open(path, encoding="utf-8") as f:
+        return f.read()
+
+
 def rel(path):
     return os.path.relpath(path, ROOT).replace(os.sep, "/")
 
@@ -126,7 +132,7 @@ def run_py(code, *flags):
 
 
 def defining_nodes(tree, old):
-    """Nodes that define the old name (a def, class or assignment): the shim may mention the name inside them."""
+    """Nodes that define the old name (a def, class or assignment): a shim may mention the name inside them."""
     found = []
     for n in ast.walk(tree):
         if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)) and n.name == old:
@@ -151,7 +157,7 @@ def imports_module(node, old):
 
 class RenameTests(unittest.TestCase):
     def test_new_names_exist(self):
-        trees = [ast.parse(open(p, encoding="utf-8").read()) for p in package_files()]
+        trees = [ast.parse(read(p)) for p in package_files()]
         for r in RENAMES:
             kind, new = r["kind"], r["new"]
             if kind == "module":
@@ -167,7 +173,7 @@ class RenameTests(unittest.TestCase):
     def test_package_no_longer_uses_the_old_names(self):
         problems = []
         for path in package_files():
-            tree = ast.parse(open(path, encoding="utf-8").read())
+            tree = ast.parse(read(path))
             for r in RENAMES:
                 old, kind = r["old"], r["kind"]
                 if kind == "module":
@@ -184,10 +190,14 @@ class RenameTests(unittest.TestCase):
                 for n in ast.walk(tree):
                     if id(n) in allowed:
                         continue
-                    hit = ((isinstance(n, ast.Name) and n.id == old) or (isinstance(n, ast.Attribute) and n.attr == old) or
-                           (isinstance(n, ast.keyword) and n.arg == old) or (isinstance(n, ast.alias) and n.name == old) or
-                           (isinstance(n, ast.arg) and n.arg == old))
-                    if hit and not (kind == "param" and rel(path) == r["home"] and isinstance(n, ast.Constant)):
+                    if kind in ("function", "class"):
+                        hit = ((isinstance(n, ast.Name) and n.id == old) or (isinstance(n, ast.Attribute) and n.attr == old) or
+                               (isinstance(n, ast.alias) and n.name == old))
+                    elif kind == "method":
+                        hit = (isinstance(n, ast.Attribute) and n.attr == old) or (isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef)) and n.name == old)
+                    else:
+                        hit = (isinstance(n, ast.keyword) and n.arg == old) or (isinstance(n, ast.arg) and n.arg == old)
+                    if hit:
                         problems.append("%s:%d still uses the old name %s" % (rel(path), getattr(n, "lineno", 0), old))
         self.assertFalse(problems, "\\n".join(problems[:12]))
 
@@ -212,16 +222,18 @@ if __name__ == "__main__":
 
 PROMPTS = [
     "We are aligning the vocabulary of `{pkg}` with the new service: {renames}. Rename them everywhere inside the package. Code outside the package (and the visible tests in "
-    "`tests/test_basic.py`, which you must not edit) still uses the old names, so every old name has to keep working and emit a `DeprecationWarning` when it is used. Nothing inside "
-    "`{pkg}` may use an old name any more, and using the new names must not warn. Behaviour stays exactly the same.",
-    "rename job in `{pkg}`: {renames}. Update all the callers in the package, and leave a deprecated alias for each old name (it must warn with `DeprecationWarning` when used) because "
-    "other teams still import the old ones. The visible tests exercise the old API and must keep passing; the new names must not trigger warnings.",
+    "`tests/test_basic.py`, which you must not edit) still uses the old names, so every old name has to keep working, exactly as before, and emit a `DeprecationWarning` when it is "
+    "used. Nothing inside `{pkg}` may use an old name any more, and using the new names must not warn. Behaviour stays the same.",
+    "rename job in `{pkg}`: {renames}. Update all the callers in the package, and leave a deprecated alias for each old name (it must warn with `DeprecationWarning` when used and "
+    "otherwise behave as before, `isinstance` checks included) because other teams still import the old ones. The visible tests exercise the old API and must keep passing; the new "
+    "names must not trigger warnings.",
     "Please do these renames in `{pkg}`: {renames}. We cannot change external callers this quarter, so each old name stays available as a shim that raises a `DeprecationWarning` "
-    "(`warnings.warn(..., DeprecationWarning, stacklevel=2)` is the usual way) while the package itself switches to the new names completely. Don't edit the tests; same behaviour everywhere.",
+    "(`warnings.warn(..., DeprecationWarning, stacklevel=2)` is the usual way) and works as it did, while the package itself switches to the new names completely. "
+    "Don't edit the tests; same behaviour everywhere.",
 ]
 
 
-def phrase(kind, sym, new, picks):
+def phrase(kind, sym, new, picks, pkg):
     old = sym["old"]
     if kind == "function":
         return f"the function `{old}` becomes `{new}`"
@@ -231,15 +243,19 @@ def phrase(kind, sym, new, picks):
         cls = next((n for k, s, n in picks if k == "class" and s["old"] == sym["cls"]), sym["cls"])
         return f"the method `{cls}.{old}()` becomes `{cls}.{new}()`"
     if kind == "module":
-        return f"the module `{{pkg}}.{old}` becomes `{{pkg}}.{new}`"
+        return f"the module `{pkg}.{old}` becomes `{pkg}.{new}`"
     fn = next((n for k, s, n in picks if k == "function" and s["old"] == sym["fn"]), sym["fn"])
     return f"the keyword argument `{old}` of `{fn}()` becomes `{new}`"
 
 
-@family("refactor-py-rename-shim", category="refactor", lang="python", kind="refactor", n=12,
+def _ok_case(w):
+    return not (isinstance(w, dict) and set(w) == {"raises"})
+
+
+@family("refactor-py-rename-shim", category="refactor", lang="python", kind="refactor", n=16,
         summary="rename functions, classes, methods, modules and keyword arguments across a package, keeping deprecated aliases that warn")
 def gen(rng, n):
-    plan = [1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 5, 5]
+    plan = [1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 5, 5, 4, 5, 5, 3]
     rng.shuffle(plan)
     skel = list(SKELETONS)
     seen = set()
@@ -262,8 +278,8 @@ def gen(rng, n):
         cases = sk["cases"](rng, 30)
         old_h = sk["harness"]
         new_h = new_harness(sk, picks)
-        start_basic = _kit.py_golden(files, old_h, cases)
-        shown = [(c, w) for c, w in zip(cases, start_basic) if not (isinstance(w, dict) and set(w) == {"raises"})][:3]
+        golden = _kit.py_golden(files, old_h, cases)
+        shown = [(c, w) for c, w in zip(cases, golden) if _ok_case(w)][:3]
         vis = ["import json", "import unittest", "", old_h.rstrip("\n"), "", "", "def norm(x):", "    return json.loads(json.dumps(x))", "", "", "class BasicTests(unittest.TestCase):"]
         for t, (c, w) in enumerate(shown):
             vis += [f"    def test_example_{t + 1}(self):", f"        case = json.loads({json.dumps(json.dumps(c))})",
@@ -271,11 +287,14 @@ def gen(rng, n):
         vis += ["", "if __name__ == '__main__':", "    unittest.main()", ""]
         start = {**files, "tests/test_basic.py": "\n".join(vis)}
         sol = solution_files(sk, picks)
-        renames = [dict(kind=kd, old=sym["old"], new=new, home=sym["home"], fn=sym.get("fn", ""), fn_new=next((n2 for k2, s2, n2 in picks if k2 == "function" and s2["old"] == sym.get("fn")), sym.get("fn", "")))
-                   for kd, sym, new in picks]
-        first_ok = next(c for c, w in zip(cases, start_basic) if not (isinstance(w, dict) and set(w) == {"raises"}))
+        renames = []
+        for kd, sym, new in picks:
+            fn_new = next((n2 for k2, s2, n2 in picks if k2 == "function" and s2["old"] == sym.get("fn")), sym.get("fn", ""))
+            renames.append(dict(kind=kd, old=sym["old"], new=new, home=sym["home"], fn=sym.get("fn", ""), fn_new=fn_new))
+        first_ok = next(c for c, w in zip(cases, golden) if _ok_case(w))
         new_script = f"import json\nsys_case = json.loads({json.dumps(json.dumps(first_ok))})\n" + new_h + "\nrun_case(sys_case)\n"
-        struct = _kit_template(STRUCT, pkg=json.dumps(pkg), renames=json.dumps(json.dumps(renames)), probes=json.dumps(json.dumps(probes(sk, picks))), new_script=json.dumps(json.dumps(new_script)))
+        struct = Template(STRUCT).substitute(pkg=json.dumps(pkg), renames=json.dumps(json.dumps(renames)), probes=json.dumps(json.dumps(probes(picks))),
+                                             new_script=json.dumps(json.dumps(new_script)))
         hidden = {
             "tests/test_more_new_names.py": py_behaviour(files, old_h, cases, "new names", test_harness=new_h),
             "tests/test_more_old_names.py": py_behaviour(files, old_h, cases, "old names"),
@@ -286,7 +305,7 @@ def gen(rng, n):
         if not r0.ok:
             raise RuntimeError(f"rename-{i}: old-API behaviour fails on the start:\n{r0.out[-1500:]}")
         prove(f"rename-{i}-{name}", start, hidden, sol, _kit.PY_BEHAVIOUR_CMD, _kit.PY_STRUCT_CMD, "python3 -m unittest discover -s tests", behaviour_on_start=False)
-        renames_text = "; ".join(phrase(kd, sym, new, picks) for kd, sym, new in picks).replace("{pkg}", pkg)
+        renames_text = "; ".join(phrase(kd, sym, new, picks, pkg) for kd, sym, new in picks)
         d = {1: 2, 2: 3, 3: 4, 4: 5, 5: 5}[k]
         if k == 1 and picks[0][0] != "function":
             d = 3
@@ -296,8 +315,3 @@ def gen(rng, n):
         yield Task(slug=f"{i + 1:02d}-{name}-{'-'.join(kinds)}", prompt=prompt, difficulty=d, start=start, hidden=hidden, solution=sol,
                    verify="python3 -m unittest discover -s tests -v", tags=["rename", "deprecation", "compatibility-shim"],
                    notes={"skeleton": name, "renames": [(kd, sym["old"], new) for kd, sym, new in picks]})
-
-
-def _kit_template(text, **kw):
-    from string import Template
-    return Template(text).substitute(**kw)

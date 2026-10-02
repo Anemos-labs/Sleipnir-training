@@ -204,7 +204,7 @@ PROMPTS_ONE = [
 ]
 
 
-@family("refactor-go-extract-steps", category="refactor", lang="go", kind="refactor", n=12,
+@family("refactor-go-extract-steps", category="refactor", lang="go", kind="refactor", n=10,
         summary="split a long Go pricing function into small named steps (whole function or one named helper)")
 def gen(rng, n):
     modes = ["one"] * 3 + ["all"] * 9

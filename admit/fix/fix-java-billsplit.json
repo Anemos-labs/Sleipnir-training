@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-java-billsplit-01-arith",
+"ok": true
+},
+{
+"id": "fix-java-billsplit-02-delete",
+"ok": true
+},
+{
+"id": "fix-java-billsplit-03-cmp",
+"ok": true
+},
+{
+"id": "fix-java-billsplit-04-negate",
+"ok": true
+},
+{
+"id": "fix-java-billsplit-05-const",
+"ok": true
+},
+{
+"id": "fix-java-billsplit-06-arith",
+"ok": true
+},
+{
+"id": "fix-java-billsplit-07-delete",
+"ok": true
+},
+{
+"id": "fix-java-billsplit-08-cmp",
+"ok": true
+}
+]

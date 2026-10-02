@@ -45,7 +45,7 @@ def _tidy_tap(text: str) -> str:
                 if rest:
                     err.append(rest)
             elif in_err and re.match(r"^\s{4,}\S", l):
-                err.append(l.strip())
+                err.append("    " + l.strip() if err else l.strip())
             elif re.match(r"^\s{2}\w+:", l):
                 in_err = False
                 t = l.strip()
@@ -55,8 +55,8 @@ def _tidy_tap(text: str) -> str:
                     act = t
             i += 1
         if err:
-            out.append("  error: " + " / ".join(err))
-        if act and exp:
+            out.append("  error: " + "\n".join(err[:14]))
+        if act and exp and "+ actual - expected" not in "\n".join(err):
             out += ["  " + act, "  " + exp]
     return "\n".join(out)
 
@@ -112,6 +112,11 @@ def _symptom(lib: TLib, cand: E.Cand, bug_files: dict) -> tuple[str, str, str]:
 
 def _one_liner(ex: str) -> str:
     """The most telling single line of a cleaned CI excerpt."""
+    if "+ actual - expected" in ex:
+        lines = ex.splitlines()
+        plus = " ".join(l.strip()[1:].strip() for l in lines if re.match(r"^\s*\+ (?!actual)", l))
+        minus = " ".join(l.strip()[1:].strip() for l in lines if re.match(r"^\s*- (?!expected)", l))
+        return f"got {plus[:70]}, expected {minus[:70]}"
     m_act, m_exp = re.search(r"^\s*actual: (.*)$", ex, re.M), re.search(r"^\s*expected: (.*)$", ex, re.M)
     if m_act and m_exp:
         return f"got {m_act.group(1)}, expected {m_exp.group(1)}"
@@ -176,7 +181,7 @@ def regress_task(lib: TLib, cand: E.Cand, rng: random.Random, slug: str, fix_too
                      "files": merged(lib.gold, {p: lib.files[p] for p in lib.files if p == "tests/__init__.py"}, lib.strip_keep), "sources": {}})
     spec = E.base_spec(lib, scen)
     spec["ref"] = {cand.path: ref}
-    d = lib.difficulty - 1 + (1 if kind == "excerpt" else 0) + (1 if fix_too else 0)
+    d = lib.difficulty - 2 + (1 if kind == "excerpt" else 0) + (1 if fix_too else 0)
     sol = dict(lib.gold)
     if fix_too:
         sol[cand.path] = ref
@@ -286,7 +291,7 @@ def expect_task(lib: TLib, rng: random.Random, k_wrong: int, chosen: list[E.Cand
     note = rng.choice(["The library code is frozen for this release.", "Only the tests may change; the module itself is locked.", "Don't touch the library, it is frozen until the release is out.", ""])
     prompt = expect_prompt(rng, lib, k_wrong, summary, note)
     spec = E.base_spec(lib, [E.sc_base(), E.sc_marker()], E.mutant_specs(chosen))
-    d = lib.difficulty - 1 + (k_wrong >= 3) + (1 if not note else 0)
+    d = lib.difficulty - 2 + (k_wrong >= 2) + (k_wrong >= 3) + (1 if not note else 0)
     return Task(
         slug=slug, prompt=prompt, difficulty=max(1, min(5, d)), kind="fix", start=merged(lib.files, start_tests), hidden=hidden_files(spec),
         solution=fixed, verify=VERIFY, pass_mode="json-score", protect_tests=False, protected=protect_globs(lib),
@@ -359,7 +364,7 @@ def internals_task(lib: TLib, rng: random.Random, chosen: list[E.Cand], slug: st
     sol = {ipath: lib.gold[gpath]}
     spec = E.base_spec(lib, scen, E.mutant_specs(chosen))
     return Task(
-        slug=slug, prompt=internals_prompt(rng, lib), difficulty=max(1, min(5, lib.difficulty)), kind="refactor",
+        slug=slug, prompt=internals_prompt(rng, lib), difficulty=max(1, min(5, lib.difficulty + (len(chosen) >= 8))), kind="refactor",
         start=merged(lib.files, lib.stub, lib.internals), hidden=hidden_files(spec), solution=sol, verify=VERIFY,
         pass_mode="json-score", protect_tests=False, protected=protect_globs(lib), timeout_s=max(150, lib.timeout * (len(chosen) + 4) + 60),
         tags=["repair-suite", "implementation-details", *lib.tags], notes={"library": lib.name, "mutants": [c.desc for c in chosen], "instance": inst},

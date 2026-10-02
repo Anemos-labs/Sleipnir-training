@@ -40,7 +40,7 @@ UNDOTRAIL_README = dd('''
 
     ## `undotrail.history`
 
-    `History(buffer, max_steps=100)` (`ValueError` if `max_steps < 1`). The history keeps a stack of undo steps (a step is
+    `History(buffer, max_steps=100)` (`ValueError` if `max_steps < 1`; both are kept as attributes). The history keeps a stack of undo steps (a step is
     a list of commands) and a stack of redo steps.
 
     * `do(cmd)`: apply the command to the buffer and clear the redo stack. Inside a `group()` the command is added to the
@@ -1440,7 +1440,7 @@ STALLSYNC_README = dd('''
 
     ## `PNCounter(replica)`
 
-    A counter that can go up and down. It remembers, per replica name, the total of that replica's increments and the
+    A counter that can go up and down; `replica` stays available as an attribute. It remembers, per replica name, the total of that replica's increments and the
     total of its decrements.
 
     * `incr(n=1)` and `decr(n=1)` record `n` more increments or decrements for *this* counter's replica (`ValueError` if
@@ -1452,7 +1452,7 @@ STALLSYNC_README = dd('''
 
     ## `LWWMap(replica)`
 
-    A map where the last writer wins. Every write carries a timestamp `ts` (an integer given by the caller).
+    A map where the last writer wins; `replica` stays available as an attribute. Every write carries a timestamp `ts` (an integer given by the caller).
 
     * `set(key, value, ts)` and `remove(key, ts)` write for this map's replica. A write takes effect only if its pair
       `(ts, replica)` is **greater** than the pair of the entry the key currently has (compared as a tuple, so equal
@@ -1847,7 +1847,8 @@ FRAMESEQ_README = dd('''
 
     ## `Reassembler(window=8, start=0)`
 
-    `window` is the number of frames the station is willing to hold back (`ValueError` unless `1 <= window <= 32768`);
+    `window` (also an attribute) is the number of frames the station is willing to hold back (`ValueError` unless
+    `1 <= window <= 32768`);
     `start` is the first sequence number it expects (taken modulo 65536). The attribute `next` is the sequence number it
     waits for.
 

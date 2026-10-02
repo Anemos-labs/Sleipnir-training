@@ -24,27 +24,43 @@
 "ok": true
 },
 {
-"id": "testing-regress-py-07-ferryfare-cmp",
+"id": "testing-regress-py-07-initiative-delete",
 "ok": true
 },
 {
-"id": "testing-regress-py-08-ferryfare-const",
+"id": "testing-regress-py-08-initiative-negate",
 "ok": true
 },
 {
-"id": "testing-regress-py-09-ferryfare-cmp",
+"id": "testing-regress-py-09-initiative-const",
 "ok": true
 },
 {
-"id": "testing-regress-py-10-labelcodes-const",
+"id": "testing-regress-py-10-playhouse-const",
 "ok": true
 },
 {
-"id": "testing-regress-py-11-labelcodes-delete",
+"id": "testing-regress-py-11-playhouse-const",
 "ok": true
 },
 {
-"id": "testing-regress-py-12-labelcodes-cmp",
+"id": "testing-regress-py-12-playhouse-delete",
+"ok": true
+},
+{
+"id": "testing-regress-py-13-ferryfare-const",
+"ok": true
+},
+{
+"id": "testing-regress-py-14-ferryfare-const",
+"ok": true
+},
+{
+"id": "testing-regress-py-15-ferryfare-swap",
+"ok": true
+},
+{
+"id": "testing-regress-py-16-labelcodes-arith",
 "ok": true
 }
 ]

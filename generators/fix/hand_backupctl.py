@@ -747,7 +747,7 @@ def _base() -> Base:
         Bug("failed-create-leaves-partial-files", 3, {cr: partial}, P["partial"]),
         Bug("exclude-value-is-not-shifted", 3, {cr: [exclude_shift]}, P["exclude-shift"]),
         Bug("keep-daily-counts-snapshots", 3, {pr: [daily]}, P["daily-snapshots"]),
-        Bug("leading-zeros-are-octal", 3, {co: [octal]}, P["octal"]),
+        Bug("leading-zeros-are-octal", 4, {co: [octal]}, P["octal"]),
         Bug("prune-mixes-names", 3, {pr: [mix]}, P["mix-names"]),
         Bug("verify-ignores-extra-files", 3, {ve: [extra]}, P["extra"]),
         Bug("verify-exits-zero-on-problems", 3, {ve: [verify_rc]}, P["verify-rc"]),

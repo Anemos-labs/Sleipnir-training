@@ -59,7 +59,7 @@ def load(args) -> list[dict]:
             continue
         if args.family and not any(fnmatch.fnmatch(fam, f) for f in args.family):
             continue
-        for line in p.read_text(encoding="utf-8").splitlines():
+        for line in p.read_text(encoding="utf-8").split("\n"):
             if line.strip():
                 recs.append(json.loads(line))
     if args.id:
@@ -198,7 +198,7 @@ def main() -> int:
         return 2
 
     # tasks.check.jsonl: fixtures that the Go checker can prove (everything with a verifier command and no expect)
-    checkable = [json.loads(l) for l in full.read_text(encoding="utf-8").splitlines() if l.strip()]
+    checkable = [json.loads(l) for l in full.read_text(encoding="utf-8").split("\n") if l.strip()]
     chk = [t for t in checkable if by_id[t["id"]]["mode"] == "fixture"]
     (build / "tasks.check.jsonl").write_text("".join(json.dumps(t, ensure_ascii=False) + "\n" for t in chk), encoding="utf-8")
     if chk:

@@ -1,0 +1,50 @@
+[
+{
+"id": "optimize-rs-allocs-01-eq_ignore_case-same_name",
+"ok": true
+},
+{
+"id": "optimize-rs-allocs-02-collect_chain-even_square_tally",
+"ok": true
+},
+{
+"id": "optimize-rs-allocs-03-capacity-offsets",
+"ok": true
+},
+{
+"id": "optimize-rs-allocs-04-join_ints-id_list",
+"ok": true
+},
+{
+"id": "optimize-rs-allocs-05-hashmap_cap-distinct_codes",
+"ok": true
+},
+{
+"id": "optimize-rs-allocs-06-collect_chain-count_even_squares",
+"ok": true
+},
+{
+"id": "optimize-rs-allocs-07-split_nth-third_field_len",
+"ok": true
+},
+{
+"id": "optimize-rs-allocs-08-split_nth-sku_column_len",
+"ok": true
+},
+{
+"id": "optimize-rs-allocs-09-format_loop-csv_line",
+"ok": true
+},
+{
+"id": "optimize-rs-allocs-10-join_ints-format_readings",
+"ok": true
+},
+{
+"id": "optimize-rs-allocs-11-key_to_string-sum_quotas",
+"ok": true
+},
+{
+"id": "optimize-rs-allocs-12-format_loop-join_tags",
+"ok": true
+}
+]

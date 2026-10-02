@@ -1,0 +1,50 @@
+[
+{
+"id": "optimize-js-counted-01-totalprice-baskettotal",
+"ok": true
+},
+{
+"id": "optimize-js-counted-02-windowmeans-rollingload",
+"ok": true
+},
+{
+"id": "optimize-js-counted-03-totalprice-ordervalue",
+"ok": true
+},
+{
+"id": "optimize-js-counted-04-route-leastefforttrail",
+"ok": true
+},
+{
+"id": "optimize-js-counted-05-drain-settlepayments",
+"ok": true
+},
+{
+"id": "optimize-js-counted-06-route-cheapestcabling",
+"ok": true
+},
+{
+"id": "optimize-js-counted-07-ranked-worthvisiting",
+"ok": true
+},
+{
+"id": "optimize-js-counted-08-depths-threaddepths",
+"ok": true
+},
+{
+"id": "optimize-js-counted-09-rangesums-salesinranges",
+"ok": true
+},
+{
+"id": "optimize-js-counted-10-depths-reportinglevels",
+"ok": true
+},
+{
+"id": "optimize-js-counted-11-windowmeans-steptrend",
+"ok": true
+},
+{
+"id": "optimize-js-counted-12-rangesums-raintotals",
+"ok": true
+}
+]

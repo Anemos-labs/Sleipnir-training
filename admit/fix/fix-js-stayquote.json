@@ -24,11 +24,11 @@
 "ok": true
 },
 {
-"id": "fix-js-stayquote-07-logic",
+"id": "fix-js-stayquote-07-const",
 "ok": true
 },
 {
-"id": "fix-js-stayquote-08-const",
+"id": "fix-js-stayquote-08-arith",
 "ok": true
 }
 ]

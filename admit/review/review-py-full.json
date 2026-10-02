@@ -4,71 +4,71 @@
 "ok": true
 },
 {
-"id": "review-py-full-02-lockers-2d",
+"id": "review-py-full-02-shiftroster-2d",
 "ok": true
 },
 {
-"id": "review-py-full-03-printinvoice-2d",
+"id": "review-py-full-03-chapterfile-2d",
 "ok": true
 },
 {
-"id": "review-py-full-04-lockers-3d",
+"id": "review-py-full-04-shiftroster-2d",
 "ok": true
 },
 {
-"id": "review-py-full-05-portalauth-3d",
+"id": "review-py-full-05-isleduty-3d",
 "ok": true
 },
 {
-"id": "review-py-full-06-printinvoice-3d",
+"id": "review-py-full-06-lockers-3d",
 "ok": true
 },
 {
-"id": "review-py-full-07-shiftroster-3d",
+"id": "review-py-full-07-chapterfile-3d",
 "ok": true
 },
 {
-"id": "review-py-full-08-portalauth-4d",
+"id": "review-py-full-08-portalauth-3d",
 "ok": true
 },
 {
-"id": "review-py-full-09-chapterfile-printinvoice-jobqueue-4d",
+"id": "review-py-full-09-portalauth-jobqueue-hookrelay-4d",
 "ok": true
 },
 {
-"id": "review-py-full-10-quayplan-1d",
+"id": "review-py-full-10-chapterfile-1d",
 "ok": true
 },
 {
-"id": "review-py-full-11-chapterfile-2d",
+"id": "review-py-full-11-quayplan-2d",
 "ok": true
 },
 {
-"id": "review-py-full-12-hookrelay-2d",
+"id": "review-py-full-12-quayplan-2d",
 "ok": true
 },
 {
-"id": "review-py-full-13-shiftroster-3d",
+"id": "review-py-full-13-portalauth-2d",
 "ok": true
 },
 {
-"id": "review-py-full-14-quayplan-3d",
+"id": "review-py-full-14-hookrelay-3d",
 "ok": true
 },
 {
-"id": "review-py-full-15-shiftroster-3d",
+"id": "review-py-full-15-lockers-3d",
 "ok": true
 },
 {
-"id": "review-py-full-16-quayplan-4d",
+"id": "review-py-full-16-lockers-3d",
 "ok": true
 },
 {
-"id": "review-py-full-17-hookrelay-3d",
+"id": "review-py-full-17-portalauth-4d",
 "ok": true
 },
 {
-"id": "review-py-full-18-chapterfile-isleduty-4d",
+"id": "review-py-full-18-printinvoice-jobqueue-chapterfile-4d",
 "ok": true
 },
 {
@@ -80,11 +80,11 @@
 "ok": true
 },
 {
-"id": "review-py-full-21-chapterfile-2d",
+"id": "review-py-full-21-printinvoice-2d",
 "ok": true
 },
 {
-"id": "review-py-full-22-quayplan-3d",
+"id": "review-py-full-22-printinvoice-3d",
 "ok": true
 },
 {
@@ -92,19 +92,55 @@
 "ok": true
 },
 {
-"id": "review-py-full-24-portalauth-2d",
+"id": "review-py-full-24-lockers-3d",
 "ok": true
 },
 {
-"id": "review-py-full-25-jobqueue-4d",
+"id": "review-py-full-25-portalauth-3d",
 "ok": true
 },
 {
-"id": "review-py-full-26-chapterfile-3d",
+"id": "review-py-full-26-shiftroster-4d",
 "ok": true
 },
 {
-"id": "review-py-full-27-printinvoice-jobqueue-4d",
+"id": "review-py-full-27-jobqueue-shiftroster-hookrelay-5d",
+"ok": true
+},
+{
+"id": "review-py-full-28-isleduty-1d",
+"ok": true
+},
+{
+"id": "review-py-full-29-chapterfile-2d",
+"ok": true
+},
+{
+"id": "review-py-full-30-lockers-2d",
+"ok": true
+},
+{
+"id": "review-py-full-31-hookrelay-2d",
+"ok": true
+},
+{
+"id": "review-py-full-32-portalauth-2d",
+"ok": true
+},
+{
+"id": "review-py-full-33-shiftroster-3d",
+"ok": true
+},
+{
+"id": "review-py-full-34-shiftroster-3d",
+"ok": true
+},
+{
+"id": "review-py-full-35-isleduty-4d",
+"ok": true
+},
+{
+"id": "review-py-full-36-isleduty-chapterfile-hookrelay-5d",
 "ok": true
 }
 ]

@@ -1,0 +1,50 @@
+[
+{
+"id": "optimize-sql-indexes-01-lookup-author",
+"ok": true
+},
+{
+"id": "optimize-sql-indexes-02-pair-board",
+"ok": true
+},
+{
+"id": "optimize-sql-indexes-03-pair-author",
+"ok": true
+},
+{
+"id": "optimize-sql-indexes-04-join-route",
+"ok": true
+},
+{
+"id": "optimize-sql-indexes-05-join-clinic",
+"ok": true
+},
+{
+"id": "optimize-sql-indexes-06-range_top-clinic",
+"ok": true
+},
+{
+"id": "optimize-sql-indexes-07-expr-board",
+"ok": true
+},
+{
+"id": "optimize-sql-indexes-08-join-lab",
+"ok": true
+},
+{
+"id": "optimize-sql-indexes-09-range_top-lab",
+"ok": true
+},
+{
+"id": "optimize-sql-indexes-10-lookup-route",
+"ok": true
+},
+{
+"id": "optimize-sql-indexes-11-lookup-route",
+"ok": true
+},
+{
+"id": "optimize-sql-indexes-12-composite-clinic",
+"ok": true
+}
+]

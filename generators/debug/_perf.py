@@ -553,7 +553,7 @@ def perf_family(mods, rng: random.Random, n: int):
             f"Performance regression report. {m.blurb} Before the change the workload made {before_n} profiled calls, now {after_n} (`logs/`). The output of the scenario did not change. Which function got slower, and why? {schema}",
             f"Something made {m.name.split('-', 1)[-1]} much more expensive. Compare the profiles in `logs/` (top ten call counts, before and after) and read the code; `scenario.py` is the workload. {schema}",
         ]
-        d = max(1, min(5, m.difficulty - 1 + (1 if bad.kw and "N+1" in bad.kw else 0) + (1 if len(spans) > 4 else 0)))
+        d = max(1, min(5, m.difficulty - 1 + (1 if bad.kw and "N+1" in bad.kw else 0) + (1 if len(spans) > 4 else 0) + (1 if after_n >= 8 * max(1, before_n) else 0)))
         yield Task(
             slug=f"{i:02d}-{m.name.split('-', 1)[-1]}-{s.name}", prompt=rng.choice(voices), difficulty=d, kind="fix", lang="python", start=files, hidden=hidden_diag(spec),
             solution={"diagnosis.json": json.dumps(gold, indent=1) + "\n"}, verify="python3 _verify/check.py", pass_mode="json-score", protected=sorted(files), timeout_s=60,

@@ -268,17 +268,19 @@ def write_prompt(lib: TLib, rng: random.Random, k: int, style: int) -> str:
     return voices[style % len(voices)]
 
 
+def write_difficulty(lib: TLib, k: int) -> int:
+    """More hidden mutants to kill means more rules to pin down; a harder library shifts everything up."""
+    bucket = 1 if k <= 3 else 2 if k <= 5 else 3 if k <= 8 else 4 if k <= 10 else 5
+    return max(1, min(5, bucket + lib.difficulty - 3))
+
+
 def plan_sizes(rng: random.Random, lib: TLib, per_instance: int) -> list[tuple[int, int]]:
     """(k mutants, difficulty) for the tasks cut from one library instance."""
-    ks = [rng.choice([4, 5]), rng.choice([6, 7, 8]), rng.choice([9, 10, 12])]
+    ks = [rng.choice([3, 3, 4, 5]), rng.choice([6, 7, 8]), rng.choice([9, 10, 12])]
     if per_instance <= 3:
         rng.shuffle(ks)
         ks = ks[:per_instance]
-    out = []
-    for k in ks:
-        d = lib.difficulty - 1 + (k >= 7) + (k >= 11)
-        out.append((k, max(1, min(5, d))))
-    return out
+    return [(k, write_difficulty(lib, k)) for k in ks]
 
 
 def write_family(factories, rng: random.Random, n: int, per_instance: int = 3):
@@ -300,6 +302,6 @@ def write_family(factories, rng: random.Random, n: int, per_instance: int = 3):
             style = rng.randrange(10)
             prompt = write_prompt(lib, rng, len(chosen), style)
             slug = f"{i + 1:02d}-{lib.name.split('-', 1)[-1]}-{len(chosen)}m"
-            yield tests_task(lib, chosen, prompt, d, slug, [], {"style": style, "k": len(chosen), "instance": inst})
+            yield tests_task(lib, chosen, prompt, write_difficulty(lib, len(chosen)), slug, [], {"style": style, "k": len(chosen), "instance": inst})
             i += 1
         inst += 1

@@ -1,0 +1,50 @@
+[
+{
+"id": "refactor-py-flatten-inheritance-01-plans-depth3-tariff",
+"ok": true
+},
+{
+"id": "refactor-py-flatten-inheritance-02-stores-depth3-cache",
+"ok": true
+},
+{
+"id": "refactor-py-flatten-inheritance-03-stores-depth4-store",
+"ok": true
+},
+{
+"id": "refactor-py-flatten-inheritance-04-stores-depth3-store",
+"ok": true
+},
+{
+"id": "refactor-py-flatten-inheritance-05-channels-depth4-feed",
+"ok": true
+},
+{
+"id": "refactor-py-flatten-inheritance-06-channels-depth4-outbox",
+"ok": true
+},
+{
+"id": "refactor-py-flatten-inheritance-07-channels-depth4-sender",
+"ok": true
+},
+{
+"id": "refactor-py-flatten-inheritance-08-channels-depth3-sender",
+"ok": true
+},
+{
+"id": "refactor-py-flatten-inheritance-09-stores-depth4-cache",
+"ok": true
+},
+{
+"id": "refactor-py-flatten-inheritance-10-plans-depth4-tariff",
+"ok": true
+},
+{
+"id": "refactor-py-flatten-inheritance-11-plans-depth4-licence",
+"ok": true
+},
+{
+"id": "refactor-py-flatten-inheritance-12-stores-depth4-registry",
+"ok": true
+}
+]

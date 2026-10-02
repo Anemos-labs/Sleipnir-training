@@ -1,0 +1,50 @@
+[
+{
+"id": "security-javascript-01-comment-html",
+"ok": true
+},
+{
+"id": "security-javascript-02-profile-assign",
+"ok": true
+},
+{
+"id": "security-javascript-03-shell-echo",
+"ok": true
+},
+{
+"id": "security-javascript-04-query-builder",
+"ok": true
+},
+{
+"id": "security-javascript-05-url-allowlist",
+"ok": true
+},
+{
+"id": "security-javascript-06-upload-path",
+"ok": true
+},
+{
+"id": "security-javascript-07-search-regex",
+"ok": true
+},
+{
+"id": "security-javascript-08-token-alg",
+"ok": true
+},
+{
+"id": "security-javascript-09-deep-merge",
+"ok": true
+},
+{
+"id": "security-javascript-10-set-path",
+"ok": true
+},
+{
+"id": "security-javascript-11-slug-regex",
+"ok": true
+},
+{
+"id": "security-javascript-12-calculator",
+"ok": true
+}
+]

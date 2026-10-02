@@ -1,0 +1,26 @@
+[
+{
+"id": "testing-fixsuite-expectations-go-01-meter-4wrong",
+"ok": true
+},
+{
+"id": "testing-fixsuite-expectations-go-02-meter-4wrong",
+"ok": true
+},
+{
+"id": "testing-fixsuite-expectations-go-03-meter-2wrong",
+"ok": true
+},
+{
+"id": "testing-fixsuite-expectations-go-04-bells-3wrong",
+"ok": true
+},
+{
+"id": "testing-fixsuite-expectations-go-05-bells-1wrong",
+"ok": true
+},
+{
+"id": "testing-fixsuite-expectations-go-06-bells-1wrong",
+"ok": true
+}
+]

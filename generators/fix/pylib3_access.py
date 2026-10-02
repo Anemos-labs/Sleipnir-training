@@ -660,7 +660,7 @@ APPROVALFLOW_README = dd('''
     `None` for `withdraw`). `pending() -> (role, needed, got) | None`: the first stage that is not yet satisfied
     (`got` is the number of recorded approvals with that role), or `None` when every stage is satisfied.
 
-    `Engine(directory, ttl=72)`. Every method raises `IllegalTransition` first if the action is not legal in the
+    `Engine(directory, ttl=72)` (the arguments are kept as `engine.directory` and `engine.ttl`). Every method raises `IllegalTransition` first if the action is not legal in the
     request's current state (that includes every action on a final request). Checks then run in the order given:
 
     * `submit(request, user, now)`: only the requester (`PermissionError` otherwise). Sets `submitted_at = now`.
@@ -1247,6 +1247,9 @@ RULEBOOK_README = dd('''
       absent field becomes a new list) and `("tag", name)` (append `name` to the list in the field `tags` unless it
       is already there; the list is created when absent).
     * `salience`: an integer; higher fires first.
+
+    A rule keeps `name`, `when` (a list of condition tuples), `then` (a list of action tuples) and `salience`; lists and
+    tuples given for conditions and actions are normalised to tuples.
 
     `Rule(...)` raises `ValueError` for an empty or non-string name, a condition or action of an unknown kind or the
     wrong length, a non-list `when` or `then`, an empty `when`, or a salience that is not an `int`.

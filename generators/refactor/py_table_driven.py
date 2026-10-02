@@ -362,7 +362,7 @@ PROMPTS_C = [
 ]
 
 
-@family("refactor-py-table-driven", category="refactor", lang="python", kind="refactor", n=15,
+@family("refactor-py-table-driven", category="refactor", lang="python", kind="refactor", n=12,
         summary="replace if/elif ladders (keyed formulas, value bands, multi-line event handlers) with tables and dispatch")
 def gen(rng, n):
     plan = ["A"] * 5 + ["B"] * 5 + ["C"] * 5

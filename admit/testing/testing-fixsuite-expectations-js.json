@@ -1,0 +1,26 @@
+[
+{
+"id": "testing-fixsuite-expectations-js-01-recipe-4wrong",
+"ok": true
+},
+{
+"id": "testing-fixsuite-expectations-js-02-recipe-2wrong",
+"ok": true
+},
+{
+"id": "testing-fixsuite-expectations-js-03-recipe-4wrong",
+"ok": true
+},
+{
+"id": "testing-fixsuite-expectations-js-04-cronlite-1wrong",
+"ok": true
+},
+{
+"id": "testing-fixsuite-expectations-js-05-cronlite-1wrong",
+"ok": true
+},
+{
+"id": "testing-fixsuite-expectations-js-06-cronlite-2wrong",
+"ok": true
+}
+]

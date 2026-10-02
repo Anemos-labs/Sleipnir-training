@@ -728,7 +728,7 @@ HIDDEN = dd(r'''
 ''')
 
 LIB = Lib(
-    name="calmtimer", lang="javascript", title="the calmtimer helpers",
+    name="calmtimer", lang="javascript", title="the calmtimer timing library",
     blurb="The editor's autosave and search-as-you-type code use calmtimer to debounce, throttle and batch events against a fake clock in tests.",
     files={"package.json": PACKAGE_JSON % "calmtimer", "src/clock.js": CLOCK, "src/debounce.js": DEBOUNCE, "src/batcher.js": BATCHER,
            "README.md": README, ".gitignore": "node_modules/\n"},

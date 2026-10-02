@@ -1,0 +1,34 @@
+[
+{
+"id": "greenfield-syncplan-01-go-sizemtime-l1",
+"ok": true
+},
+{
+"id": "greenfield-syncplan-02-rust-sizeid-l1",
+"ok": true
+},
+{
+"id": "greenfield-syncplan-03-java-id-l2",
+"ok": true
+},
+{
+"id": "greenfield-syncplan-04-python-id-l2",
+"ok": true
+},
+{
+"id": "greenfield-syncplan-05-go-sizemtime-l3",
+"ok": true
+},
+{
+"id": "greenfield-syncplan-06-rust-id-l3",
+"ok": true
+},
+{
+"id": "greenfield-syncplan-07-java-id-l4",
+"ok": true
+},
+{
+"id": "greenfield-syncplan-08-go-sizeid-l5",
+"ok": true
+}
+]

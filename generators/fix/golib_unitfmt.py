@@ -496,6 +496,16 @@ HIDDEN = gosrc(dd(r'''
         if got, _ := FormatDuration(86400000+60000, 5); got != "1d1m" {
             t.Errorf("got %q", got)
         }
+        // below one second the first unit is the millisecond, however few parts are asked for
+        for _, c := range []struct {
+            ms    int64
+            parts int
+            want  string
+        }{{500, 1, "500ms"}, {7, 1, "7ms"}, {999, 1, "999ms"}, {999, 2, "999ms"}, {1499, 1, "1s"}, {1500, 1, "2s"}, {-500, 1, "-500ms"}} {
+            if got, err := FormatDuration(c.ms, c.parts); err != nil || got != c.want {
+                t.Errorf("FormatDuration(%d, %d) = %q, %v; want %q", c.ms, c.parts, got, err, c.want)
+            }
+        }
     }
 
     func TestFormatDurationBadParts(t *testing.T) {
@@ -543,7 +553,7 @@ HIDDEN = gosrc(dd(r'''
     func TestParseDurationRange(t *testing.T) {
         bad := []string{
             "106751991167d7h12m55s808ms", "9223372036854775808ms", "999999999999999d", "99999999999999999999ms", "-9223372036854775808ms",
-            "9223372036854776s", "106751991168d", "106751991167d8h",
+            "9223372036854776s", "106751991168d", "106751991167d8h", "213503982335d", "5124095576031h",
         }
         for _, s := range bad {
             if got, err := ParseDuration(s); !errors.Is(err, ErrRange) {

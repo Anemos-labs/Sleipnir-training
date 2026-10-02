@@ -8,83 +8,83 @@
 "ok": true
 },
 {
-"id": "review-verdict-03-deployfiles-2d",
+"id": "review-verdict-03-ratesheet-2d",
 "ok": true
 },
 {
-"id": "review-verdict-04-hookrelay-clean",
+"id": "review-verdict-04-ratesheet-3d",
 "ok": true
 },
 {
-"id": "review-verdict-05-shiftroster-2d",
+"id": "review-verdict-05-printinvoice-clean",
 "ok": true
 },
 {
-"id": "review-verdict-06-taskboard-clean",
+"id": "review-verdict-06-ringlog-3d",
 "ok": true
 },
 {
-"id": "review-verdict-07-batchrun-3d",
+"id": "review-verdict-07-shiftroster-clean",
 "ok": true
 },
 {
-"id": "review-verdict-08-batchrun-4d",
+"id": "review-verdict-08-hookrelay-clean",
 "ok": true
 },
 {
-"id": "review-verdict-09-hookrelay-shiftroster-printinvoice-4d",
+"id": "review-verdict-09-shiftroster-hookrelay-portalauth-4d",
 "ok": true
 },
 {
-"id": "review-verdict-10-isleduty-2d",
+"id": "review-verdict-10-deployfiles-2d",
 "ok": true
 },
 {
-"id": "review-verdict-11-asynckit-2d",
+"id": "review-verdict-11-ringlog-clean",
 "ok": true
 },
 {
-"id": "review-verdict-12-taskboard-1d",
+"id": "review-verdict-12-timesheet-1d",
 "ok": true
 },
 {
-"id": "review-verdict-13-ringlog-2d",
+"id": "review-verdict-13-shiftroster-2d",
 "ok": true
 },
 {
-"id": "review-verdict-14-chapterfile-2d",
+"id": "review-verdict-14-batchrun-2d",
 "ok": true
 },
 {
-"id": "review-verdict-15-batchrun-2d",
+"id": "review-verdict-15-linden-cart-3d",
 "ok": true
 },
 {
-"id": "review-verdict-16-linden-cart-3d",
+"id": "review-verdict-16-jobqueue-clean",
 "ok": true
 },
 {
-"id": "review-verdict-17-jobqueue-clean",
+"id": "review-verdict-17-portalauth-clean",
 "ok": true
 },
 {
-"id": "review-verdict-18-portalauth-clean",
+"id": "review-verdict-18-printinvoice-clean",
 "ok": true
 },
 {
-"id": "review-verdict-19-printinvoice-clean",
+"id": "review-verdict-19-ratesheet-3d",
 "ok": true
 },
 {
-"id": "review-verdict-20-ratesheet-quantities-5d",
+"id": "review-verdict-20-quantities-ringlog-5d",
 "ok": true
 },
 {
-"id": "review-verdict-21-sessions-2d",
+"id": "review-verdict-21-lockers-2d",
 "ok": true
 },
 {
-"id": "review-verdict-22-asynckit-2d",
+"id": "review-verdict-22-chapterfile-clean",
 "ok": true
 }
 ]

@@ -37,7 +37,7 @@ def main() -> int:
         cat, fam = shard.parent.name, shard.stem
         ap_ = ROOT / "admit" / cat / f"{fam}.json"
         verdicts = {v["id"]: v for v in json.loads(ap_.read_text())} if ap_.exists() else {}
-        recs = [json.loads(line) for line in shard.read_text(encoding="utf-8").splitlines() if line.strip()]
+        recs = [json.loads(line) for line in shard.read_text(encoding="utf-8").split("\n") if line.strip()]
         good = []
         for r in recs:
             reason = None

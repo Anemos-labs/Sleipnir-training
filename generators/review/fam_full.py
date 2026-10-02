@@ -26,8 +26,8 @@ def _reg(name, lang, mods, n, summary):
     return gen
 
 
-_reg("review-py-full", "python", PY, 27, "review a python PR (PR.md + change.patch) with 1-5 planted defects; scored by recall minus false positives")
+_reg("review-py-full", "python", PY, 36, "review a python PR (PR.md + change.patch) with 1-5 planted defects; scored by recall minus false positives")
 _reg("review-go-full", "go", GO, 18, "review a go PR with planted defects (races, leaks, traversal, ignored errors)")
 _reg("review-js-full", "javascript", JS, 18, "review a javascript PR with planted defects (async misuse, XSS, date maths, coercion)")
 _reg("review-java-full", "java", JAVA, 18, "review a java PR with planted defects (locking, resources, zip slip, SQL injection)")
-_reg("review-rs-full", "rust", RS, 12, "review a rust PR with planted defects (panics, unsafe input handling, permissions, injection)")
+_reg("review-rs-full", "rust", RS, 18, "review a rust PR with planted defects (panics, unsafe input handling, permissions, injection)")

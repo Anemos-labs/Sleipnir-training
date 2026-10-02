@@ -1,0 +1,34 @@
+[
+{
+"id": "security-harden-01-response-headers",
+"ok": true
+},
+{
+"id": "security-harden-02-tls-client-context",
+"ok": true
+},
+{
+"id": "security-harden-03-error-pages",
+"ok": true
+},
+{
+"id": "security-harden-04-sshd-config",
+"ok": true
+},
+{
+"id": "security-harden-05-cors-policy",
+"ok": true
+},
+{
+"id": "security-harden-06-container-setup",
+"ok": true
+},
+{
+"id": "security-harden-07-ci-workflow",
+"ok": true
+},
+{
+"id": "security-harden-08-nginx-config",
+"ok": true
+}
+]

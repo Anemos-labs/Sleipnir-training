@@ -11,7 +11,7 @@ from . import _engine as E
 PY = PY1 + PY2 + PY3 + PY4
 
 
-@family("debug-trace-py", category="debug", lang="python", kind="fix", n=50,
+@family("debug-trace-py", category="debug", lang="python", kind="fix", n=28,
         summary="diagnosis.json for a crash or wrong output of a python scenario; the traceback often points away from the culprit")
 def gen(rng, n):
     yield from E.trace_family(PY, rng, n)

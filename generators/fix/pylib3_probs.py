@@ -23,8 +23,8 @@ SEEDFILTER_README = dd('''
 
     ## `BloomFilter(bits, hashes)`
 
-    `bits` and `hashes` are positive integers (`ValueError` otherwise). The filter owns a bit array of `bits` bits, all
-    clear at the start.
+    `bits` and `hashes` are positive integers (`ValueError` otherwise; they are kept as the attributes `bits` and `hashes`).
+    The filter owns a bit array of `bits` bits, all clear at the start.
 
     * `positions(item) -> list[int]`: the `hashes` bit positions of an item (a string) by double hashing:
       with `h1 = fnv1a(item)` and `h2 = djb2(item) | 1` (the lowest bit forced to one) position `i` (from 0) is

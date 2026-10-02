@@ -46,13 +46,5 @@
 {
 "id": "refactor-py-extract-steps-12-intake-all",
 "ok": true
-},
-{
-"id": "refactor-py-extract-steps-13-intake-split",
-"ok": true
-},
-{
-"id": "refactor-py-extract-steps-14-chapters-all",
-"ok": true
 }
 ]

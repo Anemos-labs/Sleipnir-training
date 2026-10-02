@@ -4,31 +4,31 @@
 "ok": true
 },
 {
-"id": "fix-js-formcheck-02-const",
+"id": "fix-js-formcheck-02-negate",
 "ok": true
 },
 {
-"id": "fix-js-formcheck-03-negate",
+"id": "fix-js-formcheck-03-delete",
 "ok": true
 },
 {
-"id": "fix-js-formcheck-04-logic",
+"id": "fix-js-formcheck-04-cmp",
 "ok": true
 },
 {
-"id": "fix-js-formcheck-05-delete",
+"id": "fix-js-formcheck-05-negate",
 "ok": true
 },
 {
-"id": "fix-js-formcheck-06-cmp",
+"id": "fix-js-formcheck-06-delete",
 "ok": true
 },
 {
-"id": "fix-js-formcheck-07-negate",
+"id": "fix-js-formcheck-07-cmp",
 "ok": true
 },
 {
-"id": "fix-js-formcheck-08-logic",
+"id": "fix-js-formcheck-08-negate",
 "ok": true
 }
 ]

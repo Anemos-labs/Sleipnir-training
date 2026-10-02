@@ -1,0 +1,74 @@
+[
+{
+"id": "feature-java-queuedesk-01-assign",
+"ok": true
+},
+{
+"id": "feature-java-queuedesk-02-history",
+"ok": true
+},
+{
+"id": "feature-java-queuedesk-03-tags",
+"ok": true
+},
+{
+"id": "feature-java-queuedesk-04-bulk-close-tags",
+"ok": true
+},
+{
+"id": "feature-java-queuedesk-05-sla",
+"ok": true
+},
+{
+"id": "feature-java-queuedesk-06-merge",
+"ok": true
+},
+{
+"id": "feature-java-queuedesk-07-escalate",
+"ok": true
+},
+{
+"id": "feature-java-queuedesk-08-escalate-agent-limit",
+"ok": true
+},
+{
+"id": "feature-java-queuedesk-09-reopen",
+"ok": true
+},
+{
+"id": "feature-java-queuedesk-10-tags",
+"ok": true
+},
+{
+"id": "feature-java-queuedesk-11-assign",
+"ok": true
+},
+{
+"id": "feature-java-queuedesk-12-reopen-tags",
+"ok": true
+},
+{
+"id": "feature-java-queuedesk-13-agent-limit",
+"ok": true
+},
+{
+"id": "feature-java-queuedesk-14-escalate",
+"ok": true
+},
+{
+"id": "feature-java-queuedesk-15-bulk-close",
+"ok": true
+},
+{
+"id": "feature-java-queuedesk-16-sla-merge",
+"ok": true
+},
+{
+"id": "feature-java-queuedesk-17-sla",
+"ok": true
+},
+{
+"id": "feature-java-queuedesk-18-history",
+"ok": true
+}
+]

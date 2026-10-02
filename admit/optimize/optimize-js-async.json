@@ -1,0 +1,42 @@
+[
+{
+"id": "optimize-js-async-01-sequential-resolveauthors",
+"ok": true
+},
+{
+"id": "optimize-js-async-02-bounded-enrichrows",
+"ok": true
+},
+{
+"id": "optimize-js-async-03-dedupe-recordsforevents",
+"ok": true
+},
+{
+"id": "optimize-js-async-04-batch-labelsfor",
+"ok": true
+},
+{
+"id": "optimize-js-async-05-batch-titlesof",
+"ok": true
+},
+{
+"id": "optimize-js-async-06-bounded-downloadall",
+"ok": true
+},
+{
+"id": "optimize-js-async-07-dedupe-expandmentions",
+"ok": true
+},
+{
+"id": "optimize-js-async-08-batch-namesfor",
+"ok": true
+},
+{
+"id": "optimize-js-async-09-bounded-syncdocuments",
+"ok": true
+},
+{
+"id": "optimize-js-async-10-dedupe-hydraterows",
+"ok": true
+}
+]

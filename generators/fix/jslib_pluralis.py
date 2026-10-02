@@ -294,7 +294,7 @@ HIDDEN = dd(r'''
 ''')
 
 LIB = Lib(
-    name="pluralis", lang="javascript", title="the pluralis helpers",
+    name="pluralis", lang="javascript", title="the pluralis library",
     blurb="The rule-book generator of the Tidewater board game uses pluralis to write counts and ordinals in its three invented languages.",
     files={"package.json": PACKAGE_JSON % "pluralis", "src/rules.js": RULES, "src/format.js": FORMAT, "README.md": README, ".gitignore": "node_modules/\n"},
     visible_tests={"test/basic.test.js": VISIBLE},

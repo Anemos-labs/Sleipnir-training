@@ -749,7 +749,7 @@ def _base() -> Base:
         Bug("form-quantities-stay-text", 2, {ca: [qty_text]}, P["qty-text"]),
         Bug("negative-amounts-round-down", 2, {fo: [neg]}, P["neg-format"]),
         Bug("coupon-computed-before-volume-discounts", 3, {pr: [base_bug]}, P["coupon-base"]),
-        Bug("allocation-drops-the-remainder", 3, {mo: [alloc]}, P["alloc"]),
+        Bug("allocation-drops-the-remainder", 4, {mo: [alloc]}, P["alloc"]),
         Bug("tax-rounded-per-line", 3, {pr: [tax_line]}, P["tax-line"]),
         Bug("free-shipping-judged-on-list-prices", 3, {pr: [free_list]}, P["free-list"]),
         Bug("shipping-takes-the-class-of-the-first-line", 3, {pr: [ship_tax]}, P["ship-tax"]),

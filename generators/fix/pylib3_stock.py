@@ -47,7 +47,8 @@ COSTLAYERS_README = dd('''
 
     ## `costlayers.ledger`
 
-    `Ledger(method="fifo")` (`ValueError` for any other method than `"fifo"` and `"avg"`).
+    `Ledger(method="fifo")` (`ValueError` for any other method than `"fifo"` and `"avg"`); the method is kept as the
+    attribute `method`.
 
     * `receive(sku, qty, unit_cost)`: stock arrives.
     * `issue(sku, qty, ref) -> Issue`: stock leaves under a unique reference string. `ValueError` if `ref` was used
@@ -1431,8 +1432,8 @@ BUDDYBAY_README = dd('''
 
     ## `BayMap(total, min_block=1)`
 
-    `total` and `min_block` must both be powers of two (1, 2, 4, ...) and `min_block <= total`, otherwise
-    `ValueError`. The row starts as one free block `(0, total)`.
+    `total` and `min_block` (kept as attributes) must both be powers of two (1, 2, 4, ...) and `min_block <= total`,
+    otherwise `ValueError`. The row starts as one free block `(0, total)`.
 
     * `block_size(n) -> int`: the size a request for `n` bays gets: the smallest power of two that is `>= n` and
       `>= min_block`. `ValueError` if `n < 1` or `n > total`.

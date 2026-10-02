@@ -283,7 +283,7 @@ for _k in ("reconcile", "tidy", "repeated"):
     SHAPES[_k]["n"] = (800, 1100)
 
 
-@family("optimize-py-membership", category="optimize", lang="python", kind="feature", n=14,
+@family("optimize-py-membership", category="optimize", lang="python", kind="feature", n=10,
         summary="list scans inside loops (dedupe, join, group, reconcile, positions): operation counts on tracked values must grow linearly")
 def gen(rng, n):
     yield from shape_family(rng, n, SHAPES, CFG)

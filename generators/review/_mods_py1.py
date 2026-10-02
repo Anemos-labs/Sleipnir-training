@@ -193,7 +193,7 @@ LOCKERS = Module(
             Bad(_VALIDATE_GOOD.replace('''    if size not in SIZE_RANK:
         raise ValueError(f"unknown size: {size!r}")
 ''', ""), "validation", "the size is never validated, so an unknown size reaches the compartment search and fails there with a KeyError", ("size", "SIZE_RANK", "validate")),
-            Bad(_VALIDATE_GOOD.replace("not 1 <= len(ref)", "not 0 <= len(ref)"), "off-by-one", "an empty reference passes because the length check starts at 0 instead of 1", ("empty", "length", "0 <=")),
+            Bad(_VALIDATE_GOOD.replace("<= len(ref) <= 16", "<= len(ref) <= 17"), "off-by-one", "references of 17 characters are accepted: the upper length bound is 17 instead of 16", ("17", "16", "length", "<=", "bound")),
         ], nit=_VALIDATE_GOOD.replace('if not isinstance(ref, str) or not 1 <= len(ref) <= 16 or not ref.isalnum():', 'if not (isinstance(ref, str) and 1 <= len(ref) <= 16 and ref.isalnum()):')),
         Slot("pick", "Bank.pick_compartment", _PICK_GOOD, [
             Bad(_PICK_GOOD.replace("SIZE_RANK[sz] < need", "SIZE_RANK[sz] <= need"), "off-by-one", "`<= need` skips compartments of exactly the parcel's size; only strictly larger ones are considered", ("<=", "exact", "need", "size")),

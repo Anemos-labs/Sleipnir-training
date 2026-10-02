@@ -1,34 +1,34 @@
 [
 {
-"id": "fix-js-editlog-01-delete",
+"id": "fix-js-editlog-01-logic",
 "ok": true
 },
 {
-"id": "fix-js-editlog-02-const",
+"id": "fix-js-editlog-02-arith",
 "ok": true
 },
 {
-"id": "fix-js-editlog-03-logic",
+"id": "fix-js-editlog-03-delete",
 "ok": true
 },
 {
-"id": "fix-js-editlog-04-arith",
+"id": "fix-js-editlog-04-negate",
 "ok": true
 },
 {
-"id": "fix-js-editlog-05-negate",
+"id": "fix-js-editlog-05-cmp",
 "ok": true
 },
 {
-"id": "fix-js-editlog-06-cmp",
+"id": "fix-js-editlog-06-delete",
 "ok": true
 },
 {
-"id": "fix-js-editlog-07-delete",
+"id": "fix-js-editlog-07-negate",
 "ok": true
 },
 {
-"id": "fix-js-editlog-08-negate",
+"id": "fix-js-editlog-08-cmp",
 "ok": true
 }
 ]

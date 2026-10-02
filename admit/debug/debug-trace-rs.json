@@ -1,0 +1,34 @@
+[
+{
+"id": "debug-trace-rs-01-ringlog-parse",
+"ok": true
+},
+{
+"id": "debug-trace-rs-02-quantities-sum",
+"ok": true
+},
+{
+"id": "debug-trace-rs-03-ratesheet-discount",
+"ok": true
+},
+{
+"id": "debug-trace-rs-04-ringlog-dump",
+"ok": true
+},
+{
+"id": "debug-trace-rs-05-quantities-number",
+"ok": true
+},
+{
+"id": "debug-trace-rs-06-ratesheet-lookup",
+"ok": true
+},
+{
+"id": "debug-trace-rs-07-ringlog-parse",
+"ok": true
+},
+{
+"id": "debug-trace-rs-08-quantities-number",
+"ok": true
+}
+]

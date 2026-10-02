@@ -598,7 +598,7 @@ BATCH = Module(
             Bad(_B_FIRST.replace("    for _, r := range rs {\n        if r.Err != nil {\n            return fmt.Errorf(\"job %d: %w\", r.Index, r.Err)\n        }\n    }\n    return nil", "    var err error\n    for _, r := range rs {\n        if r.Err != nil {\n            err = fmt.Errorf(\"job %d: %w\", r.Index, r.Err)\n        }\n    }\n    return err"), "logic", "the loop keeps overwriting err, so the *last* failure is returned instead of the first", ("first", "last", "overwrite", "lowest")),
         ], note="adds `FirstError`"),
         Slot("retry", "Retry", _B_RETRY, [
-            Bad(_B_RETRY.replace("for n := 0; n < attempts; n++ {", "for n := 0; n <= attempts; n++ {"), "off-by-one", "one attempt too many: the job runs attempts+1 times", ("<=", "attempts", "extra", "off by one")),
+            Bad(_B_RETRY.replace("for n := 0; n < attempts; n++ {", "for n := 0; n <= attempts; n++ {").replace("if n == attempts-1 {", "if n == attempts {"), "off-by-one", "one attempt too many: the job runs attempts+1 times", ("<=", "attempts", "extra", "off by one")),
             Bad(_B_RETRY.replace("            select {\n            case <-time.After(delay):\n            case <-ctx.Done():\n                return \"\", ctx.Err()\n            }\n", "            time.Sleep(delay)\n"), "api-misuse", "time.Sleep ignores ctx, so cancellation is not noticed until the delay is over", ("time.Sleep", "ctx", "cancel", "select")),
             Bad(_B_RETRY.replace("        return \"\", err\n", "        return \"\", nil\n"), "error-handling", "when every attempt fails the wrapper returns a nil error, hiding the failure", ("nil", "error", "swallow", "return")),
         ], note="adds `Retry`"),
@@ -607,7 +607,7 @@ BATCH = Module(
             Bad(_B_TIMEOUT.replace("context.WithTimeout(ctx, d)", "context.WithTimeout(context.Background(), d)"), "logic", "the parent context is dropped, so cancelling the caller no longer cancels the job", ("Background", "parent", "ctx", "cancel")),
         ], note="adds `WithTimeout`"),
         Slot("merge", "Merge", _B_MERGE, [
-            Bad(_B_MERGE.replace("        in := in\n", ""), "concurrency", "the range variable `in` is shared by all goroutines (go 1.21 semantics), so most inputs are never drained", ("loop variable", "capture", "in := in")),
+            Bad(_B_MERGE.replace("        in := in\n", ""), "concurrency", "the range variable `in` is shared by all goroutines (go 1.21 semantics), so most inputs are never drained", ("loop variable", "capture", "in := in", "range variable", "shared")),
             Bad(dd('''
                 // Merge forwards everything from the inputs to the returned channel, which is closed once every input is closed.
                 func Merge(inputs ...<-chan string) <-chan string {

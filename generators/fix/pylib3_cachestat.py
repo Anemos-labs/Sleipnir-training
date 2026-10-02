@@ -17,7 +17,7 @@ EDGECACHE_README = dd('''
 
     ## `Cache(capacity)`
 
-    `capacity` is the byte budget (a positive integer, otherwise `ValueError`).
+    `capacity` is the byte budget (a positive integer, otherwise `ValueError`); it is kept as the attribute `capacity`.
 
     * `put(key, size, cost, now, ttl=None, pinned=False) -> bool`: store an object of `size` bytes whose refetch costs
       `cost`. `ValueError` for `size < 1`, `cost < 0` or a `ttl` that is not `None` and below 1. Steps:

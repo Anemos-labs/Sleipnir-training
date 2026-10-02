@@ -24,7 +24,7 @@ def main() -> int:
     ap.add_argument("--tasks")
     a = ap.parse_args()
     shares = {k: float(v) for k, v in (p.split(":") for p in a.spec.split(","))}
-    rows = [json.loads(l) for l in (ROOT / "catalog" / "index.jsonl").read_text(encoding="utf-8").splitlines() if l.strip()]
+    rows = [json.loads(l) for l in (ROOT / "catalog" / "index.jsonl").read_text(encoding="utf-8").split("\n") if l.strip()]
     fams: dict[str, dict[str, int]] = defaultdict(dict)
     for r in rows:
         fams[r["category"]][r["family"]] = fams[r["category"]].get(r["family"], 0) + 1
@@ -56,7 +56,7 @@ def main() -> int:
         fam_of = {r["id"]: r["family"] for r in rows}
         handles = {k: (p.with_suffix("").parent / f"{p.stem}.{k}.jsonl").open("w", encoding="utf-8") for k in out}
         try:
-            for line in p.read_text(encoding="utf-8").splitlines():
+            for line in p.read_text(encoding="utf-8").split("\n"):
                 if not line.strip():
                     continue
                 t = json.loads(line)

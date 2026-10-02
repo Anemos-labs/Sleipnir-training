@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-ts-mailrules-01-swap",
+"ok": true
+},
+{
+"id": "fix-ts-mailrules-02-delete",
+"ok": true
+},
+{
+"id": "fix-ts-mailrules-03-cmp",
+"ok": true
+},
+{
+"id": "fix-ts-mailrules-04-negate",
+"ok": true
+},
+{
+"id": "fix-ts-mailrules-05-swap",
+"ok": true
+},
+{
+"id": "fix-ts-mailrules-06-delete",
+"ok": true
+},
+{
+"id": "fix-ts-mailrules-07-cmp",
+"ok": true
+},
+{
+"id": "fix-ts-mailrules-08-negate",
+"ok": true
+}
+]

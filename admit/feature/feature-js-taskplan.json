@@ -1,0 +1,74 @@
+[
+{
+"id": "feature-js-taskplan-01-remove",
+"ok": true
+},
+{
+"id": "feature-js-taskplan-02-report",
+"ok": true
+},
+{
+"id": "feature-js-taskplan-03-progress",
+"ok": true
+},
+{
+"id": "feature-js-taskplan-04-lag-resources",
+"ok": true
+},
+{
+"id": "feature-js-taskplan-05-slack",
+"ok": true
+},
+{
+"id": "feature-js-taskplan-06-resources",
+"ok": true
+},
+{
+"id": "feature-js-taskplan-07-calendar",
+"ok": true
+},
+{
+"id": "feature-js-taskplan-08-progress-report-slack",
+"ok": true
+},
+{
+"id": "feature-js-taskplan-09-remove",
+"ok": true
+},
+{
+"id": "feature-js-taskplan-10-resources",
+"ok": true
+},
+{
+"id": "feature-js-taskplan-11-report",
+"ok": true
+},
+{
+"id": "feature-js-taskplan-12-calendar-resources",
+"ok": true
+},
+{
+"id": "feature-js-taskplan-13-slack",
+"ok": true
+},
+{
+"id": "feature-js-taskplan-14-lag",
+"ok": true
+},
+{
+"id": "feature-js-taskplan-15-report",
+"ok": true
+},
+{
+"id": "feature-js-taskplan-16-progress-report-resources",
+"ok": true
+},
+{
+"id": "feature-js-taskplan-17-lag",
+"ok": true
+},
+{
+"id": "feature-js-taskplan-18-progress",
+"ok": true
+}
+]

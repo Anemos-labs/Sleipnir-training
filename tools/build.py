@@ -47,6 +47,14 @@ def discover(categories: list[str] | None = None) -> list[str]:
     return errors
 
 
+def _line(r: dict) -> str:
+    """One JSONL line. Characters that str.splitlines() treats as line breaks are escaped so any reader can split."""
+    t = json.dumps(r, sort_keys=True, ensure_ascii=False)
+    for ch in ("\u2028", "\u2029", "\x85"):
+        t = t.replace(ch, "\\u%04x" % ord(ch))
+    return t + "\n"
+
+
 def shard_path(fam: fx.Family) -> Path:
     return ROOT / "corpus" / fam.category / f"{fam.name}.jsonl"
 
@@ -69,7 +77,7 @@ def build_one(name: str, scale: float, twice: bool) -> tuple[str, int, list[str]
         return name, 0, [f"{name}: produced no tasks"], time.time() - t0
     p = shard_path(fam)
     p.parent.mkdir(parents=True, exist_ok=True)
-    text = "".join(json.dumps(r, sort_keys=True, ensure_ascii=False) + "\n" for r in recs)
+    text = "".join(_line(r) for r in recs)
     p.write_text(text, encoding="utf-8")
     return name, len(recs), [], time.time() - t0
 

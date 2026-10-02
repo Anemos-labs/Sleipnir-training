@@ -1007,8 +1007,8 @@ def _base() -> Base:
         Bug("adjust-adds-instead-of-sets", 2, {"state.go": tab_pairs([("        s.Stock[e.SKU] = e.Qty\n", "        s.Stock[e.SKU] += e.Qty\n")])}, P["adjust"]),
         Bug("merge-compares-seq-as-text", 3, {"log.go": tab_pairs(merge_bug)}, P["merge"], reported=reported_merge),
         Bug("replay-reapplies-the-snapshot-event", 3, {"replay.go": tab_pairs([("        if e.Seq <= s.Applied {\n", "        if e.Seq < s.Applied {\n")])}, P["replay-skip"]),
-        Bug("snapshot-forgets-the-keys", 3, {"snapshot.go": tab_pairs([("Applied: s.Applied, Stock: copyStock(s.Stock), Keys: copyKeys(s.Keys)}", "Applied: s.Applied, Stock: copyStock(s.Stock)}")])}, P["keys-dropped"]),
-        Bug("restore-aliases-the-snapshot", 3, {"snapshot.go": tab_pairs([("    s.Stock = copyStock(snap.Stock)\n    s.Keys = copyKeys(snap.Keys)\n", "    s.Stock = snap.Stock\n    s.Keys = snap.Keys\n")])}, P["restore-aliases"]),
+        Bug("snapshot-forgets-the-keys", 4, {"snapshot.go": tab_pairs([("Applied: s.Applied, Stock: copyStock(s.Stock), Keys: copyKeys(s.Keys)}", "Applied: s.Applied, Stock: copyStock(s.Stock)}")])}, P["keys-dropped"]),
+        Bug("restore-aliases-the-snapshot", 4, {"snapshot.go": tab_pairs([("    s.Stock = copyStock(snap.Stock)\n    s.Keys = copyKeys(snap.Keys)\n", "    s.Stock = snap.Stock\n    s.Keys = snap.Keys\n")])}, P["restore-aliases"]),
         Bug("rejected-event-uses-up-its-key", 3, {"state.go": tab_pairs([(
             "    s.Applied = e.Seq\n    if e.Key != \"\" && s.Keys[e.Key] {\n        return\n    }\n",
             "    s.Applied = e.Seq\n    if e.Key != \"\" {\n        if s.Keys[e.Key] {\n            return\n        }\n        s.Keys[e.Key] = true\n    }\n"),

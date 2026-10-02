@@ -328,7 +328,7 @@ PROMPTS = [
     "I will run it against a database with thousands of rows and compare database round trips, remote rate lookups, linear scans of `blocked` and total Python work with fixed budgets.",
 ]
 SYMPTOMS = [
-    "On the production database it spends its time waiting on SQLite and the rate service, and then burns CPU in between.",
+    "On the production database it is slow in more than one way, not just one.",
     "Profiling shows the time is spread over several different things rather than one hot spot.",
     "Nobody has looked at it since the first version; the code is simple, but it does a lot of work per row.",
 ]
@@ -353,10 +353,10 @@ def make_start(sk, sel, jobs_text):
     return {f"{sk['pkg']}/__init__.py": "", f"{sk['pkg']}/store.py": store, f"{sk['pkg']}/jobs.py": jobs_text, "README.md": readme}
 
 
-@family("optimize-py-report-jobs", category="optimize", lang="python", kind="feature", n=12,
+@family("optimize-py-report-jobs", category="optimize", lang="python", kind="feature", n=16,
         summary="a report job with 2-4 stacked bottlenecks (N+1 queries, repeated service calls, list scans, quadratic grouping), each with its own counted budget")
 def gen(rng, n):
-    plan = [2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4]
+    plan = [2, 2, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4]
     rng.shuffle(plan)
     allb = ["queries", "rates", "blocked", "lines"]
     for i in range(n):

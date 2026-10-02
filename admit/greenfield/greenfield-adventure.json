@@ -1,0 +1,34 @@
+[
+{
+"id": "greenfield-adventure-01-javascript-4dirs-l1",
+"ok": true
+},
+{
+"id": "greenfield-adventure-02-ruby-4dirs-l1",
+"ok": true
+},
+{
+"id": "greenfield-adventure-03-java-4dirs-l2",
+"ok": true
+},
+{
+"id": "greenfield-adventure-04-go-4dirs-l2",
+"ok": true
+},
+{
+"id": "greenfield-adventure-05-ruby-6dirs-l3",
+"ok": true
+},
+{
+"id": "greenfield-adventure-06-java-6dirs-l4",
+"ok": true
+},
+{
+"id": "greenfield-adventure-07-go-6dirs-l5",
+"ok": true
+},
+{
+"id": "greenfield-adventure-08-javascript-6dirs-l5",
+"ok": true
+}
+]

@@ -259,7 +259,7 @@ def load_corpus(family: str | None, category: str | None):
             continue
         if family and not fnmatch.fnmatch(p.stem, family):
             continue
-        for line in p.read_text(encoding="utf-8").splitlines():
+        for line in p.read_text(encoding="utf-8").split("\n"):
             if line.strip():
                 yield json.loads(line)
 

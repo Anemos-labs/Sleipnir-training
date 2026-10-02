@@ -38,13 +38,5 @@
 {
 "id": "refactor-js-callbacks-to-async-10-signup-dual",
 "ok": true
-},
-{
-"id": "refactor-js-callbacks-to-async-11-report-promise",
-"ok": true
-},
-{
-"id": "refactor-js-callbacks-to-async-12-orders-promise",
-"ok": true
 }
 ]

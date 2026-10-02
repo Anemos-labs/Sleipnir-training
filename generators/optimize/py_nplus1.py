@@ -275,7 +275,7 @@ def make_extra(rng, shape, parents, children, big):
 '''
 
 
-@family("optimize-py-nplus1", category="optimize", lang="python", kind="feature", n=12,
+@family("optimize-py-nplus1", category="optimize", lang="python", kind="feature", n=9,
         summary="N+1 queries, per-row lookups and row-at-a-time commits on SQLite: the statement and commit counts must stay constant")
 def gen(rng, n):
     order = list(SHAPES) * 3

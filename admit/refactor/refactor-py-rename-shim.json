@@ -1,0 +1,66 @@
+[
+{
+"id": "refactor-py-rename-shim-01-stockroom-class-method-param",
+"ok": true
+},
+{
+"id": "refactor-py-rename-shim-02-stockroom-function-class-method-module",
+"ok": true
+},
+{
+"id": "refactor-py-rename-shim-03-stockroom-function-method-module-param",
+"ok": true
+},
+{
+"id": "refactor-py-rename-shim-04-libdesk-function-method-module",
+"ok": true
+},
+{
+"id": "refactor-py-rename-shim-05-tempo-function-class-method-module-param",
+"ok": true
+},
+{
+"id": "refactor-py-rename-shim-06-libdesk-function",
+"ok": true
+},
+{
+"id": "refactor-py-rename-shim-07-libdesk-function-method-module-param",
+"ok": true
+},
+{
+"id": "refactor-py-rename-shim-08-libdesk-class",
+"ok": true
+},
+{
+"id": "refactor-py-rename-shim-09-libdesk-class-method-module",
+"ok": true
+},
+{
+"id": "refactor-py-rename-shim-10-tempo-function-class-method-module-param",
+"ok": true
+},
+{
+"id": "refactor-py-rename-shim-11-stockroom-method-module-param",
+"ok": true
+},
+{
+"id": "refactor-py-rename-shim-12-libdesk-function-class-method-module-param",
+"ok": true
+},
+{
+"id": "refactor-py-rename-shim-13-libdesk-function-module",
+"ok": true
+},
+{
+"id": "refactor-py-rename-shim-14-libdesk-method-module",
+"ok": true
+},
+{
+"id": "refactor-py-rename-shim-15-stockroom-function-method",
+"ok": true
+},
+{
+"id": "refactor-py-rename-shim-16-tempo-function-class-method-module-param",
+"ok": true
+}
+]

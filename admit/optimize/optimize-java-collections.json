@@ -1,0 +1,42 @@
+[
+{
+"id": "optimize-java-collections-01-repeated-repeatvisitors",
+"ok": true
+},
+{
+"id": "optimize-java-collections-02-dedupe-uniqueplates",
+"ok": true
+},
+{
+"id": "optimize-java-collections-03-difference-missingparts",
+"ok": true
+},
+{
+"id": "optimize-java-collections-04-difference-unreviewedfiles",
+"ok": true
+},
+{
+"id": "optimize-java-collections-05-positions-slotnumbers",
+"ok": true
+},
+{
+"id": "optimize-java-collections-06-difference-unsentrecipients",
+"ok": true
+},
+{
+"id": "optimize-java-collections-07-positions-columnindexes",
+"ok": true
+},
+{
+"id": "optimize-java-collections-08-intersect-repliedguests",
+"ok": true
+},
+{
+"id": "optimize-java-collections-09-dedupe-distincttags",
+"ok": true
+},
+{
+"id": "optimize-java-collections-10-dedupe-firstseenhosts",
+"ok": true
+}
+]

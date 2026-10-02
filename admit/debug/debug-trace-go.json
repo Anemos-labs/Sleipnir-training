@@ -1,0 +1,34 @@
+[
+{
+"id": "debug-trace-go-01-sessions-newid",
+"ok": true
+},
+{
+"id": "debug-trace-go-02-attachments-save",
+"ok": true
+},
+{
+"id": "debug-trace-go-03-batchrun-timeout",
+"ok": true
+},
+{
+"id": "debug-trace-go-04-sessions-get",
+"ok": true
+},
+{
+"id": "debug-trace-go-05-attachments-list",
+"ok": true
+},
+{
+"id": "debug-trace-go-06-batchrun-first",
+"ok": true
+},
+{
+"id": "debug-trace-go-07-sessions-janitor",
+"ok": true
+},
+{
+"id": "debug-trace-go-08-attachments-save",
+"ok": true
+}
+]

@@ -798,6 +798,126 @@ def big_args(rng, n):
         vocab=[("shortest_walk", ["grid", "start", "goal"], "Fewest moves a robot needs to cross the warehouse floor."),
                ("min_moves", ["floor", "entry", "exit_cell"], "Minimum number of steps from the entrance to the exit of a floor plan."),
                ("steps_to_exit", ["maze", "begin", "target"], "Length of the shortest path through the maze.")]),
+    "cheapest_with_stops": dict(
+        d=5, want="O(stops * edges)", size="around {n} airports, five flights out of each and up to 7 flights per trip", unit="airports", n=(55, 64), limit="45 * 7 * len(args[0])",
+        imports="",
+        naive='''def $f($a, $b, $c, $d):
+    """$doc"""
+    best = [-1]
+
+    def walk(node, left, cost):
+        if node == $c and (best[0] == -1 or cost < best[0]):
+            best[0] = cost
+        if left == 0:
+            return
+        for nxt, price in $a.get(node, ()):
+            walk(nxt, left - 1, cost + price)
+
+    walk($b, $d, 0)
+    return best[0]
+''', fast='''def $f($a, $b, $c, $d):
+    """$doc"""
+    inf = float("inf")
+    cost = {$b: 0}
+    result = 0 if $b == $c else inf
+    for _ in range($d):
+        nxt_cost = dict(cost)
+        for node, so_far in cost.items():
+            for nxt, price in $a.get(node, ()):
+                if so_far + price < nxt_cost.get(nxt, inf):
+                    nxt_cost[nxt] = so_far + price
+        cost = nxt_cost
+        if $c in cost:
+            result = min(result, cost[$c])
+    return -1 if result == inf else result
+''', oracle='''def oracle(a, b, c, d):
+    inf = float("inf")
+    dist = {b: 0}
+    for _ in range(d):
+        step = dict(dist)
+        for u, du in dist.items():
+            for v, w in a.get(u, ()):
+                if du + w < step.get(v, inf):
+                    step[v] = du + w
+        dist = step
+    return dist[c] if c in dist else -1
+''', gen='''def small_args(rng):
+    size = rng.randint(2, 7)
+    flights = {}
+    for node in range(size):
+        flights[node] = [(rng.randrange(size), rng.randint(1, 9)) for _ in range(rng.randint(0, 3))]
+    return (flights, rng.randrange(size), rng.randrange(size), rng.randint(0, 4))
+
+
+def big_args(rng, n):
+    flights = {}
+    for node in range(n):
+        flights[node] = [(rng.randrange(n), rng.randint(1, 30)) for _ in range(5)]
+    return (flights, 0, n - 1, 7)
+''', spec="`{a}` maps an airport to its flights `(destination, price)` (positive prices). The result is the lowest total price of a trip from `{b}` to `{c}` that uses at most `{d}` flights (a trip with no flights costs 0 when the two are the same airport), or -1 when there is none.",
+        vocab=[("cheapest_trip", ["flights", "origin", "target", "max_legs"], "Cheapest itinerary with a limited number of legs."),
+               ("lowest_fare_within", ["routes", "start", "finish", "hops"], "Lowest fare that gets you there in at most the given number of hops."),
+               ("min_cost_limited", ["links", "source", "sink", "steps"], "Minimum cost path that uses a bounded number of links.")]),
+    "min_cuts": dict(
+        d=5, want="O(n^2)", size="strings of around {n} characters over two letters", unit="characters", n=(26, 30), limit="12 * n * n", imports="",
+        naive='''def $f($a):
+    """$doc"""
+
+    def is_pal(i, j):
+        while i < j:
+            if $a[i] != $a[j]:
+                return False
+            i += 1
+            j -= 1
+        return True
+
+    def best(i):
+        if i == len($a):
+            return -1
+        result = len($a)
+        for j in range(i, len($a)):
+            if is_pal(i, j):
+                result = min(result, 1 + best(j + 1))
+        return result
+
+    return best(0)
+''', fast='''def $f($a):
+    """$doc"""
+    size = len($a)
+    pal = [[False] * size for _ in range(size)]
+    for i in range(size - 1, -1, -1):
+        for j in range(i, size):
+            if $a[i] == $a[j] and (j - i < 2 or pal[i + 1][j - 1]):
+                pal[i][j] = True
+    cuts = [0] * size
+    for j in range(size):
+        if pal[0][j]:
+            cuts[j] = 0
+        else:
+            cuts[j] = min(cuts[i - 1] + 1 for i in range(1, j + 1) if pal[i][j])
+    return cuts[-1] if size else -1
+''', oracle='''def oracle(a):
+    n = len(a)
+    if n == 0:
+        return -1
+    best = list(range(-1, n))
+    for center in range(n):
+        for lo, hi in ((center, center), (center, center + 1)):
+            while lo >= 0 and hi < n and a[lo] == a[hi]:
+                best[hi + 1] = min(best[hi + 1], best[lo] + 1)
+                lo -= 1
+                hi += 1
+    return best[n]
+''', gen='''def small_args(rng):
+    return ("".join(rng.choice("ab") for _ in range(rng.randint(0, 9))),)
+
+
+def big_args(rng, n):
+    return ("".join(rng.choice("ab") for _ in range(n)),)
+''', spec="Returns the fewest cuts needed to split `{a}` into pieces that each read the same forwards and backwards (0 when `{a}` already is such a string, and -1 for the empty string).",
+        vocab=[("fewest_splits", ["text"], "How few cuts split the text into palindromic pieces."),
+               ("palindrome_cuts", ["word"], "Minimum number of cuts so every piece is a palindrome."),
+               ("min_pieces_minus_one", ["code"], "One less than the smallest number of palindromic pieces the code can be cut into.")]),
 }
 
 PKGS = ["routeplan", "datajobs", "gridwork", "opsmath", "batchcalc", "sched", "nightly", "ledgerlab"]
@@ -816,7 +936,7 @@ PROMPTS = [
 
 
 def test_text(sp, f, nargs, which, seed, n, pkg, mod, limit):
-    names = ["a", "b", "c"][:nargs]
+    names = ["a", "b", "c", "d"][:nargs]
     header = (f"import copy\nimport importlib\nimport os\nimport random\nimport unittest\n\nfrom linemeter import BudgetExceeded, LineMeter\nfrom {pkg}.{mod} import {f}\n\n\n"
               f"{sp['oracle']}\n\n{sp['gen']}\n\n")
     if which == "correct":
@@ -864,7 +984,7 @@ def calib_text(sp, f, seed, n, pkg, mod):
             f"m = LineMeter(root)\nwith m:\n    {f}(*args)\nprint('LINES', m.lines)\n")
 
 
-@family("optimize-py-algorithms", category="optimize", lang="python", kind="feature", n=20,
+@family("optimize-py-algorithms", category="optimize", lang="python", kind="feature", n=24,
         summary="brute-force algorithms (range sums, sweeps, union-find, Dijkstra, LIS, DP) that need a better algorithm: a budget on executed lines, not seconds")
 def gen(rng, n):
     keys = list(SHAPES)
@@ -880,7 +1000,7 @@ def gen(rng, n):
         f, argn, doc = rng.choice(vocab)
         used.add((shape, f))
         pkg, mod = rng.choice(PKGS), rng.choice(MODS)
-        names = {"f": f, "doc": doc, "a": argn[0], "b": argn[1] if len(argn) > 1 else "", "c": argn[2] if len(argn) > 2 else ""}
+        names = {"f": f, "doc": doc, "a": argn[0], "b": argn[1] if len(argn) > 1 else "", "c": argn[2] if len(argn) > 2 else "", "d": argn[3] if len(argn) > 3 else ""}
         naive = Template(sp["naive"]).substitute(names)
         fast = Template(sp["fast"]).substitute(names)
         helper = dd('''
@@ -891,7 +1011,7 @@ def gen(rng, n):
         head = f'"""{pkg}: calculations used by the nightly batch jobs."""\n'
         start_src = head + "\n\n" + naive + "\n\n" + helper
         sol_src = head + sp["imports"] + "\n\n" + fast + "\n\n" + helper
-        spec = sp["spec"].format(a=names["a"], b=names["b"], c=names["c"])
+        spec = sp["spec"].format(a=names["a"], b=names["b"], c=names["c"], d=names["d"])
         readme = dd(f'''
         # {pkg}
 

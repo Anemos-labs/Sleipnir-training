@@ -118,7 +118,7 @@ def _compose(dom: Domain, rng: random.Random, k_opt: int):
     return header, ctx, params, stages
 
 
-@family("refactor-py-extract-steps", category="refactor", lang="python", kind="refactor", n=14,
+@family("refactor-py-extract-steps", category="refactor", lang="python", kind="refactor", n=12,
         summary="break a long multi-purpose function into small named steps (whole function, one named helper, or helpers in a new module)")
 def gen(rng, n):
     modes = ["one"] * 3 + ["all"] * 7 + ["split"] * 4

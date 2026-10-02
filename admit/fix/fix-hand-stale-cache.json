@@ -1,0 +1,50 @@
+[
+{
+"id": "fix-hand-stale-cache-01-key-omits-region",
+"ok": true
+},
+{
+"id": "fix-hand-stale-cache-02-ttl-boundary-inclusive",
+"ok": true
+},
+{
+"id": "fix-hand-stale-cache-03-misses-not-cached",
+"ok": true
+},
+{
+"id": "fix-hand-stale-cache-04-import-skips-invalidation",
+"ok": true
+},
+{
+"id": "fix-hand-stale-cache-05-rename-keeps-new-key",
+"ok": true
+},
+{
+"id": "fix-hand-stale-cache-06-import-and-rename-stale",
+"ok": true
+},
+{
+"id": "fix-hand-stale-cache-07-tenant-not-in-key",
+"ok": true
+},
+{
+"id": "fix-hand-stale-cache-08-returns-cached-set",
+"ok": true
+},
+{
+"id": "fix-hand-stale-cache-09-group-events-ignored",
+"ok": true
+},
+{
+"id": "fix-hand-stale-cache-10-removed-user-kept",
+"ok": true
+},
+{
+"id": "fix-hand-stale-cache-11-only-direct-members",
+"ok": true
+},
+{
+"id": "fix-hand-stale-cache-12-move-silent-and-direct-only",
+"ok": true
+}
+]

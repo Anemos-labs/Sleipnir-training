@@ -1,0 +1,38 @@
+[
+{
+"id": "testing-write-java-rules-01-gradebook-8m",
+"ok": true
+},
+{
+"id": "testing-write-java-rules-02-gradebook-10m",
+"ok": true
+},
+{
+"id": "testing-write-java-rules-03-gradebook-4m",
+"ok": true
+},
+{
+"id": "testing-write-java-rules-04-booklet-4m",
+"ok": true
+},
+{
+"id": "testing-write-java-rules-05-booklet-12m",
+"ok": true
+},
+{
+"id": "testing-write-java-rules-06-booklet-7m",
+"ok": true
+},
+{
+"id": "testing-write-java-rules-07-gradebook-10m",
+"ok": true
+},
+{
+"id": "testing-write-java-rules-08-gradebook-8m",
+"ok": true
+},
+{
+"id": "testing-write-java-rules-09-gradebook-5m",
+"ok": true
+}
+]

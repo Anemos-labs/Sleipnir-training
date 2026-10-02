@@ -1,0 +1,22 @@
+[
+{
+"id": "debug-trace-java-01-stockroom-snapshot",
+"ok": true
+},
+{
+"id": "debug-trace-java-02-stockroom-remove",
+"ok": true
+},
+{
+"id": "debug-trace-java-03-stockroom-add",
+"ok": true
+},
+{
+"id": "debug-trace-java-04-stockroom-total",
+"ok": true
+},
+{
+"id": "debug-trace-java-05-stockroom-low",
+"ok": true
+}
+]

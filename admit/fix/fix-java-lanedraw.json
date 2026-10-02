@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-java-lanedraw-01-arith",
+"ok": true
+},
+{
+"id": "fix-java-lanedraw-02-const",
+"ok": true
+},
+{
+"id": "fix-java-lanedraw-03-cmp",
+"ok": true
+},
+{
+"id": "fix-java-lanedraw-04-delete",
+"ok": true
+},
+{
+"id": "fix-java-lanedraw-05-negate",
+"ok": true
+},
+{
+"id": "fix-java-lanedraw-06-const",
+"ok": true
+},
+{
+"id": "fix-java-lanedraw-07-cmp",
+"ok": true
+},
+{
+"id": "fix-java-lanedraw-08-delete",
+"ok": true
+}
+]

@@ -1,0 +1,42 @@
+[
+{
+"id": "optimize-c-algorithms-01-common-count_in_stock",
+"ok": true
+},
+{
+"id": "optimize-c-algorithms-02-common-count_known_plates",
+"ok": true
+},
+{
+"id": "optimize-c-algorithms-03-common-count_replied",
+"ok": true
+},
+{
+"id": "optimize-c-algorithms-04-join-route_line",
+"ok": true
+},
+{
+"id": "optimize-c-algorithms-05-join-csv_row",
+"ok": true
+},
+{
+"id": "optimize-c-algorithms-06-join-join_tags",
+"ok": true
+},
+{
+"id": "optimize-c-algorithms-07-lookup-slot_of_each",
+"ok": true
+},
+{
+"id": "optimize-c-algorithms-08-lookup-column_of_each",
+"ok": true
+},
+{
+"id": "optimize-c-algorithms-09-dedupe-first_seen_codes",
+"ok": true
+},
+{
+"id": "optimize-c-algorithms-10-lookup-rank_positions",
+"ok": true
+}
+]

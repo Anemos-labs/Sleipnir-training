@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-java-loandesk-01-cmp",
+"ok": true
+},
+{
+"id": "fix-java-loandesk-02-const",
+"ok": true
+},
+{
+"id": "fix-java-loandesk-03-arith",
+"ok": true
+},
+{
+"id": "fix-java-loandesk-04-delete",
+"ok": true
+},
+{
+"id": "fix-java-loandesk-05-negate",
+"ok": true
+},
+{
+"id": "fix-java-loandesk-06-cmp",
+"ok": true
+},
+{
+"id": "fix-java-loandesk-07-const",
+"ok": true
+},
+{
+"id": "fix-java-loandesk-08-arith",
+"ok": true
+}
+]

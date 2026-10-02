@@ -433,7 +433,7 @@ def pipe_family(mods: list[Module], rng: random.Random, n: int):
         }}
         gold = {"root_cause_file": m.path, "function": s.func, "kind": bad.kind or "data-corruption", "evidence_lines": [f"{m.path}:{spans[s.name][0]}", f"dumps/{name}:{lo}"], "fix_summary": bad.why}
         stage_no = int(name.split("-")[0])
-        d = max(1, min(5, m.difficulty - 1 + (1 if stage_no >= 4 else 0) + (1 if bad.kind in ("rounding", "timezone") else 0)))
+        d = max(1, min(5, m.difficulty - 2 + (1 if stage_no >= 2 else 0) + (1 if stage_no >= 4 else 0) + (1 if bad.kind in ("rounding", "timezone", "encoding", "stale-cache") else 0)))
         yield Task(
             slug=f"{i:02d}-{m.name.split('-', 1)[-1]}-{s.name}", prompt=pipe_prompt(rng, m, sorted(dumps)), difficulty=d, kind="fix", lang="python", start=files, hidden=hidden_diag(spec),
             solution={"diagnosis.json": json.dumps(gold, indent=1) + "\n"}, verify="python3 _verify/check.py", pass_mode="json-score", protected=sorted(files), timeout_s=60,

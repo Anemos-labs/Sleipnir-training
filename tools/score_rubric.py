@@ -63,9 +63,9 @@ def check_message(checks: dict, text: str) -> dict:
 def find_task(arg: str) -> dict:
     p = Path(arg)
     if p.exists():
-        return json.loads(p.read_text().splitlines()[0])
+        return json.loads(p.read_text(encoding="utf-8").split("\n")[0])
     for f in (ROOT / "corpus").glob("*/*.jsonl"):
-        for line in f.read_text(encoding="utf-8").splitlines():
+        for line in f.read_text(encoding="utf-8").split("\n"):
             if f'"id": "{arg}"' in line:
                 return json.loads(line)
     sys.exit(f"score_rubric: no task {arg!r}")

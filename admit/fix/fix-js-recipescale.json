@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-js-recipescale-01-const",
+"ok": true
+},
+{
+"id": "fix-js-recipescale-02-arith",
+"ok": true
+},
+{
+"id": "fix-js-recipescale-03-delete",
+"ok": true
+},
+{
+"id": "fix-js-recipescale-04-cmp",
+"ok": true
+},
+{
+"id": "fix-js-recipescale-05-const",
+"ok": true
+},
+{
+"id": "fix-js-recipescale-06-arith",
+"ok": true
+},
+{
+"id": "fix-js-recipescale-07-delete",
+"ok": true
+},
+{
+"id": "fix-js-recipescale-08-cmp",
+"ok": true
+}
+]

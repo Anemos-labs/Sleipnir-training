@@ -1,0 +1,74 @@
+[
+{
+"id": "feature-py-pollroom-01-weights",
+"ok": true
+},
+{
+"id": "feature-py-pollroom-02-tiebreak",
+"ok": true
+},
+{
+"id": "feature-py-pollroom-03-shares",
+"ok": true
+},
+{
+"id": "feature-py-pollroom-04-retract-quorum-shares",
+"ok": true
+},
+{
+"id": "feature-py-pollroom-05-quorum",
+"ok": true
+},
+{
+"id": "feature-py-pollroom-06-ranked",
+"ok": true
+},
+{
+"id": "feature-py-pollroom-07-change-vote",
+"ok": true
+},
+{
+"id": "feature-py-pollroom-08-retract-quorum-shares",
+"ok": true
+},
+{
+"id": "feature-py-pollroom-09-change-vote",
+"ok": true
+},
+{
+"id": "feature-py-pollroom-10-shares",
+"ok": true
+},
+{
+"id": "feature-py-pollroom-11-retract",
+"ok": true
+},
+{
+"id": "feature-py-pollroom-12-retract-tiebreak",
+"ok": true
+},
+{
+"id": "feature-py-pollroom-13-ranked",
+"ok": true
+},
+{
+"id": "feature-py-pollroom-14-weights",
+"ok": true
+},
+{
+"id": "feature-py-pollroom-15-retract",
+"ok": true
+},
+{
+"id": "feature-py-pollroom-16-quorum-weights-ranked",
+"ok": true
+},
+{
+"id": "feature-py-pollroom-17-shares",
+"ok": true
+},
+{
+"id": "feature-py-pollroom-18-change-vote",
+"ok": true
+}
+]

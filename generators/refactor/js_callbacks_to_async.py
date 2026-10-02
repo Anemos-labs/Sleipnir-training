@@ -110,7 +110,7 @@ PROMPTS_BOTH = [
 ]
 
 
-@family("refactor-js-callbacks-to-async", category="refactor", lang="javascript", kind="refactor", n=12,
+@family("refactor-js-callbacks-to-async", category="refactor", lang="javascript", kind="refactor", n=10,
         summary="nested node-style callbacks become promise/async code (promise-only or dual callback+promise API)")
 def gen(rng, n):
     flows = list(F.FLOWS) * 4

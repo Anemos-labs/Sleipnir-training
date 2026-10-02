@@ -1,0 +1,58 @@
+[
+{
+"id": "optimize-go-complexity-01-flush-publishevents",
+"ok": true
+},
+{
+"id": "optimize-go-complexity-02-ranges-rangetotals",
+"ok": true
+},
+{
+"id": "optimize-go-complexity-03-many-staffnames",
+"ok": true
+},
+{
+"id": "optimize-go-complexity-04-many-ownernames",
+"ok": true
+},
+{
+"id": "optimize-go-complexity-05-memo-basketvalue",
+"ok": true
+},
+{
+"id": "optimize-go-complexity-06-depth-depths",
+"ok": true
+},
+{
+"id": "optimize-go-complexity-07-less-cheapestid",
+"ok": true
+},
+{
+"id": "optimize-go-complexity-08-less-lightestid",
+"ok": true
+},
+{
+"id": "optimize-go-complexity-09-depth-nestinglevels",
+"ok": true
+},
+{
+"id": "optimize-go-complexity-10-rescan-pricesfor",
+"ok": true
+},
+{
+"id": "optimize-go-complexity-11-many-authornames",
+"ok": true
+},
+{
+"id": "optimize-go-complexity-12-rescan-amountsfor",
+"ok": true
+},
+{
+"id": "optimize-go-complexity-13-depth-depths",
+"ok": true
+},
+{
+"id": "optimize-go-complexity-14-memo-ordertotal",
+"ok": true
+}
+]

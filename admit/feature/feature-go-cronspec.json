@@ -1,0 +1,74 @@
+[
+{
+"id": "feature-go-cronspec-01-last-day",
+"ok": true
+},
+{
+"id": "feature-go-cronspec-02-zone",
+"ok": true
+},
+{
+"id": "feature-go-cronspec-03-steps",
+"ok": true
+},
+{
+"id": "feature-go-cronspec-04-ranges-zone",
+"ok": true
+},
+{
+"id": "feature-go-cronspec-05-aliases",
+"ok": true
+},
+{
+"id": "feature-go-cronspec-06-names",
+"ok": true
+},
+{
+"id": "feature-go-cronspec-07-between",
+"ok": true
+},
+{
+"id": "feature-go-cronspec-08-names-next",
+"ok": true
+},
+{
+"id": "feature-go-cronspec-09-last-day",
+"ok": true
+},
+{
+"id": "feature-go-cronspec-10-steps",
+"ok": true
+},
+{
+"id": "feature-go-cronspec-11-between",
+"ok": true
+},
+{
+"id": "feature-go-cronspec-12-names-zone",
+"ok": true
+},
+{
+"id": "feature-go-cronspec-13-next",
+"ok": true
+},
+{
+"id": "feature-go-cronspec-14-ranges",
+"ok": true
+},
+{
+"id": "feature-go-cronspec-15-zone",
+"ok": true
+},
+{
+"id": "feature-go-cronspec-16-aliases-last-day",
+"ok": true
+},
+{
+"id": "feature-go-cronspec-17-names",
+"ok": true
+},
+{
+"id": "feature-go-cronspec-18-zone",
+"ok": true
+}
+]

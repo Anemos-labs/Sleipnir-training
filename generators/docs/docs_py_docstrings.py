@@ -93,39 +93,9 @@ STATES = {
 }
 
 
-@family("docs-py-docstrings", category="docs", lang="python", kind="feature", n=10,
-        summary="write or repair Google-style docstrings so Args/Returns/Raises match the code (checked via AST); behaviour must stay unchanged")
-def gen(rng, n):
-    mods = list(P.MODULES) * 3
-    rng.shuffle(mods)
-    variants = ["none", "stale", "partial", "none", "stale", "partial", "stale", "none", "partial", "stale"]
-    for i in range(n):
-        mod = mods[i]
-        variant = variants[i % len(variants)]
-        funcs = P.pick(mod, rng, rng.choice([4, 5, 6, 7]))
-        if variant == "none":
-            start_docs = {}
-        elif variant == "stale":
-            start_docs = {f.name: stale_doc(f, rng) for f in funcs}
-        else:
-            start_docs = {f.name: doc_for(f) for f in funcs if rng.random() < 0.5}
-            if len(start_docs) == len(funcs):
-                start_docs.pop(funcs[0].name)
-        start_src = P.source(mod, funcs, start_docs)
-        sol_src = P.source(mod, funcs, {f.name: doc_for(f) for f in funcs}).replace(f'"""{mod.summary}"""', f'"""{mod.summary}"""', 1)
-        path = f"{mod.pkg}/{mod.mod}.py"
-        ns = {}
-        exec(P.source(mod, funcs), ns)
-        vis = [f"import unittest\n\nfrom {mod.pkg}.{mod.mod} import *\n\n\nclass BehaviourTests(unittest.TestCase):\n"]
-        for f in funcs[:3]:
-            ex = f.examples[0]
-            vis.append(f"    def test_{f.name}(self):\n        self.assertEqual({ex}, {eval(ex, dict(ns))!r})\n")
-        vis.append("\nif __name__ == '__main__':\n    unittest.main()\n")
-        start = {path: start_src, f"{mod.pkg}/__init__.py": "", "DOCSTYLE.md": STYLE, "tests/test_behaviour.py": "".join(vis)}
-        import ast
-        tree = ast.parse(P.source(mod, funcs))
-        original = {n.name: ast.dump(n) for n in tree.body if isinstance(n, ast.FunctionDef)}
-        test = dd(f'''
+def style_test(path, original):
+    """Text of the hidden docstring-style test for one module."""
+    return dd(f'''
         import ast
         import unittest
 
@@ -176,7 +146,42 @@ def gen(rng, n):
                         if D.words(text) < 2:
                             problems.append("%s: the description of %s is too short" % (fn.name, name))
                 self.assertFalse(problems, "\\n".join(problems))
-        ''')
+''')
+
+
+@family("docs-py-docstrings", category="docs", lang="python", kind="feature", n=8,
+        summary="write or repair Google-style docstrings so Args/Returns/Raises match the code (checked via AST); behaviour must stay unchanged")
+def gen(rng, n):
+    mods = list(P.MODULES) * 3
+    rng.shuffle(mods)
+    variants = ["none", "stale", "partial", "none", "stale", "partial", "stale", "none", "partial", "stale"]
+    for i in range(n):
+        mod = mods[i]
+        variant = variants[i % len(variants)]
+        funcs = P.pick(mod, rng, rng.choice([4, 5, 6, 7]))
+        if variant == "none":
+            start_docs = {}
+        elif variant == "stale":
+            start_docs = {f.name: stale_doc(f, rng) for f in funcs}
+        else:
+            start_docs = {f.name: doc_for(f) for f in funcs if rng.random() < 0.5}
+            if len(start_docs) == len(funcs):
+                start_docs.pop(funcs[0].name)
+        start_src = P.source(mod, funcs, start_docs)
+        sol_src = P.source(mod, funcs, {f.name: doc_for(f) for f in funcs}).replace(f'"""{mod.summary}"""', f'"""{mod.summary}"""', 1)
+        path = f"{mod.pkg}/{mod.mod}.py"
+        ns = {}
+        exec(P.source(mod, funcs), ns)
+        vis = [f"import unittest\n\nfrom {mod.pkg}.{mod.mod} import *\n\n\nclass BehaviourTests(unittest.TestCase):\n"]
+        for f in funcs[:3]:
+            ex = f.examples[0]
+            vis.append(f"    def test_{f.name}(self):\n        self.assertEqual({ex}, {eval(ex, dict(ns))!r})\n")
+        vis.append("\nif __name__ == '__main__':\n    unittest.main()\n")
+        start = {path: start_src, f"{mod.pkg}/__init__.py": "", "DOCSTYLE.md": STYLE, "tests/test_behaviour.py": "".join(vis)}
+        import ast
+        tree = ast.parse(P.source(mod, funcs))
+        original = {n.name: ast.dump(n) for n in tree.body if isinstance(n, ast.FunctionDef)}
+        test = style_test(path, original)
         hidden = {"tests/docscheck.py": DOCSCHECK, "tests/test_docs_style.py": test}
         solution = {path: sol_src}
         prove_docs(f"{mod.key}-{variant}", start, hidden, solution, CMD, "python3 -m unittest discover -s tests -p 'test_beh*.py'")

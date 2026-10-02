@@ -1,0 +1,26 @@
+[
+{
+"id": "testing-regress-java-01-gradebook-cmp",
+"ok": true
+},
+{
+"id": "testing-regress-java-02-gradebook-const",
+"ok": true
+},
+{
+"id": "testing-regress-java-03-booklet-const",
+"ok": true
+},
+{
+"id": "testing-regress-java-04-booklet-const",
+"ok": true
+},
+{
+"id": "testing-regress-java-05-gradebook-cmp",
+"ok": true
+},
+{
+"id": "testing-regress-java-06-gradebook-cmp",
+"ok": true
+}
+]

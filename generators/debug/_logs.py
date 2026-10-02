@@ -363,7 +363,7 @@ def scn_dst(rng: random.Random, L: Log):
 SCENARIOS = [("bad-host", scn_bad_host, 3), ("bad-release", scn_bad_release, 3), ("leak", scn_leak, 3), ("race", scn_race, 4), ("config-drift", scn_config_drift, 4),
              ("cascade", scn_cascade, 4), ("slow-endpoint", scn_slow_endpoint, 3), ("dst", scn_dst, 3)]
 
-_LEVEL = {"bad-host": 3, "bad-release": 3, "leak": 3, "race": 3, "config-drift": 3, "cascade": 3, "slow-endpoint": 3, "dst": 3}
+_LEVEL = {"bad-host": 2, "bad-release": 3, "leak": 3, "race": 4, "config-drift": 4, "cascade": 5, "slow-endpoint": 3, "dst": 4}
 
 VOICES = [
     "{symptom} The logs of the machines involved are in `logs/`. Work out the root cause. {schema}",

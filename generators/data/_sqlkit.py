@@ -374,8 +374,10 @@ def main():
             joined = " | ".join(p)
             for t in q.get("no_scan", []):
                 for line in p:
-                    if re.match(r"SCAN (TABLE )?" + re.escape(t) + r"( |$)", line) and " USING " not in line:
-                        fail(f"query {q['name']}: full scan of {t} ({line})")
+                    if re.match(r"SCAN (TABLE )?" + re.escape(t) + r"( |$)", line):
+                        fail(f"query {q['name']}: the whole of {t} is scanned ({line}); the plan must be a SEARCH")
+            if "AUTOMATIC" in joined:
+                fail(f"query {q['name']}: SQLite builds a temporary automatic index at run time ({joined}); create a real index instead")
             if q.get("no_sort") and "TEMP B-TREE" in joined:
                 fail(f"query {q['name']}: still sorts with a temporary b-tree ({joined})")
             if q.get("covering") and "COVERING INDEX" not in joined:

@@ -237,7 +237,7 @@ PROMPTS = [
 ]
 
 
-@family("docs-changelog", category="docs", lang="text", kind="feature", n=8,
+@family("docs-changelog", category="docs", lang="text", kind="feature", n=6,
         summary="write a CHANGELOG entry from a conventional-commit list following a stated format (bump, sections, reverts, breaking migration lines, links)")
 def gen(rng, n):
     for i in range(n):

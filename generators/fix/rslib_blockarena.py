@@ -484,6 +484,21 @@ HIDDEN = dd('''
         assert_eq!(a.stats(), st(360, 664, 472, 14, 2));
         assert_eq!(a.fragmentation(), 290);
     }
+
+    #[test]
+    fn requests_near_usize_max() {
+        let mut a = Arena::new(64).unwrap();
+        assert_eq!(a.alloc(usize::MAX, 8), Err(ArenaError::OutOfMemory));
+        assert_eq!(a.alloc(usize::MAX - 7, 8), Err(ArenaError::OutOfMemory));
+        assert_eq!(a.alloc(8, 8), Ok(0));
+        // the only free block starts at 8: 8 + (usize::MAX - 7) does not fit in a usize
+        assert_eq!(a.alloc(usize::MAX - 7, 8), Err(ArenaError::OutOfMemory));
+        assert_eq!(a.alloc(usize::MAX - 15, 16), Err(ArenaError::OutOfMemory));
+        assert_eq!(a.alloc(8, 1 << 63), Err(ArenaError::OutOfMemory));
+        let s = a.stats();
+        assert_eq!((s.used, s.free, s.blocks), (8, 56, 2));
+        assert_eq!(a.check(), Ok(()));
+    }
 ''')
 
 LIB = Lib(

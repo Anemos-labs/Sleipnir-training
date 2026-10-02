@@ -24,11 +24,11 @@
 "ok": true
 },
 {
-"id": "fix-js-wherekit-07-const",
+"id": "fix-js-wherekit-07-cmp",
 "ok": true
 },
 {
-"id": "fix-js-wherekit-08-cmp",
+"id": "fix-js-wherekit-08-delete",
 "ok": true
 }
 ]

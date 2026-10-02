@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-java-markbook-01-delete",
+"ok": true
+},
+{
+"id": "fix-java-markbook-02-const",
+"ok": true
+},
+{
+"id": "fix-java-markbook-03-arith",
+"ok": true
+},
+{
+"id": "fix-java-markbook-04-cmp",
+"ok": true
+},
+{
+"id": "fix-java-markbook-05-delete",
+"ok": true
+},
+{
+"id": "fix-java-markbook-06-const",
+"ok": true
+},
+{
+"id": "fix-java-markbook-07-cmp",
+"ok": true
+},
+{
+"id": "fix-java-markbook-08-const",
+"ok": true
+}
+]

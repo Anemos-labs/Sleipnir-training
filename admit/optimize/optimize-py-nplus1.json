@@ -34,17 +34,5 @@
 {
 "id": "optimize-py-nplus1-09-counts-route",
 "ok": true
-},
-{
-"id": "optimize-py-nplus1-10-counts-playlist",
-"ok": true
-},
-{
-"id": "optimize-py-nplus1-11-import-author",
-"ok": true
-},
-{
-"id": "optimize-py-nplus1-12-missing-project",
-"ok": true
 }
 ]

@@ -1,0 +1,92 @@
+[
+{
+"id": "feature-rs-wrapkit-01-first-indent",
+"ok": false,
+"reason": "verifier fails with the reference solution applied: exit status 101\n...is `mut`\n\n\nrunning 0 tests\n\ntest result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n\nrunning 3 tests\n...\ntest result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s\n\n\nrunning 6 tests\nbase_long_words_and_errors --- FAILED\n.....\nfailures:\n\n---- base_long_words_and_errors stdout ----\n\nthread 'base_long_words_and_errors' (23579) panicked at tests/features.rs:30:5:\nassertion `left == right` failed\n  left: [\"verylongword\", \"b\"]\n right: [\"verylongword b\"]\nnot"
+},
+{
+"id": "feature-rs-wrapkit-02-indent",
+"ok": false,
+"reason": "verifier fails with the reference solution applied: exit status 101\n... `mut`\n\n\nrunning 0 tests\n\ntest result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n\nrunning 2 tests\n..\ntest result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s\n\n\nrunning 4 tests\n.. 2/4\nbase_long_words_and_errors --- FAILED\n.\nfailures:\n\n---- base_long_words_and_errors stdout ----\n\nthread 'base_long_words_and_errors' (23452) panicked at tests/features.rs:30:5:\nassertion `left == right` failed\n  left: [\"verylongword\", \"b\"]\n right: [\"verylongword b\"]\nnot"
+},
+{
+"id": "feature-rs-wrapkit-03-break-long",
+"ok": false,
+"reason": "verifier fails with the reference solution applied: exit status 101\n...t: [\"lots of\", \"space\"]\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n\n---- base_long_words_and_errors stdout ----\n\nthread 'base_long_words_and_errors' (24775) panicked at tests/features.rs:30:5:\nassertion `left == right` failed\n  left: [\"verylongword\", \"b\"]\n right: [\"verylongword b\"]\n\n---- wrapping_by_columns stdout ----\n\nthread 'wrapping_by_columns' (24804) panicked at tests/features.rs:157:5:\nassertion `left == right` failed\n  left: [\"e\\u{301}e\\u{301}e\\u{301}e\\u{301}\", \"x\"]\n right: [\"e\\u{3"
+},
+{
+"id": "feature-rs-wrapkit-04-prefix-paragraphs-unicode-width",
+"ok": false,
+"reason": "verifier fails with the reference solution applied: exit status 101\n...:30:5:\nassertion `left == right` failed\n  left: [\"verylongword\", \"b\"]\n right: [\"verylongword b\"]\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n\n---- base_wrapping stdout ----\n\nthread 'base_wrapping' (25145) panicked at tests/features.rs:20:5:\nassertion `left == right` failed\n  left: [\"lots of\", \"\", \"space\"]\n right: [\"lots of\", \"space\"]\n\n---- wrapping_by_columns stdout ----\n\nthread 'wrapping_by_columns' (25167) panicked at tests/features.rs:140:5:\nassertion `left == right` failed\n  left: [\"e\\u"
+},
+{
+"id": "feature-rs-wrapkit-05-paragraphs",
+"ok": false,
+"reason": "verifier fails with the reference solution applied: exit status 101\n...rylongword\", \"b\"]\n right: [\"verylongword b\"]\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n\n---- base_wrapping stdout ----\n\nthread 'base_wrapping' (26555) panicked at tests/features.rs:20:5:\nassertion `left == right` failed\n  left: [\"lots of\", \"\", \"space\"]\n right: [\"lots of\", \"space\"]\n\n---- wrapping_by_columns stdout ----\n\nthread 'wrapping_by_columns' (26584) panicked at tests/features.rs:157:5:\nassertion `left == right` failed\n  left: [\"e\\u{301}e\\u{301}e\\u{301}e\\u{301}\", \"x\"]\n right: [\"e\\u{3"
+},
+{
+"id": "feature-rs-wrapkit-06-unicode-width",
+"ok": false,
+"reason": "verifier fails with the reference solution applied: exit status 101\n...ong_words_and_errors --- FAILED\n.\nfailures:\n\n---- wrapping_by_columns stdout ----\n\nthread 'wrapping_by_columns' (26424) panicked at tests/features.rs:77:5:\nassertion `left == right` failed\n  left: [\"e\\u{301}e\\u{301}e\\u{301}e\\u{301}\", \"x\"]\n right: [\"e\\u{301}e\\u{301}e\\u{301}e\\u{301} x\"]\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n\n---- base_long_words_and_errors stdout ----\n\nthread 'base_long_words_and_errors' (26418) panicked at tests/features.rs:30:5:\nassertion `left == right` failed\n  left"
+},
+{
+"id": "feature-rs-wrapkit-07-justify",
+"ok": false,
+"reason": "verifier fails with the reference solution applied: exit status 101\n... by default\n\n\nrunning 0 tests\n\ntest result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n\nrunning 2 tests\n..\ntest result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n\nrunning 4 tests\nbase_long_words_and_errors --- FAILED\n...\nfailures:\n\n---- base_long_words_and_errors stdout ----\n\nthread 'base_long_words_and_errors' (27750) panicked at tests/features.rs:30:5:\nassertion `left == right` failed\n  left: [\"verylongword\", \"b\"]\n right: [\"verylongword b\"]\nnot"
+},
+{
+"id": "feature-rs-wrapkit-08-prefix-unicode-width-balance",
+"ok": false,
+"reason": "verifier fails with the reference solution applied: exit status 101\n...long_words_and_errors --- FAILED\n\nfailures:\n\n---- wrapping_by_columns stdout ----\n\nthread 'wrapping_by_columns' (27780) panicked at tests/features.rs:75:5:\nassertion `left == right` failed\n  left: [\"e\\u{301}e\\u{301}e\\u{301}e\\u{301}\", \"x\"]\n right: [\"e\\u{301}e\\u{301}e\\u{301}e\\u{301} x\"]\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n\n---- base_long_words_and_errors stdout ----\n\nthread 'base_long_words_and_errors' (27774) panicked at tests/features.rs:30:5:\nassertion `left == right` failed\n  left"
+},
+{
+"id": "feature-rs-wrapkit-09-unicode-width",
+"ok": false,
+"reason": "verifier fails with the reference solution applied: exit status 101\n...rylongword\", \"b\"]\n right: [\"verylongword b\"]\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n\n---- base_wrapping stdout ----\n\nthread 'base_wrapping' (29198) panicked at tests/features.rs:20:5:\nassertion `left == right` failed\n  left: [\"lots of\", \"\", \"space\"]\n right: [\"lots of\", \"space\"]\n\n---- wrapping_by_columns stdout ----\n\nthread 'wrapping_by_columns' (29226) panicked at tests/features.rs:157:5:\nassertion `left == right` failed\n  left: [\"e\\u{301}e\\u{301}e\\u{301}e\\u{301}\", \"x\"]\n right: [\"e\\u{3"
+},
+{
+"id": "feature-rs-wrapkit-10-balance",
+"ok": false,
+"reason": "verifier fails with the reference solution applied: exit status 101\n...efault\n\n\nrunning 0 tests\n\ntest result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n\nrunning 2 tests\n..\ntest result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n\nrunning 4 tests\n.. 2/4\nbase_long_words_and_errors --- FAILED\n.\nfailures:\n\n---- base_long_words_and_errors stdout ----\n\nthread 'base_long_words_and_errors' (28859) panicked at tests/features.rs:30:5:\nassertion `left == right` failed\n  left: [\"verylongword\", \"b\"]\n right: [\"verylongword b\"]\nnot"
+},
+{
+"id": "feature-rs-wrapkit-11-break-long",
+"ok": false,
+"reason": "verifier fails with the reference solution applied: exit status 101\n... by default\n\n\nrunning 0 tests\n\ntest result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n\nrunning 2 tests\n..\ntest result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n\nrunning 4 tests\nbase_long_words_and_errors --- FAILED\n...\nfailures:\n\n---- base_long_words_and_errors stdout ----\n\nthread 'base_long_words_and_errors' (30358) panicked at tests/features.rs:30:5:\nassertion `left == right` failed\n  left: [\"verylongword\", \"b\"]\n right: [\"verylongword b\"]\nnot"
+},
+{
+"id": "feature-rs-wrapkit-12-indent-paragraphs-unicode-width",
+"ok": false,
+"reason": "verifier fails with the reference solution applied: exit status 101\n...t: [\"lots of\", \"space\"]\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n\n---- base_long_words_and_errors stdout ----\n\nthread 'base_long_words_and_errors' (30913) panicked at tests/features.rs:30:5:\nassertion `left == right` failed\n  left: [\"verylongword\", \"b\"]\n right: [\"verylongword b\"]\n\n---- wrapping_by_columns stdout ----\n\nthread 'wrapping_by_columns' (30940) panicked at tests/features.rs:142:5:\nassertion `left == right` failed\n  left: [\"e\\u{301}e\\u{301}e\\u{301}e\\u{301}\", \"x\"]\n right: [\"e\\u{3"
+},
+{
+"id": "feature-rs-wrapkit-13-prefix",
+"ok": false,
+"reason": "verifier fails with the reference solution applied: exit status 101\n... 0 tests\n\ntest result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n\nrunning 6 tests\n......\ntest result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\nerror: test failed, to rerun pass `--test features`\n\nrunning 19 tests\nbase_long_words_and_errors --- FAILED\n..................\nfailures:\n\n---- base_long_words_and_errors stdout ----\n\nthread 'base_long_words_and_errors' (31957) panicked at tests/features.rs:30:5:\nassertion `left == right` failed\n  left: ["
+},
+{
+"id": "feature-rs-wrapkit-14-first-indent",
+"ok": false,
+"reason": "verifier fails with the reference solution applied: exit status 101\n...right` failed\n  left: [\"lots of\", \"\", \"space\"]\n right: [\"lots of\", \"space\"]\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n\n---- base_long_words_and_errors stdout ----\n\nthread 'base_long_words_and_errors' (32737) panicked at tests/features.rs:30:5:\nassertion `left == right` failed\n  left: [\"verylongword\", \"b\"]\n right: [\"verylongword b\"]\n\n---- wrapping_by_columns stdout ----\n\nthread 'wrapping_by_columns' (32766) panicked at tests/features.rs:157:5:\nassertion `left == right` failed\n  left: [\"e\\u"
+},
+{
+"id": "feature-rs-wrapkit-15-indent",
+"ok": false,
+"reason": "verifier fails with the reference solution applied: exit status 101\n...is `mut`\n\n\nrunning 0 tests\n\ntest result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n\nrunning 2 tests\n..\ntest result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s\n\n\nrunning 4 tests\n.. 2/4\nbase_long_words_and_errors --- FAILED\n.\nfailures:\n\n---- base_long_words_and_errors stdout ----\n\nthread 'base_long_words_and_errors' (782) panicked at tests/features.rs:30:5:\nassertion `left == right` failed\n  left: [\"verylongword\", \"b\"]\n right: [\"verylongword b\"]\nnot"
+},
+{
+"id": "feature-rs-wrapkit-16-paragraphs-justify",
+"ok": false,
+"reason": "verifier fails with the reference solution applied: exit status 101\n...g 10 tests\nbase_wrapping --- FAILED\n........ 9/10\nbase_long_words_and_errors --- FAILED\n\nfailures:\n\n---- base_wrapping stdout ----\n\nthread 'base_wrapping' (1495) panicked at tests/features.rs:20:5:\nassertion `left == right` failed\n  left: [\"lots of\", \"\", \"space\"]\n right: [\"lots of\", \"space\"]\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n\n---- base_long_words_and_errors stdout ----\n\nthread 'base_long_words_and_errors' (1494) panicked at tests/features.rs:30:5:\nassertion `left == right` failed\n"
+},
+{
+"id": "feature-rs-wrapkit-17-balance",
+"ok": false,
+"reason": "verifier fails with the reference solution applied: exit status 101\n...verylongword\", \"b\"]\n right: [\"verylongword b\"]\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n\n---- base_wrapping stdout ----\n\nthread 'base_wrapping' (2022) panicked at tests/features.rs:20:5:\nassertion `left == right` failed\n  left: [\"lots of\", \"\", \"space\"]\n right: [\"lots of\", \"space\"]\n\n---- wrapping_by_columns stdout ----\n\nthread 'wrapping_by_columns' (2043) panicked at tests/features.rs:140:5:\nassertion `left == right` failed\n  left: [\"e\\u{301}e\\u{301}e\\u{301}e\\u{301}\", \"x\"]\n right: [\"e\\u{3"
+},
+{
+"id": "feature-rs-wrapkit-18-paragraphs",
+"ok": false,
+"reason": "verifier fails with the reference solution applied: exit status 101\n...rs:30:5:\nassertion `left == right` failed\n  left: [\"verylongword\", \"b\"]\n right: [\"verylongword b\"]\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n\n---- base_wrapping stdout ----\n\nthread 'base_wrapping' (4140) panicked at tests/features.rs:20:5:\nassertion `left == right` failed\n  left: [\"lots of\", \"\", \"space\"]\n right: [\"lots of\", \"space\"]\n\n---- wrapping_by_columns stdout ----\n\nthread 'wrapping_by_columns' (4150) panicked at tests/features.rs:109:5:\nassertion `left == right` failed\n  left: [\"e\\u"
+}
+]

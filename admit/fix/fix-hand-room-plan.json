@@ -1,0 +1,78 @@
+[
+{
+"id": "fix-hand-room-plan-01-touching-slots-count-as-overlapping",
+"ok": true
+},
+{
+"id": "fix-hand-room-plan-02-speaker-names-compared-case-sensitively",
+"ok": true
+},
+{
+"id": "fix-hand-room-plan-03-registered-equal-to-the-seats-is-refused",
+"ok": true
+},
+{
+"id": "fix-hand-room-plan-04-at-includes-the-end-minute",
+"ok": true
+},
+{
+"id": "fix-hand-room-plan-05-same-start-sessions-ignore-the-room-order",
+"ok": true
+},
+{
+"id": "fix-hand-room-plan-06-fill-computed-with-integer-division",
+"ok": true
+},
+{
+"id": "fix-hand-room-plan-07-speaker-double-booking-is-not-detected",
+"ok": true
+},
+{
+"id": "fix-hand-room-plan-08-move-conflicts-with-itself",
+"ok": true
+},
+{
+"id": "fix-hand-room-plan-09-move-changes-before-checking",
+"ok": true
+},
+{
+"id": "fix-hand-room-plan-10-remove-takes-a-position",
+"ok": true
+},
+{
+"id": "fix-hand-room-plan-11-copy-shares-the-session-list",
+"ok": true
+},
+{
+"id": "fix-hand-room-plan-12-fill-uses-the-default-locale",
+"ok": true
+},
+{
+"id": "fix-hand-room-plan-13-fields-with-commas-are-not-quoted",
+"ok": true
+},
+{
+"id": "fix-hand-room-plan-14-import-drops-an-empty-last-field",
+"ok": true
+},
+{
+"id": "fix-hand-room-plan-15-import-loses-doubled-quotes",
+"ok": true
+},
+{
+"id": "fix-hand-room-plan-16-committee-review",
+"ok": true
+},
+{
+"id": "fix-hand-room-plan-17-csv-round-trip-review",
+"ok": true
+},
+{
+"id": "fix-hand-room-plan-18-go-live-checklist",
+"ok": true
+},
+{
+"id": "fix-hand-room-plan-19-what-if-planning-review",
+"ok": true
+}
+]

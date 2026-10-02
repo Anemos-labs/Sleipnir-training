@@ -12,7 +12,7 @@ README = dd('''
     `Block{Addr uint32; Bits int}`: the block of `2^(32-Bits)` addresses that starts at `Addr`, whose host bits are zero. `Bits` is 0..32.
     * `ParseBlock(s string) (Block, error)`: `a.b.c.d/n`, or a bare `a.b.c.d` meaning `/32`. Each octet is 0..255 written without leading zeros (`0` alone is fine); the
       prefix is written without leading zeros either. Errors: `ErrSyntax` for anything malformed (wrong number of octets, non-digits, octet above 255, leading zeros,
-      empty parts, whitespace), `ErrPrefix` for a prefix above 32, `ErrHostBits` when the address has bits set below the prefix (`10.0.0.1/24`). Syntax is
+      empty parts, whitespace), `ErrPrefix` for a prefix above 32 (however many digits it has), `ErrHostBits` when the address has bits set below the prefix (`10.0.0.1/24`). Syntax is
       checked before prefix range, prefix range before host bits.
     * `(Block) String() string` is `a.b.c.d/n` (always with the prefix, `/32` included).
     * `Size() uint64` number of addresses; `First()` and `Last() uint32` the first and last address; `Contains(addr uint32) bool`;
@@ -102,14 +102,19 @@ SRC = gosrc(dd(r'''
             if digits == "" || (len(digits) > 1 && digits[0] == '0') {
                 return Block{}, ErrSyntax
             }
-            n, err := strconv.ParseUint(digits, 10, 32)
-            if err != nil || strings.ContainsAny(digits, "+-") {
-                return Block{}, ErrSyntax
+            for i := 0; i < len(digits); i++ {
+                if digits[i] < '0' || digits[i] > '9' {
+                    return Block{}, ErrSyntax
+                }
             }
+            if len(digits) > 2 {
+                return Block{}, ErrPrefix
+            }
+            n, _ := strconv.Atoi(digits)
             if n > 32 {
                 return Block{}, ErrPrefix
             }
-            bits = int(n)
+            bits = n
         }
         b := Block{addr, bits}
         if addr&^b.mask() != 0 {
@@ -327,14 +332,14 @@ HIDDEN = gosrc(dd(r'''
         syntax := []string{
             "", "10.0.0", "10.0.0.0.0", "10.0.0.256/24", "10.0.0.-1", "10.0.0.a/8", "10.0.0.00/8", "10.00.0.0/8", "010.0.0.0/8", "10..0.0/8", ".10.0.0.0",
             "10.0.0.0/", "10.0.0.0/08", "10.0.0.0/a", "10.0.0.0/-1", "10.0.0.0/+8", " 10.0.0.0/8", "10.0.0.0/8 ", "10.0.0.0/8/8", "10.0.0.0 /8", "10.0.0.0/ 8",
-            "10.0.0.0/999999999999", "1.2.3.4.", "0x10.0.0.0/8", "10.0.0.0/8.0", "10,0,0,0/8", "1000.0.0.0/8", "256.0.0.0",
+            "1.2.3.4.", "0x10.0.0.0/8", "10.0.0.0/8.0", "10,0,0,0/8", "1000.0.0.0/8", "256.0.0.0",
         }
         for _, s := range syntax {
             if b, err := ParseBlock(s); !errors.Is(err, ErrSyntax) {
                 t.Errorf("ParseBlock(%q) = %+v, %v; want ErrSyntax", s, b, err)
             }
         }
-        for _, s := range []string{"10.0.0.0/33", "10.0.0.0/64", "10.0.0.0/100", "1.1.1.1/33"} {
+        for _, s := range []string{"10.0.0.0/33", "10.0.0.0/64", "10.0.0.0/100", "1.1.1.1/33", "10.0.0.0/99", "10.0.0.0/4294967296", "10.0.0.0/999999999999", "10.0.0.0/99999999999999999999999"} {
             if _, err := ParseBlock(s); !errors.Is(err, ErrPrefix) {
                 t.Errorf("ParseBlock(%q): %v; want ErrPrefix", s, err)
             }

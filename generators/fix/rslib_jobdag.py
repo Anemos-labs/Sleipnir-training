@@ -712,6 +712,18 @@ HIDDEN = dd('''
     }
 
     #[test]
+    fn schedule_priority_counts_every_dependent() {
+        // "b" is the first job added and depends on a job added after it
+        let p = plan("b:5<a a:1 c:3");
+        let s = p.schedule(1).unwrap();
+        assert_eq!(sched_str(&s), "a@0:0-1 b@0:1-6 c@0:6-9");
+        assert_eq!((s.makespan, s.utilisation_permille()), (9, 1000));
+        let s = p.schedule(2).unwrap();
+        assert_eq!(sched_str(&s), "a@0:0-1 c@1:0-3 b@0:1-6");
+        assert_eq!((s.makespan, s.utilisation_permille()), (6, 750));
+    }
+
+    #[test]
     fn empty_plan() {
         let p = Plan::new();
         assert!(p.order().unwrap().is_empty());
