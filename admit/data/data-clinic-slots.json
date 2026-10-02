@@ -1,0 +1,54 @@
+[
+{
+"id": "data-clinic-slots-01-doctors-per-specialty",
+"ok": true
+},
+{
+"id": "data-clinic-slots-02-free-slots-next-week",
+"ok": true
+},
+{
+"id": "data-clinic-slots-03-no-show-rate",
+"ok": true
+},
+{
+"id": "data-clinic-slots-04-double-booked",
+"ok": true
+},
+{
+"id": "data-clinic-slots-05-overlapping-slots",
+"ok": true
+},
+{
+"id": "data-clinic-slots-06-repeat-no-shows",
+"ok": true
+},
+{
+"id": "data-clinic-slots-07-idle-gaps",
+"ok": true
+},
+{
+"id": "data-clinic-slots-08-waitlist-matches",
+"ok": true
+},
+{
+"id": "data-clinic-slots-09-weekly-utilisation",
+"ok": true
+},
+{
+"id": "data-clinic-slots-10-age-groups",
+"ok": true
+},
+{
+"id": "data-clinic-slots-11-cancelled-then-rebooked",
+"ok": true
+},
+{
+"id": "data-clinic-slots-12-busiest-start-hour",
+"ok": true
+},
+{
+"id": "data-clinic-slots-13-fix-free-slot-count",
+"ok": true
+}
+]

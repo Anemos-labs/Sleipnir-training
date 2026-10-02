@@ -168,35 +168,36 @@ STOCKROOM_SYMBOLS = {
 # ---------------------------------------------------------------------------------------------------------------------
 LIBDESK = {
     "libdesk/__init__.py": "",
-    "libdesk/isbn.py": '''"""ISBN-10 helpers."""
+    "libdesk/shelfcode.py": '''"""Shelf codes: nine digits plus a check digit (weights 3, 1, 2 repeating, modulo 7)."""
+
+WEIGHTS = (3, 1, 2)
 
 
 def normalize(text):
-    """Strip hyphens and spaces; a trailing x becomes X."""
-    return "".join(ch for ch in text if ch not in "- ").upper()
+    """Strip dashes and spaces."""
+    return "".join(ch for ch in text if ch not in "- ")
 
 
 def check_digit(body):
-    """Check digit for the first nine digits of an ISBN-10."""
-    total = sum((10 - i) * int(ch) for i, ch in enumerate(body[:9]))
-    value = (11 - total % 11) % 11
-    return "X" if value == 10 else str(value)
+    """Check digit for the first nine digits of a shelf code."""
+    total = sum(WEIGHTS[i % 3] * int(ch) for i, ch in enumerate(body[:9]))
+    return str(total % 7)
 
 
 def is_valid(text):
-    """True for a well-formed ISBN-10 with the right check digit."""
+    """True for ten digits whose last one is the right check digit."""
     code = normalize(text)
-    return len(code) == 10 and code[:9].isdigit() and check_digit(code[:9]) == code[9]
+    return len(code) == 10 and code.isdigit() and check_digit(code[:9]) == code[9]
 ''',
     "libdesk/catalog.py": '''"""The book catalogue."""
-from . import isbn
+from . import shelfcode
 
 
 class Book:
     """A title with a number of copies on the shelf."""
 
     def __init__(self, code, title, copies=1):
-        self.code = isbn.normalize(code)
+        self.code = shelfcode.normalize(code)
         self.title = title
         self.copies = copies
 
@@ -206,7 +207,7 @@ class Book:
 
 def find_book(books, code):
     """The book with this code (any formatting), or None."""
-    code = isbn.normalize(code)
+    code = shelfcode.normalize(code)
     for book in books:
         if book.code == code:
             return book
@@ -259,7 +260,7 @@ def calc_fine(record, today, waive=False):
     return min(1000, 25 * record.days_late(today))
 ''',
     "libdesk/desk.py": '''"""Front desk operations."""
-from . import isbn
+from . import shelfcode
 from .catalog import find_book
 from .fines import calc_fine
 from .loans import LoanRecord, lend
@@ -267,7 +268,7 @@ from .loans import LoanRecord, lend
 
 def checkout(books, code, member, start):
     """Lend the book with this code; raises KeyError for unknown or malformed codes."""
-    if not isbn.is_valid(code):
+    if not shelfcode.is_valid(code):
         raise KeyError(code)
     book = find_book(books, code)
     if book is None:
@@ -291,7 +292,7 @@ def close_account(records, today, waive_all=False):
 
 LIBDESK_HARNESS = '''from datetime import date
 
-from libdesk import catalog, desk, fines, isbn, loans
+from libdesk import catalog, desk, fines, shelfcode, loans
 
 
 def run_case(case):
@@ -300,8 +301,8 @@ def run_case(case):
     today = date(*case["today"])
     records = [desk.checkout(books, code, member, start) for code, member in case["loans"]]
     return {
-        "valid": [isbn.is_valid(b[0]) for b in case["books"]],
-        "digit": isbn.check_digit(case["body"]),
+        "valid": [shelfcode.is_valid(b[0]) for b in case["books"]],
+        "digit": shelfcode.check_digit(case["body"]),
         "late": [r.days_late(today) for r in records],
         "fines": [fines.calc_fine(r, today) for r in records],
         "waived": [fines.calc_fine(r, today, waive=True) for r in records],
@@ -313,10 +314,9 @@ def run_case(case):
 '''
 
 
-def _isbn_with_digit(body):
-    total = sum((10 - i) * int(ch) for i, ch in enumerate(body))
-    value = (11 - total % 11) % 11
-    return body + ("X" if value == 10 else str(value))
+def _shelf_code(body):
+    total = sum((3, 1, 2)[i % 3] * int(ch) for i, ch in enumerate(body))
+    return body + str(total % 7)
 
 
 def libdesk_cases(rng, n):
@@ -325,7 +325,7 @@ def libdesk_cases(rng, n):
         books = []
         for j in range(rng.randint(1, 3)):
             body = "".join(str(rng.randint(0, 9)) for _ in range(9))
-            code = _isbn_with_digit(body)
+            code = _shelf_code(body)
             if rng.random() < 0.15:
                 code = code[:-1] + ("0" if code[-1] != "0" else "1")
             books.append([code[:1] + "-" + code[1:4] + "-" + code[4:] if rng.random() < 0.5 else code, rng.choice(["Dune", "Emma", "Ulysses", "Kim", "Walden"]), rng.randint(1, 3)])
@@ -341,17 +341,17 @@ def libdesk_cases(rng, n):
 LIBDESK_SYMBOLS = {
     "function": dict(old="calc_fine", news=["late_fee", "fine_for"], home="libdesk/fines.py", noun="the function",
                      probe='from datetime import date\nfrom libdesk.catalog import Book\nfrom libdesk.loans import lend\nfrom libdesk.fines import calc_fine\n'
-                           'rec = lend(Book("0306406152", "T", 1), "m", date(2024, 1, 1))\ncalc_fine(rec, date(2024, 3, 1))'),
+                           'rec = lend(Book("0306406155", "T", 1), "m", date(2024, 1, 1))\ncalc_fine(rec, date(2024, 3, 1))'),
     "class": dict(old="LoanRecord", news=["Loan", "Checkout"], home="libdesk/loans.py", noun="the class",
-                  probe='from datetime import date\nfrom libdesk.catalog import Book\nfrom libdesk.loans import LoanRecord\nLoanRecord(Book("0306406152", "T", 1), "m", date(2024, 1, 1))'),
+                  probe='from datetime import date\nfrom libdesk.catalog import Book\nfrom libdesk.loans import LoanRecord\nLoanRecord(Book("0306406155", "T", 1), "m", date(2024, 1, 1))'),
     "method": dict(old="days_late", news=["overdue_days", "days_overdue"], home="libdesk/loans.py", cls="LoanRecord", noun="the method",
                    probe='from datetime import date\nfrom libdesk.catalog import Book\nfrom libdesk.loans import lend\n'
-                         'lend(Book("0306406152", "T", 1), "m", date(2024, 1, 1)).days_late(date(2024, 3, 1))'),
-    "module": dict(old="isbn", news=["barcode", "identifiers"], home="libdesk/isbn.py", noun="the module",
-                   probe='import libdesk.isbn as m\nm.normalize("0-306-40615-2")'),
+                         'lend(Book("0306406155", "T", 1), "m", date(2024, 1, 1)).days_late(date(2024, 3, 1))'),
+    "module": dict(old="shelfcode", news=["labelcodes", "stockmarks"], home="libdesk/shelfcode.py", noun="the module",
+                   probe='import libdesk.shelfcode as m\nm.normalize("0-306-40615-5")'),
     "param": dict(old="waive", news=["excused", "forgive"], home="libdesk/fines.py", fn="calc_fine", noun="the keyword argument",
                   probe='from datetime import date\nfrom libdesk.catalog import Book\nfrom libdesk.loans import lend\nfrom libdesk.fines import calc_fine\n'
-                        'rec = lend(Book("0306406152", "T", 1), "m", date(2024, 1, 1))\ncalc_fine(rec, date(2024, 3, 1), waive=True)'),
+                        'rec = lend(Book("0306406155", "T", 1), "m", date(2024, 1, 1))\ncalc_fine(rec, date(2024, 3, 1), waive=True)'),
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

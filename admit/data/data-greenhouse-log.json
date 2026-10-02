@@ -1,0 +1,54 @@
+[
+{
+"id": "data-greenhouse-log-01-zones-by-crop",
+"ok": true
+},
+{
+"id": "data-greenhouse-log-02-water-per-zone",
+"ok": true
+},
+{
+"id": "data-greenhouse-log-03-valves-left-open",
+"ok": true
+},
+{
+"id": "data-greenhouse-log-04-dry-share",
+"ok": true
+},
+{
+"id": "data-greenhouse-log-05-longest-dry-spell",
+"ok": true
+},
+{
+"id": "data-greenhouse-log-06-moisture-response",
+"ok": true
+},
+{
+"id": "data-greenhouse-log-07-overlapping-events",
+"ok": true
+},
+{
+"id": "data-greenhouse-log-08-top-zone-per-day",
+"ok": true
+},
+{
+"id": "data-greenhouse-log-09-alert-durations",
+"ok": true
+},
+{
+"id": "data-greenhouse-log-10-leak-suspects",
+"ok": true
+},
+{
+"id": "data-greenhouse-log-11-hottest-hour",
+"ok": true
+},
+{
+"id": "data-greenhouse-log-12-back-to-back-waterings",
+"ok": true
+},
+{
+"id": "data-greenhouse-log-13-fix-litres-per-zone",
+"ok": true
+}
+]

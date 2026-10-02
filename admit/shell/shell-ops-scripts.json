@@ -1,0 +1,22 @@
+[
+{
+"id": "shell-ops-scripts-01-atomic-release-switch",
+"ok": true
+},
+{
+"id": "shell-ops-scripts-02-dotenv-layers-with-references",
+"ok": true
+},
+{
+"id": "shell-ops-scripts-03-semantic-version-sort",
+"ok": true
+},
+{
+"id": "shell-ops-scripts-04-symlink-farm",
+"ok": true
+},
+{
+"id": "shell-ops-scripts-05-resumable-batch-runner",
+"ok": true
+}
+]

@@ -1,49 +1,49 @@
 # Corpus statistics
 
-**6722 tasks** in **662 families** across **20 categories**; 5701 fixtures, 892 answer-mode, 129 rubric; 152 for a swarm.
+**7650 tasks** in **764 families** across **20 categories**; 6629 fixtures, 892 answer-mode, 129 rubric; 152 for a swarm.
 
 ### By category and difficulty
 
 | category | tasks | d1 | d2 | d3 | d4 | d5 | families |
 |---|---|---|---|---|---|---|---|
-| fix | 2414 | 282 | 547 | 790 | 595 | 200 | 250 |
-| feature | 368 | 42 | 89 | 108 | 74 | 55 | 22 |
-| greenfield | 226 | 33 | 55 | 71 | 47 | 20 | 22 |
+| fix | 2455 | 315 | 599 | 792 | 554 | 195 | 253 |
+| feature | 530 | 72 | 124 | 140 | 102 | 92 | 31 |
+| greenfield | 258 | 40 | 63 | 78 | 53 | 24 | 26 |
 | games | 335 | 63 | 66 | 122 | 63 | 21 | 39 |
-| refactor | 179 | 8 | 25 | 82 | 55 | 9 | 17 |
-| optimize | 101 | 7 | 44 | 27 | 16 | 7 | 9 |
+| refactor | 189 | 8 | 26 | 79 | 60 | 16 | 17 |
+| optimize | 235 | 30 | 100 | 69 | 23 | 13 | 21 |
 | testing | 194 | 21 | 51 | 68 | 36 | 18 | 20 |
 | review | 160 | 23 | 37 | 50 | 34 | 16 | 8 |
 | debug | 207 | 25 | 57 | 64 | 42 | 19 | 12 |
-| data | 69 | 5 | 17 | 22 | 20 | 5 | 6 |
-| shell | 212 | 18 | 63 | 88 | 41 | 2 | 19 |
-| devops | 88 | 13 | 15 | 29 | 22 | 9 | 6 |
-| port | 159 | 10 | 52 | 60 | 29 | 8 | 33 |
-| security | 225 | 26 | 65 | 87 | 33 | 14 | 32 |
-| docs | 6 | 0 | 6 | 0 | 0 | 0 | 1 |
+| data | 376 | 50 | 74 | 127 | 96 | 29 | 41 |
+| shell | 235 | 26 | 63 | 88 | 47 | 11 | 23 |
+| devops | 173 | 21 | 29 | 63 | 41 | 19 | 14 |
+| port | 217 | 28 | 59 | 70 | 43 | 17 | 47 |
+| security | 240 | 26 | 65 | 87 | 42 | 20 | 35 |
+| docs | 67 | 6 | 22 | 28 | 8 | 3 | 11 |
 | research | 342 | 33 | 67 | 112 | 99 | 31 | 22 |
 | recall | 312 | 42 | 76 | 90 | 80 | 24 | 16 |
 | swarm | 144 | 0 | 11 | 32 | 69 | 32 | 12 |
 | robust | 280 | 19 | 106 | 92 | 45 | 18 | 33 |
 | chat | 701 | 102 | 168 | 209 | 153 | 69 | 83 |
-| **total** | 6722 | 772 | 1617 | 2203 | 1553 | 577 | 662 |
+| **total** | 7650 | 950 | 1863 | 2460 | 1690 | 687 | 764 |
 
 ### By language
 
 | language | tasks |
 |---|---|
-| python | 2799 |
-| text | 1483 |
-| javascript | 459 |
-| go | 440 |
-| rust | 358 |
-| java | 326 |
-| bash | 282 |
-| c | 184 |
-| ruby | 90 |
-| typescript | 84 |
-| php | 76 |
-| sql | 65 |
+| python | 2972 |
+| text | 1574 |
+| javascript | 547 |
+| go | 514 |
+| rust | 398 |
+| java | 383 |
+| sql | 372 |
+| bash | 305 |
+| c | 203 |
+| ruby | 135 |
+| typescript | 94 |
+| php | 77 |
 | cpp | 56 |
 | mixed | 20 |
 
@@ -51,11 +51,11 @@
 
 | kind | tasks |
 |---|---|
-| fix | 3474 |
-| feature | 1191 |
-| greenfield | 792 |
+| fix | 3598 |
+| feature | 1886 |
+| greenfield | 885 |
 | lookup | 786 |
-| refactor | 244 |
+| refactor | 260 |
 | advice | 129 |
 | restraint | 52 |
 | premise | 38 |
@@ -84,14 +84,12 @@
 | review-verdict | 22 |
 | fix-hand-incident-tickets | 21 |
 | debug-config-drift | 20 |
-| optimize-py-algorithms | 20 |
 | recall-log-anomaly | 20 |
 | recall-prompt-constraint | 20 |
 | research-committee-rules | 20 |
 | swarm-monorepo-fixes | 20 |
+| fix-hand-room-plan | 19 |
 | devops-k8s-manifests | 18 |
 
-Prompt length (characters): median 316, p10 156, p90 830, max 3257.
-
-432 generated tasks are not in the catalog (admission failed, not admitted yet, or quarantined).
+Prompt length (characters): median 309, p10 158, p90 833, max 3564.
 

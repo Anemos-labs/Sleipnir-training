@@ -1,0 +1,14 @@
+[
+{
+"id": "security-protocols-01-username-spoofing",
+"ok": true
+},
+{
+"id": "security-protocols-02-oauth-server",
+"ok": true
+},
+{
+"id": "security-protocols-03-http-framing",
+"ok": true
+}
+]

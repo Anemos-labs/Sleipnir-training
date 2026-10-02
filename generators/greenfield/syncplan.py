@@ -2190,7 +2190,7 @@ def prompt(rng, p, api, lang):
     feats = ["one-way mirroring"] + (["ignore globs, a size limit and a `newer` mode"] if p["ignore"] else []) + (["two-way sync against a base listing"] if "twoway" in p["modes"] else []) + (["rename detection and conflict preferences"] if p["move"] else []) + (["directory creation and removal"] if p["dirs"] else [])
     fl = ", ".join(feats[:-1]) + (" and " if len(feats) > 1 else "") + feats[-1]
     opts = [
-        f"{p['theme'][0].capitalize()} are kept in sync by a planner. Write `{fn}(left, right, rules)` in {ln}, in {where}: it only returns the action list, as specified in README.md ({fl}). {K.closer(rng)}",
+        f"Keeping {p['theme'][0]} in sync needs a planner. Write `{fn}(left, right, rules)` in {ln}, in {where}: it only returns the action list, as specified in README.md ({fl}). {K.closer(rng)}",
         f"Implement the sync planner from README.md in {ln} (`{fn}`, {where}). This version covers {fl}. Output order and error priority are specified; hidden checks include malformed listings and rules. {K.closer(rng)}",
         f"{ln} task: build `{fn}` ({where}), a planner that turns two listings plus rules into a list of copy/delete actions. README.md has the format, the rules and the ordering. {K.closer(rng)}",
         f"Please write the file-sync planner described in README.md ({ln}; `{fn}` in {where}). Supported: {fl}.",

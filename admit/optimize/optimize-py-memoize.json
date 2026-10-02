@@ -12,11 +12,11 @@
 "ok": true
 },
 {
-"id": "optimize-py-memoize-04-cheapest_route-least_effort_trail",
+"id": "optimize-py-memoize-04-assembly_cost-kit_price",
 "ok": true
 },
 {
-"id": "optimize-py-memoize-05-cheapest_route-cheapest_crossing",
+"id": "optimize-py-memoize-05-assembly_cost-assembly_cost",
 "ok": true
 },
 {

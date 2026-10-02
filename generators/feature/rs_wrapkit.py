@@ -129,6 +129,7 @@ impl Wrapper {
             if !cur.is_empty() {
                 lines.push(std::mem::take(&mut cur));
             }
+            #[allow(unused_mut)]
             let mut rest = word.clone();
             @@slot long_word
             cur_w = measure(&rest);
@@ -150,6 +151,7 @@ impl Wrapper {
             let lines = self.layout(words);
             let n = lines.len();
             for (i, line) in lines.iter().enumerate() {
+                #[allow(unused_mut)]
                 let mut body = line.join(" ");
                 @@slot justify_line
                 let _ = n;

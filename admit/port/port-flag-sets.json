@@ -1,0 +1,18 @@
+[
+{
+"id": "port-flag-sets-01-typescript-to-javascript",
+"ok": true
+},
+{
+"id": "port-flag-sets-02-javascript-to-typescript",
+"ok": true
+},
+{
+"id": "port-flag-sets-03-typescript-to-javascript-stub",
+"ok": true
+},
+{
+"id": "port-flag-sets-04-javascript-to-typescript-stub",
+"ok": true
+}
+]

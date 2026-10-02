@@ -15,7 +15,7 @@ JS_PERF = "node --test test/perf.test.js"
 
 SHAPES = {
     "dedupe": dict(
-        d=1, args=1, big="[Array.from({ length: n }, () => 'id-' + rnd(Math.floor(n / 2)))]", small="[Array.from({ length: rnd(25) }, () => 'k' + rnd(8))]", n=150000,
+        d=1, args=1, big="[Array.from({ length: n }, () => 'id-' + rnd(Math.floor(n / 2)))]", small="[Array.from({ length: rnd(25) }, () => 'k' + rnd(8))]", n=250000,
         naive='''function $f($a) {
   const out = [];
   for (const item of $a) {
@@ -37,7 +37,7 @@ SHAPES = {
         vocab=[("uniquePlates", ["plates"], "Licence plates seen at the gate, each once."), ("distinctTags", ["tags"], "The tags used in a photo set, each once, in order of first use."),
                ("firstSeenHosts", ["hosts"], "Host names in order of first appearance in a log.")]),
     "intersect": dict(
-        d=2, args=2, big="[Array.from({ length: n }, () => 'u' + rnd(n)), Array.from({ length: n }, () => 'u' + rnd(n))]", n=100000,
+        d=2, args=2, big="[Array.from({ length: n }, () => 'u' + rnd(n)), Array.from({ length: n }, () => 'u' + rnd(n))]", n=160000,
         small="[Array.from({ length: rnd(15) }, () => 'u' + rnd(10)), Array.from({ length: rnd(15) }, () => 'u' + rnd(10))]",
         naive='''function $f($a, $b) {
   return $a.filter((item) => $b.includes(item));
@@ -53,7 +53,7 @@ SHAPES = {
         vocab=[("repliedGuests", ["invited", "replied"], "Invited guests who have replied."), ("sharedFollowers", ["mine", "theirs"], "Accounts that follow both of us."),
                ("stockedItems", ["wanted", "inStock"], "Wanted items that are in stock.")]),
     "difference": dict(
-        d=2, args=2, big="[Array.from({ length: n }, () => 'u' + rnd(n)), Array.from({ length: n }, () => 'u' + rnd(n))]", n=100000,
+        d=2, args=2, big="[Array.from({ length: n }, () => 'u' + rnd(n)), Array.from({ length: n }, () => 'u' + rnd(n))]", n=160000,
         small="[Array.from({ length: rnd(15) }, () => 'u' + rnd(10)), Array.from({ length: rnd(15) }, () => 'u' + rnd(10))]",
         naive='''function $f($a, $b) {
   const out = [];
@@ -77,7 +77,7 @@ SHAPES = {
         vocab=[("unsentRecipients", ["recipients", "alreadySent"], "Recipients that have not been mailed yet."), ("missingParts", ["required", "onHand"], "Parts that are required but not on hand."),
                ("unreviewedFiles", ["changed", "reviewed"], "Changed files that nobody has reviewed.")]),
     "join": dict(
-        d=3, args=2, n=100000,
+        d=3, args=2, n=160000,
         big="[Array.from({ length: n }, (_, i) => ({ id: i, customerId: 'c' + rnd(n) })), Array.from({ length: n }, (_, i) => ({ id: 'c' + rnd(n), name: 'n' + i }))]",
         small="[Array.from({ length: rnd(12) }, (_, i) => ({ id: i, customerId: 'c' + rnd(8) })), Array.from({ length: rnd(10) }, (_, i) => ({ id: 'c' + rnd(8), name: 'n' + i }))]",
         naive='''function $f($a, $b) {
@@ -165,7 +165,7 @@ SHAPES = {
 }''', spec="Each record of `{a}` has a `tags` array. Returns all tags of all records as one flat array, in order.",
         vocab=[("allTags", ["photos"], "All tags of a photo set as one list."), ("flattenRoles", ["users"], "All roles of all users in one array."), ("collectLabels", ["items"], "All labels of all items.")]),
     "insertion": dict(
-        d=3, args=1, n=120000, big="[Array.from({ length: n }, () => rnd(1000000))]", small="[Array.from({ length: rnd(20) }, () => rnd(30))]",
+        d=3, args=1, n=200000, big="[Array.from({ length: n }, () => rnd(1000000))]", small="[Array.from({ length: rnd(20) }, () => rnd(30))]",
         naive='''function $f($a) {
   const out = [];
   for (const value of $a) {

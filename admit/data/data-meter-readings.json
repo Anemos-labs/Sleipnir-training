@@ -1,0 +1,54 @@
+[
+{
+"id": "data-meter-readings-01-meters-per-site",
+"ok": true
+},
+{
+"id": "data-meter-readings-02-latest-reading",
+"ok": true
+},
+{
+"id": "data-meter-readings-03-meter-faults",
+"ok": true
+},
+{
+"id": "data-meter-readings-04-total-consumption",
+"ok": true
+},
+{
+"id": "data-meter-readings-05-monthly-by-site",
+"ok": true
+},
+{
+"id": "data-meter-readings-06-cost-by-kind",
+"ok": true
+},
+{
+"id": "data-meter-readings-07-estimate-streaks",
+"ok": true
+},
+{
+"id": "data-meter-readings-08-missing-months",
+"ok": true
+},
+{
+"id": "data-meter-readings-09-peak-daily-rate",
+"ok": true
+},
+{
+"id": "data-meter-readings-10-rolling-quarter",
+"ok": true
+},
+{
+"id": "data-meter-readings-11-long-gaps",
+"ok": true
+},
+{
+"id": "data-meter-readings-12-untariffed-readings",
+"ok": true
+},
+{
+"id": "data-meter-readings-13-fix-wrap-consumption",
+"ok": true
+}
+]

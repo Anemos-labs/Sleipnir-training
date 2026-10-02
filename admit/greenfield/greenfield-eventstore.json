@@ -1,0 +1,34 @@
+[
+{
+"id": "greenfield-eventstore-01-ruby-bike-l1",
+"ok": true
+},
+{
+"id": "greenfield-eventstore-02-go-tool-l2",
+"ok": true
+},
+{
+"id": "greenfield-eventstore-03-java-tool-l2",
+"ok": true
+},
+{
+"id": "greenfield-eventstore-04-ruby-boat-l3",
+"ok": true
+},
+{
+"id": "greenfield-eventstore-05-java-bike-l3",
+"ok": true
+},
+{
+"id": "greenfield-eventstore-06-go-tool-l4",
+"ok": true
+},
+{
+"id": "greenfield-eventstore-07-java-sled-l5",
+"ok": true
+},
+{
+"id": "greenfield-eventstore-08-go-boat-l5",
+"ok": true
+}
+]

@@ -1,0 +1,34 @@
+[
+{
+"id": "optimize-sql-hard-01-top_n-clinic",
+"ok": true
+},
+{
+"id": "optimize-sql-hard-02-keyset_sorted-route",
+"ok": true
+},
+{
+"id": "optimize-sql-hard-03-keyset_sorted-board",
+"ok": true
+},
+{
+"id": "optimize-sql-hard-04-top_n-clinic",
+"ok": true
+},
+{
+"id": "optimize-sql-hard-05-running-lab",
+"ok": true
+},
+{
+"id": "optimize-sql-hard-06-top_n-lab",
+"ok": true
+},
+{
+"id": "optimize-sql-hard-07-multi_fix-author",
+"ok": true
+},
+{
+"id": "optimize-sql-hard-08-running-board",
+"ok": true
+}
+]

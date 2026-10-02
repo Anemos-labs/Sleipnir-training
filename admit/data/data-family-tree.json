@@ -1,0 +1,58 @@
+[
+{
+"id": "data-family-tree-01-no-known-parents",
+"ok": true
+},
+{
+"id": "data-family-tree-02-children-counts",
+"ok": true
+},
+{
+"id": "data-family-tree-03-lifespan-by-sex",
+"ok": true
+},
+{
+"id": "data-family-tree-04-adopted-only",
+"ok": true
+},
+{
+"id": "data-family-tree-05-generations-above",
+"ok": true
+},
+{
+"id": "data-family-tree-06-sibling-pairs",
+"ok": true
+},
+{
+"id": "data-family-tree-07-descendant-counts",
+"ok": true
+},
+{
+"id": "data-family-tree-08-impossible-parents",
+"ok": true
+},
+{
+"id": "data-family-tree-09-overlapping-marriages",
+"ok": true
+},
+{
+"id": "data-family-tree-10-first-cousins",
+"ok": true
+},
+{
+"id": "data-family-tree-11-parent-age-at-birth",
+"ok": true
+},
+{
+"id": "data-family-tree-12-longest-lived-per-decade",
+"ok": true
+},
+{
+"id": "data-family-tree-13-pedigree-depth-roots",
+"ok": true
+},
+{
+"id": "data-family-tree-14-fix-sibling-pairs",
+"ok": true
+}
+]

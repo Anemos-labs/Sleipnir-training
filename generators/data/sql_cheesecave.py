@@ -98,7 +98,7 @@ def gen(rng, big):
     sales.append((sid, wid, "2033-12-02", 2400, "The Larder"))
     wid += 1
     wheels.append((wid, 1, 2000, "B2"))
-    for k, h in enumerate((89.5, 91.0, 90.0, 88.5, 80.0)):
+    for k, h in enumerate((89.5, 91.0, 90.0, 88.5, 80.0, 66.5, 98.2)):
         cid += 1
         checks.append((cid, wid, (date(2034, 1, 1) + timedelta(days=2 * k)).isoformat(), 1950 - 3 * k, "clean", h, 1))
     made1 = date.fromisoformat(batches[0][3])

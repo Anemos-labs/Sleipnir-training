@@ -1,0 +1,34 @@
+[
+{
+"id": "shell-first-steps-01-greeting-with-default",
+"ok": true
+},
+{
+"id": "shell-first-steps-02-count-lines-per-file",
+"ok": true
+},
+{
+"id": "shell-first-steps-03-sum-a-column",
+"ok": true
+},
+{
+"id": "shell-first-steps-04-whole-word-search",
+"ok": true
+},
+{
+"id": "shell-first-steps-05-swap-first-two-columns",
+"ok": true
+},
+{
+"id": "shell-first-steps-06-head-and-tail-preview",
+"ok": true
+},
+{
+"id": "shell-first-steps-07-what-kind-of-path",
+"ok": true
+},
+{
+"id": "shell-first-steps-08-biggest-of-integers",
+"ok": true
+}
+]

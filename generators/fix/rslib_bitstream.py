@@ -597,7 +597,7 @@ LIB = Lib(
     files={"Cargo.toml": cargo("bitstream"), "src/lib.rs": SRC, "README.md": README, ".gitignore": "target/\n", ".cargo/config.toml": CARGO_CONFIG},
     visible_tests={"tests/basic.rs": VISIBLE},
     hidden_tests={"tests/full.rs": HIDDEN},
-    mutate=["src/lib.rs"], difficulty=3, tags=["bits", "compression", "codec"],
+    mutate=["src/lib.rs"], difficulty=2, tags=["bits", "compression", "codec"],
 )
 
 register_libs([LIB], n=8)

@@ -1,0 +1,74 @@
+[
+{
+"id": "feature-py-labelmaker-01-escape",
+"ok": true
+},
+{
+"id": "feature-py-labelmaker-02-each",
+"ok": true
+},
+{
+"id": "feature-py-labelmaker-03-names",
+"ok": true
+},
+{
+"id": "feature-py-labelmaker-04-render-many-filters-if",
+"ok": true
+},
+{
+"id": "feature-py-labelmaker-05-render-many",
+"ok": true
+},
+{
+"id": "feature-py-labelmaker-06-defaults",
+"ok": true
+},
+{
+"id": "feature-py-labelmaker-07-paths",
+"ok": true
+},
+{
+"id": "feature-py-labelmaker-08-paths-if",
+"ok": true
+},
+{
+"id": "feature-py-labelmaker-09-render-many",
+"ok": true
+},
+{
+"id": "feature-py-labelmaker-10-if",
+"ok": true
+},
+{
+"id": "feature-py-labelmaker-11-defaults",
+"ok": true
+},
+{
+"id": "feature-py-labelmaker-12-paths-each",
+"ok": true
+},
+{
+"id": "feature-py-labelmaker-13-filters",
+"ok": true
+},
+{
+"id": "feature-py-labelmaker-14-escape",
+"ok": true
+},
+{
+"id": "feature-py-labelmaker-15-names",
+"ok": true
+},
+{
+"id": "feature-py-labelmaker-16-escape-each",
+"ok": true
+},
+{
+"id": "feature-py-labelmaker-17-filters",
+"ok": true
+},
+{
+"id": "feature-py-labelmaker-18-names",
+"ok": true
+}
+]

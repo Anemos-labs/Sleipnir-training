@@ -1,0 +1,54 @@
+[
+{
+"id": "data-tram-depot-01-fleet-by-depot",
+"ok": true
+},
+{
+"id": "data-tram-depot-02-late-share-per-line",
+"ok": true
+},
+{
+"id": "data-tram-depot-03-skip-hotspots",
+"ok": true
+},
+{
+"id": "data-tram-depot-04-open-fault-age",
+"ok": true
+},
+{
+"id": "data-tram-depot-05-worst-stop-per-run",
+"ok": true
+},
+{
+"id": "data-tram-depot-06-delay-build-up",
+"ok": true
+},
+{
+"id": "data-tram-depot-07-busiest-hour-per-stop",
+"ok": true
+},
+{
+"id": "data-tram-depot-08-reliability-rank",
+"ok": true
+},
+{
+"id": "data-tram-depot-09-repeat-faults",
+"ok": true
+},
+{
+"id": "data-tram-depot-10-bunching",
+"ok": true
+},
+{
+"id": "data-tram-depot-11-max-load",
+"ok": true
+},
+{
+"id": "data-tram-depot-12-median-days-to-fix",
+"ok": true
+},
+{
+"id": "data-tram-depot-13-fix-delay-minutes",
+"ok": true
+}
+]

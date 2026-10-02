@@ -1,0 +1,18 @@
+[
+{
+"id": "shell-expert-tools-01-spreadsheet-evaluator",
+"ok": true
+},
+{
+"id": "shell-expert-tools-02-increment-every-number",
+"ok": true
+},
+{
+"id": "shell-expert-tools-03-json-patch-diff",
+"ok": true
+},
+{
+"id": "shell-expert-tools-04-bounded-worker-pool",
+"ok": true
+}
+]

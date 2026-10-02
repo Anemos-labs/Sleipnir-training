@@ -1,0 +1,50 @@
+[
+{
+"id": "devops-gitlab-pipelines-01-image",
+"ok": true
+},
+{
+"id": "devops-gitlab-pipelines-02-tab",
+"ok": true
+},
+{
+"id": "devops-gitlab-pipelines-03-stage-typo-expire",
+"ok": true
+},
+{
+"id": "devops-gitlab-pipelines-04-needs-missing",
+"ok": true
+},
+{
+"id": "devops-gitlab-pipelines-05-var-bool-cache",
+"ok": true
+},
+{
+"id": "devops-gitlab-pipelines-06-rule-if-retry",
+"ok": true
+},
+{
+"id": "devops-gitlab-pipelines-07-script-colon-extends",
+"ok": true
+},
+{
+"id": "devops-gitlab-pipelines-08-dup-job-dep-no-art",
+"ok": true
+},
+{
+"id": "devops-gitlab-pipelines-09-needs-later-manual",
+"ok": true
+},
+{
+"id": "devops-gitlab-pipelines-10-rules-only-coverage",
+"ok": true
+},
+{
+"id": "devops-gitlab-pipelines-11-stage-typo-needs-later",
+"ok": true
+},
+{
+"id": "devops-gitlab-pipelines-12-script-colon-dep-no-art",
+"ok": true
+}
+]

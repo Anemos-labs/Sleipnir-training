@@ -1,0 +1,74 @@
+[
+{
+"id": "feature-rb-shiftboard-01-overlap",
+"ok": true
+},
+{
+"id": "feature-rb-shiftboard-02-max-hours",
+"ok": true
+},
+{
+"id": "feature-rb-shiftboard-03-waitlist",
+"ok": true
+},
+{
+"id": "feature-rb-shiftboard-04-skills-waitlist-swap",
+"ok": true
+},
+{
+"id": "feature-rb-shiftboard-05-fill-rate",
+"ok": true
+},
+{
+"id": "feature-rb-shiftboard-06-agenda",
+"ok": true
+},
+{
+"id": "feature-rb-shiftboard-07-reminders",
+"ok": true
+},
+{
+"id": "feature-rb-shiftboard-08-waitlist-swap",
+"ok": true
+},
+{
+"id": "feature-rb-shiftboard-09-max-hours",
+"ok": true
+},
+{
+"id": "feature-rb-shiftboard-10-fill-rate",
+"ok": true
+},
+{
+"id": "feature-rb-shiftboard-11-skills",
+"ok": true
+},
+{
+"id": "feature-rb-shiftboard-12-overlap-swap",
+"ok": true
+},
+{
+"id": "feature-rb-shiftboard-13-reminders",
+"ok": true
+},
+{
+"id": "feature-rb-shiftboard-14-agenda",
+"ok": true
+},
+{
+"id": "feature-rb-shiftboard-15-waitlist",
+"ok": true
+},
+{
+"id": "feature-rb-shiftboard-16-overlap-max-hours-swap",
+"ok": true
+},
+{
+"id": "feature-rb-shiftboard-17-overlap",
+"ok": true
+},
+{
+"id": "feature-rb-shiftboard-18-max-hours",
+"ok": true
+}
+]

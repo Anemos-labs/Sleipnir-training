@@ -1,0 +1,74 @@
+[
+{
+"id": "feature-py-cupdesk-01-standings",
+"ok": true
+},
+{
+"id": "feature-py-cupdesk-02-form",
+"ok": true
+},
+{
+"id": "feature-py-cupdesk-03-corrections",
+"ok": true
+},
+{
+"id": "feature-py-cupdesk-04-deductions-tiebreak",
+"ok": true
+},
+{
+"id": "feature-py-cupdesk-05-fixtures",
+"ok": true
+},
+{
+"id": "feature-py-cupdesk-06-tiebreak",
+"ok": true
+},
+{
+"id": "feature-py-cupdesk-07-unplayed",
+"ok": true
+},
+{
+"id": "feature-py-cupdesk-08-zones-tiebreak",
+"ok": true
+},
+{
+"id": "feature-py-cupdesk-09-deductions",
+"ok": true
+},
+{
+"id": "feature-py-cupdesk-10-fixtures",
+"ok": true
+},
+{
+"id": "feature-py-cupdesk-11-unplayed",
+"ok": true
+},
+{
+"id": "feature-py-cupdesk-12-form-zones",
+"ok": true
+},
+{
+"id": "feature-py-cupdesk-13-tiebreak",
+"ok": true
+},
+{
+"id": "feature-py-cupdesk-14-corrections",
+"ok": true
+},
+{
+"id": "feature-py-cupdesk-15-standings",
+"ok": true
+},
+{
+"id": "feature-py-cupdesk-16-form-fixtures",
+"ok": true
+},
+{
+"id": "feature-py-cupdesk-17-corrections",
+"ok": true
+},
+{
+"id": "feature-py-cupdesk-18-form",
+"ok": true
+}
+]

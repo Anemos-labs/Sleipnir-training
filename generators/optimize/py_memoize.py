@@ -83,67 +83,53 @@ SHAPES = {
         vocab=[("folder_depths", ["folders", "parent_of"], "Nesting depth of folders in a document store."),
                ("reporting_levels", ["staff", "manager_of"], "How many levels below the CEO each employee sits."),
                ("thread_depths", ["comments", "reply_to"], "Reply depth of comments in a discussion.")]),
-    "cheapest_route": dict(
-        d=4, args=["a", "b"], callable=True, factor=2, metric="Ops.reads", n=(144, 144), empty_args="(1, COST)",
-        prelude='''def COST(i, j):
-    return (i * 7 + j * 13) % 10 + 1
+    "assembly_cost": dict(
+        d=3, args=["a", "b"], callable=True, factor=2, metric="Ops.reads", n=(60, 60), empty_args="(0, Catalog(random.Random(0), 1))",
+        prelude='''class Catalog:
+    """Expensive parts lookup: item -> (unit_cost, [(part, qty), ...]). Parts always have a higher id than their parent."""
+
+    def __init__(self, rng, n):
+        self.rows = {}
+        for i in range(n):
+            if i >= n - 3:
+                self.rows[i] = (rng.randrange(1, 9), [])
+            else:
+                parts = sorted({rng.randrange(i + 1, min(n, i + 4)) for _ in range(2)})
+                self.rows[i] = (rng.randrange(1, 9), [(p, rng.randrange(1, 3)) for p in parts])
+
+    def __call__(self, item):
+        return self.rows[item]
 ''',
         naive='''def $f($a, $b):
     """$doc"""
-
-    def best(i, j):
-        here = $b(i, j)
-        if i == $a - 1 and j == $a - 1:
-            return here
-        options = []
-        if i + 1 < $a:
-            options.append(best(i + 1, j))
-        if j + 1 < $a:
-            options.append(best(i, j + 1))
-        return here + min(options)
-
-    return best(0, 0)
+    unit, parts = $b($a)
+    return unit + sum(qty * $f(part, $b) for part, qty in parts)
 ''', fast='''def $f($a, $b):
     """$doc"""
     known = {}
 
-    def best(i, j):
-        if (i, j) in known:
-            return known[(i, j)]
-        here = $b(i, j)
-        if i == $a - 1 and j == $a - 1:
-            result = here
-        else:
-            options = []
-            if i + 1 < $a:
-                options.append(best(i + 1, j))
-            if j + 1 < $a:
-                options.append(best(i, j + 1))
-            result = here + min(options)
-        known[(i, j)] = result
-        return result
+    def cost(item):
+        if item not in known:
+            unit, parts = $b(item)
+            known[item] = unit + sum(qty * cost(part) for part, qty in parts)
+        return known[item]
 
-    return best(0, 0)
+    return cost($a)
 ''', oracle='''def oracle(a, b):
-    best = {}
-    for i in range(a - 1, -1, -1):
-        for j in range(a - 1, -1, -1):
-            here = b(i, j)
-            if i == a - 1 and j == a - 1:
-                best[(i, j)] = here
-            else:
-                opts = []
-                if i + 1 < a:
-                    opts.append(best[(i + 1, j)])
-                if j + 1 < a:
-                    opts.append(best[(i, j + 1)])
-                best[(i, j)] = here + min(opts)
-    return best[(0, 0)]
-''', small="rng.randrange(1, 6), COST", big="12, COST", wrap="a, Counted(b)",
-        spec="The grid has `{a} x {a}` cells (`{a}` is at least 1). `{b}(row, col)` is the (expensive) cost of stepping on a cell. Returns the cheapest total cost of a walk from the top-left to the bottom-right cell that only moves down or right, counting both end cells.",
-        vocab=[("cheapest_crossing", ["size", "cost_at"], "Cheapest crossing of a field of tiles."),
-               ("least_effort_trail", ["side", "effort"], "Least-effort route over a square hillside map."),
-               ("cheapest_cabling", ["width", "cost_of_cell"], "Cheapest cable run across a floor plan.")]),
+    known = {}
+
+    def cost(item):
+        if item not in known:
+            unit, parts = b(item)
+            known[item] = unit + sum(q * cost(p) for p, q in parts)
+        return known[item]
+
+    return cost(a)
+''', small="0, Catalog(rng, rng.randrange(1, 10))", big="0, Catalog(rng, n)", wrap="a, Counted(b)",
+        spec="`{b}(item)` is an expensive parts lookup returning `(unit_cost, parts)`, where `parts` is a list of `(part, quantity)` pairs (empty for raw materials). Returns the total cost of `{a}`: its own unit cost plus, for every part, the quantity times the total cost of that part, recursively. Sub-assemblies are shared between many parents.",
+        vocab=[("assembly_cost", ["product", "parts_of"], "Total cost of building a product from its bill of materials."),
+               ("kit_price", ["kit", "contents_of"], "Price of a kit including its nested sub-kits."),
+               ("menu_cost", ["dish", "recipe_of"], "Cost of a dish including all its sub-recipes.")]),
     "best_items": dict(
         d=2, args=["a", "b"], callable=True, factor=1.0, metric="Ops.reads", n=(1500, 2500), empty_args="([], SCORE)",
         prelude='''def SCORE(x):

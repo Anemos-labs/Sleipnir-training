@@ -1,98 +1,74 @@
 [
 {
-"id": "optimize-py-algorithms-01-coin_ways-package_mixes",
+"id": "optimize-py-algorithms-01-nearest_depot-assign_clinics",
 "ok": true
 },
 {
-"id": "optimize-py-algorithms-02-longest_span_with_sum-longest_exact_run",
+"id": "optimize-py-algorithms-02-slowest_in_window-peak_delay_total",
 "ok": true
 },
 {
-"id": "optimize-py-algorithms-03-min_cuts-palindrome_cuts",
+"id": "optimize-py-algorithms-03-rerun_set-affected_services",
 "ok": true
 },
 {
-"id": "optimize-py-algorithms-04-connected_flags-reachable_after",
+"id": "optimize-py-algorithms-04-escalation_matches-alarm_chains",
 "ok": true
 },
 {
-"id": "optimize-py-algorithms-05-cheapest_cost-shortest_fares",
+"id": "optimize-py-algorithms-05-berth_peak-bays_required",
 "ok": true
 },
 {
-"id": "optimize-py-algorithms-06-inversions-count_disorder",
+"id": "optimize-py-algorithms-06-prefix_counts-count_by_prefix",
 "ok": true
 },
 {
-"id": "optimize-py-algorithms-07-prefix_counts-autocomplete_sizes",
+"id": "optimize-py-algorithms-07-range_totals-cumulative_between",
 "ok": true
 },
 {
-"id": "optimize-py-algorithms-08-shared_length-common_stretch",
+"id": "optimize-py-algorithms-08-overlap_report-overlapping_bookings",
 "ok": true
 },
 {
-"id": "optimize-py-algorithms-09-best_schedule-max_contract_income",
+"id": "optimize-py-algorithms-09-build_waves-plan_waves",
 "ok": true
 },
 {
-"id": "optimize-py-algorithms-10-range_totals-cumulative_between",
+"id": "optimize-py-algorithms-10-fair_share-bandwidth_shares",
 "ok": true
 },
 {
-"id": "optimize-py-algorithms-11-build_waves-stage_order",
+"id": "optimize-py-algorithms-11-critical_path-release_eta",
 "ok": true
 },
 {
-"id": "optimize-py-algorithms-12-longest_rising-longest_climb",
+"id": "optimize-py-algorithms-12-balance_as_of-balances_as_of",
 "ok": true
 },
 {
-"id": "optimize-py-algorithms-13-cheapest_with_stops-cheapest_trip",
+"id": "optimize-py-algorithms-13-fare_capping-capped_fares",
 "ok": true
 },
 {
-"id": "optimize-py-algorithms-14-peak_load-max_overlap",
+"id": "optimize-py-algorithms-14-escalation_matches-followups_counted",
 "ok": true
 },
 {
-"id": "optimize-py-algorithms-15-longest_unique_run-longest_clean_run",
+"id": "optimize-py-algorithms-15-overlap_report-windows_hit",
 "ok": true
 },
 {
-"id": "optimize-py-algorithms-16-fewest_steps-steps_to_exit",
+"id": "optimize-py-algorithms-16-fair_share-seat_allotment",
 "ok": true
 },
 {
-"id": "optimize-py-algorithms-17-subset_sum_exists-can_fill_exactly",
+"id": "optimize-py-algorithms-17-rerun_set-modules_to_rebuild",
 "ok": true
 },
 {
-"id": "optimize-py-algorithms-18-next_larger-upcoming_peak",
-"ok": true
-},
-{
-"id": "optimize-py-algorithms-19-connected_flags-linked_by_then",
-"ok": true
-},
-{
-"id": "optimize-py-algorithms-20-best_schedule-best_booking_value",
-"ok": true
-},
-{
-"id": "optimize-py-algorithms-21-longest_span_with_sum-steadiest_stretch",
-"ok": true
-},
-{
-"id": "optimize-py-algorithms-22-cheapest_cost-route_costs",
-"ok": true
-},
-{
-"id": "optimize-py-algorithms-23-fewest_steps-min_moves",
-"ok": true
-},
-{
-"id": "optimize-py-algorithms-24-inversions-out_of_order_pairs",
+"id": "optimize-py-algorithms-18-slowest_in_window-slowest_three_sum",
 "ok": true
 }
 ]

@@ -1,0 +1,42 @@
+[
+{
+"id": "data-etl-logbook-01-access-log",
+"ok": true
+},
+{
+"id": "data-etl-logbook-02-stack-traces",
+"ok": true
+},
+{
+"id": "data-etl-logbook-03-key-value-logs",
+"ok": true
+},
+{
+"id": "data-etl-logbook-04-syslog-years",
+"ok": true
+},
+{
+"id": "data-etl-logbook-05-duration-strings",
+"ok": true
+},
+{
+"id": "data-etl-logbook-06-error-bursts",
+"ok": true
+},
+{
+"id": "data-etl-logbook-07-canonical-urls",
+"ok": true
+},
+{
+"id": "data-etl-logbook-08-csv-quirks-fix",
+"ok": true
+},
+{
+"id": "data-etl-logbook-09-template-render",
+"ok": true
+},
+{
+"id": "data-etl-logbook-10-markdown-tables",
+"ok": true
+}
+]

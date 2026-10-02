@@ -1,0 +1,42 @@
+[
+{
+"id": "data-etl-timeseries-01-hourly-resample",
+"ok": true
+},
+{
+"id": "data-etl-timeseries-02-counter-deltas",
+"ok": true
+},
+{
+"id": "data-etl-timeseries-03-forward-fill-days",
+"ok": true
+},
+{
+"id": "data-etl-timeseries-04-rolling-median",
+"ok": true
+},
+{
+"id": "data-etl-timeseries-05-exact-outliers",
+"ok": true
+},
+{
+"id": "data-etl-timeseries-06-as-of-join",
+"ok": true
+},
+{
+"id": "data-etl-timeseries-07-iso-week-totals",
+"ok": true
+},
+{
+"id": "data-etl-timeseries-08-find-peaks",
+"ok": true
+},
+{
+"id": "data-etl-timeseries-09-oslo-to-utc",
+"ok": true
+},
+{
+"id": "data-etl-timeseries-10-merge-bookings",
+"ok": true
+}
+]

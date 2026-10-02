@@ -1,0 +1,50 @@
+[
+{
+"id": "data-bus-fares-01-taps-by-kind",
+"ok": true
+},
+{
+"id": "data-bus-fares-02-journey-durations",
+"ok": true
+},
+{
+"id": "data-bus-fares-03-incomplete-journeys",
+"ok": true
+},
+{
+"id": "data-bus-fares-04-fares-by-holder-and-zones",
+"ok": true
+},
+{
+"id": "data-bus-fares-05-daily-capped-charge",
+"ok": true
+},
+{
+"id": "data-bus-fares-06-revenue-per-day",
+"ok": true
+},
+{
+"id": "data-bus-fares-07-transfers",
+"ok": true
+},
+{
+"id": "data-bus-fares-08-rush-hour",
+"ok": true
+},
+{
+"id": "data-bus-fares-09-zone-pairs",
+"ok": true
+},
+{
+"id": "data-bus-fares-10-double-taps",
+"ok": true
+},
+{
+"id": "data-bus-fares-11-night-owls",
+"ok": true
+},
+{
+"id": "data-bus-fares-12-fix-discount-rounding",
+"ok": true
+}
+]

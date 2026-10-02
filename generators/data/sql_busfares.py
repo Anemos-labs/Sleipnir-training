@@ -43,7 +43,7 @@ DOC = dd('''
 ''')
 
 STOPS = [("Mill Lane", 1), ("Town Hall", 1), ("Canal Basin", 1), ("Orchard Cross", 2), ("Quarry Gate", 2), ("Heron Park", 2), ("Far Ridge", 3), ("Wolds End", 3)]
-FARES = [(1, 1, 220), (1, 2, 310), (1, 3, 420), (2, 2, 240), (2, 3, 330), (3, 3, 260)]
+FARES = [(1, 1, 225), (1, 2, 315), (1, 3, 425), (2, 2, 245), (2, 3, 335), (3, 3, 265)]
 JOURNEYS = """WITH t AS (
   SELECT tap_id, card_id, tapped_at, stop_id, kind,
          LEAD(kind) OVER w AS next_kind, LEAD(tapped_at) OVER w AS next_at, LEAD(stop_id) OVER w AS next_stop
@@ -65,6 +65,7 @@ BUGGY_J = JOURNEYS.replace("(adult * CASE holder WHEN 'student' THEN 50 WHEN 'se
 def gen(rng, big):
     nc = 12 if big else 5
     cards = [(i + 1, rng.choice(["adult", "adult", "student", "senior"]), f"2037-{rng.randint(1, 6):02d}-{rng.randint(1, 28):02d}") for i in range(nc)]
+    cards[1] = (cards[1][0], "adult", cards[1][2])
     stops = [(i + 1, s[0], s[1]) for i, s in enumerate(STOPS)]
     zone = {s[0]: s[2] for s in stops}
     taps, tid = [], 0
@@ -94,6 +95,14 @@ def gen(rng, big):
         tid += 1
         taps.append((tid, c0, t.strftime("%Y-%m-%d %H:%M"), b, "out"))
         t += timedelta(minutes=30 if k < 2 else 120)
+    t = datetime(2037, 8, 27, 10, 0)  # exactly 900 cents in one day: four zone-1 journeys at 225
+    for k in range(4):
+        tid += 1
+        taps.append((tid, cards[1][0], t.strftime("%Y-%m-%d %H:%M"), 1 + k % 2, "in"))
+        t += timedelta(minutes=12)
+        tid += 1
+        taps.append((tid, cards[1][0], t.strftime("%Y-%m-%d %H:%M"), 2 - k % 2, "out"))
+        t += timedelta(minutes=45)
     tid += 1
     taps.append((tid, cards[-1][0], "2037-08-26 09:00", 2, "out"))
     tid += 1
@@ -123,13 +132,14 @@ SELECT card_id, in_at, out_at, CAST(ROUND((julianday(out_at) - julianday(in_at))
 SELECT t.card_id, t.tapped_at AS in_at, s.name AS stop FROM t JOIN stops s ON s.stop_id = t.stop_id WHERE t.kind = 'in' AND (t.next_kind IS NULL OR t.next_kind = 'in') ORDER BY t.card_id, t.tapped_at, t.tap_id;""",
       ["card_id", "in_at", "stop"], ordered=True, allow_empty=True,
       wrong=("""SELECT t.card_id, t.tapped_at, s.name FROM taps t JOIN stops s ON s.stop_id = t.stop_id WHERE t.kind = 'in' AND NOT EXISTS (SELECT 1 FROM taps o WHERE o.card_id = t.card_id AND o.kind = 'out' AND o.tapped_at > t.tapped_at) ORDER BY t.card_id, t.tapped_at;""",)),
-    S("journey-fares", 4,
-      "Price every complete journey: card id, day, in stop, out stop, and the fare in cents after the holder's discount (see the notes for the formula). Show the 10 most expensive journeys, ties by card id then in time.",
+    S("fares-by-holder-and-zones", 4,
+      "Revenue by holder category and zone pair: for every holder category and every pair (lower zone, higher zone) of the stops of a complete journey, the number of journeys and the total fare in cents after the discount (see the notes for the exact formula). "
+      "Columns: holder, zone_lo, zone_hi, journeys, total fare. Order by holder, zone_lo, zone_hi.",
       f"""{JOURNEYS}
-SELECT p.card_id, p.day, si.name AS in_stop, so.name AS out_stop, p.fare FROM p JOIN stops si ON si.stop_id = p.in_stop JOIN stops so ON so.stop_id = p.out_stop ORDER BY p.fare DESC, p.card_id, p.in_at LIMIT 10;""",
-      ["card_id", "day", "in_stop", "out_stop", "fare"], ordered=True,
+SELECT holder, MIN(zin, zout) AS zone_lo, MAX(zin, zout) AS zone_hi, COUNT(*) AS journeys, SUM(fare) AS total_cents FROM p GROUP BY holder, MIN(zin, zout), MAX(zin, zout) ORDER BY holder, zone_lo, zone_hi;""",
+      ["holder", "zone_lo", "zone_hi", "journeys", "total_cents"], ordered=True,
       wrong=(f"""{JOURNEYS}
-SELECT p.card_id, p.day, si.name, so.name, CAST(ROUND(adult * CASE holder WHEN 'student' THEN 0.5 WHEN 'senior' THEN 0.6 ELSE 1 END) AS INTEGER) AS fare FROM p JOIN stops si ON si.stop_id = p.in_stop JOIN stops so ON so.stop_id = p.out_stop ORDER BY fare DESC, p.card_id, p.in_at LIMIT 10;""",)),
+SELECT holder, MIN(zin, zout), MAX(zin, zout), COUNT(*), SUM(adult * CASE holder WHEN 'student' THEN 50 WHEN 'senior' THEN 60 ELSE 100 END / 100) FROM p GROUP BY holder, MIN(zin, zout), MAX(zin, zout) ORDER BY holder, 2, 3;""",)),
     S("daily-capped-charge", 5,
       "Daily charges: for every card and day with at least one complete journey, the uncapped sum of the journey fares, the capped charge (never more than 900) and how many journeys it covers. Only rows where the cap actually reduced the charge. "
       "Columns: card id, day, journeys, uncapped, charged. Order by card id, then day.",

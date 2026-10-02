@@ -1,0 +1,26 @@
+[
+{
+"id": "shell-awk-algorithms-01-exact-big-integer-sums",
+"ok": true
+},
+{
+"id": "shell-awk-algorithms-02-quoted-csv-records-to-tsv",
+"ok": true
+},
+{
+"id": "shell-awk-algorithms-03-rpn-line-calculator",
+"ok": true
+},
+{
+"id": "shell-awk-algorithms-04-alphabetical-topological-order",
+"ok": true
+},
+{
+"id": "shell-awk-algorithms-05-apply-unified-diff",
+"ok": true
+},
+{
+"id": "shell-awk-algorithms-06-shortest-routes-smallest-names",
+"ok": true
+}
+]

@@ -1,0 +1,62 @@
+[
+{
+"id": "devops-ansible-playbooks-01-short-module",
+"ok": true
+},
+{
+"id": "devops-ansible-playbooks-02-mode-int",
+"ok": true
+},
+{
+"id": "devops-ansible-playbooks-03-notify-typo",
+"ok": true
+},
+{
+"id": "devops-ansible-playbooks-04-no-changed-with-items",
+"ok": true
+},
+{
+"id": "devops-ansible-playbooks-05-when-braces-dup-name",
+"ok": true
+},
+{
+"id": "devops-ansible-playbooks-06-undef-var-apt-cache",
+"ok": true
+},
+{
+"id": "devops-ansible-playbooks-07-plain-password-no-nolog",
+"ok": true
+},
+{
+"id": "devops-ansible-playbooks-08-no-become-template-src",
+"ok": true
+},
+{
+"id": "devops-ansible-playbooks-09-yaml-short-modules",
+"ok": true
+},
+{
+"id": "devops-ansible-playbooks-10-shell-simple-dead-handler",
+"ok": true
+},
+{
+"id": "devops-ansible-playbooks-11-mode-int-notify-typo",
+"ok": true
+},
+{
+"id": "devops-ansible-playbooks-12-short-modules-dead-handler",
+"ok": true
+},
+{
+"id": "devops-ansible-playbooks-13-yaml-template-src",
+"ok": true
+},
+{
+"id": "devops-ansible-playbooks-14-dup-name",
+"ok": true
+},
+{
+"id": "devops-ansible-playbooks-15-no-become",
+"ok": true
+}
+]

@@ -1,0 +1,34 @@
+[
+{
+"id": "data-greenhouse-indexes-01-index-zone-day",
+"ok": true
+},
+{
+"id": "data-greenhouse-indexes-02-index-open-events",
+"ok": true
+},
+{
+"id": "data-greenhouse-indexes-03-index-leak-alerts",
+"ok": true
+},
+{
+"id": "data-greenhouse-indexes-04-index-latest-opening",
+"ok": true
+},
+{
+"id": "data-greenhouse-indexes-05-index-manual-waterings",
+"ok": true
+},
+{
+"id": "data-greenhouse-indexes-06-index-hot-count",
+"ok": true
+},
+{
+"id": "data-greenhouse-indexes-07-index-dashboard-five",
+"ok": true
+},
+{
+"id": "data-greenhouse-indexes-08-index-either-or-readings",
+"ok": true
+}
+]

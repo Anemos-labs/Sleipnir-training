@@ -1,0 +1,74 @@
+[
+{
+"id": "feature-java-unitconv-01-time",
+"ok": true
+},
+{
+"id": "feature-java-unitconv-02-ratio",
+"ok": true
+},
+{
+"id": "feature-java-unitconv-03-precision",
+"ok": true
+},
+{
+"id": "feature-java-unitconv-04-mass-precision-ratio",
+"ok": true
+},
+{
+"id": "feature-java-unitconv-05-parse",
+"ok": true
+},
+{
+"id": "feature-java-unitconv-06-define",
+"ok": true
+},
+{
+"id": "feature-java-unitconv-07-temperature",
+"ok": true
+},
+{
+"id": "feature-java-unitconv-08-time-listing",
+"ok": true
+},
+{
+"id": "feature-java-unitconv-09-temperature",
+"ok": true
+},
+{
+"id": "feature-java-unitconv-10-ratio",
+"ok": true
+},
+{
+"id": "feature-java-unitconv-11-precision",
+"ok": true
+},
+{
+"id": "feature-java-unitconv-12-define-precision",
+"ok": true
+},
+{
+"id": "feature-java-unitconv-13-mass",
+"ok": true
+},
+{
+"id": "feature-java-unitconv-14-listing",
+"ok": true
+},
+{
+"id": "feature-java-unitconv-15-parse",
+"ok": true
+},
+{
+"id": "feature-java-unitconv-16-time-ratio",
+"ok": true
+},
+{
+"id": "feature-java-unitconv-17-mass",
+"ok": true
+},
+{
+"id": "feature-java-unitconv-18-ratio",
+"ok": true
+}
+]

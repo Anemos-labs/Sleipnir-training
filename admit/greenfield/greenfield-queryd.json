@@ -1,0 +1,34 @@
+[
+{
+"id": "greenfield-queryd-01-javascript-comma-l1",
+"ok": true
+},
+{
+"id": "greenfield-queryd-02-java-pipe-l1",
+"ok": true
+},
+{
+"id": "greenfield-queryd-03-go-pipe-l2",
+"ok": true
+},
+{
+"id": "greenfield-queryd-04-python-pipe-l2",
+"ok": true
+},
+{
+"id": "greenfield-queryd-05-javascript-semi-l3",
+"ok": true
+},
+{
+"id": "greenfield-queryd-06-java-comma-l3",
+"ok": true
+},
+{
+"id": "greenfield-queryd-07-go-semi-l4",
+"ok": true
+},
+{
+"id": "greenfield-queryd-08-java-pipe-l4",
+"ok": true
+}
+]

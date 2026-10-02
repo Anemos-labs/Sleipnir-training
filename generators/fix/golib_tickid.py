@@ -551,7 +551,7 @@ LIB = Lib(
     files={"go.mod": langs.go_mod("tickid"), "tickid.go": SRC, "README.md": README},
     visible_tests={"tickid_basic_test.go": VISIBLE},
     hidden_tests={"tickid_full_test.go": HIDDEN},
-    mutate=["tickid.go"], difficulty=2, tags=["ids", "bitpacking", "clock"],
+    mutate=["tickid.go"], difficulty=1, tags=["ids", "bitpacking", "clock"],
 )
 
 register_libs([LIB], n=8)

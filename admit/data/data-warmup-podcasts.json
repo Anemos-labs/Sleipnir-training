@@ -1,0 +1,34 @@
+[
+{
+"id": "data-warmup-podcasts-01-episodes-per-show",
+"ok": true
+},
+{
+"id": "data-warmup-podcasts-02-longest-episodes",
+"ok": true
+},
+{
+"id": "data-warmup-podcasts-03-shows-by-genre-list",
+"ok": true
+},
+{
+"id": "data-warmup-podcasts-04-spots-per-sponsor",
+"ok": true
+},
+{
+"id": "data-warmup-podcasts-05-mid-roll-count",
+"ok": true
+},
+{
+"id": "data-warmup-podcasts-06-premium-spots",
+"ok": true
+},
+{
+"id": "data-warmup-podcasts-07-latest-episodes",
+"ok": true
+},
+{
+"id": "data-warmup-podcasts-08-best-download-days",
+"ok": true
+}
+]

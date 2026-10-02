@@ -1,0 +1,34 @@
+[
+{
+"id": "data-warmup-huts-01-roomy-huts",
+"ok": true
+},
+{
+"id": "data-warmup-huts-02-bookings-by-status",
+"ok": true
+},
+{
+"id": "data-warmup-huts-03-average-party",
+"ok": true
+},
+{
+"id": "data-warmup-huts-04-meal-portions",
+"ok": true
+},
+{
+"id": "data-warmup-huts-05-price-range",
+"ok": true
+},
+{
+"id": "data-warmup-huts-06-large-groups",
+"ok": true
+},
+{
+"id": "data-warmup-huts-07-frequent-guests",
+"ok": true
+},
+{
+"id": "data-warmup-huts-08-long-stays",
+"ok": true
+}
+]

@@ -221,54 +221,48 @@ SHAPES = {
 }''', spec="`{b}(item)` is an expensive scoring function. Returns the items of `{a}` with a positive score, best first (equal scores keep their input order).",
         vocab=[("shortlist", ["candidates", "score"], "Candidates worth interviewing, best first."), ("rankedOffers", ["offers", "rate"], "Offers with a positive rating, best first."),
                ("worthVisiting", ["places", "appeal"], "Places with a positive appeal score, best first.")]),
-    "route": dict(
-        d=4, factor=2, n=(144, 144), prelude="const COST = (i, j) => ((i * 7 + j * 13) % 10) + 1;",
-        small="[1 + rnd(5), COST]", big="[12, COST]", wrap="[a, countedFn(b)]", empty="[1, COST]",
+    "assembly": dict(
+        d=3, factor=2, n=(30, 30), prelude="""function makeCatalog(rnd, n) {
+  const rows = new Map();
+  for (let i = 0; i < n; i++) {
+    if (i >= n - 3) { rows.set(i, [1 + rnd(8), []]); continue; }
+    const parts = new Set();
+    for (let k = 0; k < 2; k++) parts.add(i + 1 + rnd(Math.min(n, i + 4) - i - 1));
+    rows.set(i, [1 + rnd(8), [...parts].sort((x, y) => x - y).map((p) => [p, 1 + rnd(2)])]);
+  }
+  return (item) => rows.get(item);
+}""",
+        small="[0, makeCatalog(rnd, 1 + rnd(9))]", big="[0, makeCatalog(rnd, n)]", wrap="[a, countedFn(b)]", empty="[0, makeCatalog(makeRnd(0), 1)]",
         naive='''function $f($a, $b) {
-  const best = (i, j) => {
-    const here = $b(i, j);
-    if (i === $a - 1 && j === $a - 1) return here;
-    const options = [];
-    if (i + 1 < $a) options.push(best(i + 1, j));
-    if (j + 1 < $a) options.push(best(i, j + 1));
-    return here + Math.min(...options);
-  };
-  return best(0, 0);
+  const [unit, parts] = $b($a);
+  return unit + parts.reduce((sum, [part, qty]) => sum + qty * $f(part, $b), 0);
 }
 ''', fast='''function $f($a, $b) {
   const known = new Map();
-  const best = (i, j) => {
-    const key = i * $a + j;
-    if (known.has(key)) return known.get(key);
-    const here = $b(i, j);
-    let result = here;
-    if (!(i === $a - 1 && j === $a - 1)) {
-      const options = [];
-      if (i + 1 < $a) options.push(best(i + 1, j));
-      if (j + 1 < $a) options.push(best(i, j + 1));
-      result = here + Math.min(...options);
+  const cost = (item) => {
+    if (!known.has(item)) {
+      const [unit, parts] = $b(item);
+      known.set(item, unit + parts.reduce((sum, [part, qty]) => sum + qty * cost(part), 0));
     }
-    known.set(key, result);
-    return result;
+    return known.get(item);
   };
-  return best(0, 0);
+  return cost($a);
 }
 ''', oracle='''function oracle(a, b) {
-  const best = Array.from({ length: a }, () => new Array(a).fill(0));
-  for (let i = a - 1; i >= 0; i--) {
-    for (let j = a - 1; j >= 0; j--) {
-      const here = b(i, j);
-      if (i === a - 1 && j === a - 1) { best[i][j] = here; continue; }
-      const opts = [];
-      if (i + 1 < a) opts.push(best[i + 1][j]);
-      if (j + 1 < a) opts.push(best[i][j + 1]);
-      best[i][j] = here + Math.min(...opts);
+  const known = new Map();
+  const cost = (item) => {
+    if (!known.has(item)) {
+      const [unit, parts] = b(item);
+      let total = unit;
+      for (const [part, qty] of parts) total += qty * cost(part);
+      known.set(item, total);
     }
-  }
-  return best[0][0];
-}''', spec="The grid has `{a} x {a}` cells (`{a}` at least 1); `{b}(row, col)` is the expensive cost of stepping on a cell. Returns the cheapest total cost of a walk from the top-left to the bottom-right cell moving only down or right, counting both ends.",
-        vocab=[("cheapestCrossing", ["size", "costAt"], "Cheapest crossing of a field of tiles."), ("leastEffortTrail", ["side", "effort"], "Least-effort route over a square hillside map."),
-               ("cheapestCabling", ["width", "costOfCell"], "Cheapest cable run across a floor plan.")]),
+    return known.get(item);
+  };
+  return cost(a);
+}''', spec="`{b}(item)` is an expensive parts lookup returning `[unitCost, parts]`, where `parts` is an array of `[part, quantity]` pairs (empty for raw materials). Returns the total cost of `{a}`: its own unit cost plus, for every part, the quantity times the total cost of that part, recursively. Sub-assemblies are shared between many parents.",
+        vocab=[("assemblyCost", ["product", "partsOf"], "Total cost of building a product from its bill of materials."), ("kitPrice", ["kit", "contentsOf"], "Price of a kit including its nested sub-kits."),
+               ("menuCost", ["dish", "recipeOf"], "Cost of a dish including all its sub-recipes.")]),
 }
 
 PROMPTS = [
@@ -282,7 +276,7 @@ HINTS = {
     "rangeSums": "re-reads the same stretch of the series for every query", "windowMeans": "re-reads every window's elements for each window",
     "totalPrice": "asks the pricing service the same question again and again", "depths": "walks the tree to the root again for every node",
     "drain": "shifts the whole queue on every step", "usable": "calls the fetch function several times for the same key", "ranked": "scores the same item over and over while sorting",
-    "route": "recomputes the same sub-routes exponentially often",
+    "assembly": "recomputes the same sub-assemblies exponentially often",
 }
 
 

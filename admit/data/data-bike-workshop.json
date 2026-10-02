@@ -1,0 +1,50 @@
+[
+{
+"id": "data-bike-workshop-01-parts-by-kind",
+"ok": true
+},
+{
+"id": "data-bike-workshop-02-component-counts",
+"ok": true
+},
+{
+"id": "data-bike-workshop-03-unused-parts",
+"ok": true
+},
+{
+"id": "data-bike-workshop-04-raw-per-product",
+"ok": true
+},
+{
+"id": "data-bike-workshop-05-rolled-up-cost",
+"ok": true
+},
+{
+"id": "data-bike-workshop-06-where-used",
+"ok": true
+},
+{
+"id": "data-bike-workshop-07-bom-depth",
+"ok": true
+},
+{
+"id": "data-bike-workshop-08-shared-raw-parts",
+"ok": true
+},
+{
+"id": "data-bike-workshop-09-order-shortages",
+"ok": true
+},
+{
+"id": "data-bike-workshop-10-first-order-to-stall",
+"ok": true
+},
+{
+"id": "data-bike-workshop-11-priciest-component-line",
+"ok": true
+},
+{
+"id": "data-bike-workshop-12-fix-spokes-per-bike",
+"ok": true
+}
+]

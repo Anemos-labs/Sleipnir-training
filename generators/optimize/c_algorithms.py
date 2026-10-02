@@ -109,7 +109,7 @@ size_t $f(const int *in, size_t n, int *out) {
         }
         size_t got = FN(in, (size_t)n, out);
         if (got != k || memcmp(out, want, k * sizeof(int)) != 0) { printf("dedupe mismatch for n=%d\\n", n); failures++; }''',
-        test_big='''size_t n = 250000;
+        test_big='''size_t n = 760000;
     int *in = malloc(n * sizeof(int));
     int *out = malloc(n * sizeof(int));
     for (size_t i = 0; i < n; i++) in[i] = rnd_below((int)(n / 2));
@@ -169,7 +169,7 @@ size_t $f(const int *a, size_t na, const int *b, size_t nb) {
         for (int i = 0; i < na; i++) { int f = 0; for (int j = 0; j < nb; j++) if (a[i] == b[j]) f = 1; want += f; }
         size_t got = FN(a, (size_t)na, b, (size_t)nb);
         if (got != want) { printf("common: got %zu, want %zu\\n", got, want); failures++; }''',
-        test_big='''size_t n = 200000;
+        test_big='''size_t n = 450000;
     int *a = malloc(n * sizeof(int));
     int *b = malloc(n * sizeof(int));
     unsigned char *inb = calloc(3 * n, 1);
@@ -224,7 +224,7 @@ size_t $f(const int *a, size_t na, const int *b, size_t nb) {
             for (int j = 0; j < nt; j++) if (table[j] == keys[i]) want = j;
             if (out[i] != want) { printf("lookup: key %d got %d want %d\\n", keys[i], out[i], want); failures++; }
         }''',
-        test_big='''size_t n = 250000;
+        test_big='''size_t n = 380000;
     int *table = malloc(n * sizeof(int));
     int *keys = malloc(n * sizeof(int));
     int *out = malloc(n * sizeof(int));

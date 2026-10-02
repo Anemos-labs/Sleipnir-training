@@ -1,0 +1,54 @@
+[
+{
+"id": "data-chess-club-01-rating-bands",
+"ok": true
+},
+{
+"id": "data-chess-club-02-standings",
+"ok": true
+},
+{
+"id": "data-chess-club-03-buchholz-ranking",
+"ok": true
+},
+{
+"id": "data-chess-club-04-colour-imbalance",
+"ok": true
+},
+{
+"id": "data-chess-club-05-repeat-pairings",
+"ok": true
+},
+{
+"id": "data-chess-club-06-big-upsets",
+"ok": true
+},
+{
+"id": "data-chess-club-07-unbeaten-runs",
+"ok": true
+},
+{
+"id": "data-chess-club-08-unplayed-pairs",
+"ok": true
+},
+{
+"id": "data-chess-club-09-double-booked-rounds",
+"ok": true
+},
+{
+"id": "data-chess-club-10-length-by-result",
+"ok": true
+},
+{
+"id": "data-chess-club-11-performance-estimate",
+"ok": true
+},
+{
+"id": "data-chess-club-12-second-half-surge",
+"ok": true
+},
+{
+"id": "data-chess-club-13-fix-standings-points",
+"ok": true
+}
+]

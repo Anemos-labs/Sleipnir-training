@@ -1,0 +1,54 @@
+[
+{
+"id": "data-mountain-huts-01-huts-by-altitude",
+"ok": true
+},
+{
+"id": "data-mountain-huts-02-cancellation-rates",
+"ok": true
+},
+{
+"id": "data-mountain-huts-03-meal-revenue",
+"ok": true
+},
+{
+"id": "data-mountain-huts-04-repeat-no-shows",
+"ok": true
+},
+{
+"id": "data-mountain-huts-05-party-size-brackets",
+"ok": true
+},
+{
+"id": "data-mountain-huts-06-overbooked-nights",
+"ok": true
+},
+{
+"id": "data-mountain-huts-07-peak-night",
+"ok": true
+},
+{
+"id": "data-mountain-huts-08-booking-price",
+"ok": true
+},
+{
+"id": "data-mountain-huts-09-hut-to-hut-trips",
+"ok": true
+},
+{
+"id": "data-mountain-huts-10-longest-quiet-spell",
+"ok": true
+},
+{
+"id": "data-mountain-huts-11-weekend-nights",
+"ok": true
+},
+{
+"id": "data-mountain-huts-12-meals-per-person-night",
+"ok": true
+},
+{
+"id": "data-mountain-huts-13-fix-bed-nights",
+"ok": true
+}
+]

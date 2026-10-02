@@ -1,0 +1,34 @@
+[
+{
+"id": "data-warmup-tools-01-members-per-tier",
+"ok": true
+},
+{
+"id": "data-warmup-tools-02-costly-tools",
+"ok": true
+},
+{
+"id": "data-warmup-tools-03-big-fees",
+"ok": true
+},
+{
+"id": "data-warmup-tools-04-most-loans",
+"ok": true
+},
+{
+"id": "data-warmup-tools-05-reservations-per-tool",
+"ok": true
+},
+{
+"id": "data-warmup-tools-06-returned-on-time",
+"ok": true
+},
+{
+"id": "data-warmup-tools-07-early-members",
+"ok": true
+},
+{
+"id": "data-warmup-tools-08-retired-list",
+"ok": true
+}
+]

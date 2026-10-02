@@ -1,0 +1,34 @@
+[
+{
+"id": "data-tram-indexes-01-index-skips-by-stop",
+"ok": true
+},
+{
+"id": "data-tram-indexes-02-index-day-of-line",
+"ok": true
+},
+{
+"id": "data-tram-indexes-03-index-open-faults-covering",
+"ok": true
+},
+{
+"id": "data-tram-indexes-04-index-latest-runs",
+"ok": true
+},
+{
+"id": "data-tram-indexes-05-index-workload-of-four",
+"ok": true
+},
+{
+"id": "data-tram-indexes-06-index-join-by-category",
+"ok": true
+},
+{
+"id": "data-tram-indexes-07-index-either-or",
+"ok": true
+},
+{
+"id": "data-tram-indexes-08-index-serious-open",
+"ok": true
+}
+]

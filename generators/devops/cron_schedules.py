@@ -7,6 +7,13 @@ from fx import dd, family
 from generators.devops import _dokit as K
 from generators.devops._cronsim import CRONSIM
 
+
+def pd(text, note):
+    """dedent the text first and then append the note (dedenting after the concatenation does nothing)"""
+    t = dd(text).rstrip("\n")
+    return t + (note if note.startswith("\n") or t.endswith(" ") else " " + note)
+
+
 _mod = types.ModuleType("cronsim")
 exec(compile(CRONSIM, "cronsim.py", "exec"), _mod.__dict__)
 cs = _mod
@@ -18,6 +25,7 @@ from dolib import *
 import datetime as dt
 sys.path.insert(0, "tests")
 import cronsim
+
 
 spec = json.load(open("tests/spec.json", encoding="utf-8"))
 rep = Report()
@@ -122,28 +130,28 @@ RULES_NOTE = "`tools/cronsim.py` shows when each job runs and documents the exac
 
 # 1 ------------------------------------------------------------------------------------------------------------------
 spec(slug="basic-schedule", d=1, path="crontab", kind="author", tokens=["/opt/jobs/backup.sh", "/opt/jobs/weekly-report.sh", "/opt/jobs/monthly-invoice.sh"], env={"MAILTO": ""},
-     prompt=dd('''
+     prompt=pd('''
         Write the user crontab `crontab` (five time fields then the command; no user column) for these jobs, and set `MAILTO=""` at the top so that no mail is sent:
 
         - `/opt/jobs/backup.sh` every day at 02:30;
         - `/opt/jobs/weekly-report.sh` every Monday at 08:00;
         - `/opt/jobs/monthly-invoice.sh` on the first day of every month at 00:15.
 
-        ''' + RULES_NOTE),
+        ''', RULES_NOTE),
      start="# user crontab\n", ref='MAILTO=""\n30 2 * * * /opt/jobs/backup.sh\n0 8 * * 1 /opt/jobs/weekly-report.sh\n15 0 1 * * /opt/jobs/monthly-invoice.sh\n',
      sanity=[("/opt/jobs/backup.sh", 0, 7), ("/opt/jobs/weekly-report.sh", 1, 5), ("/opt/jobs/monthly-invoice.sh", 2, 1)],
      wrong=['MAILTO=""\n30 2 * * * /opt/jobs/backup.sh\n0 8 * * 0 /opt/jobs/weekly-report.sh\n15 0 1 * * /opt/jobs/monthly-invoice.sh\n'])
 
 # 2 ------------------------------------------------------------------------------------------------------------------
 spec(slug="business-hours", d=2, path="crontab", kind="author", tokens=["/opt/jobs/sync.sh", "/opt/jobs/digest.sh", "/opt/jobs/heartbeat.sh"], env={"PATH": "/usr/local/bin:/usr/bin:/bin"},
-     prompt=dd('''
+     prompt=pd('''
         Write the user crontab `crontab` with `PATH=/usr/local/bin:/usr/bin:/bin` set at the top and these jobs:
 
         - `/opt/jobs/sync.sh` every 15 minutes from 09:00 to 17:45 inclusive, Monday to Friday (so the last run of a day is 17:45);
         - `/opt/jobs/digest.sh` at 07:30 on Saturdays and Sundays;
         - `/opt/jobs/heartbeat.sh` every hour, at five minutes past.
 
-        ''' + RULES_NOTE),
+        ''', RULES_NOTE),
      start="# user crontab\n", ref="PATH=/usr/local/bin:/usr/bin:/bin\n*/15 9-17 * * 1-5 /opt/jobs/sync.sh\n30 7 * * 0,6 /opt/jobs/digest.sh\n5 * * * * /opt/jobs/heartbeat.sh\n",
      sanity=[("/opt/jobs/sync.sh", 0, 5 * 36), ("/opt/jobs/digest.sh", 0, 2), ("/opt/jobs/heartbeat.sh", 0, 168)],
      wrong=["PATH=/usr/local/bin:/usr/bin:/bin\n*/15 9-17 * * mon-fri /opt/jobs/sync.sh\n30 7 * * 0,6 /opt/jobs/digest.sh\n5 * * * * /opt/jobs/heartbeat.sh\n",
@@ -166,14 +174,14 @@ spec(slug="steps-and-lists", d=3, path="crontab", kind="author", tokens=["/srv/o
 
 # 4 ------------------------------------------------------------------------------------------------------------------
 spec(slug="dom-dow-trap", d=3, path="crontab", kind="fix", tokens=["/srv/pay/payroll.sh", "/srv/pay/cleanup.sh", "/srv/pay/audit.sh"],
-     prompt=dd('''
+     prompt=pd('''
         `crontab` is the payroll team's crontab. Payroll ran on far too many days last month. The intended schedule:
 
         - `/srv/pay/payroll.sh` at 06:00 on the 1st and the 15th of each month, but **only when that day is a weekday** (Monday to Friday); nothing on weekends;
         - `/srv/pay/cleanup.sh` at 03:00 on the 1st of every month **and** on every Sunday (both conditions; this one is already right);
         - `/srv/pay/audit.sh` at 22:00 on the 28th of every month (already right).
 
-        Fix the file. ''' + RULES_NOTE),
+        Fix the file. ''', RULES_NOTE),
      start=dd('''
         # payroll team crontab
         0 6 1,15 * 1-5 /srv/pay/payroll.sh
@@ -209,9 +217,9 @@ spec(slug="calendar-edge-cases", d=4, path="crontab", kind="author", tokens=["/s
 
 # 6 ------------------------------------------------------------------------------------------------------------------
 spec(slug="system-crontab-user", d=2, path="cron.d/shipping", kind="fix", system=True, user="shipper", tokens=["/opt/shipping/export.sh", "/opt/shipping/poll.sh", "/opt/shipping/prune.sh"], env={"SHELL": "/bin/sh"},
-     prompt=dd('''
+     prompt=pd('''
         `cron.d/shipping` is a system crontab (`/etc/cron.d` format): it has the same time fields as a user crontab plus a **user name between the time fields and the command**. The daemon rejects the file. The three jobs must run as the user
-        `shipper`, with the same schedules as now. Fix `cron.d/shipping` (use `python3 tools/cronsim.py cron.d/shipping START END --system` to check it). ''' + RULES_NOTE),
+        `shipper`, with the same schedules as now. Fix `cron.d/shipping` (use `python3 tools/cronsim.py cron.d/shipping START END --system` to check it). ''', RULES_NOTE),
      start="SHELL=/bin/sh\n15 3 * * * /opt/shipping/export.sh\n*/10 * * * * /opt/shipping/poll.sh\n@hourly /opt/shipping/prune.sh\n",
      ref="SHELL=/bin/sh\n15 3 * * * shipper /opt/shipping/export.sh\n*/10 * * * * shipper /opt/shipping/poll.sh\n@hourly shipper /opt/shipping/prune.sh\n",
      sanity=[("/opt/shipping/export.sh", 0, 7), ("/opt/shipping/prune.sh", 0, 168)],
@@ -219,16 +227,16 @@ spec(slug="system-crontab-user", d=2, path="cron.d/shipping", kind="fix", system
 
 # 7 ------------------------------------------------------------------------------------------------------------------
 spec(slug="percent-escape", d=2, path="crontab", kind="fix", tokens=["/opt/jobs/dump.sh", "/opt/jobs/notify.sh"],
-     prompt=dd('''
+     prompt=pd('''
         Two backup jobs in `crontab` never produce the right files: cron treats an unescaped `%` in the command as a line break and feeds the rest to the command's standard input, so the date in the file name is cut off. Fix `crontab`
-        (the schedules and commands stay: `dump.sh` at 01:00 and a tar of /srv/data at 01:30 followed by `notify.sh`, daily). ''' + RULES_NOTE),
+        (the schedules and commands stay: `dump.sh` at 01:00 and a tar of /srv/data at 01:30 followed by `notify.sh`, daily). ''', RULES_NOTE),
      start="0 1 * * * /opt/jobs/dump.sh > /var/backups/db-$(date +%F).sql\n30 1 * * * tar czf /var/backups/files-$(date +%Y%m%d).tgz /srv/data && /opt/jobs/notify.sh\n",
      ref="0 1 * * * /opt/jobs/dump.sh > /var/backups/db-$(date +\\%F).sql\n30 1 * * * tar czf /var/backups/files-$(date +\\%Y\\%m\\%d).tgz /srv/data && /opt/jobs/notify.sh\n",
      wrong=["0 1 * * * /opt/jobs/dump.sh > /var/backups/db-$(date +\\%F).sql\n"])
 
 # 8 ------------------------------------------------------------------------------------------------------------------
 spec(slug="names-and-ranges", d=2, path="crontab", kind="fix", tokens=["/opt/jobs/open.sh", "/opt/jobs/close.sh", "/opt/jobs/seasonal.sh", "/opt/jobs/audit.sh"],
-     prompt=dd('''
+     prompt=pd('''
         `crontab` is rejected by cron. The intended schedule:
 
         - `/opt/jobs/open.sh` at 08:00 Monday to Friday;
@@ -236,7 +244,7 @@ spec(slug="names-and-ranges", d=2, path="crontab", kind="fix", tokens=["/opt/job
         - `/opt/jobs/seasonal.sh` at 03:00 on the 1st day of January and of July;
         - `/opt/jobs/audit.sh` at 23:00 on Sundays (any of the usual spellings of Sunday).
 
-        Fix the file without changing the schedule. ''' + RULES_NOTE),
+        Fix the file without changing the schedule. ''', RULES_NOTE),
      start="0 8 * * mon-fri /opt/jobs/open.sh\n30 17 * * mon-fri /opt/jobs/close.sh\n0 3 1 jan,jul * /opt/jobs/seasonal.sh\n0 23 * * sun /opt/jobs/audit.sh\n",
      ref="0 8 * * 1-5 /opt/jobs/open.sh\n30 17 * * 1-5 /opt/jobs/close.sh\n0 3 1 1,7 * /opt/jobs/seasonal.sh\n0 23 * * sun /opt/jobs/audit.sh\n",
      sanity=[("/opt/jobs/open.sh", 0, 5), ("/opt/jobs/seasonal.sh", 2, 1), ("/opt/jobs/audit.sh", 0, 1)],
@@ -277,7 +285,7 @@ spec(slug="stagger-offsets", d=3, path="crontab", kind="author", tokens=["/srv/d
 
 # 11 -----------------------------------------------------------------------------------------------------------------
 spec(slug="mixed-crontab-fix", d=4, path="crontab", kind="fix", tokens=["/srv/jobs/ingest.sh", "/srv/jobs/compact.sh", "/srv/jobs/export.sh", "/srv/jobs/report.sh", "/srv/jobs/vacuum.sh"], env={"MAILTO": "ops@example.org"},
-     prompt=dd('''
+     prompt=pd('''
         The data team's `crontab` has several mistakes (cron refuses part of it and some jobs run on the wrong days). Intended behaviour, with `MAILTO` set to `ops@example.org`:
 
         - `/srv/jobs/ingest.sh` every 5 minutes between 06:00 and 21:55, every day;
@@ -286,7 +294,7 @@ spec(slug="mixed-crontab-fix", d=4, path="crontab", kind="fix", tokens=["/srv/jo
         - `/srv/jobs/report.sh` at 08:00 on the 10th and the 25th of each month, but only when that day is a weekday;
         - `/srv/jobs/vacuum.sh` at 01:00 on the 1st of every month.
 
-        Fix the file. ''' + RULES_NOTE),
+        Fix the file. ''', RULES_NOTE),
      start=dd('''
         MAILTO=ops@example.org
         */5 6-21 * * * /srv/jobs/ingest.sh
@@ -307,7 +315,7 @@ spec(slug="mixed-crontab-fix", d=4, path="crontab", kind="fix", tokens=["/srv/jo
 
 # 12 -----------------------------------------------------------------------------------------------------------------
 spec(slug="quarter-end-guard", d=5, path="cron.d/ledger", kind="author", system=True, user="ledger", tokens=["/opt/ledger/close-books.sh", "/opt/ledger/weekly-recon.sh", "/opt/ledger/payday-check.sh", "/opt/ledger/snapshot.sh"], env={"PATH": "/usr/local/bin:/usr/bin:/bin", "MAILTO": ""},
-     prompt=dd('''
+     prompt=pd('''
         Write the system crontab `cron.d/ledger` (`/etc/cron.d` format: a user column after the five time fields). All jobs run as user `ledger`; set `PATH=/usr/local/bin:/usr/bin:/bin` and `MAILTO=""` at the top.
 
         - `/opt/ledger/close-books.sh` at 23:55 on the last day of March, June, September and December;
@@ -315,7 +323,7 @@ spec(slug="quarter-end-guard", d=5, path="cron.d/ledger", kind="author", system=
         - `/opt/ledger/payday-check.sh` at 07:00 on the last Friday of every month;
         - `/opt/ledger/snapshot.sh` at 00:05 every day, but only on days whose day of the month is odd.
 
-        Cron cannot express these directly: use guards (`[ ... ] && /path`), `date` is allowed inside, `%` must be written `\\%`. Check with `python3 tools/cronsim.py cron.d/ledger START END --system`. ''' + RULES_NOTE),
+        Cron cannot express these directly: use guards (`[ ... ] && /path`), `date` is allowed inside, `%` must be written `\\%`. Check with `python3 tools/cronsim.py cron.d/ledger START END --system`. ''', RULES_NOTE),
      start="# ledger\n",
      ref=dd('''
         PATH=/usr/local/bin:/usr/bin:/bin

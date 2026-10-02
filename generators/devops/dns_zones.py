@@ -7,6 +7,13 @@ from fx import dd, family
 from generators.devops import _dokit as K
 from generators.devops._dnssim import DNSSIM
 
+
+def pd(text, note):
+    """dedent the text first and then append the note (dedenting after the concatenation does nothing)"""
+    t = dd(text).rstrip("\n")
+    return t + (note if note.startswith("\n") or t.endswith(" ") else " " + note)
+
+
 _mod = types.ModuleType("zonesim")
 exec(compile(DNSSIM, "zonesim.py", "exec"), _mod.__dict__)
 zs = _mod
@@ -15,6 +22,7 @@ CHECK_DNS = r'''
 from dolib import *
 sys.path.insert(0, "tests")
 import zonesim
+
 
 spec = json.load(open("tests/cases.json", encoding="utf-8"))
 try:
@@ -85,7 +93,7 @@ H = "harbor.example."
 
 # 1 ------------------------------------------------------------------------------------------------------------------
 spec(slug="basic-zone", d=2, origin=H, kind="author",
-     prompt=dd('''
+     prompt=pd('''
         Write the zone file `zones/harbor.example.zone` for `harbor.example.`:
 
         - default TTL one hour; SOA: primary server `ns1.harbor.example.`, contact `hostmaster.harbor.example.`, serial 2024061001, refresh 2h, retry 15m, expire 2w, minimum 5m;
@@ -95,7 +103,7 @@ spec(slug="basic-zone", d=2, origin=H, kind="author",
         - mail: the apex has MX 10 pointing to `mail`, and `mail` is 192.0.2.25 with a TTL of 5 minutes (300 s);
         - the apex has the text record `v=spf1 mx -all`;
         - `status` is 192.0.2.50 with a TTL of 60 seconds.
-     ''' + NOTE),
+     ''', NOTE),
      start="; harbor.example zone\n",
      ref=dd('''
         $ORIGIN harbor.example.
@@ -142,11 +150,11 @@ spec(slug="basic-zone", d=2, origin=H, kind="author",
 # 2 ------------------------------------------------------------------------------------------------------------------
 
 spec(slug="missing-trailing-dots", d=2, origin="lantern.example.", kind="fix",
-     prompt=dd('''
+     prompt=pd('''
         The zone file `zones/lantern.example.zone` fails the zone check (and would answer nonsense): names that were meant to be fully qualified are written without the trailing dot, so the origin is appended a second time.
         The intended zone: name servers `ns1.lantern.example.` and `ns2.lantern.example.`, mail handled by `mx1.lantern.example.` (preference 10) and `mx2.lantern.example.` (preference 20), `www` and `blog` are aliases (CNAME) of `web.lantern.example.`,
         and `files` is an alias of the external name `files.cdn-provider.net.`. Fix the file; the addresses and everything else stay the same.
-     ''' + NOTE),
+     ''', NOTE),
      start=dd('''
         $TTL 3600
         @    IN SOA ns1.lantern.example hostmaster.lantern.example. 2024020101 7200 900 1209600 300
@@ -189,7 +197,7 @@ spec(slug="missing-trailing-dots", d=2, origin="lantern.example.", kind="fix",
 # 3 ------------------------------------------------------------------------------------------------------------------
 O3 = "quarry.example."
 spec(slug="cname-conflicts", d=3, origin=O3, kind="fix",
-     prompt=dd('''
+     prompt=pd('''
         `zones/quarry.example.zone` is rejected: it breaks the CNAME rules. Here is what the zone must answer after the repair (keep all other data as it is):
 
         - `quarry.example.` has the address 203.0.113.10 and MX 10 `mail.quarry.example.`, NS `ns1`/`ns2`; it must not be an alias.
@@ -197,7 +205,7 @@ spec(slug="cname-conflicts", d=3, origin=O3, kind="fix",
         - `mail.quarry.example.` has the address 203.0.113.25 (an A record; today it is an alias of `smtp`, which is not allowed as a mail exchange target).
         - `docs.quarry.example.` is an alias of `quarry.hosted-docs.net.` and must not carry any other record; the ownership proof `"docs-verify=abc123"` (TXT) goes to `_verify.docs.quarry.example.` instead.
         - `shop.quarry.example.` is an alias of `shops.provider.net.`; the TXT record that is there today is moved to `_note.shop.quarry.example.` unchanged (`"seasonal"`).
-     ''' + NOTE),
+     ''', NOTE),
      start=dd('''
         $ORIGIN quarry.example.
         $TTL 1h
@@ -245,13 +253,13 @@ spec(slug="cname-conflicts", d=3, origin=O3, kind="fix",
 # 4 ------------------------------------------------------------------------------------------------------------------
 O4 = "meadow.example."
 spec(slug="wildcards", d=3, origin=O4, kind="author",
-     prompt=dd('''
+     prompt=pd('''
         Write `zones/meadow.example.zone` for `meadow.example.` (TTL 10 minutes by default, SOA `ns1.meadow.example.` / `admin.meadow.example.`, serial 7, refresh 3600, retry 600, expire 604800, minimum 300; NS `ns1.meadow.example.` = 192.0.2.1 and `ns2.meadow.example.` = 192.0.2.2). Then:
 
         - every name under `apps.meadow.example.` (at any depth, e.g. `x.apps...` and `a.b.apps...`) resolves to 192.0.2.90, **except** `admin.apps.meadow.example.`, which is 192.0.2.91 (and has no other data, so e.g. its TXT query is empty rather than answered from the wildcard);
         - every name directly or indirectly under `dev.meadow.example.` is an alias (CNAME) of `dev-lb.meadow.example.`, which is 192.0.2.99; `dev.meadow.example.` itself has no records (querying it gives an empty answer, not NXDOMAIN... because names exist below it);
         - `meadow.example.` itself is 192.0.2.10, and nothing else exists: any other name must be NXDOMAIN.
-     ''' + NOTE),
+     ''', NOTE),
      start="; meadow zone\n",
      ref=dd('''
         $ORIGIN meadow.example.
@@ -276,14 +284,14 @@ spec(slug="wildcards", d=3, origin=O4, kind="author",
 # 5 ------------------------------------------------------------------------------------------------------------------
 O5 = "campus.example."
 spec(slug="delegation-glue", d=4, origin=O5, kind="author",
-     prompt=dd('''
+     prompt=pd('''
         Write `zones/campus.example.zone` for `campus.example.` (TTL 1 day by default; SOA `ns1.campus.example.` / `noc.campus.example.`, serial 2024090101, refresh 6h, retry 1h, expire 4w, minimum 1h; apex NS `ns1.campus.example.` = 198.51.100.1 and `ns2.campus.example.` = 198.51.100.2; apex address 198.51.100.10; `www` alias of the apex).
         Then delegate two sub-domains:
 
         - `eu.campus.example.` is served by `ns1.eu.campus.example.` (198.51.100.101) and `ns2.eu.campus.example.` (198.51.100.102), which sit inside the delegated domain, so their addresses must be given as glue in this zone;
         - `us.campus.example.` is served by `ns1.us.example.net.` and `ns2.us.example.net.` (outside this zone: no glue).
         Queries below a delegation must give a referral (the checker rejects any other data below a delegation that is not glue).
-     ''' + NOTE),
+     ''', NOTE),
      start="; campus zone\n",
      ref=dd('''
         $ORIGIN campus.example.
@@ -312,7 +320,7 @@ spec(slug="delegation-glue", d=4, origin=O5, kind="author",
 KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAu1SU1LfVLPHCozMxH2Mo4lgOEePzNm0tRgeLezV6ffAt0gunVTLw7onLRnrq0/IzW7yWR7QkrmBL7jTKEn5u+qKhbwKfBstIs+bMY2Zkp18gnTxKLxoS2tFczGkPLPgizskuemMghRniWaoLcyehkd3qqGElvW/VDL5AaWTg0nLVkjRo9z+40RQzuVaE8AkAFmxZzow3x+VJYKdjykkJ0iT9wCS0DRTXu269V264Vf/3jvredZiKRkgwlL9xNAwxXFg0x/XFw005UWVRIkdgcKWTjpBP2dPwVZ4WWC+9aGVd+Gyn1o0CLelf4rEjGoXtAPLvFPU8XV9"
 O6 = "postbox.example."
 spec(slug="mail-records", d=3, origin=O6, kind="author",
-     prompt=dd(f'''
+     prompt=pd(f'''
         Write `zones/postbox.example.zone` for `postbox.example.` (default TTL 1h; SOA `ns1.postbox.example.` / `postmaster.postbox.example.`, serial 11, refresh 7200, retry 900, expire 1209600, minimum 300; NS `ns1` = 192.0.2.1 and `ns2` = 192.0.2.2 inside the zone). Mail setup:
 
         - MX records of the apex: preference 10 `mx1.postbox.example.` (192.0.2.25), preference 20 `mx2.postbox.example.` (192.0.2.26), preference 30 the external `relay.backup-mx.net.`;
@@ -321,7 +329,7 @@ spec(slug="mail-records", d=3, origin=O6, kind="author",
         - DKIM: `sel1._domainkey.postbox.example.` TXT `v=DKIM1; k=rsa; p=` followed by this public key (a single TXT string must not exceed 255 bytes, so write it as several quoted strings, which resolvers join):
           `{KEY}`
         - `autoconfig` and `imap` are aliases of `mx1.postbox.example.`; `_imaps._tcp.postbox.example.` has SRV 0 1 993 `mx1.postbox.example.` (an SRV target must not be an alias).
-     ''' + NOTE),
+     ''', NOTE),
      start="; postbox zone\n",
      ref=dd(f'''
         $ORIGIN postbox.example.
@@ -352,7 +360,7 @@ spec(slug="mail-records", d=3, origin=O6, kind="author",
 # 7 ------------------------------------------------------------------------------------------------------------------
 O7 = "2.0.192.in-addr.arpa."
 spec(slug="reverse-zone", d=3, origin=O7, kind="author",
-     prompt=dd('''
+     prompt=pd('''
         Write the reverse zone `zones/2.0.192.in-addr.arpa.zone` for the network 192.0.2.0/24 (origin `2.0.192.in-addr.arpa.`; default TTL 1h; SOA `ns1.harbor.example.` / `hostmaster.harbor.example.`, serial 5, refresh 7200, retry 900, expire 1209600, minimum 300; NS `ns1.harbor.example.` and `ns2.harbor.example.`, both outside this zone).
         PTR records (the owner name is the last octet, relative to the origin):
 
@@ -361,7 +369,7 @@ spec(slug="reverse-zone", d=3, origin=O7, kind="author",
         - 192.0.2.25 -> `mail.harbor.example.` (TTL 5 minutes)
         - 192.0.2.50 and 192.0.2.51 -> `status.harbor.example.`  (two PTR records for the same name are fine, one per address)
         - 192.0.2.100 -> `vpn.harbor.example.`
-     ''' + NOTE),
+     ''', NOTE),
      start="; reverse zone\n",
      ref=dd('''
         $ORIGIN 2.0.192.in-addr.arpa.
@@ -385,7 +393,7 @@ spec(slug="reverse-zone", d=3, origin=O7, kind="author",
 # 8 ------------------------------------------------------------------------------------------------------------------
 O8 = "vane.example."
 spec(slug="ttl-layers", d=3, origin=O8, kind="author",
-     prompt=dd('''
+     prompt=pd('''
         Write `zones/vane.example.zone` for `vane.example.` where TTLs matter (the checker asks for them). Default TTL 5 minutes; SOA `ns1.vane.example.` / `ops.vane.example.`, serial 42, refresh 1h, retry 10m, expire 1w, minimum 5m.
         Records:
 
@@ -394,7 +402,7 @@ spec(slug="ttl-layers", d=3, origin=O8, kind="author",
         - `www` CNAME of the apex: TTL 1 hour 30 minutes (5400 s); `api` A 198.51.100.30 and 198.51.100.31: default TTL;
         - `static` A 198.51.100.40: TTL 7 days; `canary` A 198.51.100.50: TTL 30 seconds;
         - the SOA record itself has the default TTL.
-     ''' + NOTE),
+     ''', NOTE),
      start="; vane zone\n",
      ref=dd('''
         $ORIGIN vane.example.
@@ -420,14 +428,14 @@ spec(slug="ttl-layers", d=3, origin=O8, kind="author",
 # 9 ------------------------------------------------------------------------------------------------------------------
 O9 = "relay.example."
 spec(slug="srv-and-caa", d=3, origin=O9, kind="author",
-     prompt=dd('''
+     prompt=pd('''
         Write `zones/relay.example.zone` for `relay.example.` (default TTL 1h; SOA `ns1.relay.example.` / `dns.relay.example.`, serial 9, refresh 3h, retry 30m, expire 2w, minimum 10m; NS `ns1` = 203.0.113.1 and `ns2` = 203.0.113.2). Service records:
 
         - `_sip._tcp.relay.example.`: SRV priority 10 weight 60 port 5060 to `sip1.relay.example.` and priority 10 weight 40 port 5060 to `sip2.relay.example.`, and a fallback priority 20 weight 0 port 5060 to `sip3.relay.example.`; the three hosts are 203.0.113.61, .62 and .63;
         - `_xmpp-client._tcp.relay.example.`: SRV 5 0 5222 to `chat.relay.example.` (203.0.113.70);
         - certificate policy (CAA on the apex): `0 issue "letsencrypt.org"`, `0 issuewild ";"` (no wildcard certificates), `0 iodef "mailto:security@relay.example"`;
         - the apex has the address 203.0.113.10.
-     ''' + NOTE),
+     ''', NOTE),
      start="; relay zone\n",
      ref=dd('''
         $ORIGIN relay.example.
@@ -457,14 +465,14 @@ spec(slug="srv-and-caa", d=3, origin=O9, kind="author",
 # 10 -----------------------------------------------------------------------------------------------------------------
 O10 = "orchard.example."
 spec(slug="zone-repair-mixed", d=4, origin=O10, kind="fix",
-     prompt=dd('''
+     prompt=pd('''
         The zone file `zones/orchard.example.zone` was edited by three people and no longer loads. Repair it so that it passes the zone check and answers like this (everything not listed stays as it is):
 
         - `orchard.example.` has addresses 192.0.2.10 and 2001:db8::10, MX 10 `mail.orchard.example.`, NS `ns1.orchard.example.` and `ns2.orchard.example.` (both in the zone);
         - `mail.orchard.example.` = 192.0.2.25; `www` and `shop` are aliases of the apex; `ns1` = 192.0.2.1, `ns2` = 192.0.2.2;
         - `lab.orchard.example.` is delegated to `ns.lab.orchard.example.` (192.0.2.200, glue in this zone); `old.orchard.example.` no longer exists.
         - the SPF text of the apex is `v=spf1 mx -all`; the long text `notes` is the concatenation of the two quoted strings in the file.
-     ''' + NOTE),
+     ''', NOTE),
      start=dd('''
         $ORIGIN orchard.example.
         @ IN SOA ns1 hostmaster 2024051701 7200 900 1209600

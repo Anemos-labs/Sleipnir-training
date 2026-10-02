@@ -1,0 +1,34 @@
+[
+{
+"id": "optimize-go-fanout-01-parallel-fetchreadings",
+"ok": true
+},
+{
+"id": "optimize-go-fanout-02-cancel-loadprofiles",
+"ok": true
+},
+{
+"id": "optimize-go-fanout-03-bounded-lookupplaces",
+"ok": true
+},
+{
+"id": "optimize-go-fanout-04-parallel-pulldocuments",
+"ok": true
+},
+{
+"id": "optimize-go-fanout-05-cancel-resolveauthors",
+"ok": true
+},
+{
+"id": "optimize-go-fanout-06-cancel-fetchreadings",
+"ok": true
+},
+{
+"id": "optimize-go-fanout-07-dedupe-loadprofiles",
+"ok": true
+},
+{
+"id": "optimize-go-fanout-08-bounded-lookupplaces",
+"ok": true
+}
+]

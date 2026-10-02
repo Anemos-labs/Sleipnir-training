@@ -1,0 +1,50 @@
+[
+{
+"id": "devops-firewall-rules-db-allowlist-chain",
+"ok": true
+},
+{
+"id": "devops-firewall-rules-dnat-forward-fix",
+"ok": true
+},
+{
+"id": "devops-firewall-rules-edge-firewall-policy",
+"ok": true
+},
+{
+"id": "devops-firewall-rules-egress-allowlist",
+"ok": true
+},
+{
+"id": "devops-firewall-rules-log-then-drop-scans",
+"ok": true
+},
+{
+"id": "devops-firewall-rules-port-forward-gateway",
+"ok": true
+},
+{
+"id": "devops-firewall-rules-ports-ranges-negation",
+"ok": true
+},
+{
+"id": "devops-firewall-rules-return-chain-fix",
+"ok": true
+},
+{
+"id": "devops-firewall-rules-rule-order-fix",
+"ok": true
+},
+{
+"id": "devops-firewall-rules-segmented-router",
+"ok": true
+},
+{
+"id": "devops-firewall-rules-single-host-basics",
+"ok": true
+},
+{
+"id": "devops-firewall-rules-transparent-proxy-redirect",
+"ok": true
+}
+]

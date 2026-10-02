@@ -1,0 +1,42 @@
+[
+{
+"id": "devops-systemd-units-backup-timer",
+"ok": true
+},
+{
+"id": "devops-systemd-units-calendar-expressions",
+"ok": true
+},
+{
+"id": "devops-systemd-units-exec-forking-fix",
+"ok": true
+},
+{
+"id": "devops-systemd-units-migration-oneshot",
+"ok": true
+},
+{
+"id": "devops-systemd-units-ordering-fix",
+"ok": true
+},
+{
+"id": "devops-systemd-units-sandboxing",
+"ok": true
+},
+{
+"id": "devops-systemd-units-service-and-cleanup-timer",
+"ok": true
+},
+{
+"id": "devops-systemd-units-service-basics",
+"ok": true
+},
+{
+"id": "devops-systemd-units-socket-activation",
+"ok": true
+},
+{
+"id": "devops-systemd-units-timer-repair",
+"ok": true
+}
+]

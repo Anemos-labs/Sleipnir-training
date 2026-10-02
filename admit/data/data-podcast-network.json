@@ -1,0 +1,54 @@
+[
+{
+"id": "data-podcast-network-01-shows-per-genre",
+"ok": true
+},
+{
+"id": "data-podcast-network-02-episode-length-stats",
+"ok": true
+},
+{
+"id": "data-podcast-network-03-first-week-downloads",
+"ok": true
+},
+{
+"id": "data-podcast-network-04-silent-episodes",
+"ok": true
+},
+{
+"id": "data-podcast-network-05-best-episode-per-show",
+"ok": true
+},
+{
+"id": "data-podcast-network-06-publishing-gaps",
+"ok": true
+},
+{
+"id": "data-podcast-network-07-weekday-profile",
+"ok": true
+},
+{
+"id": "data-podcast-network-08-sponsor-revenue",
+"ok": true
+},
+{
+"id": "data-podcast-network-09-first-week-share",
+"ok": true
+},
+{
+"id": "data-podcast-network-10-peak-rolling-week",
+"ok": true
+},
+{
+"id": "data-podcast-network-11-top-decile-episodes",
+"ok": true
+},
+{
+"id": "data-podcast-network-12-sponsor-dominance",
+"ok": true
+},
+{
+"id": "data-podcast-network-13-fix-ad-earnings",
+"ok": true
+}
+]

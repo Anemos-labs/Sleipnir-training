@@ -1,0 +1,54 @@
+[
+{
+"id": "data-tool-library-migrations-01-add-loan-counter",
+"ok": true
+},
+{
+"id": "data-tool-library-migrations-02-rename-label",
+"ok": true
+},
+{
+"id": "data-tool-library-migrations-03-split-deposits",
+"ok": true
+},
+{
+"id": "data-tool-library-migrations-04-merge-categories",
+"ok": true
+},
+{
+"id": "data-tool-library-migrations-05-retired-to-date",
+"ok": true
+},
+{
+"id": "data-tool-library-migrations-06-repair-late-fees",
+"ok": true
+},
+{
+"id": "data-tool-library-migrations-07-archive-old-loans",
+"ok": true
+},
+{
+"id": "data-tool-library-migrations-08-fee-audit-trigger",
+"ok": true
+},
+{
+"id": "data-tool-library-migrations-09-no-retired-loans",
+"ok": true
+},
+{
+"id": "data-tool-library-migrations-10-overdue-view",
+"ok": true
+},
+{
+"id": "data-tool-library-migrations-11-seed-categories",
+"ok": true
+},
+{
+"id": "data-tool-library-migrations-12-member-loan-numbers",
+"ok": true
+},
+{
+"id": "data-tool-library-migrations-13-balance-table",
+"ok": true
+}
+]

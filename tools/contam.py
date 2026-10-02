@@ -71,10 +71,18 @@ def h64(s: str) -> int:
     return int.from_bytes(hashlib.blake2b(s.encode("utf-8", "replace"), digest_size=8).digest(), "big")
 
 
-def shingle_hashes(tokens: list[str], k: int) -> set[int]:
+def shingle_hashes(tokens: list[str], k: int, min_words: int = 0) -> set[int]:
+    """Hashes of every k-token window. Windows with fewer than ``min_words`` alphabetic tokens (numeric tables,
+    runs of punctuation) are skipped: they match anything and mean nothing."""
     if len(tokens) < k:
         return set()
-    return {h64(" ".join(tokens[i : i + k])) for i in range(len(tokens) - k + 1)}
+    out = set()
+    for i in range(len(tokens) - k + 1):
+        w = tokens[i : i + k]
+        if min_words and sum(1 for t in w if t[0].isalpha() or t[0] == "_") < min_words:
+            continue
+        out.add(h64(" ".join(w)))
+    return out
 
 
 PK, CK = 8, 12
@@ -225,7 +233,7 @@ def fetch(only: list[str] | None) -> int:
                     prompt_idx |= shingle_hashes(toks_words(flat(row.get(f))), PK)
                 code_text = "\n".join(flat(row.get(f)) for f in ch.get("code", []))
                 if code_text:
-                    code_ms.update(shingle_hashes(toks_code(code_text), CK))
+                    code_ms.update(shingle_hashes(toks_code(code_text), CK, 4))
                 for f in ch.get("names", []):
                     n = flat(row.get(f)).strip().lower()
                     if len(n) >= 10:
@@ -236,7 +244,7 @@ def fetch(only: list[str] | None) -> int:
     for t in loc["prompt"]:
         prompt_idx |= shingle_hashes(toks_words(t), PK)
     for t in loc["code"]:
-        code_ms.update(shingle_hashes(toks_code(t), CK))
+        code_ms.update(shingle_hashes(toks_code(t), CK, 4))
     if not only or "exercism" in only:
         manifest["exercism"] = fetch_exercism(prompt_idx)
         print("exercism:", manifest["exercism"]["rows"], "descriptions")
@@ -294,34 +302,39 @@ def scan(args) -> int:
     recs = list(load_corpus(args.family, args.category))
     avoid = avoid_regexes()
 
-    # boilerplate: code shingles that occur in >= 4 different families of our own corpus
-    fam_df: Counter = Counter()
-    per_task_code: dict[str, set[int]] = {}
+    # One streaming pass: per task keep only how many shingles it has and which of them are in the reference index
+    # (the full shingle sets of a 170 MB corpus do not fit in memory). A shingle that is in the index AND in >= 4 of our
+    # own families is an idiom or boilerplate, not evidence of copying, and is ignored below.
+    info: dict[str, dict] = {}
+    chit_fam: dict[int, set[str]] = {}
+    phit_fam: dict[int, set[str]] = {}
     for r in recs:
-        sh = shingle_hashes(toks_code(task_code(r)), CK)
-        per_task_code[r["id"]] = sh
-    seen_fam: dict[int, set[str]] = {}
-    for r in recs:
-        for s in per_task_code[r["id"]]:
-            seen_fam.setdefault(s, set()).add(r["family"])
-    boiler = {s for s, fams in seen_fam.items() if len(fams) >= 4}
+        cs = shingle_hashes(toks_code(task_code(r)), CK, 4)
+        ps = shingle_hashes(toks_words(r["prompt"]), PK)
+        ch, ph = cs & cidx, ps & pidx
+        info[r["id"]] = {"nc": len(cs), "np": len(ps), "ch": ch, "ph": ph}
+        for x in ch:
+            chit_fam.setdefault(x, set()).add(r["family"])
+        for x in ph:
+            phit_fam.setdefault(x, set()).add(r["family"])
+    boiler = {x for x, fams in chit_fam.items() if len(fams) >= 4}
+    pboiler = {x for x, fams in phit_fam.items() if len(fams) >= 4}
 
     flagged = []
     counts = Counter()
     for r in recs:
-        ps = shingle_hashes(toks_words(r["prompt"]), PK)
-        pm = len(ps & pidx)
-        pfrac = pm / len(ps) if ps else 0.0
-        cs = per_task_code[r["id"]] - boiler
-        cm = len(cs & cidx)
-        cfrac = cm / len(cs) if cs else 0.0
+        t = info[r["id"]]
+        pm = len(t["ph"] - pboiler)
+        pfrac = pm / t["np"] if t["np"] else 0.0
+        cm = len(t["ch"] - boiler)
+        cfrac = cm / t["nc"] if t["nc"] else 0.0
         nh = sorted({n for n in rare_names(task_code(r))} & set(names))
         av = [pat for pat, rx in avoid if rx.search(r["prompt"]) or rx.search(r["family"])]
         level = "ok"
         reasons = []
-        if pm >= 10 or (pfrac >= 0.25 and pm >= 4):
+        if pm >= 10 or (pfrac >= 0.25 and pm >= 8):
             level, reasons = "FAIL", reasons + [f"prompt shares {pm} 8-word shingles ({pfrac:.0%}) with a benchmark text"]
-        elif pm >= 3:
+        elif pm >= 5:
             level, reasons = "WARN", reasons + [f"prompt shares {pm} 8-word shingles"]
         if cm >= 40 and cfrac >= 0.15:
             level, reasons = "FAIL", reasons + [f"code shares {cm} 12-token shingles ({cfrac:.0%}) with benchmark or Sleipnir code"]

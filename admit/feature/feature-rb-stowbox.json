@@ -1,0 +1,74 @@
+[
+{
+"id": "feature-rb-stowbox-01-daycap",
+"ok": true
+},
+{
+"id": "feature-rb-stowbox-02-receipt-text",
+"ok": true
+},
+{
+"id": "feature-rb-stowbox-03-upgrade",
+"ok": true
+},
+{
+"id": "feature-rb-stowbox-04-receipt-text-revenue-upgrade",
+"ok": true
+},
+{
+"id": "feature-rb-stowbox-05-occupancy",
+"ok": true
+},
+{
+"id": "feature-rb-stowbox-06-members",
+"ok": true
+},
+{
+"id": "feature-rb-stowbox-07-reserve",
+"ok": true
+},
+{
+"id": "feature-rb-stowbox-08-grace-service",
+"ok": true
+},
+{
+"id": "feature-rb-stowbox-09-lookup",
+"ok": true
+},
+{
+"id": "feature-rb-stowbox-10-grace",
+"ok": true
+},
+{
+"id": "feature-rb-stowbox-11-pin",
+"ok": true
+},
+{
+"id": "feature-rb-stowbox-12-receipt-text-daycap",
+"ok": true
+},
+{
+"id": "feature-rb-stowbox-13-revenue",
+"ok": true
+},
+{
+"id": "feature-rb-stowbox-14-lookup",
+"ok": true
+},
+{
+"id": "feature-rb-stowbox-15-daycap",
+"ok": true
+},
+{
+"id": "feature-rb-stowbox-16-grace-members",
+"ok": true
+},
+{
+"id": "feature-rb-stowbox-17-reserve",
+"ok": true
+},
+{
+"id": "feature-rb-stowbox-18-upgrade",
+"ok": true
+}
+]

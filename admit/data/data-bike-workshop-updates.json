@@ -1,0 +1,46 @@
+[
+{
+"id": "data-bike-workshop-updates-01-price-rise",
+"ok": true
+},
+{
+"id": "data-bike-workshop-updates-02-spoke-set",
+"ok": true
+},
+{
+"id": "data-bike-workshop-updates-03-replace-tube",
+"ok": true
+},
+{
+"id": "data-bike-workshop-updates-04-order-empty-products",
+"ok": true
+},
+{
+"id": "data-bike-workshop-updates-05-rolled-cost-column",
+"ok": true
+},
+{
+"id": "data-bike-workshop-updates-06-flatten-bom",
+"ok": true
+},
+{
+"id": "data-bike-workshop-updates-07-consume-stock",
+"ok": true
+},
+{
+"id": "data-bike-workshop-updates-08-drop-unused-raw",
+"ok": true
+},
+{
+"id": "data-bike-workshop-updates-09-positive-qty-trigger",
+"ok": true
+},
+{
+"id": "data-bike-workshop-updates-10-no-cycles-trigger",
+"ok": true
+},
+{
+"id": "data-bike-workshop-updates-11-bom-names-view",
+"ok": true
+}
+]

@@ -1,0 +1,42 @@
+[
+{
+"id": "devops-dns-zones-basic-zone",
+"ok": true
+},
+{
+"id": "devops-dns-zones-cname-conflicts",
+"ok": true
+},
+{
+"id": "devops-dns-zones-delegation-glue",
+"ok": true
+},
+{
+"id": "devops-dns-zones-mail-records",
+"ok": true
+},
+{
+"id": "devops-dns-zones-missing-trailing-dots",
+"ok": true
+},
+{
+"id": "devops-dns-zones-reverse-zone",
+"ok": true
+},
+{
+"id": "devops-dns-zones-srv-and-caa",
+"ok": true
+},
+{
+"id": "devops-dns-zones-ttl-layers",
+"ok": true
+},
+{
+"id": "devops-dns-zones-wildcards",
+"ok": true
+},
+{
+"id": "devops-dns-zones-zone-repair-mixed",
+"ok": true
+}
+]

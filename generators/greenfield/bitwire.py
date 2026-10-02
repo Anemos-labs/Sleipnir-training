@@ -1757,7 +1757,7 @@ def prompt(rng, p, api, lang):
     feats = ["unsigned"] + (["signed"] if p["signed"] else []) + (["enum"] if p["enum"] else []) + (["fixed-point"] if p["fixed"] else []) + (["array and gap"] if p["arrays"] else [])
     fl = ", ".join(feats)
     opts = [
-        f"{p['theme'][0].capitalize()} sends tiny bit-packed records. Write `{fn}(layout, request)` in {ln}, in {where}: it parses a field layout and does `{vp}` / `{vu}` as README.md describes ({fl} fields). {K.closer(rng)}",
+        f"Records for {p['theme'][0]} are bit-packed. Write `{fn}(layout, request)` in {ln}, in {where}: it parses a field layout and does `{vp}` / `{vu}` as README.md describes ({fl} fields). {K.closer(rng)}",
         f"Implement the bit-packing helper from README.md in {ln} ({where}; `{fn}`). Field kinds in this version: {fl}. Error priority matters, and the hidden tests probe malformed layouts. {K.closer(rng)}",
         f"{ln} task: a layout-driven bit packer (`{fn}`, {where}). Read README.md for the layout syntax, the {p['order'].upper()}-first bit order and the error texts. {K.closer(rng)}",
         f"Build `{fn}` ({where}) in {ln}. It turns `{vp} name=value ...` into hex and `{vu} HEX` back into values for a layout you parse yourself; the spec is README.md. Hidden checks cover range edges and bad input.",

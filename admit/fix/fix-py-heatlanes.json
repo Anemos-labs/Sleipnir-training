@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-heatlanes-01-cmp",
+"ok": true
+},
+{
+"id": "fix-py-heatlanes-02-arith",
+"ok": true
+},
+{
+"id": "fix-py-heatlanes-03-delete",
+"ok": true
+},
+{
+"id": "fix-py-heatlanes-04-const",
+"ok": true
+},
+{
+"id": "fix-py-heatlanes-05-negate",
+"ok": true
+},
+{
+"id": "fix-py-heatlanes-06-swap",
+"ok": true
+},
+{
+"id": "fix-py-heatlanes-07-cmp",
+"ok": true
+},
+{
+"id": "fix-py-heatlanes-08-arith",
+"ok": true
+},
+{
+"id": "fix-py-heatlanes-09-delete",
+"ok": true
+},
+{
+"id": "fix-py-heatlanes-10-const",
+"ok": true
+}
+]

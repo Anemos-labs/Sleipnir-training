@@ -1,0 +1,54 @@
+[
+{
+"id": "data-cheese-cave-01-wheels-per-cheese",
+"ok": true
+},
+{
+"id": "data-cheese-cave-02-never-checked",
+"ok": true
+},
+{
+"id": "data-cheese-cave-03-weight-loss",
+"ok": true
+},
+{
+"id": "data-cheese-cave-04-defect-rate",
+"ok": true
+},
+{
+"id": "data-cheese-cave-05-sold-after-defect",
+"ok": true
+},
+{
+"id": "data-cheese-cave-06-age-at-sale",
+"ok": true
+},
+{
+"id": "data-cheese-cave-07-best-month",
+"ok": true
+},
+{
+"id": "data-cheese-cave-08-turning-lapses",
+"ok": true
+},
+{
+"id": "data-cheese-cave-09-humidity-excursions",
+"ok": true
+},
+{
+"id": "data-cheese-cave-10-median-humidity",
+"ok": true
+},
+{
+"id": "data-cheese-cave-11-price-quartiles",
+"ok": true
+},
+{
+"id": "data-cheese-cave-12-humid-moving-average",
+"ok": true
+},
+{
+"id": "data-cheese-cave-13-fix-loss-per-batch",
+"ok": true
+}
+]

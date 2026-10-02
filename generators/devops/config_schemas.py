@@ -8,6 +8,13 @@ from fx import dd, family
 from generators.devops import _dokit as K
 from generators.devops._schemasim import SCHEMASIM
 
+
+def pd(text, note):
+    """dedent the text first and then append the note (dedenting after the concatenation does nothing)"""
+    t = dd(text).rstrip("\n")
+    return t + (note if note.startswith("\n") or t.endswith(" ") else " " + note)
+
+
 _mod = types.ModuleType("schemacheck")
 exec(compile(SCHEMASIM, "schemacheck.py", "exec"), _mod.__dict__)
 sc = _mod
@@ -16,6 +23,7 @@ CHECK_SCHEMA = r'''
 from dolib import *
 sys.path.insert(0, "tests")
 import schemacheck
+
 
 spec = json.load(open("tests/docs.json", encoding="utf-8"))
 try:
@@ -90,12 +98,12 @@ STR, INT, BOOL, OBJ, ARR = {"type": "string"}, {"type": "integer"}, {"type": "bo
 
 # 1 ------------------------------------------------------------------------------------------------------------------
 spec(slug="values-basics", d=1, kind="author",
-     prompt=dd('''
+     prompt=pd('''
         Write `values.schema.json` (JSON Schema) for the values file of the chart `lumen`:
 
         - the document is an object with exactly these properties and no others: `replicaCount` (required, integer, at least 1), `image` (required, object) and `nameOverride` (optional, string);
         - `image` has exactly the properties `repository` (required, string, not empty) and `tag` (required, string).
-     ''' + NOTE),
+     ''', NOTE),
      start='{\n  "$schema": "http://json-schema.org/draft-07/schema#",\n  "type": "object"\n}\n',
      ref={"$schema": "http://json-schema.org/draft-07/schema#", "type": "object", "required": ["replicaCount", "image"], "additionalProperties": False,
           "properties": {"replicaCount": {"type": "integer", "minimum": 1}, "nameOverride": STR,
@@ -113,7 +121,7 @@ spec(slug="values-basics", d=1, kind="author",
 
 # 2 ------------------------------------------------------------------------------------------------------------------
 spec(slug="values-ranges-enums", d=2, kind="author",
-     prompt=dd('''
+     prompt=pd('''
         Write `values.schema.json` for the chart `kestrel`. All objects below reject properties that are not listed.
 
         - root properties: `service` (required), `logLevel`, `resources`, `timeoutSeconds`;
@@ -121,7 +129,7 @@ spec(slug="values-ranges-enums", d=2, kind="author",
         - `logLevel`: one of `debug`, `info`, `warn`, `error`;
         - `resources`: only `limits`, an object with only `cpu` (a string of digits, optionally followed by `m`: `500m`, `2`) and `memory` (digits followed by `Mi` or `Gi`: `512Mi`); both optional;
         - `timeoutSeconds`: a number greater than 0 and at most 300, a multiple of 0.5.
-     ''' + NOTE),
+     ''', NOTE),
      start='{\n  "type": "object"\n}\n',
      ref={"type": "object", "required": ["service"], "additionalProperties": False,
           "properties": {"service": {"type": "object", "required": ["type", "port"], "additionalProperties": False, "properties": {"type": {"enum": ["ClusterIP", "NodePort", "LoadBalancer"]}, "port": {"type": "integer", "minimum": 1, "maximum": 65535}, "nodePort": {"type": "integer", "minimum": 30000, "maximum": 32767}}},
@@ -147,7 +155,7 @@ spec(slug="values-ranges-enums", d=2, kind="author",
 # 3 ------------------------------------------------------------------------------------------------------------------
 HOST = "^([a-z0-9]([a-z0-9-]*[a-z0-9])?\\.)+[a-z]{2,}$"
 spec(slug="values-arrays", d=3, kind="author",
-     prompt=dd('''
+     prompt=pd('''
         Write `values.schema.json` for the chart `marlin`. Objects reject unlisted properties unless stated.
 
         - `ingress` (optional object with only `hosts`): `hosts` is an array of 1 to 5 objects with exactly `host` (required; a lower-case DNS name such as `shop.example.com`: labels of lower-case letters, digits and inner hyphens separated by dots, ending in a top-level label of at least two letters)
@@ -156,7 +164,7 @@ spec(slug="values-arrays", d=3, kind="author",
         - `args` (optional): an array of at most 10 strings;
         - `nodeSelector` (optional): an object whose property names start with a lower-case letter and consist of letters, digits, `.`, `/` or `-`, and whose values are all strings.
         The root object has only these properties: `ingress`, `env`, `args`, `nodeSelector`.
-     ''' + NOTE),
+     ''', NOTE),
      start='{\n  "type": "object"\n}\n',
      ref={"type": "object", "additionalProperties": False,
           "properties": {"ingress": {"type": "object", "additionalProperties": False, "properties": {"hosts": {"type": "array", "minItems": 1, "maxItems": 5, "items": {"type": "object", "required": ["host", "paths"], "additionalProperties": False,
@@ -182,7 +190,7 @@ spec(slug="values-arrays", d=3, kind="author",
 
 # 4 ------------------------------------------------------------------------------------------------------------------
 spec(slug="values-conditional", d=4, kind="author",
-     prompt=dd('''
+     prompt=pd('''
         Write `values.schema.json` for the chart `osprey`. Objects reject unlisted properties.
 
         - root properties (all optional): `ingress`, `autoscaling`, `tls`, `persistence`;
@@ -190,7 +198,7 @@ spec(slug="values-conditional", d=4, kind="author",
         - `autoscaling`: `enabled` (required boolean), `minReplicas`, `maxReplicas` (integers, at least 1); when `enabled` is true both `minReplicas` and `maxReplicas` are required;
         - `tls`: `enabled` (required boolean), `secretName` (non-empty string); when `enabled` is true `secretName` is required;
         - `persistence`: `size` (string such as `10Gi`: digits then `Mi`, `Gi` or `Ti`) and `storageClass` (string); `storageClass` may only be given together with `size` (use `dependentRequired`).
-     ''' + NOTE),
+     ''', NOTE),
      start='{\n  "type": "object"\n}\n',
      ref={"type": "object", "additionalProperties": False, "properties": {
          "ingress": {"type": "object", "required": ["enabled"], "additionalProperties": False, "properties": {"enabled": BOOL, "hosts": {"type": "array", "items": STR}, "className": STR}, "if": {"properties": {"enabled": {"const": True}}, "required": ["enabled"]}, "then": {"required": ["hosts"], "properties": {"hosts": {"minItems": 1}}}},
@@ -214,13 +222,13 @@ spec(slug="values-conditional", d=4, kind="author",
 
 # 5 ------------------------------------------------------------------------------------------------------------------
 spec(slug="values-oneof-refs", d=4, kind="author",
-     prompt=dd('''
+     prompt=pd('''
         Write `values.schema.json` for the chart `heron`, sharing definitions with `$defs` and `$ref` (the checker accepts any layout that behaves right). Objects reject unlisted properties unless stated.
 
         - definitions to share: a *port* (integer 1 to 65535), a *quantity* (string: digits then `Mi` or `Gi`), and a *label map* (an object whose property names are made of lower-case letters, digits, `.`, `-` and `/` and whose values are all strings);
         - root properties (all optional): `service` (only `port`, a port, required), `metrics` (only `enabled` boolean required and `port` a port), `podLabels` and `podAnnotations` (label maps), `persistence`;
         - `persistence` must match exactly one of two shapes: `{"enabled": false}` and nothing else, or `enabled` true with `size` (a quantity, required) and optionally `storageClass` (string) and nothing else.
-     ''' + NOTE),
+     ''', NOTE),
      start='{\n  "type": "object"\n}\n',
      ref={"$defs": {"port": {"type": "integer", "minimum": 1, "maximum": 65535}, "quantity": {"type": "string", "pattern": "^[0-9]+(Mi|Gi)$"}, "labels": {"type": "object", "patternProperties": {"^[a-z0-9./-]+$": STR}, "additionalProperties": False}},
           "type": "object", "additionalProperties": False, "properties": {
@@ -259,13 +267,13 @@ BROKEN6 = '''{
 '''
 V6 = {"replicaCount": 2, "image": {"repository": "reg.example/zen", "tag": "1.0.3"}, "service": {"port": 8080}}
 spec(slug="broken-schema-fix", d=3, kind="fix",
-     prompt=dd('''
+     prompt=pd('''
         `values.schema.json` for the chart `zen` is rejected by the validator before it can look at any document ("schema error ..."), and once it loads it is far too permissive. Repair it. What it should say:
 
         - root: an object with only `replicaCount` (required, integer, at least 1), `image` and `service`;
         - `image`: only `repository` (required, non-empty string) and `tag` (required; lower-case letters, digits, `.`, `-` and `+` only; the whole string must match; at least one character);
         - `service`: only `port` (required, integer 1 to 65535).
-     ''' + NOTE),
+     ''', NOTE),
      start=BROKEN6,
      ref={"$schema": "http://json-schema.org/draft-07/schema#", "type": "object", "additionalProperties": False, "required": ["replicaCount"], "properties": {
          "replicaCount": {"type": "integer", "minimum": 1},
@@ -286,11 +294,11 @@ LAX7 = {"$defs": {"base": {"type": "object", "properties": {"name": {"type": "st
 FIX7 = {"$defs": {"base": {"type": "object", "properties": {"name": {"type": "string", "pattern": "^[a-z]+$"}, "labels": {"type": "object", "additionalProperties": STR}}, "required": ["name"]}},
         "type": "object", "required": ["name"], "additionalProperties": False, "properties": {"name": {"type": "string", "pattern": "^[a-z]+$"}, "labels": {"type": "object", "additionalProperties": STR}, "replicas": {"type": "integer", "minimum": 1}, "mode": {"enum": ["active", "standby"]}}}
 spec(slug="allof-additional-fix", d=4, kind="fix",
-     prompt=dd('''
+     prompt=pd('''
         Every document of the chart `finch` is rejected by `values.schema.json`, even the ones that should be fine, and some obviously wrong names are accepted. The schema is meant to say: an object with only the properties
         `name` (required; a string of lower-case letters only, the whole string), `labels` (optional; an object with string values), `replicas` (optional; integer at least 1) and `mode` (optional; `active` or `standby`).
         The author split the properties into a shared definition and the rest. Fix it (it is fine to flatten everything into one object schema).
-     ''' + NOTE),
+     ''', NOTE),
      start=dumps(LAX7), ref=FIX7,
      valid={"min": {"name": "finch"}, "full": {"name": "abc", "labels": {"tier": "web"}, "replicas": 2, "mode": "standby"}, "labels-empty": {"name": "z", "labels": {}}, "replicas-only": {"name": "a", "replicas": 10}},
      invalid={"no-name": ({"replicas": 1}, "name required"), "digits-name": ({"name": "abc123"}, "name has digits"), "upper-name": ({"name": "Finch"}, "name has upper case"), "dash-name": ({"name": "a-b"}, "dash in name"), "empty-name": ({"name": ""}, "empty name"), "name-number": ({"name": 5}, "name is a string"),

@@ -1,0 +1,54 @@
+[
+{
+"id": "data-access-graph-01-users-by-year",
+"ok": true
+},
+{
+"id": "data-access-graph-02-direct-members",
+"ok": true
+},
+{
+"id": "data-access-graph-03-group-reach",
+"ok": true
+},
+{
+"id": "data-access-graph-04-empty-groups",
+"ok": true
+},
+{
+"id": "data-access-graph-05-nesting-depth",
+"ok": true
+},
+{
+"id": "data-access-graph-06-busy-users",
+"ok": true
+},
+{
+"id": "data-access-graph-07-expiring-soon",
+"ok": true
+},
+{
+"id": "data-access-graph-08-who-can-read",
+"ok": true
+},
+{
+"id": "data-access-graph-09-deny-conflicts",
+"ok": true
+},
+{
+"id": "data-access-graph-10-inherited-admin",
+"ok": true
+},
+{
+"id": "data-access-graph-11-risky-open-resources",
+"ok": true
+},
+{
+"id": "data-access-graph-12-switched-off-but-powerful",
+"ok": true
+},
+{
+"id": "data-access-graph-13-fix-group-members",
+"ok": true
+}
+]

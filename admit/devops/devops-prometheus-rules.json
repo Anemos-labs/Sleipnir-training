@@ -1,0 +1,42 @@
+[
+{
+"id": "devops-prometheus-rules-01-no-range",
+"ok": true
+},
+{
+"id": "devops-prometheus-rules-02-template",
+"ok": true
+},
+{
+"id": "devops-prometheus-rules-03-bad-for-sev",
+"ok": true
+},
+{
+"id": "devops-prometheus-rules-04-unquoted",
+"ok": true
+},
+{
+"id": "devops-prometheus-rules-05-single-eq-no-runbook",
+"ok": true
+},
+{
+"id": "devops-prometheus-rules-06-quantile-dup-alert",
+"ok": true
+},
+{
+"id": "devops-prometheus-rules-07-paren-short-page",
+"ok": true
+},
+{
+"id": "devops-prometheus-rules-08-tab-url",
+"ok": true
+},
+{
+"id": "devops-prometheus-rules-09-no-range-single-eq",
+"ok": true
+},
+{
+"id": "devops-prometheus-rules-10-template-paren",
+"ok": true
+}
+]

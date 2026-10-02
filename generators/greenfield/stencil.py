@@ -1643,7 +1643,7 @@ def prompt(rng, p, api, lang):
     feats = ["wildcards"] + (["classes and a case flag"] if p["cls"] else []) + (["captures"] if p["caps"] else []) + (["groups with alternatives"] if p["groups"] else []) + (["greedy runs and back-references"] if p["refs"] else [])
     fl = ", ".join(feats[:-1]) + (" and " if len(feats) > 1 else "") + feats[-1]
     opts = [
-        f"{p['theme'][0].capitalize()} uses its own pattern notation. Write the matcher `{fn}(pattern, text)` in {ln}, in {where}, as README.md describes ({fl}). {K.closer(rng)}",
+        f"For {p['theme'][0]}, patterns have their own notation. Write the matcher `{fn}(pattern, text)` in {ln}, in {where}, as README.md describes ({fl}). {K.closer(rng)}",
         f"Implement the stencil matcher from README.md in {ln} (`{fn}`, {where}). This version has {fl}; the order in which alternatives are tried is part of the spec. {K.closer(rng)}",
         f"{ln} task: a small pattern-matching engine with an invented syntax: `{fn}` in {where}. README.md lists the symbols, the result format and the pattern errors. {K.closer(rng)}",
         f"Please write `{fn}` ({ln}, {where}) from README.md: whole-text matching with {fl}, plus precise error positions for malformed patterns.",

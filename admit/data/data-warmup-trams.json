@@ -1,0 +1,34 @@
+[
+{
+"id": "data-warmup-trams-01-trams-by-model",
+"ok": true
+},
+{
+"id": "data-warmup-trams-02-five-oldest-trams",
+"ok": true
+},
+{
+"id": "data-warmup-trams-03-boardings-per-zone",
+"ok": true
+},
+{
+"id": "data-warmup-trams-04-cancelled-per-line",
+"ok": true
+},
+{
+"id": "data-warmup-trams-05-faults-per-category",
+"ok": true
+},
+{
+"id": "data-warmup-trams-06-serious-faults",
+"ok": true
+},
+{
+"id": "data-warmup-trams-07-north-depot-modern",
+"ok": true
+},
+{
+"id": "data-warmup-trams-08-busiest-stop-boardings",
+"ok": true
+}
+]

@@ -1,0 +1,54 @@
+[
+{
+"id": "data-tool-library-01-tools-per-category",
+"ok": true
+},
+{
+"id": "data-tool-library-02-overdue-today",
+"ok": true
+},
+{
+"id": "data-tool-library-03-never-lent",
+"ok": true
+},
+{
+"id": "data-tool-library-04-late-return-rate",
+"ok": true
+},
+{
+"id": "data-tool-library-05-fees-by-kind",
+"ok": true
+},
+{
+"id": "data-tool-library-06-top-borrowers-by-tier",
+"ok": true
+},
+{
+"id": "data-tool-library-07-double-booked",
+"ok": true
+},
+{
+"id": "data-tool-library-08-loan-vs-reservation",
+"ok": true
+},
+{
+"id": "data-tool-library-09-june-utilisation",
+"ok": true
+},
+{
+"id": "data-tool-library-10-monthly-streaks",
+"ok": true
+},
+{
+"id": "data-tool-library-11-wrong-late-fees",
+"ok": true
+},
+{
+"id": "data-tool-library-12-deposit-exhausted",
+"ok": true
+},
+{
+"id": "data-tool-library-13-fix-overdue-list",
+"ok": true
+}
+]

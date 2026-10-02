@@ -1,0 +1,34 @@
+[
+{
+"id": "greenfield-ratebill-01-c-cents-l1",
+"ok": true
+},
+{
+"id": "greenfield-ratebill-02-ruby-cents-l1",
+"ok": true
+},
+{
+"id": "greenfield-ratebill-03-javascript-cents-l2",
+"ok": true
+},
+{
+"id": "greenfield-ratebill-04-python-cents-l2",
+"ok": true
+},
+{
+"id": "greenfield-ratebill-05-c-dollars-l3",
+"ok": true
+},
+{
+"id": "greenfield-ratebill-06-ruby-dollars-l3",
+"ok": true
+},
+{
+"id": "greenfield-ratebill-07-javascript-cents-l4",
+"ok": true
+},
+{
+"id": "greenfield-ratebill-08-c-cents-l4",
+"ok": true
+}
+]

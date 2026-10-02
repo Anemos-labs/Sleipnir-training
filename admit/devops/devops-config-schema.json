@@ -1,0 +1,34 @@
+[
+{
+"id": "devops-config-schema-allof-additional-fix",
+"ok": true
+},
+{
+"id": "devops-config-schema-broken-schema-fix",
+"ok": true
+},
+{
+"id": "devops-config-schema-full-chart-schema",
+"ok": true
+},
+{
+"id": "devops-config-schema-values-arrays",
+"ok": true
+},
+{
+"id": "devops-config-schema-values-basics",
+"ok": true
+},
+{
+"id": "devops-config-schema-values-conditional",
+"ok": true
+},
+{
+"id": "devops-config-schema-values-oneof-refs",
+"ok": true
+},
+{
+"id": "devops-config-schema-values-ranges-enums",
+"ok": true
+}
+]

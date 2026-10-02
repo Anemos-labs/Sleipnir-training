@@ -49,6 +49,9 @@ CATEGORIES: dict[str, str] = {
     "swarm": "multi-component projects for a manager and workers",
     "robust": "honesty, injection resistance, impossible or underspecified requests, restraint",
     "chat": "conversation: questions, explanations, advice, small talk, constrained answers",
+    "explain": "understand a codebase: call graphs, data flow, what-prints, where-defined, impact of a change",
+    "i18n": "prompts written in other languages (the repository and the checks are the same kind as elsewhere)",
+    "project": "long-horizon builds and migrations: several modules, hundreds of hidden checks, d4-d5",
 }
 
 LANGS = {

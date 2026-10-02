@@ -1,0 +1,34 @@
+[
+{
+"id": "devops-ssh-config-client-policy",
+"ok": true
+},
+{
+"id": "devops-ssh-config-first-match-wins-fix",
+"ok": true
+},
+{
+"id": "devops-ssh-config-forwards-and-multiplexing",
+"ok": true
+},
+{
+"id": "devops-ssh-config-identity-file-order",
+"ok": true
+},
+{
+"id": "devops-ssh-config-jump-host-basics",
+"ok": true
+},
+{
+"id": "devops-ssh-config-match-blocks",
+"ok": true
+},
+{
+"id": "devops-ssh-config-negated-patterns",
+"ok": true
+},
+{
+"id": "devops-ssh-config-syntax-errors-fix",
+"ok": true
+}
+]

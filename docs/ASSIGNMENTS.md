@@ -242,3 +242,45 @@ nothing (a hidden script verifies a sha256 manifest of the files and that no new
 bad premise, asking a clarifying question when the request is underspecified (checked via `QUESTIONS.md` or answer
 terms), refusing an unsafe request with an alternative (rubric), summarising pasted text with required facts, explaining a
 concept at a stated level, drafting short messages with constraints.
+
+
+---
+
+# Wave 2
+
+## explain — `generators/explain/*.py` — **understanding a codebase**
+Target: ~300 tasks, >= 25 families, answer-mode (final message) and file-answer fixtures (`answer.json` + hidden checker).
+Generated repositories (python, javascript, go, java, rust, ruby; 5-60 files) plus a question whose answer is *computed by
+static analysis or by running the code in the generator*, never typed: who calls function X (transitively), which modules
+import which, the dependency cycle, which tests exercise a function, what a program prints for a given input, which config
+layer wins, where a symbol is defined/re-exported, how many public functions a package exposes, which functions can raise
+which exceptions, the data path of one field from input to output, what changes if a function's signature changes (list the
+call sites), dead code listing, which commit-less "version" of a duplicated helper is used by whom, name-shadowing and
+import-order puzzles, decorators/closures/inheritance dispatch ("which method runs"), regex/format-string results,
+off-by-one reading of loops, SQL query result prediction over the embedded data. Prompts sound like a colleague asking in
+chat or a reviewer asking in a PR. Answers must be unambiguous and robust to phrasing; for list answers use a `answer.json`
+file or require bracketed items; avoid weak substring checks (single digits).
+
+## i18n — `generators/i18n/*.py` — **prompts in other languages**
+Target: ~300 tasks across >= 10 languages (French, Spanish, German, Portuguese, Italian, Dutch, Polish, Turkish, Russian,
+Japanese, Chinese, Korean, Hindi, Arabic, Indonesian, ...). Two forms: (1) *native* small families written directly in the
+language (a bug report in Japanese, a chat question in Hindi with a computed answer, a Polish refactoring request); (2)
+*derived* tasks: reuse an existing corpus task (read its record from `corpus/<category>/<family>.jsonl` by id at generation
+time; the id list is fixed in your module) with the prompt rewritten by you in another language, in the voice of a native
+speaker (not a literal translation), keeping every fact the checks need. Derived families are named `i18n-<lang>-<theme>`,
+tag the source id in `notes`, and must keep the repository and verifier unchanged (so `solution`, `hidden`, `verify`
+come from the source record). Mix categories (fix, feature, data, shell, chat, research, robust, explain-style) and
+difficulties 1-5; include code-switching (English identifiers in a Spanish sentence), informal register and typos.
+For right-to-left or CJK text make sure answer-mode `contains` strings do not depend on translation (numbers, identifiers,
+file names, or ASCII codes).
+
+## project — `generators/project/*.py` — **long-horizon builds and migrations (d4-d5)**
+Target: ~100 tasks, >= 12 families, difficulty 4-5 mostly. Each is a multi-module deliverable with a README spec of 100-300
+lines and hundreds of hidden checks: a small database engine (parser + storage + query), a build system with dependency
+graph and incremental rebuilds, a package resolver with constraints and conflicts, a markup-to-HTML converter with an
+invented grammar, an interpreter for a small language with closures, an event-sourced booking system with projections, a
+spreadsheet engine with dependency recalculation, a text editor core (buffer, undo, search), a file-sync engine, a mini
+test framework, a CLI suite with plugins, a state-machine workflow engine, a migration of a 30-file codebase to a new API
+(codemod by hand or by script) with behaviour preserved. Offer partial credit through `json-score` where natural (fraction
+of check groups passing; the reference solution must score exactly 1.0 and the start state < 1). Use Python for the
+reference oracle and generate the checks from it; languages: python, go, rust, javascript, java.

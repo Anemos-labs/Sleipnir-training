@@ -1,0 +1,50 @@
+[
+{
+"id": "data-clinic-maintenance-01-generate-slots",
+"ok": true
+},
+{
+"id": "data-clinic-maintenance-02-shift-day",
+"ok": true
+},
+{
+"id": "data-clinic-maintenance-03-resolve-double-bookings",
+"ok": true
+},
+{
+"id": "data-clinic-maintenance-04-merge-duplicate-patients",
+"ok": true
+},
+{
+"id": "data-clinic-maintenance-05-purge-old-bookings",
+"ok": true
+},
+{
+"id": "data-clinic-maintenance-06-no-overlap-trigger",
+"ok": true
+},
+{
+"id": "data-clinic-maintenance-07-no-show-counter",
+"ok": true
+},
+{
+"id": "data-clinic-maintenance-08-rename-specialty",
+"ok": true
+},
+{
+"id": "data-clinic-maintenance-09-anonymise-patients",
+"ok": true
+},
+{
+"id": "data-clinic-maintenance-10-free-slots-view",
+"ok": true
+},
+{
+"id": "data-clinic-maintenance-11-lock-future-cancellations",
+"ok": true
+},
+{
+"id": "data-clinic-maintenance-12-unique-booking-index",
+"ok": true
+}
+]

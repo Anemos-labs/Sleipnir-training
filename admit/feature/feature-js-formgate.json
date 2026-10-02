@@ -1,0 +1,74 @@
+[
+{
+"id": "feature-js-formgate-01-range",
+"ok": true
+},
+{
+"id": "feature-js-formgate-02-coerce",
+"ok": true
+},
+{
+"id": "feature-js-formgate-03-custom",
+"ok": true
+},
+{
+"id": "feature-js-formgate-04-oneof-coerce",
+"ok": true
+},
+{
+"id": "feature-js-formgate-05-nested",
+"ok": true
+},
+{
+"id": "feature-js-formgate-06-cross",
+"ok": true
+},
+{
+"id": "feature-js-formgate-07-pattern",
+"ok": true
+},
+{
+"id": "feature-js-formgate-08-length-messages",
+"ok": true
+},
+{
+"id": "feature-js-formgate-09-messages",
+"ok": true
+},
+{
+"id": "feature-js-formgate-10-coerce",
+"ok": true
+},
+{
+"id": "feature-js-formgate-11-pattern",
+"ok": true
+},
+{
+"id": "feature-js-formgate-12-length-cross",
+"ok": true
+},
+{
+"id": "feature-js-formgate-13-oneof",
+"ok": true
+},
+{
+"id": "feature-js-formgate-14-nested",
+"ok": true
+},
+{
+"id": "feature-js-formgate-15-custom",
+"ok": true
+},
+{
+"id": "feature-js-formgate-16-range-messages-coerce",
+"ok": true
+},
+{
+"id": "feature-js-formgate-17-length",
+"ok": true
+},
+{
+"id": "feature-js-formgate-18-messages",
+"ok": true
+}
+]

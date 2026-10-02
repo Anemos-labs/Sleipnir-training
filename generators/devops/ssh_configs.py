@@ -7,6 +7,13 @@ from fx import dd, family
 from generators.devops import _dokit as K
 from generators.devops._sshsim import SSHSIM
 
+
+def pd(text, note):
+    """dedent the text first and then append the note (dedenting after the concatenation does nothing)"""
+    t = dd(text).rstrip("\n")
+    return t + (note if note.startswith("\n") or t.endswith(" ") else " " + note)
+
+
 _mod = types.ModuleType("sshsim")
 exec(compile(SSHSIM, "sshsim.py", "exec"), _mod.__dict__)
 ss = _mod
@@ -15,6 +22,7 @@ CHECK_SSH = r'''
 from dolib import *
 sys.path.insert(0, "tests")
 import sshsim
+
 
 spec = json.load(open("tests/cases.json", encoding="utf-8"))
 try:
@@ -83,13 +91,13 @@ NOTE = "\n\n`tools/sshsim.py` resolves hosts against `ssh_config` like `ssh -G` 
 
 # 1 ------------------------------------------------------------------------------------------------------------------
 spec(slug="jump-host-basics", d=1, kind="author",
-     prompt=dd('''
+     prompt=pd('''
         Write `ssh_config` for these hosts (what `ssh <name>` must resolve to):
 
         - `bastion`: real name `bastion.corp.example`, user `ops`, port 2222;
         - `app1`, `app2`, `app3` (any `app` followed by one character): real name `<name>.corp.example`, user `deploy`, port 22, reached through the jump host `bastion`;
         - every other host: nothing special (defaults).
-     ''' + NOTE),
+     ''', NOTE),
      start="# ssh client configuration\n",
      ref=dd('''
         Host bastion
@@ -108,10 +116,10 @@ spec(slug="jump-host-basics", d=1, kind="author",
 
 # 2 ------------------------------------------------------------------------------------------------------------------
 spec(slug="first-match-wins-fix", d=2, kind="fix",
-     prompt=dd('''
+     prompt=pd('''
         `ssh_config` is meant to give every host `ServerAliveInterval 30` and `ForwardAgent no`, and the build server a user and port of its own, but `ssh build.corp.example` connects as the default user on port 22.
         Required: `build.corp.example` -> user `ci`, port 2200, `IdentityFile ~/.ssh/ci_ed25519`; `*.corp.example` (other hosts) -> user `deploy`; all hosts -> ServerAliveInterval 30 and ForwardAgent no. Fix the file.
-     ''' + NOTE),
+     ''', NOTE),
      start=dd('''
         Host *
             ServerAliveInterval 30
@@ -146,14 +154,14 @@ spec(slug="first-match-wins-fix", d=2, kind="fix",
 
 # 3 ------------------------------------------------------------------------------------------------------------------
 spec(slug="negated-patterns", d=3, kind="author",
-     prompt=dd('''
+     prompt=pd('''
         Write `ssh_config` for the corp network:
 
         - every host of `*.corp.example` is reached through the jump host `bastion.corp.example` (ProxyJump) and logs in as `deploy` - **except** `bastion.corp.example` itself, which is reached directly (no ProxyJump), as user `ops`, port 2222;
         - the lab machines `*.lab.corp.example` are reachable directly (no jump host: the effective ProxyJump is `none`) and log in as `lab`;
         - hosts outside corp.example have no special settings.
         Tip: patterns can be negated with `!`, and the first value found wins.
-     ''' + NOTE),
+     ''', NOTE),
      start="# ssh client configuration\n",
      ref=dd('''
         Host bastion.corp.example
@@ -174,7 +182,7 @@ spec(slug="negated-patterns", d=3, kind="author",
 
 # 4 ------------------------------------------------------------------------------------------------------------------
 spec(slug="identity-file-order", d=3, kind="author",
-     prompt=dd('''
+     prompt=pd('''
         Write `ssh_config`. `IdentityFile` accumulates: every matching block adds a key, in file order (that is the order in which ssh tries them). Requirements (the effective `identityfile` list per host):
 
         - `github.com`: only `~/.ssh/github_ed25519` (and `IdentitiesOnly yes` so no other key is offered);
@@ -182,7 +190,7 @@ spec(slug="identity-file-order", d=3, kind="author",
         - `gitlab.corp.example` (it matches the previous rule too): first `~/.ssh/gitlab_ed25519`, then `~/.ssh/corp_ed25519`, then `~/.ssh/id_ed25519`, with `IdentitiesOnly yes`;
         - every other host: just `~/.ssh/id_ed25519`.
         (A key that must appear for all hosts as the last one is a hint for where `Host *` goes.)
-     ''' + NOTE),
+     ''', NOTE),
      start="# ssh client configuration\n",
      ref=dd('''
         Host github.com
@@ -205,7 +213,7 @@ spec(slug="identity-file-order", d=3, kind="author",
 
 # 5 ------------------------------------------------------------------------------------------------------------------
 spec(slug="match-blocks", d=4, kind="author",
-     prompt=dd('''
+     prompt=pd('''
         Write `ssh_config` using `Match` where needed:
 
         - `db` is an alias: `HostName db1.corp.example`, user `dba`;
@@ -213,7 +221,7 @@ spec(slug="match-blocks", d=4, kind="author",
         - whenever the remote user is `root` (`ssh -l root host` / `root@host`) on a `*.corp.example` host (as typed): `IdentityFile ~/.ssh/root_ed25519` first, `IdentitiesOnly yes`, and `ForwardAgent no`;
         - everything else: `ForwardAgent yes`.
         `Match host` sees the host name after earlier blocks of the file have set `HostName`; `Match originalhost` sees what was typed. First value wins.
-     ''' + NOTE),
+     ''', NOTE),
      start="# ssh client configuration\n",
      ref=dd('''
         Host db
@@ -238,13 +246,13 @@ spec(slug="match-blocks", d=4, kind="author",
 
 # 6 ------------------------------------------------------------------------------------------------------------------
 spec(slug="forwards-and-multiplexing", d=3, kind="author",
-     prompt=dd('''
+     prompt=pd('''
         Write `ssh_config`:
 
         - `tunnel`: `HostName bastion.corp.example`, user `ops`, port 2222, and two local forwards (`LocalForward` takes `LISTENPORT HOST:PORT`): `5432 db1.corp.example:5432` and `8080 intranet.corp.example:80`;
         - connection sharing for every host: `ControlMaster auto`, `ControlPath ~/.ssh/cm-%r@%h:%p`, `ControlPersist 10m` (the checker sees the path with the tokens expanded for each host: for `tunnel` it is `~/.ssh/cm-ops@bastion.corp.example:2222`);
         - `ServerAliveInterval 30` for every host except the ones named `unstable-*`, which get 10.
-     ''' + NOTE),
+     ''', NOTE),
      start="# ssh client configuration\n",
      ref=dd('''
         Host tunnel
@@ -270,10 +278,10 @@ spec(slug="forwards-and-multiplexing", d=3, kind="author",
 
 # 7 ------------------------------------------------------------------------------------------------------------------
 spec(slug="syntax-errors-fix", d=2, kind="fix",
-     prompt=dd('''
+     prompt=pd('''
         `ssh -G` refuses `ssh_config` ("Bad configuration option", "missing argument", unterminated quote). The intended meaning: `staging` is `staging.corp.example`, user `deploy`, port 2200, key `~/.ssh/stage key` (a path with a space, so it needs quotes),
         `*.corp.example` uses user `deploy` too, and every host gets `ServerAliveInterval 20`. Repair the file keeping that meaning.
-     ''' + NOTE),
+     ''', NOTE),
      start=dd('''
         Host staging
             HostNme staging.corp.example
