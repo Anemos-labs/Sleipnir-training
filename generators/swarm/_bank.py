@@ -134,6 +134,9 @@ def symptoms(m: Mod, bug: Bug) -> list[tuple[str, str, str]]:
 def describe(sym: tuple[str, str, str], variant: int = 0) -> str:
     e, good, bad = sym
     v = variant % 3
+    if bad.startswith("raises ") and good.startswith("raises "):
+        return (f"`{e}` raises `{bad[7:]}`, but the error should be `{good[7:]}`", f"`{e}` fails with `{bad[7:]}` where `{good[7:]}` is expected",
+                f"expected the error `{good[7:]}` from `{e}`, got `{bad[7:]}`")[v]
     if bad.startswith("raises "):
         return (f"`{e}` raises `{bad[7:]}`, but it should return `{good}`", f"`{e}` blows up with `{bad[7:]}` instead of returning `{good}`",
                 f"expected `{good}` from `{e}` but it raises `{bad[7:]}`")[v]
@@ -177,3 +180,19 @@ def verify_bank(keys: list[str] | None = None) -> list[str]:
             except Exception as e:  # noqa: BLE001
                 problems.append(f"{k}/{b.key}: {e}")
     return problems
+
+
+def enclosing_function(mod: Mod, bug: Bug) -> str | None:
+    """Name of the innermost function (or method) of the good implementation that contains the text the bug replaces."""
+    import ast
+    pos = mod.core.find(bug.old)
+    if pos < 0:
+        return None
+    stripped = bug.old.lstrip("\n")
+    line = mod.core[:pos].count("\n") + 1 + (len(bug.old) - len(stripped)) // 1 * 0 + (bug.old[: len(bug.old) - len(stripped)].count("\n"))
+    best = None
+    for node in ast.walk(ast.parse(mod.core)):
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.lineno <= line <= node.end_lineno:
+            if best is None or node.lineno >= best.lineno:
+                best = node
+    return best.name if best else None

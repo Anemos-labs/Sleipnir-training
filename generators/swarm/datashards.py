@@ -246,10 +246,10 @@ if __name__ == "__main__":
 '''
 
 
-@family("swarm-data-shards", category="swarm", lang="mixed", kind="feature", n=10,
+@family("swarm-data-shards", category="swarm", lang="mixed", kind="feature", n=12,
         summary="k differently messy supplier exports to normalise into one canonical format, then merge into a summary")
 def data_shards(rng, n):
-    ks = [3, 3, 4, 4, 5, 5, 6, 4, 6, 7]
+    ks = [3, 3, 4, 4, 5, 5, 6, 4, 6, 7, 2, 2]
     for i in range(n):
         k = ks[i % len(ks)]
         names = [f"shard_{j + 1}" for j in range(k)]
@@ -311,7 +311,7 @@ def data_shards(rng, n):
             f"Data cleanup job: raw/ -> clean/ for each shard (rules in SHARDS.md), then report/summary.json over all of them. "
             f"The totals have to match to the cent.",
         ]
-        d = 3 if k <= 3 else 4 if k <= 5 else 5
+        d = 2 if k <= 2 else 3 if k <= 3 else 4 if k <= 5 else 5
         yield Task(
             slug=f"{i + 1:02d}-k{k}-" + shard_quirks[0]["amount"],
             prompt=voices[i % len(voices)], difficulty=d, start=start, hidden=hidden, solution=solution,

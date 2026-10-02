@@ -4,47 +4,31 @@
 "ok": true
 },
 {
-"id": "chat-savings-sim-02-save-d3",
+"id": "chat-savings-sim-02-save-d2",
 "ok": true
 },
 {
-"id": "chat-savings-sim-03-save-d3",
+"id": "chat-savings-sim-03-save-d2",
 "ok": true
 },
 {
-"id": "chat-savings-sim-04-loan-d4",
+"id": "chat-savings-sim-04-save-d3",
 "ok": true
 },
 {
-"id": "chat-savings-sim-05-save-d4",
+"id": "chat-savings-sim-05-save-d3",
 "ok": true
 },
 {
-"id": "chat-savings-sim-06-loan-d5",
+"id": "chat-savings-sim-06-loan-d4",
 "ok": true
 },
 {
-"id": "chat-savings-sim-07-save-d3",
+"id": "chat-savings-sim-07-save-d4",
 "ok": true
 },
 {
-"id": "chat-savings-sim-08-loan-d4",
-"ok": true
-},
-{
-"id": "chat-savings-sim-09-loan-d5",
-"ok": true
-},
-{
-"id": "chat-savings-sim-10-save-d2",
-"ok": true
-},
-{
-"id": "chat-savings-sim-11-save-d3",
-"ok": true
-},
-{
-"id": "chat-savings-sim-12-save-d4",
+"id": "chat-savings-sim-08-loan-d5",
 "ok": true
 }
 ]

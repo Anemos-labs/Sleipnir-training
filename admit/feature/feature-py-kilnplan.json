@@ -1,0 +1,66 @@
+[
+{
+"id": "feature-py-kilnplan-01-peak-temp",
+"ok": true
+},
+{
+"id": "feature-py-kilnplan-02-load-limit",
+"ok": true
+},
+{
+"id": "feature-py-kilnplan-03-overlap",
+"ok": true
+},
+{
+"id": "feature-py-kilnplan-04-cooldown-energy-cost",
+"ok": true
+},
+{
+"id": "feature-py-kilnplan-05-energy-cost",
+"ok": true
+},
+{
+"id": "feature-py-kilnplan-06-segment-rules",
+"ok": true
+},
+{
+"id": "feature-py-kilnplan-07-timeline",
+"ok": true
+},
+{
+"id": "feature-py-kilnplan-08-busy-total-energy-cost",
+"ok": true
+},
+{
+"id": "feature-py-kilnplan-09-load-limit",
+"ok": true
+},
+{
+"id": "feature-py-kilnplan-10-segment-rules",
+"ok": true
+},
+{
+"id": "feature-py-kilnplan-11-overlap",
+"ok": true
+},
+{
+"id": "feature-py-kilnplan-12-peak-temp-segment-rules",
+"ok": true
+},
+{
+"id": "feature-py-kilnplan-13-energy-cost",
+"ok": true
+},
+{
+"id": "feature-py-kilnplan-14-cooldown",
+"ok": true
+},
+{
+"id": "feature-py-kilnplan-15-timeline",
+"ok": true
+},
+{
+"id": "feature-py-kilnplan-16-busy-total-load-limit",
+"ok": true
+}
+]

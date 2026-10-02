@@ -233,14 +233,14 @@ def _base_a() -> Base:
     good = {"README.md": A_README, "holds/__init__.py": '"""Hold queue ordering."""\n', "holds/ranking.py": A_RANKING}
     r = "holds/ranking.py"
     bugs = [
-        Bug("median-of-unsorted", 2, {r: [("    ordered = sorted(values)\n    mid = len(ordered) // 2\n", "    ordered = list(values)\n    mid = len(ordered) // 2\n")]}, P["median"]),
+        Bug("median-of-unsorted", 1, {r: [("    ordered = sorted(values)\n    mid = len(ordered) // 2\n", "    ordered = list(values)\n    mid = len(ordered) // 2\n")]}, P["median"]),
         Bug("member-compared-as-text", 2, {r: [("    return sorted(holds, key=lambda h: (TIER_RANK[h[\"tier\"]], h[\"at\"], member_number(h[\"member\"])))\n",
                                                 "    return sorted(holds, key=lambda h: (TIER_RANK[h[\"tier\"]], h[\"at\"], h[\"member\"]))\n")]}, P["text-order"]),
-        Bug("reverse-flips-time", 3, {r: [("    return sorted(holds, key=lambda h: (TIER_RANK[h[\"tier\"]], h[\"at\"], member_number(h[\"member\"])))\n",
+        Bug("reverse-flips-time", 2, {r: [("    return sorted(holds, key=lambda h: (TIER_RANK[h[\"tier\"]], h[\"at\"], member_number(h[\"member\"])))\n",
                                            "    return sorted(holds, key=lambda h: (-TIER_RANK[h[\"tier\"]], h[\"at\"], member_number(h[\"member\"])), reverse=True)\n")]}, P["reverse"]),
         Bug("one-sort-per-criterion", 3, {r: [("    return sorted(holds, key=lambda h: (TIER_RANK[h[\"tier\"]], h[\"at\"], member_number(h[\"member\"])))\n",
                                                "    out = sorted(holds, key=lambda h: TIER_RANK[h[\"tier\"]])\n    out = sorted(out, key=lambda h: h[\"at\"])\n    return sorted(out, key=lambda h: member_number(h[\"member\"]))\n")]}, P["chained"]),
-        Bug("dense-ranks", 3, {r: [("            rank = position\n", "            rank += 1\n")]}, P["dense"]),
+        Bug("dense-ranks", 2, {r: [("            rank = position\n", "            rank += 1\n")]}, P["dense"]),
         Bug("top-cuts-ties", 4, {r: [("    ranks = rank_table(scores)\n    chosen = [m for m, r in ranks.items() if r <= n]\n    return sorted(chosen, key=lambda m: (ranks[m], m))\n",
                                       "    ranks = rank_table(scores)\n    ordered = sorted(ranks, key=lambda m: (ranks[m], m))\n    return ordered[:n]\n")]}, P["top-ties"]),
     ]
@@ -433,8 +433,8 @@ def _base_b() -> Base:
     good = {"README.md": B_README, "src/sort.js": B_SORT, "package.json": '{\n  "name": "shelfsort",\n  "version": "1.0.0",\n  "private": true\n}\n'}
     s = "src/sort.js"
     bugs = [
-        Bug("median-sorted-as-text", 2, {s: [("  const sorted = [...numbers].sort((a, b) => a - b);\n", "  const sorted = [...numbers].sort();\n")]}, P["median-lex"]),
-        Bug("sort-mutates-input", 2, {s: [("  return [...items].sort((x, y) => {\n", "  return items.sort((x, y) => {\n")]}, P["mutates"]),
+        Bug("median-sorted-as-text", 1, {s: [("  const sorted = [...numbers].sort((a, b) => a - b);\n", "  const sorted = [...numbers].sort();\n")]}, P["median-lex"]),
+        Bug("sort-mutates-input", 1, {s: [("  return [...items].sort((x, y) => {\n", "  return items.sort((x, y) => {\n")]}, P["mutates"]),
         Bug("missing-values-compare-as-nan", 3, {s: [("      if (missing(a) && missing(b)) continue;\n      if (missing(a)) return 1;\n      if (missing(b)) return -1;\n",
                                                       "      if (missing(a) && missing(b)) continue;\n")]}, P["missing-first"]),
         Bug("first-direction-for-all-keys", 3, {s: [("  const specs = keys.map((k) => (k.startsWith('-') ? { key: k.slice(1), dir: -1 } : { key: k, dir: 1 }));\n",

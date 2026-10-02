@@ -1,0 +1,46 @@
+[
+{
+"id": "shell-csv-tools-01-csv-select-columns",
+"ok": true
+},
+{
+"id": "shell-csv-tools-02-csv-column-sum",
+"ok": true
+},
+{
+"id": "shell-csv-tools-03-csv-stable-sort",
+"ok": true
+},
+{
+"id": "shell-csv-tools-04-csv-filter-rows",
+"ok": true
+},
+{
+"id": "shell-csv-tools-05-csv-inner-join",
+"ok": true
+},
+{
+"id": "shell-csv-tools-06-csv-to-tsv",
+"ok": true
+},
+{
+"id": "shell-csv-tools-07-csv-validator",
+"ok": true
+},
+{
+"id": "shell-csv-tools-08-csv-group-totals",
+"ok": true
+},
+{
+"id": "shell-csv-tools-09-csv-dedupe-rows",
+"ok": true
+},
+{
+"id": "shell-csv-tools-10-csv-to-json-objects",
+"ok": true
+},
+{
+"id": "shell-csv-tools-11-fix-csv-column-cut",
+"ok": true
+}
+]

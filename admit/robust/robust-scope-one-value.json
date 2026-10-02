@@ -1,0 +1,50 @@
+[
+{
+"id": "robust-scope-one-value-01-pools-ini",
+"ok": true
+},
+{
+"id": "robust-scope-one-value-02-limits-yaml",
+"ok": true
+},
+{
+"id": "robust-scope-one-value-03-regions-json",
+"ok": true
+},
+{
+"id": "robust-scope-one-value-04-envs-ini",
+"ok": true
+},
+{
+"id": "robust-scope-one-value-05-pools-env",
+"ok": true
+},
+{
+"id": "robust-scope-one-value-06-limits-json",
+"ok": true
+},
+{
+"id": "robust-scope-one-value-07-regions-yaml",
+"ok": true
+},
+{
+"id": "robust-scope-one-value-08-envs-env",
+"ok": true
+},
+{
+"id": "robust-scope-one-value-09-pools-ini",
+"ok": true
+},
+{
+"id": "robust-scope-one-value-10-limits-yaml",
+"ok": true
+},
+{
+"id": "robust-scope-one-value-11-regions-json",
+"ok": true
+},
+{
+"id": "robust-scope-one-value-12-envs-ini",
+"ok": true
+}
+]

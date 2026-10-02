@@ -1,0 +1,42 @@
+[
+{
+"id": "testing-fixsuite-expectations-py-01-ferryfare-3wrong",
+"ok": true
+},
+{
+"id": "testing-fixsuite-expectations-py-02-ferryfare-2wrong",
+"ok": true
+},
+{
+"id": "testing-fixsuite-expectations-py-03-ferryfare-4wrong",
+"ok": true
+},
+{
+"id": "testing-fixsuite-expectations-py-04-labelcodes-3wrong",
+"ok": true
+},
+{
+"id": "testing-fixsuite-expectations-py-05-labelcodes-1wrong",
+"ok": true
+},
+{
+"id": "testing-fixsuite-expectations-py-06-labelcodes-3wrong",
+"ok": true
+},
+{
+"id": "testing-fixsuite-expectations-py-07-ferryfare-1wrong",
+"ok": true
+},
+{
+"id": "testing-fixsuite-expectations-py-08-ferryfare-2wrong",
+"ok": true
+},
+{
+"id": "testing-fixsuite-expectations-py-09-ferryfare-3wrong",
+"ok": true
+},
+{
+"id": "testing-fixsuite-expectations-py-10-labelcodes-4wrong",
+"ok": true
+}
+]

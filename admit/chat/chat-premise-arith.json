@@ -8,11 +8,11 @@
 "ok": true
 },
 {
-"id": "chat-premise-arith-03-sum_slip",
+"id": "chat-premise-arith-03-unit_price",
 "ok": true
 },
 {
-"id": "chat-premise-arith-04-unit_price",
+"id": "chat-premise-arith-04-sum_slip",
 "ok": true
 },
 {
@@ -20,31 +20,15 @@
 "ok": true
 },
 {
-"id": "chat-premise-arith-06-sum_slip",
+"id": "chat-premise-arith-06-avg_slip",
 "ok": true
 },
 {
-"id": "chat-premise-arith-07-unit_slip",
+"id": "chat-premise-arith-07-avg_slip",
 "ok": true
 },
 {
-"id": "chat-premise-arith-08-unit_slip",
-"ok": true
-},
-{
-"id": "chat-premise-arith-09-avg_slip",
-"ok": true
-},
-{
-"id": "chat-premise-arith-10-avg_slip",
-"ok": true
-},
-{
-"id": "chat-premise-arith-11-unit_price",
-"ok": true
-},
-{
-"id": "chat-premise-arith-12-avg_slip",
+"id": "chat-premise-arith-08-chain",
 "ok": true
 }
 ]

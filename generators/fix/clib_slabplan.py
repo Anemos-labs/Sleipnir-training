@@ -513,7 +513,7 @@ LIB = Lib(
     files={"README.md": README1, "include/slabplan.h": F2, "src/slabplan.c": F3},
     visible_tests={"tests/test_main.c": V4, "tests/harness.h": _lang3.C_HARNESS},
     hidden_tests={"tests/test_main.c": H5},
-    mutate=["src/slabplan.c"], difficulty=2, tags=["safe-arithmetic", "alignment", "allocation"],
+    mutate=["src/slabplan.c"], difficulty=1, tags=["safe-arithmetic", "alignment", "allocation"],
     verify=_lang3.C_VERIFY,
 )
 

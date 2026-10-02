@@ -8,7 +8,7 @@
 "ok": true
 },
 {
-"id": "chat-version-range-03-d3",
+"id": "chat-version-range-03-d2",
 "ok": true
 },
 {
@@ -29,22 +29,6 @@
 },
 {
 "id": "chat-version-range-08-d5",
-"ok": true
-},
-{
-"id": "chat-version-range-09-d2",
-"ok": true
-},
-{
-"id": "chat-version-range-10-d3",
-"ok": true
-},
-{
-"id": "chat-version-range-11-d4",
-"ok": true
-},
-{
-"id": "chat-version-range-12-d5",
 "ok": true
 }
 ]

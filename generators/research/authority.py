@@ -184,7 +184,7 @@ def render(rng, org, key, dom, ents, truth, claims, lo, hi):
     return files
 
 
-@family("research-authority-lookup", category="research", lang="text", kind="lookup", n=22, mode="answer",
+@family("research-authority-lookup", category="research", lang="text", kind="lookup", n=18, mode="answer",
         summary="resolve conflicting figures with an authority ranking, then look up, compare or count across sites")
 def gen_lookup(rng, n):
     made = 0

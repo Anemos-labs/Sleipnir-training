@@ -28,31 +28,7 @@
 "ok": true
 },
 {
-"id": "chat-sheet-formula-08-nested_round",
-"ok": true
-},
-{
-"id": "chat-sheet-formula-09-sumifs_text",
-"ok": true
-},
-{
-"id": "chat-sheet-formula-10-countif",
-"ok": true
-},
-{
-"id": "chat-sheet-formula-11-avg_blank",
-"ok": true
-},
-{
-"id": "chat-sheet-formula-12-nested_round",
-"ok": true
-},
-{
-"id": "chat-sheet-formula-13-sumifs_text",
-"ok": true
-},
-{
-"id": "chat-sheet-formula-14-count_vs_counta",
+"id": "chat-sheet-formula-08-sumifs_text",
 "ok": true
 }
 ]

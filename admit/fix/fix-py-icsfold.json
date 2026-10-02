@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-icsfold-01-arith",
+"ok": true
+},
+{
+"id": "fix-py-icsfold-02-const",
+"ok": true
+},
+{
+"id": "fix-py-icsfold-03-swap",
+"ok": true
+},
+{
+"id": "fix-py-icsfold-04-negate",
+"ok": true
+},
+{
+"id": "fix-py-icsfold-05-logic",
+"ok": true
+},
+{
+"id": "fix-py-icsfold-06-cmp",
+"ok": true
+},
+{
+"id": "fix-py-icsfold-07-delete",
+"ok": true
+},
+{
+"id": "fix-py-icsfold-08-arith",
+"ok": true
+},
+{
+"id": "fix-py-icsfold-09-const",
+"ok": true
+},
+{
+"id": "fix-py-icsfold-10-negate",
+"ok": true
+}
+]

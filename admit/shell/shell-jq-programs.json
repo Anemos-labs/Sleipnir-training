@@ -1,0 +1,50 @@
+[
+{
+"id": "shell-jq-programs-01-harvest-log-to-csv",
+"ok": true
+},
+{
+"id": "shell-jq-programs-02-totals-per-crop",
+"ok": true
+},
+{
+"id": "shell-jq-programs-03-latest-reading-per-sensor",
+"ok": true
+},
+{
+"id": "shell-jq-programs-04-dotted-paths",
+"ok": true
+},
+{
+"id": "shell-jq-programs-05-join-orders-and-prices",
+"ok": true
+},
+{
+"id": "shell-jq-programs-06-validate-records",
+"ok": true
+},
+{
+"id": "shell-jq-programs-07-events-per-iso-week",
+"ok": true
+},
+{
+"id": "shell-jq-programs-08-directory-sizes",
+"ok": true
+},
+{
+"id": "shell-jq-programs-09-csv-text-to-objects",
+"ok": true
+},
+{
+"id": "shell-jq-programs-10-bump-and-clean-config",
+"ok": true
+},
+{
+"id": "shell-jq-programs-11-fix-order-statistics",
+"ok": true
+},
+{
+"id": "shell-jq-programs-12-top-three-scores-with-ties",
+"ok": true
+}
+]

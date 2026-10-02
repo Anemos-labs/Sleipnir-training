@@ -1,0 +1,34 @@
+[
+{
+"id": "robust-scope-batch-01-limits-ini-x4",
+"ok": true
+},
+{
+"id": "robust-scope-batch-02-regions-yaml-x5",
+"ok": true
+},
+{
+"id": "robust-scope-batch-03-envs-json-x6",
+"ok": true
+},
+{
+"id": "robust-scope-batch-04-pools-ini-x7",
+"ok": true
+},
+{
+"id": "robust-scope-batch-05-limits-env-x4",
+"ok": true
+},
+{
+"id": "robust-scope-batch-06-regions-json-x5",
+"ok": true
+},
+{
+"id": "robust-scope-batch-07-envs-yaml-x6",
+"ok": true
+},
+{
+"id": "robust-scope-batch-08-pools-env-x7",
+"ok": true
+}
+]

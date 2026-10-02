@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-veldoria-01-negate",
+"ok": true
+},
+{
+"id": "fix-py-veldoria-02-arith",
+"ok": true
+},
+{
+"id": "fix-py-veldoria-03-swap",
+"ok": true
+},
+{
+"id": "fix-py-veldoria-04-delete",
+"ok": true
+},
+{
+"id": "fix-py-veldoria-05-const",
+"ok": true
+},
+{
+"id": "fix-py-veldoria-06-negate",
+"ok": true
+},
+{
+"id": "fix-py-veldoria-07-arith",
+"ok": true
+},
+{
+"id": "fix-py-veldoria-08-delete",
+"ok": true
+},
+{
+"id": "fix-py-veldoria-09-const",
+"ok": true
+},
+{
+"id": "fix-py-veldoria-10-negate",
+"ok": true
+}
+]

@@ -1,0 +1,46 @@
+[
+{
+"id": "shell-date-arithmetic-01-days-between-dates",
+"ok": true
+},
+{
+"id": "shell-date-arithmetic-02-add-days-to-date",
+"ok": true
+},
+{
+"id": "shell-date-arithmetic-03-weekday-names",
+"ok": true
+},
+{
+"id": "shell-date-arithmetic-04-business-days-between",
+"ok": true
+},
+{
+"id": "shell-date-arithmetic-05-month-calendar",
+"ok": true
+},
+{
+"id": "shell-date-arithmetic-06-calendar-age",
+"ok": true
+},
+{
+"id": "shell-date-arithmetic-07-next-weekday-after",
+"ok": true
+},
+{
+"id": "shell-date-arithmetic-08-iso-week-dates",
+"ok": true
+},
+{
+"id": "shell-date-arithmetic-09-format-durations",
+"ok": true
+},
+{
+"id": "shell-date-arithmetic-10-parse-durations",
+"ok": true
+},
+{
+"id": "shell-date-arithmetic-11-deadline-in-business-days",
+"ok": true
+}
+]

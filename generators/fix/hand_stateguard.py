@@ -353,7 +353,7 @@ def _base_a() -> Base:
     bugs = [
         Bug("author-can-approve", 2, {w: [("        if reviewer == self.author:\n            raise GuardError(\"authors cannot approve their own document\")\n", "")]}, P["author-approves"]),
         Bug("approvals-counted-per-click", 3, {w: dup}, P["same-reviewer-twice"]),
-        Bug("rejection-keeps-approvals", 3, {w: [("        self.approvals.clear()\n        self.reason = reason\n", "        self.reason = reason\n")]}, P["reject-keeps"]),
+        Bug("rejection-keeps-approvals", 2, {w: [("        self.approvals.clear()\n        self.reason = reason\n", "        self.reason = reason\n")]}, P["reject-keeps"]),
         Bug("admin-publish-skips-review", 4, {w: [("        if self.state != \"approved\":\n            raise GuardError(\"only approved documents can be published\")\n",
                                                    "        if admin and self.state in (\"draft\", \"review\"):\n            self.history.append((self.state, \"published\", who))\n            self.state = \"published\"\n            return\n        if self.state != \"approved\":\n            raise GuardError(\"only approved documents can be published\")\n")]}, P["admin-bypass"]),
         Bug("edit-keeps-approval", 3, {w: [editbug]}, P["edit-keeps"]),
@@ -692,7 +692,7 @@ def _base_b() -> Base:
     good = {"README.md": B_README, "src/orders/State.java": B_STATE, "src/orders/Order.java": B_ORDER}
     o = "src/orders/Order.java"
     bugs = [
-        Bug("shipped-orders-can-be-cancelled", 2, {o: [("        if (state != State.CREATED && state != State.PAID && state != State.PACKED) {\n            throw new IllegalStateException(\"cancel is not allowed in state \" + state);\n        }\n",
+        Bug("shipped-orders-can-be-cancelled", 1, {o: [("        if (state != State.CREATED && state != State.PAID && state != State.PACKED) {\n            throw new IllegalStateException(\"cancel is not allowed in state \" + state);\n        }\n",
                                                         "        if (state == State.CANCELLED || state == State.DELIVERED) {\n            throw new IllegalStateException(\"cancel is not allowed in state \" + state);\n        }\n")]}, P["cancel-shipped"]),
         Bug("overpayment-accepted", 3, {o: [("        if (amount != total) {\n", "        if (amount < total) {\n")]}, P["overpay"]),
         Bug("packed-cancel-without-refund", 3, {o: [("        if (state == State.PAID || state == State.PACKED) {\n            refunded = total;\n        }\n", "        if (state == State.PAID) {\n            refunded = total;\n        }\n")]}, P["refund-packed"]),
@@ -974,7 +974,7 @@ def _base_c() -> Base:
     bugs = [
         Bug("register-restarts-the-device", 3, {f: [("\tcase Retired:\n\t\treturn ErrState\n\tdefault:\n\t\treturn ErrAlreadyRegistered\n\t}\n", "\tcase Retired:\n\t\treturn ErrState\n\tdefault:\n\t\td.State = Registered\n\t\treturn nil\n\t}\n")]}, P["register-resets"]),
         Bug("activate-ignores-firmware", 3, {f: [("\tif d.Firmware < MinFirmware {\n\t\treturn ErrOldFirmware\n\t}\n", "")]}, P["old-firmware"]),
-        Bug("heartbeat-in-any-live-state", 2, {f: [("\tif d.State != Active {\n\t\treturn ErrState\n\t}\n\td.Beats++\n", "\tif d.State == New {\n\t\treturn ErrState\n\t}\n\td.Beats++\n")]}, P["heartbeat-everywhere"]),
+        Bug("heartbeat-in-any-live-state", 1, {f: [("\tif d.State != Active {\n\t\treturn ErrState\n\t}\n\td.Beats++\n", "\tif d.State == New {\n\t\treturn ErrState\n\t}\n\td.Beats++\n")]}, P["heartbeat-everywhere"]),
     ]
     return Base("fleet", "go", good, C_VISIBLE, C_HIDDEN, bugs)
 

@@ -1,0 +1,42 @@
+[
+{
+"id": "security-path-traversal-01-avatar-names",
+"ok": true
+},
+{
+"id": "security-path-traversal-02-note-blacklist",
+"ok": true
+},
+{
+"id": "security-path-traversal-03-report-prefix",
+"ok": true
+},
+{
+"id": "security-path-traversal-04-static-decode",
+"ok": true
+},
+{
+"id": "security-path-traversal-05-template-include",
+"ok": true
+},
+{
+"id": "security-path-traversal-06-attachment-symlink",
+"ok": true
+},
+{
+"id": "security-path-traversal-07-log-viewer",
+"ok": true
+},
+{
+"id": "security-path-traversal-08-site-browser",
+"ok": true
+},
+{
+"id": "security-path-traversal-09-backup-restore",
+"ok": true
+},
+{
+"id": "security-path-traversal-10-doc-store",
+"ok": true
+}
+]

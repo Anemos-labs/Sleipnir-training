@@ -1,0 +1,42 @@
+[
+{
+"id": "shell-makefile-repair-01-fix-missing-separator",
+"ok": true
+},
+{
+"id": "shell-makefile-repair-02-fix-missing-phony",
+"ok": true
+},
+{
+"id": "shell-makefile-repair-03-fix-config-prerequisite",
+"ok": true
+},
+{
+"id": "shell-makefile-repair-04-fix-automatic-variable",
+"ok": true
+},
+{
+"id": "shell-makefile-repair-05-fix-recipe-lines-are-separate-shells",
+"ok": true
+},
+{
+"id": "shell-makefile-repair-06-fix-ignored-failures",
+"ok": true
+},
+{
+"id": "shell-makefile-repair-07-fix-always-rebuilds",
+"ok": true
+},
+{
+"id": "shell-makefile-repair-08-fix-hardcoded-outputs",
+"ok": true
+},
+{
+"id": "shell-makefile-repair-09-fix-shell-variables-in-recipes",
+"ok": true
+},
+{
+"id": "shell-makefile-repair-10-fix-required-include",
+"ok": true
+}
+]

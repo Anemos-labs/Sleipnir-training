@@ -1,0 +1,58 @@
+[
+{
+"id": "fix-hand-int-width-01-parse-through-int",
+"ok": true
+},
+{
+"id": "fix-hand-int-width-02-block-start-multiplied-as-int",
+"ok": true
+},
+{
+"id": "fix-hand-int-width-03-checksum-in-int-arithmetic",
+"ok": true
+},
+{
+"id": "fix-hand-int-width-04-bucket-from-a-signed-hash",
+"ok": true
+},
+{
+"id": "fix-hand-int-width-05-big-serials-parse-and-checksum",
+"ok": true
+},
+{
+"id": "fix-hand-int-width-06-elapsed-subtracts-plainly",
+"ok": true
+},
+{
+"id": "fix-hand-int-width-07-clamp-by-cast",
+"ok": true
+},
+{
+"id": "fix-hand-int-width-08-average-sums-in-u32",
+"ok": true
+},
+{
+"id": "fix-hand-int-width-09-percent-multiplies-in-u32",
+"ok": true
+},
+{
+"id": "fix-hand-int-width-10-ring-index-casts-negative-positions",
+"ok": true
+},
+{
+"id": "fix-hand-int-width-11-average-and-percent-overflow",
+"ok": true
+},
+{
+"id": "fix-hand-int-width-12-brighten-wraps-around",
+"ok": true
+},
+{
+"id": "fix-hand-int-width-13-index-multiplied-in-int32",
+"ok": true
+},
+{
+"id": "fix-hand-int-width-14-average-sums-in-uint8",
+"ok": true
+}
+]

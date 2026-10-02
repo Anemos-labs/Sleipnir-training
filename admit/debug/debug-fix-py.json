@@ -1,0 +1,58 @@
+[
+{
+"id": "debug-fix-py-01-lockers-validate-crash",
+"ok": true
+},
+{
+"id": "debug-fix-py-02-quayplan-cancel-wrong",
+"ok": true
+},
+{
+"id": "debug-fix-py-03-isleduty-parse-wrong",
+"ok": true
+},
+{
+"id": "debug-fix-py-04-chapterfile-parse-wrong",
+"ok": true
+},
+{
+"id": "debug-fix-py-05-shiftroster-overtime-wrong",
+"ok": true
+},
+{
+"id": "debug-fix-py-06-hookrelay-backoff-wrong",
+"ok": true
+},
+{
+"id": "debug-fix-py-07-printinvoice-late-wrong",
+"ok": true
+},
+{
+"id": "debug-fix-py-08-jobqueue-fail-wrong",
+"ok": true
+},
+{
+"id": "debug-fix-py-09-portalauth-login-wrong",
+"ok": true
+},
+{
+"id": "debug-fix-py-10-lockers-release-wrong",
+"ok": true
+},
+{
+"id": "debug-fix-py-11-quayplan-fmt-wrong",
+"ok": true
+},
+{
+"id": "debug-fix-py-12-isleduty-bands-wrong",
+"ok": true
+},
+{
+"id": "debug-fix-py-13-chapterfile-paths-wrong",
+"ok": true
+},
+{
+"id": "debug-fix-py-14-shiftroster-pay-wrong",
+"ok": true
+}
+]

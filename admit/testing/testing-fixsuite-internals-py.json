@@ -1,0 +1,34 @@
+[
+{
+"id": "testing-fixsuite-internals-py-01-ferryfare-internals",
+"ok": true
+},
+{
+"id": "testing-fixsuite-internals-py-02-ferryfare-internals",
+"ok": true
+},
+{
+"id": "testing-fixsuite-internals-py-03-labelcodes-internals",
+"ok": true
+},
+{
+"id": "testing-fixsuite-internals-py-04-labelcodes-internals",
+"ok": true
+},
+{
+"id": "testing-fixsuite-internals-py-05-ferryfare-internals",
+"ok": true
+},
+{
+"id": "testing-fixsuite-internals-py-06-ferryfare-internals",
+"ok": true
+},
+{
+"id": "testing-fixsuite-internals-py-07-labelcodes-internals",
+"ok": true
+},
+{
+"id": "testing-fixsuite-internals-py-08-labelcodes-internals",
+"ok": true
+}
+]

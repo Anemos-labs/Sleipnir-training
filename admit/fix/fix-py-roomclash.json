@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-roomclash-01-arith",
+"ok": true
+},
+{
+"id": "fix-py-roomclash-02-const",
+"ok": true
+},
+{
+"id": "fix-py-roomclash-03-swap",
+"ok": true
+},
+{
+"id": "fix-py-roomclash-04-cmp",
+"ok": true
+},
+{
+"id": "fix-py-roomclash-05-negate",
+"ok": true
+},
+{
+"id": "fix-py-roomclash-06-delete",
+"ok": true
+},
+{
+"id": "fix-py-roomclash-07-arith",
+"ok": true
+},
+{
+"id": "fix-py-roomclash-08-const",
+"ok": true
+},
+{
+"id": "fix-py-roomclash-09-swap",
+"ok": true
+},
+{
+"id": "fix-py-roomclash-10-cmp",
+"ok": true
+}
+]

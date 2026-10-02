@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-humanfmt-01-const",
+"ok": true
+},
+{
+"id": "fix-py-humanfmt-02-arith",
+"ok": true
+},
+{
+"id": "fix-py-humanfmt-03-negate",
+"ok": true
+},
+{
+"id": "fix-py-humanfmt-04-swap",
+"ok": true
+},
+{
+"id": "fix-py-humanfmt-05-cmp",
+"ok": true
+},
+{
+"id": "fix-py-humanfmt-06-delete",
+"ok": true
+},
+{
+"id": "fix-py-humanfmt-07-const",
+"ok": true
+},
+{
+"id": "fix-py-humanfmt-08-arith",
+"ok": true
+},
+{
+"id": "fix-py-humanfmt-09-negate",
+"ok": true
+},
+{
+"id": "fix-py-humanfmt-10-cmp",
+"ok": true
+}
+]

@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-veldmark-01-delete",
+"ok": true
+},
+{
+"id": "fix-py-veldmark-02-negate",
+"ok": true
+},
+{
+"id": "fix-py-veldmark-03-swap",
+"ok": true
+},
+{
+"id": "fix-py-veldmark-04-const",
+"ok": true
+},
+{
+"id": "fix-py-veldmark-05-arith",
+"ok": true
+},
+{
+"id": "fix-py-veldmark-06-delete",
+"ok": true
+},
+{
+"id": "fix-py-veldmark-07-negate",
+"ok": true
+},
+{
+"id": "fix-py-veldmark-08-swap",
+"ok": true
+},
+{
+"id": "fix-py-veldmark-09-const",
+"ok": true
+},
+{
+"id": "fix-py-veldmark-10-arith",
+"ok": true
+}
+]

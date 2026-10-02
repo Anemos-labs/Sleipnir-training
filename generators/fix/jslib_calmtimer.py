@@ -734,7 +734,7 @@ LIB = Lib(
            "README.md": README, ".gitignore": "node_modules/\n"},
     visible_tests={"test/basic.test.js": VISIBLE},
     hidden_tests={"test/full.test.js": HIDDEN},
-    mutate=["src/debounce.js", "src/clock.js", "src/batcher.js"], difficulty=4, tags=["timers", "debounce", "throttle"],
+    mutate=["src/debounce.js", "src/clock.js", "src/batcher.js"], difficulty=3, tags=["timers", "debounce", "throttle"],
     verify=JS_VERIFY,
 )
 

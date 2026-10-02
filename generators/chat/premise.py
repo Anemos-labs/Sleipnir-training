@@ -21,6 +21,9 @@ WRONG_OFFSET = {"Mumbai": 360, "Kathmandu": 330, "Dhaka": 330, "Kabul": 300, "Te
                 "Nairobi": 120, "Lagos": 120, "Reykjavik": 60, "Adelaide": 600, "Caracas": -180}
 UNITS = [("mile", "km", Fraction(1609344, 1000000), Fraction(12, 10), "km"), ("inch", "cm", Fraction(254, 100), Fraction(2), "cm"), ("gallon", "litres", Fraction(3785411784, 10 ** 9), Fraction(4, 1), "litres"),
          ("pound", "kg", Fraction(45359237, 10 ** 8), Fraction(1, 2), "kg"), ("foot", "m", Fraction(3048, 10000), Fraction(1, 4), "m"), ("ounce", "g", Fraction(28349523125, 10 ** 9), Fraction(30), "g")]
+# slightly different constants a careful person might use; an instance is only kept when they all round to the same one-decimal answer
+ALT_CONST = {"mile": [Fraction(1609, 1000), Fraction(16093, 10000)], "inch": [Fraction(254, 100)], "gallon": [Fraction(3785, 1000), Fraction(37854, 10000)], "pound": [Fraction(4536, 10000), Fraction(45359, 100000)],
+             "foot": [Fraction(3048, 10000), Fraction(30, 100)], "ounce": [Fraction(2835, 100), Fraction(28349, 1000)]}
 MONTH31_WRONG = [("April", 4), ("June", 6), ("September", 9), ("November", 11)]
 
 
@@ -28,10 +31,10 @@ def _r1(x: Fraction) -> str:
     return f"{float(x):.1f}"
 
 
-@family("chat-premise-fact", category="chat", lang="text", kind="premise", n=14, mode="answer",
+@family("chat-premise-fact", category="chat", lang="text", kind="premise", n=8, mode="answer",
         summary="the question builds on a confidently stated false fact (month length, weekday, time-zone offset, unit constant, area formula, stacked discounts); the answer is checked on the true result")
 def gen_pfact(rng, n):
-    plan = [2, 2, 3, 3, 3, 3, 4, 4, 4, 5, 5, 2, 3, 4]
+    plan = [2, 2, 2, 3, 3, 4, 4, 5]
     for i in range(n):
         d = plan[i % len(plan)]
         for _attempt in range(200):
@@ -45,6 +48,10 @@ def gen_pfact(rng, n):
                 if abs(float(val * 10) - round(float(val * 10)) - 0.5) < 1e-9:
                     continue
                 ans = _r1(val)
+                if u[0] == "foot":
+                    ALT_CONST["foot"] = [Fraction(3048, 10000)]
+                if any(_r1(qf * c) != ans for c in ALT_CONST[u[0]]):
+                    continue
                 intro = (f"I'm converting some figures for a form. A {u[0]} is {float(u[3]):g} {u[1]}, right? "
                          f"Then I need {qty:g} {u[0]}s expressed in {u[4]}.")
                 ask = f"What is {qty:g} {u[0]}s in {u[4]}, to one decimal place?"
@@ -196,10 +203,10 @@ def gen_pfact(rng, n):
 # chat-premise-arith
 
 
-@family("chat-premise-arith", category="chat", lang="text", kind="premise", n=12, mode="answer",
+@family("chat-premise-arith", category="chat", lang="text", kind="premise", n=8, mode="answer",
         summary="the user's own arithmetic contains a slip and the follow-up builds on it: re-derive the total, the tax, the pace or the unit price")
 def gen_parith(rng, n):
-    plan = [2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 3, 4]
+    plan = [2, 2, 2, 3, 3, 4, 4, 5]
     for i in range(n):
         d = plan[i % len(plan)]
         for _attempt in range(200):
@@ -303,10 +310,10 @@ SHOPS = ["Alder St", "Bridge Rd", "Canal Walk", "Dock Lane", "Elm Court", "Fount
 MONTHS4 = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"]
 
 
-@family("chat-premise-data", category="chat", lang="text", kind="premise", n=12, mode="answer",
+@family("chat-premise-data", category="chat", lang="text", kind="premise", n=8, mode="answer",
         summary="a claim about a pasted table that the table contradicts (wrong winner, 'rose every month', 'all branches reported', wrong units); the follow-up needs the true figures")
 def gen_pdata(rng, n):
-    plan = [2, 2, 3, 3, 3, 4, 4, 4, 5, 3, 4, 5]
+    plan = [2, 2, 2, 3, 3, 4, 4, 5]
     for i in range(n):
         d = plan[i % len(plan)]
         for _attempt in range(200):
@@ -391,10 +398,10 @@ def gen_pdata(rng, n):
 SYSTEMS = [("web gateway", "payments worker"), ("api edge", "billing cron"), ("search frontend", "indexer"), ("login service", "mailer")]
 
 
-@family("chat-premise-timeline", category="chat", lang="text", kind="premise", n=8, mode="answer",
+@family("chat-premise-timeline", category="chat", lang="text", kind="premise", n=6, mode="answer",
         summary="an incident timeline in two logs with different clocks: the user's 'X happened after Y' is false once offsets and skew are applied")
 def gen_ptime(rng, n):
-    plan = [3, 4, 4, 5, 5, 4, 5, 3]
+    plan = [3, 4, 4, 5, 4, 3]
     for i in range(n):
         d = plan[i % len(plan)]
         for _attempt in range(200):

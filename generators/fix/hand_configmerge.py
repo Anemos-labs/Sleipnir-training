@@ -347,8 +347,8 @@ def _base_a() -> Base:
                                                 "    cfg = deep_merge(defaults, from_env(env or {}, defaults))\n    cfg = deep_merge(cfg, file_data or {})\n")]}, P["env-vs-file"]),
         Bug("bool-from-truthiness", 2, {co: [("        word = text.strip().lower()\n        if word in TRUE:\n            return True\n        if word in FALSE:\n            return False\n        raise ValueError(f\"not a boolean: {text!r}\")\n",
                                               "        return bool(text)\n")]}, P["bool-text"]),
-        Bug("falsy-overrides-ignored", 3, {mg: [("        if value is None:\n            continue\n", "        if not value:\n            continue\n")]}, P["falsy"]),
-        Bug("lists-are-concatenated", 3, {mg: [("        if isinstance(value, dict) and isinstance(out.get(key), dict):\n            out[key] = deep_merge(out[key], value)\n",
+        Bug("falsy-overrides-ignored", 2, {mg: [("        if value is None:\n            continue\n", "        if not value:\n            continue\n")]}, P["falsy"]),
+        Bug("lists-are-concatenated", 2, {mg: [("        if isinstance(value, dict) and isinstance(out.get(key), dict):\n            out[key] = deep_merge(out[key], value)\n",
                                                 "        if isinstance(value, dict) and isinstance(out.get(key), dict):\n            out[key] = deep_merge(out[key], value)\n        elif isinstance(value, list) and isinstance(out.get(key), list):\n            out[key] = out[key] + _copy(value)\n")]}, P["lists"]),
         Bug("merge-modifies-its-base", 4, {mg: [mutate]}, P["mutated-defaults"]),
         Bug("env-names-not-lowered-and-base-modified", 5, {mg: [mutate], lo: [envcase]}, P["env-case-and-mutation"]),
@@ -536,10 +536,10 @@ def _base_b() -> Base:
     good = {"README.md": B_README, "src/merge.js": B_MERGE, "package.json": '{\n  "name": "optmerge",\n  "version": "1.0.0",\n  "private": true\n}\n'}
     m = "src/merge.js"
     bugs = [
-        Bug("pick-uses-or", 3, {m: [("  return node === undefined ? fallback : node;\n", "  return node || fallback;\n")]}, P["or-fallback"]),
+        Bug("pick-uses-or", 2, {m: [("  return node === undefined ? fallback : node;\n", "  return node || fallback;\n")]}, P["or-fallback"]),
         Bug("arrays-merged-by-index", 3, {m: [("    if (isPlain(value) && isPlain(target[key])) mergeInto(target[key], value);\n    else target[key] = clone(value);\n",
                                                 "    if ((isPlain(value) && isPlain(target[key])) || (Array.isArray(value) && Array.isArray(target[key]))) mergeInto(target[key], value);\n    else target[key] = clone(value);\n")]}, P["arrays-by-index"]),
-        Bug("undefined-overrides", 2, {m: [("    if (value === undefined) continue;\n", "")]}, P["undefined-wins"]),
+        Bug("undefined-overrides", 1, {m: [("    if (value === undefined) continue;\n", "")]}, P["undefined-wins"]),
         Bug("prototype-keys-allowed", 4, {m: [("const FORBIDDEN = new Set(['__proto__', 'constructor', 'prototype']);", "const FORBIDDEN = new Set([]);")]}, P["proto"]),
     ]
     return Base("optmerge", "javascript", good, B_VISIBLE, B_HIDDEN, bugs)
@@ -716,7 +716,7 @@ def _base_c() -> Base:
         Bug("hashes-not-merged-deeply", 2, {f: [("      if value.is_a?(Hash) && out[key].is_a?(Hash)\n        out[key] = deep_merge(out[key], value)\n      else\n        out[key] = stringify(value)\n      end\n",
                                                  "      out[key] = stringify(value)\n")]}, P["shallow"]),
         Bug("to-int-is-lenient", 2, {f: [("    Integer(text.strip, 10)\n", "    text.to_i\n")]}, P["to-i"]),
-        Bug("fetch-falls-back-on-falsy", 3, {f: [("    node\n  end\nend\n", "    node || default\n  end\nend\n")]}, P["fetch-or"]),
+        Bug("fetch-falls-back-on-falsy", 2, {f: [("    node\n  end\nend\n", "    node || default\n  end\nend\n")]}, P["fetch-or"]),
     ]
     return Base("cfgkit", "ruby", good, C_VISIBLE, C_HIDDEN, bugs)
 

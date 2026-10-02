@@ -225,8 +225,8 @@ def _base_a() -> Base:
     return pattern.sub(lambda m: "<mark>" + m.group(0) + "</mark>", escaped)
 ''')
     bugs = [
-        Bug("terms-are-regexes", 2, {r: [('return re.compile("|".join(re.escape(t) for t in parts), re.IGNORECASE)', 'return re.compile("|".join(parts), re.IGNORECASE)')]}, P["regex"]),
-        Bug("quotes-not-escaped-in-attributes", 2, {r: [('html.escape(href, quote=True)', 'html.escape(href, quote=False)')]}, P["quotes"]),
+        Bug("terms-are-regexes", 1, {r: [('return re.compile("|".join(re.escape(t) for t in parts), re.IGNORECASE)', 'return re.compile("|".join(parts), re.IGNORECASE)')]}, P["regex"]),
+        Bug("quotes-not-escaped-in-attributes", 1, {r: [('html.escape(href, quote=True)', 'html.escape(href, quote=False)')]}, P["quotes"]),
         Bug("markup-escaped-after-wrapping", 3, {r: [late]}, P["escape-late"]),
         Bug("scheme-check-is-naive", 3, {r: [('    scheme = _scheme(url)\n    href = url.strip() if scheme is None or scheme in SAFE_SCHEMES else "#"\n',
                                               '    href = "#" if url.startswith("javascript:") else url.strip()\n')]}, P["scheme"]),
@@ -449,10 +449,10 @@ def _base_b() -> Base:
     bugs = [
         Bug("shell-empty-argument-vanishes", 2, {q: [("  if (s === '') return \"''\";\n", "  if (s === '') return '';\n")]}, P["shell-empty"]),
         Bug("csv-multiline-fields-unquoted", 2, {q: [("  if (/[\",\\r\\n]/.test(s) || /^\\s|\\s$/.test(s)) return", "  if (/[\",]/.test(s)) return")]}, P["csv-newline"]),
-        Bug("sql-quotes-not-doubled", 2, {q: [("  return \"'\" + String(v).replace(/'/g, \"''\") + \"'\";\n", "  return \"'\" + String(v) + \"'\";\n")]}, P["sql-quote"]),
-        Bug("shell-single-quote-unescaped", 3, {q: [("  return \"'\" + s.replace(/'/g, \"'\\\\''\") + \"'\";\n", "  return \"'\" + s + \"'\";\n")]}, P["shell-quote"]),
+        Bug("sql-quotes-not-doubled", 1, {q: [("  return \"'\" + String(v).replace(/'/g, \"''\") + \"'\";\n", "  return \"'\" + String(v) + \"'\";\n")]}, P["sql-quote"]),
+        Bug("shell-single-quote-unescaped", 2, {q: [("  return \"'\" + s.replace(/'/g, \"'\\\\''\") + \"'\";\n", "  return \"'\" + s + \"'\";\n")]}, P["shell-quote"]),
         Bug("shell-uses-double-quotes", 3, {q: [("  return \"'\" + s.replace(/'/g, \"'\\\\''\") + \"'\";\n", "  return '\"' + s.replace(/([\"\\\\])/g, '\\\\$1') + '\"';\n")]}, P["shell-double"]),
-        Bug("csv-quotes-not-doubled", 3, {q: [("return '\"' + s.replace(/\"/g, '\"\"') + '\"';", "return '\"' + s + '\"';")]}, P["csv-quotes"]),
+        Bug("csv-quotes-not-doubled", 2, {q: [("return '\"' + s.replace(/\"/g, '\"\"') + '\"';", "return '\"' + s + '\"';")]}, P["csv-quotes"]),
     ]
     return Base("quoting", "javascript", good, B_VISIBLE, B_HIDDEN, bugs)
 

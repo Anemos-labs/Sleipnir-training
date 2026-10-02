@@ -1,0 +1,114 @@
+[
+{
+"id": "debug-logs-forensics-01-race-plain",
+"ok": true
+},
+{
+"id": "debug-logs-forensics-02-cascade-logfmt",
+"ok": true
+},
+{
+"id": "debug-logs-forensics-03-race-json",
+"ok": true
+},
+{
+"id": "debug-logs-forensics-04-bad-host-plain",
+"ok": true
+},
+{
+"id": "debug-logs-forensics-05-bad-release-logfmt",
+"ok": true
+},
+{
+"id": "debug-logs-forensics-06-slow-endpoint-json",
+"ok": true
+},
+{
+"id": "debug-logs-forensics-07-dst-plain",
+"ok": true
+},
+{
+"id": "debug-logs-forensics-08-cascade-logfmt",
+"ok": true
+},
+{
+"id": "debug-logs-forensics-09-bad-host-plain",
+"ok": true
+},
+{
+"id": "debug-logs-forensics-10-leak-logfmt",
+"ok": true
+},
+{
+"id": "debug-logs-forensics-11-race-json",
+"ok": true
+},
+{
+"id": "debug-logs-forensics-12-config-drift-plain",
+"ok": true
+},
+{
+"id": "debug-logs-forensics-13-slow-endpoint-logfmt",
+"ok": true
+},
+{
+"id": "debug-logs-forensics-14-config-drift-json",
+"ok": true
+},
+{
+"id": "debug-logs-forensics-15-bad-release-plain",
+"ok": true
+},
+{
+"id": "debug-logs-forensics-16-leak-logfmt",
+"ok": true
+},
+{
+"id": "debug-logs-forensics-17-bad-host-plain",
+"ok": true
+},
+{
+"id": "debug-logs-forensics-18-config-drift-logfmt",
+"ok": true
+},
+{
+"id": "debug-logs-forensics-19-race-json",
+"ok": true
+},
+{
+"id": "debug-logs-forensics-20-dst-plain",
+"ok": true
+},
+{
+"id": "debug-logs-forensics-21-slow-endpoint-logfmt",
+"ok": true
+},
+{
+"id": "debug-logs-forensics-22-dst-json",
+"ok": true
+},
+{
+"id": "debug-logs-forensics-23-config-drift-plain",
+"ok": true
+},
+{
+"id": "debug-logs-forensics-24-cascade-logfmt",
+"ok": true
+},
+{
+"id": "debug-logs-forensics-25-bad-release-plain",
+"ok": true
+},
+{
+"id": "debug-logs-forensics-26-cascade-logfmt",
+"ok": true
+},
+{
+"id": "debug-logs-forensics-27-leak-json",
+"ok": true
+},
+{
+"id": "debug-logs-forensics-28-race-plain",
+"ok": true
+}
+]

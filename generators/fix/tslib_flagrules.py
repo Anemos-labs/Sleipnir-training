@@ -465,7 +465,7 @@ LIB = Lib(
            "src/hash.ts": HASH, "src/cond.ts": COND, "src/evaluate.ts": EVALUATE, "README.md": README, ".gitignore": "node_modules/\nbuild/\n"},
     visible_tests={"test/basic.test.ts": VISIBLE},
     hidden_tests={"test/full.test.ts": HIDDEN},
-    mutate=["src/evaluate.ts", "src/cond.ts", "src/hash.ts"], difficulty=4, tags=["feature-flags", "rollout", "hashing"],
+    mutate=["src/evaluate.ts", "src/cond.ts", "src/hash.ts"], difficulty=3, tags=["feature-flags", "rollout", "hashing"],
     verify=TS_VERIFY,
     probe_import="const { fnv1a, bucket } = require('./build/src/hash');\nconst { compareVersions, matchCond } = require('./build/src/cond');\nconst { evaluate } = require('./build/src/evaluate');",
     probes=[

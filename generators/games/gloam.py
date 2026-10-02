@@ -414,8 +414,8 @@ def readme(r: dict) -> str:
         "`U D L R` on ties. Event `<id> moves`. If there is no candidate the monster stays and nothing is reported (the energy is spent all the same).",
     ]
     s.append("\n".join(f"{'' if t.startswith('  ') else str(sum(1 for q in mon[:mon.index(t) + 1] if not q.startswith('  '))) + '. '}{t}" for t in mon) + "\n")
-    s.append("## End of the tick\n\n" + (f"If the game is still running and `(tick + 1)` is a multiple of {r['REGEN']} and the hero has less than the maximum hp, the hero regains 1 hp (event `hero regenerates`). " if r["REGEN"] else "") +
-             "Then `tick` increases by one (for every legal move, also for the move that won or lost the game). `apply` returns all events of the move in the order they happened, joined by `; `.\n")
+    s.append("## End of the tick\n\n" + (f"If the game is still running and `(tick + 1)` is a multiple of {r['REGEN']} and the hero has less than the maximum hp, the hero regains 1 hp (event `hero regenerates`). Then " if r["REGEN"] else "") +
+             ("`tick` " if not r["REGEN"] else "`tick` ").replace("`tick` ", "`tick` ") + "increases by one (for every legal move, also for the move that won or lost the game). `apply` returns all events of the move in the order they happened, joined by `; `.\n")
     s.append("## API (`gloam.py`)\n\n```python\nimport gloam\ng = gloam.Game(map_text)   # rows joined by \"\\n\"\ng.legal_moves()            # list of move strings (any order); [] when the game is over\n"
              "g.apply(move)              # plays a legal move and returns the events text; ValueError otherwise, state unchanged\ng.render()                 # the map and a status line (below)\n"
              "g.status()                 # 'playing', 'won' or 'lost'\n```\n")

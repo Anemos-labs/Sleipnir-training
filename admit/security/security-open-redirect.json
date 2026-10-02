@@ -1,0 +1,26 @@
+[
+{
+"id": "security-open-redirect-01-login-next",
+"ok": true
+},
+{
+"id": "security-open-redirect-02-oauth-redirect-uri",
+"ok": true
+},
+{
+"id": "security-open-redirect-03-return-to-host",
+"ok": true
+},
+{
+"id": "security-open-redirect-04-slash-redirect",
+"ok": true
+},
+{
+"id": "security-open-redirect-05-continue-netloc",
+"ok": true
+},
+{
+"id": "security-open-redirect-06-double-decode",
+"ok": true
+}
+]

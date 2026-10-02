@@ -1,0 +1,58 @@
+[
+{
+"id": "feature-rs-recipescale-01-markdown",
+"ok": true
+},
+{
+"id": "feature-rs-recipescale-02-rounding",
+"ok": true
+},
+{
+"id": "feature-rs-recipescale-03-unit-convert",
+"ok": true
+},
+{
+"id": "feature-rs-recipescale-04-find-ingredient-unit-convert-shopping-list",
+"ok": true
+},
+{
+"id": "feature-rs-recipescale-05-scale-limits",
+"ok": true
+},
+{
+"id": "feature-rs-recipescale-06-allergens",
+"ok": true
+},
+{
+"id": "feature-rs-recipescale-07-find-ingredient",
+"ok": true
+},
+{
+"id": "feature-rs-recipescale-08-allergens-shopping-list",
+"ok": true
+},
+{
+"id": "feature-rs-recipescale-09-markdown",
+"ok": true
+},
+{
+"id": "feature-rs-recipescale-10-rounding",
+"ok": true
+},
+{
+"id": "feature-rs-recipescale-11-find-ingredient",
+"ok": true
+},
+{
+"id": "feature-rs-recipescale-12-rounding-scale-limits-shopping-list",
+"ok": true
+},
+{
+"id": "feature-rs-recipescale-13-scale-limits",
+"ok": true
+},
+{
+"id": "feature-rs-recipescale-14-unit-convert",
+"ok": true
+}
+]

@@ -8,43 +8,27 @@
 "ok": true
 },
 {
-"id": "chat-write-summary-03-party-bul",
+"id": "chat-write-summary-03-party-par",
 "ok": true
 },
 {
-"id": "chat-write-summary-04-server-par",
+"id": "chat-write-summary-04-server-bul",
 "ok": true
 },
 {
-"id": "chat-write-summary-05-bike-bul",
+"id": "chat-write-summary-05-bake-bul",
 "ok": true
 },
 {
-"id": "chat-write-summary-06-library-par",
+"id": "chat-write-summary-06-water-par",
 "ok": true
 },
 {
-"id": "chat-write-summary-07-party-bul",
+"id": "chat-write-summary-07-choir-bul",
 "ok": true
 },
 {
-"id": "chat-write-summary-08-server-bul",
-"ok": true
-},
-{
-"id": "chat-write-summary-09-bike-bul",
-"ok": true
-},
-{
-"id": "chat-write-summary-10-library-bul",
-"ok": true
-},
-{
-"id": "chat-write-summary-11-party-bul",
-"ok": true
-},
-{
-"id": "chat-write-summary-12-server-bul",
+"id": "chat-write-summary-08-roof-bul",
 "ok": true
 }
 ]

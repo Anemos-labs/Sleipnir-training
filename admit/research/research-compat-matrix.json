@@ -4,11 +4,11 @@
 "ok": true
 },
 {
-"id": "research-compat-matrix-02-count",
+"id": "research-compat-matrix-02-newest",
 "ok": true
 },
 {
-"id": "research-compat-matrix-03-newest",
+"id": "research-compat-matrix-03-count",
 "ok": true
 },
 {
@@ -20,11 +20,11 @@
 "ok": true
 },
 {
-"id": "research-compat-matrix-06-count",
+"id": "research-compat-matrix-06-newest",
 "ok": true
 },
 {
-"id": "research-compat-matrix-07-count",
+"id": "research-compat-matrix-07-newest",
 "ok": true
 },
 {
@@ -32,7 +32,7 @@
 "ok": true
 },
 {
-"id": "research-compat-matrix-09-count",
+"id": "research-compat-matrix-09-newest",
 "ok": true
 },
 {
@@ -40,27 +40,11 @@
 "ok": true
 },
 {
-"id": "research-compat-matrix-11-count",
+"id": "research-compat-matrix-11-newest",
 "ok": true
 },
 {
 "id": "research-compat-matrix-12-newest",
-"ok": true
-},
-{
-"id": "research-compat-matrix-13-count",
-"ok": true
-},
-{
-"id": "research-compat-matrix-14-newest",
-"ok": true
-},
-{
-"id": "research-compat-matrix-15-count",
-"ok": true
-},
-{
-"id": "research-compat-matrix-16-newest",
 "ok": true
 }
 ]

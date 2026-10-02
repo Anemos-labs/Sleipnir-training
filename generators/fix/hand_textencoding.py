@@ -232,8 +232,8 @@ def _base_a() -> Base:
     bom = ('    if raw.startswith(codecs.BOM_UTF8):\n        return raw[len(codecs.BOM_UTF8):].decode("utf-8")\n', "")
     csvn = ("    text = decode_bytes(raw)\n    rows", "    text = normalize_newlines(decode_bytes(raw))\n    rows")
     bugs = [
-        Bug("utf8-bom-kept", 2, {t: [bom]}, P["bom"]),
-        Bug("bare-cr-left-alone", 2, {t: [('    return text.replace("\\r\\n", "\\n").replace("\\r", "\\n")\n', '    return text.replace("\\r\\n", "\\n")\n')]}, P["lone-cr"]),
+        Bug("utf8-bom-kept", 1, {t: [bom]}, P["bom"]),
+        Bug("bare-cr-left-alone", 1, {t: [('    return text.replace("\\r\\n", "\\n").replace("\\r", "\\n")\n', '    return text.replace("\\r\\n", "\\n")\n')]}, P["lone-cr"]),
         Bug("latin1-tried-first", 3, {t: [('    try:\n        return raw.decode("utf-8")\n    except UnicodeDecodeError:\n        return raw.decode("latin-1")\n', '    return raw.decode("latin-1")\n')]}, P["latin1-first"]),
         Bug("truncate-leaves-replacement", 3, {t: [('errors="ignore"', 'errors="replace"')]}, P["truncate-replace"]),
         Bug("cr-replaced-before-crlf", 3, {t: [('    return text.replace("\\r\\n", "\\n").replace("\\r", "\\n")\n', '    return text.replace("\\r", "\\n").replace("\\r\\n", "\\n")\n')]}, P["cr-order"]),

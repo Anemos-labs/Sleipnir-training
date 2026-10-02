@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-rs-loghist-01-negate",
+"ok": true
+},
+{
+"id": "fix-rs-loghist-02-cmp",
+"ok": true
+},
+{
+"id": "fix-rs-loghist-03-const",
+"ok": true
+},
+{
+"id": "fix-rs-loghist-04-delete",
+"ok": true
+},
+{
+"id": "fix-rs-loghist-05-swap",
+"ok": true
+},
+{
+"id": "fix-rs-loghist-06-arith",
+"ok": true
+},
+{
+"id": "fix-rs-loghist-07-cmp",
+"ok": true
+},
+{
+"id": "fix-rs-loghist-08-const",
+"ok": true
+}
+]

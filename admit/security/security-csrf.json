@@ -1,0 +1,22 @@
+[
+{
+"id": "security-csrf-01-get-mutates",
+"ok": true
+},
+{
+"id": "security-csrf-02-settings-token",
+"ok": true
+},
+{
+"id": "security-csrf-03-origin-check",
+"ok": true
+},
+{
+"id": "security-csrf-04-predictable-token",
+"ok": true
+},
+{
+"id": "security-csrf-05-double-submit",
+"ok": true
+}
+]

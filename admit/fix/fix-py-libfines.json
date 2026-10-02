@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-libfines-01-const",
+"ok": true
+},
+{
+"id": "fix-py-libfines-02-delete",
+"ok": true
+},
+{
+"id": "fix-py-libfines-03-arith",
+"ok": true
+},
+{
+"id": "fix-py-libfines-04-cmp",
+"ok": true
+},
+{
+"id": "fix-py-libfines-05-negate",
+"ok": true
+},
+{
+"id": "fix-py-libfines-06-const",
+"ok": true
+},
+{
+"id": "fix-py-libfines-07-delete",
+"ok": true
+},
+{
+"id": "fix-py-libfines-08-arith",
+"ok": true
+},
+{
+"id": "fix-py-libfines-09-negate",
+"ok": true
+},
+{
+"id": "fix-py-libfines-10-const",
+"ok": true
+}
+]

@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-fixedrec-01-const",
+"ok": true
+},
+{
+"id": "fix-py-fixedrec-02-delete",
+"ok": true
+},
+{
+"id": "fix-py-fixedrec-03-arith",
+"ok": true
+},
+{
+"id": "fix-py-fixedrec-04-cmp",
+"ok": true
+},
+{
+"id": "fix-py-fixedrec-05-negate",
+"ok": true
+},
+{
+"id": "fix-py-fixedrec-06-const",
+"ok": true
+},
+{
+"id": "fix-py-fixedrec-07-delete",
+"ok": true
+},
+{
+"id": "fix-py-fixedrec-08-arith",
+"ok": true
+},
+{
+"id": "fix-py-fixedrec-09-cmp",
+"ok": true
+},
+{
+"id": "fix-py-fixedrec-10-negate",
+"ok": true
+}
+]

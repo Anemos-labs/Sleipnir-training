@@ -20,39 +20,15 @@
 "ok": true
 },
 {
-"id": "chat-regex-match-06-greedy",
+"id": "chat-regex-match-06-sub",
 "ok": true
 },
 {
-"id": "chat-regex-match-07-greedy",
+"id": "chat-regex-match-07-findall",
 "ok": true
 },
 {
-"id": "chat-regex-match-08-findall",
-"ok": true
-},
-{
-"id": "chat-regex-match-09-greedy",
-"ok": true
-},
-{
-"id": "chat-regex-match-10-sub_backref",
-"ok": true
-},
-{
-"id": "chat-regex-match-11-count",
-"ok": true
-},
-{
-"id": "chat-regex-match-12-count",
-"ok": true
-},
-{
-"id": "chat-regex-match-13-sub",
-"ok": true
-},
-{
-"id": "chat-regex-match-14-greedy",
+"id": "chat-regex-match-08-findall_nested",
 "ok": true
 }
 ]

@@ -1,0 +1,42 @@
+[
+{
+"id": "greenfield-sheetcalc-01-javascript-exact-row-l3",
+"ok": true
+},
+{
+"id": "greenfield-sheetcalc-02-go-exact-row-l3",
+"ok": true
+},
+{
+"id": "greenfield-sheetcalc-03-java-floor-row-l4",
+"ok": true
+},
+{
+"id": "greenfield-sheetcalc-04-python-floor-row-l4",
+"ok": true
+},
+{
+"id": "greenfield-sheetcalc-05-javascript-floor-row-l4",
+"ok": true
+},
+{
+"id": "greenfield-sheetcalc-06-go-floor-col-l5",
+"ok": true
+},
+{
+"id": "greenfield-sheetcalc-07-java-floor-row-l5",
+"ok": true
+},
+{
+"id": "greenfield-sheetcalc-08-javascript-exact-col-l5",
+"ok": true
+},
+{
+"id": "greenfield-sheetcalc-09-go-floor-row-l3",
+"ok": true
+},
+{
+"id": "greenfield-sheetcalc-10-java-trunc-col-l4",
+"ok": true
+}
+]

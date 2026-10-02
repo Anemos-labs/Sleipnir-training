@@ -28,7 +28,8 @@ BN_README = dd('''
       with a correct check character and sequence of at least 1; anything else is a `ValueError`.
     * `next_number(prefix, year, last)`: the number that follows `last` (the previously issued number as text, or
       `None` for the first one). The sequence counts up inside one prefix and one year and restarts at 1 for a later
-      year. A `last` of another prefix or of a later year is a `ValueError`, and so is running past 999999.
+      year. A `last` that is not a valid number, one of another prefix or of a later year is a `ValueError`, and so is
+      running past 999999.
 
     ## Allocation (`billnum/alloc.py`)
 

@@ -8,7 +8,7 @@
 "ok": true
 },
 {
-"id": "research-timeline-gaps-03-gap",
+"id": "research-timeline-gaps-03-date",
 "ok": true
 },
 {
@@ -16,19 +16,19 @@
 "ok": true
 },
 {
-"id": "research-timeline-gaps-05-date",
+"id": "research-timeline-gaps-05-gap",
 "ok": true
 },
 {
-"id": "research-timeline-gaps-06-gap",
+"id": "research-timeline-gaps-06-date",
 "ok": true
 },
 {
-"id": "research-timeline-gaps-07-date",
+"id": "research-timeline-gaps-07-gap",
 "ok": true
 },
 {
-"id": "research-timeline-gaps-08-gap",
+"id": "research-timeline-gaps-08-date",
 "ok": true
 },
 {
@@ -40,19 +40,11 @@
 "ok": true
 },
 {
-"id": "research-timeline-gaps-11-date",
+"id": "research-timeline-gaps-11-gap",
 "ok": true
 },
 {
 "id": "research-timeline-gaps-12-gap",
-"ok": true
-},
-{
-"id": "research-timeline-gaps-13-date",
-"ok": true
-},
-{
-"id": "research-timeline-gaps-14-gap",
 "ok": true
 }
 ]

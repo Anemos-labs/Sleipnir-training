@@ -454,8 +454,8 @@ SC_README = dd('''
     * `parse_days("mon-fri")`: the sorted list of weekday numbers (Monday is `0`). The text is case-insensitive and
       is a comma-separated list of single days (`mon`, `tue`, `wed`, `thu`, `fri`, `sat`, `sun`) and ranges
       `a-b` (inclusive; a range may wrap around the end of the week: `fri-mon` is Fri, Sat, Sun, Mon). Spaces around
-      names and hyphens are ignored. Duplicates are merged. Unknown names, empty items and empty text are a
-      `ValueError`.
+      names and hyphens are ignored. A range has exactly one hyphen. Duplicates are merged. Unknown names, empty
+      items and empty text are a `ValueError`.
 
     ## `Schedule` (`slaclock/schedule.py`)
 
@@ -464,6 +464,8 @@ SC_README = dd('''
     otherwise `ValueError`. Holidays are `date`s: no window is open on them.
     `Schedule.from_spec(spec, holidays=())` builds one from `{"mon-fri": ["09:00-12:00", "13:00-17:00"], "sat":
     ["10:00-12:00"]}`; a weekday that appears under several keys gets all their windows (overlaps are an error).
+    The attribute `schedule.windows` is the dict `{weekday: sorted list of (start, end)}` (weekdays without a window
+    are absent).
 
     * `minutes_between(start, end)`: opening-hours minutes in `[start, end)`; `0` when `end <= start`.
     * `add_minutes(start, minutes)`: the instant at which `minutes` opening-hours minutes have elapsed since `start`.
@@ -1023,17 +1025,16 @@ SLACLOCK = Lib(
     probes=[
         "parse_hhmm('24:00')", "parse_hhmm('24:01')", "parse_window('09:00-09:00')", "parse_days('fri-mon')",
         "parse_days('mon,wed-fri')",
-        "DESK.minutes_between(datetime(2025, 3, 7, 16), datetime(2025, 3, 10, 10))",
-        "DESK.minutes_between(datetime(2025, 3, 3, 11, 59), datetime(2025, 3, 3, 13, 1))",
-        "DESK.add_minutes(datetime(2025, 3, 3, 9), 180)", "DESK.add_minutes(datetime(2025, 3, 3, 9), 181)",
-        "DESK.add_minutes(datetime(2025, 3, 3, 18), 30)",
-        "sla_elapsed(DESK, [(datetime(2025, 3, 3, 10), 'open'), (datetime(2025, 3, 3, 11), 'pause'), (datetime(2025, 3, 4, 9), 'resume')], datetime(2025, 3, 4, 9, 30))",
-        "sla_status(DESK, [(datetime(2025, 3, 3, 9), 'open')], datetime(2025, 3, 3, 11), 120)",
-        "sla_status(DESK, [(datetime(2025, 3, 3, 9), 'open'), (datetime(2025, 3, 3, 11), 'close')], datetime(2025, 3, 3, 15), 120)",
-        "projected_deadline(DESK, [(datetime(2025, 3, 3, 10), 'open')], datetime(2025, 3, 3, 11, 30), 120)",
+        "Schedule.from_spec({'mon-fri': ['09:00-12:00', '13:00-17:00']}).minutes_between(datetime(2025, 3, 7, 16), datetime(2025, 3, 10, 10))",
+        "Schedule.from_spec({'mon-fri': ['09:00-12:00', '13:00-17:00']}).minutes_between(datetime(2025, 3, 3, 11, 59), datetime(2025, 3, 3, 13, 1))",
+        "Schedule.from_spec({'mon-fri': ['09:00-12:00', '13:00-17:00']}).add_minutes(datetime(2025, 3, 3, 9), 180)", "Schedule.from_spec({'mon-fri': ['09:00-12:00', '13:00-17:00']}).add_minutes(datetime(2025, 3, 3, 9), 181)",
+        "Schedule.from_spec({'mon-fri': ['09:00-12:00', '13:00-17:00']}).add_minutes(datetime(2025, 3, 3, 18), 30)",
+        "sla_elapsed(Schedule.from_spec({'mon-fri': ['09:00-12:00', '13:00-17:00']}), [(datetime(2025, 3, 3, 10), 'open'), (datetime(2025, 3, 3, 11), 'pause'), (datetime(2025, 3, 4, 9), 'resume')], datetime(2025, 3, 4, 9, 30))",
+        "sla_status(Schedule.from_spec({'mon-fri': ['09:00-12:00', '13:00-17:00']}), [(datetime(2025, 3, 3, 9), 'open')], datetime(2025, 3, 3, 11), 120)",
+        "sla_status(Schedule.from_spec({'mon-fri': ['09:00-12:00', '13:00-17:00']}), [(datetime(2025, 3, 3, 9), 'open'), (datetime(2025, 3, 3, 11), 'close')], datetime(2025, 3, 3, 15), 120)",
+        "projected_deadline(Schedule.from_spec({'mon-fri': ['09:00-12:00', '13:00-17:00']}), [(datetime(2025, 3, 3, 10), 'open')], datetime(2025, 3, 3, 11, 30), 120)",
     ],
-    probe_import=("from datetime import datetime\nfrom slaclock.spec import *\nfrom slaclock.schedule import *\nfrom slaclock.clock import *\n"
-                  "DESK = Schedule.from_spec({'mon-fri': ['09:00-12:00', '13:00-17:00']})"),
+    probe_import="from datetime import datetime\nfrom slaclock.spec import *\nfrom slaclock.schedule import *\nfrom slaclock.clock import *",
 )
 
 register_libs([WORKCAL, SLACLOCK], n=10)

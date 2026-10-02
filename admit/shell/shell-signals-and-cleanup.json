@@ -1,0 +1,38 @@
+[
+{
+"id": "shell-signals-and-cleanup-01-tempdir-always-removed",
+"ok": true
+},
+{
+"id": "shell-signals-and-cleanup-02-atomic-file-replace",
+"ok": true
+},
+{
+"id": "shell-signals-and-cleanup-03-lock-directory-runner",
+"ok": true
+},
+{
+"id": "shell-signals-and-cleanup-04-deadline-runner",
+"ok": true
+},
+{
+"id": "shell-signals-and-cleanup-05-capture-streams",
+"ok": true
+},
+{
+"id": "shell-signals-and-cleanup-06-deferred-cleanups",
+"ok": true
+},
+{
+"id": "shell-signals-and-cleanup-07-parallel-job-runner",
+"ok": true
+},
+{
+"id": "shell-signals-and-cleanup-08-count-usr1-signals",
+"ok": true
+},
+{
+"id": "shell-signals-and-cleanup-09-fix-leaked-temp-file",
+"ok": true
+}
+]

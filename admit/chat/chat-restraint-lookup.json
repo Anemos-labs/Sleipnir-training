@@ -28,15 +28,7 @@
 "ok": true
 },
 {
-"id": "chat-restraint-lookup-08-cache",
-"ok": true
-},
-{
-"id": "chat-restraint-lookup-09-pricing",
-"ok": true
-},
-{
-"id": "chat-restraint-lookup-10-search",
+"id": "chat-restraint-lookup-08-pricing",
 "ok": true
 }
 ]

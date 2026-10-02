@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-go-knotlex-01-const",
+"ok": true
+},
+{
+"id": "fix-go-knotlex-02-negate",
+"ok": true
+},
+{
+"id": "fix-go-knotlex-03-arith",
+"ok": true
+},
+{
+"id": "fix-go-knotlex-04-cmp",
+"ok": true
+},
+{
+"id": "fix-go-knotlex-05-logic",
+"ok": true
+},
+{
+"id": "fix-go-knotlex-06-delete",
+"ok": true
+},
+{
+"id": "fix-go-knotlex-07-const",
+"ok": true
+},
+{
+"id": "fix-go-knotlex-08-negate",
+"ok": true
+}
+]

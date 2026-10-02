@@ -302,9 +302,9 @@ def _base_a() -> Base:
     bugs = [
         Bug("retry-with-a-new-key", 3, {d: [newkey]}, P["new-key"]),
         Bug("permanent-errors-retried", 2, {d: [("            except Permanent:\n                raise\n            except TransportError:\n", "            except (TransportError, Permanent):\n")]}, P["permanent"]),
-        Bug("sleeps-after-the-last-try", 2, {d: [("                if attempt == self.max_attempts:\n                    raise GaveUp(attempt) from None\n                self.sleep(min(self.max_delay, self.base_delay * 2 ** (attempt - 1)))\n",
+        Bug("sleeps-after-the-last-try", 1, {d: [("                if attempt == self.max_attempts:\n                    raise GaveUp(attempt) from None\n                self.sleep(min(self.max_delay, self.base_delay * 2 ** (attempt - 1)))\n",
                                                   "                self.sleep(min(self.max_delay, self.base_delay * 2 ** (attempt - 1)))\n                if attempt == self.max_attempts:\n                    raise GaveUp(attempt) from None\n")]}, P["last-sleep"]),
-        Bug("backoff-without-cap", 2, {d: [("self.sleep(min(self.max_delay, self.base_delay * 2 ** (attempt - 1)))", "self.sleep(self.base_delay * 2 ** (attempt - 1))")]}, P["no-cap"]),
+        Bug("backoff-without-cap", 1, {d: [("self.sleep(min(self.max_delay, self.base_delay * 2 ** (attempt - 1)))", "self.sleep(self.base_delay * 2 ** (attempt - 1))")]}, P["no-cap"]),
         Bug("event-remembered-before-delivery", 3, {d: [early]}, P["done-early"]),
         Bug("new-key-and-early-memory", 5, {d: [newkey, early]}, P["two"]),
     ]
@@ -574,9 +574,9 @@ def _base_b() -> Base:
     bugs = [
         Bug("failure-restarts-the-batch", 3, {b: B_RESTART}, P["restart"]),
         Bug("attempt-budget-shared", 3, {b: budget}, P["budget"]),
-        Bug("any-error-is-retried", 2, {b: [("        if (!(e instanceof TransientError)) throw e;\n", "")]}, P["permanent"]),
+        Bug("any-error-is-retried", 1, {b: [("        if (!(e instanceof TransientError)) throw e;\n", "")]}, P["permanent"]),
         Bug("giving-up-reports-zero-sent", 2, {b: [("throw new GaveUp(sent, i, e)", "throw new GaveUp(0, i, e)")]}, P["gave-up-count"]),
-        Bug("duplicates-are-resent", 3, {b: [("    if (seen.has(item.id)) continue;\n", "")]}, P["dupes"]),
+        Bug("duplicates-are-resent", 2, {b: [("    if (seen.has(item.id)) continue;\n", "")]}, P["dupes"]),
     ]
     return Base("batchsend", "javascript", good, B_VISIBLE, B_HIDDEN, bugs)
 

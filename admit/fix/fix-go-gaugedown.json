@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-go-gaugedown-01-cmp",
+"ok": true
+},
+{
+"id": "fix-go-gaugedown-02-const",
+"ok": true
+},
+{
+"id": "fix-go-gaugedown-03-delete",
+"ok": true
+},
+{
+"id": "fix-go-gaugedown-04-arith",
+"ok": true
+},
+{
+"id": "fix-go-gaugedown-05-negate",
+"ok": true
+},
+{
+"id": "fix-go-gaugedown-06-cmp",
+"ok": true
+},
+{
+"id": "fix-go-gaugedown-07-const",
+"ok": true
+},
+{
+"id": "fix-go-gaugedown-08-delete",
+"ok": true
+}
+]

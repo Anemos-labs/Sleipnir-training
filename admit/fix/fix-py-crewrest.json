@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-crewrest-01-negate",
+"ok": true
+},
+{
+"id": "fix-py-crewrest-02-arith",
+"ok": true
+},
+{
+"id": "fix-py-crewrest-03-const",
+"ok": true
+},
+{
+"id": "fix-py-crewrest-04-cmp",
+"ok": true
+},
+{
+"id": "fix-py-crewrest-05-delete",
+"ok": true
+},
+{
+"id": "fix-py-crewrest-06-negate",
+"ok": true
+},
+{
+"id": "fix-py-crewrest-07-arith",
+"ok": true
+},
+{
+"id": "fix-py-crewrest-08-const",
+"ok": true
+},
+{
+"id": "fix-py-crewrest-09-cmp",
+"ok": true
+},
+{
+"id": "fix-py-crewrest-10-delete",
+"ok": true
+}
+]

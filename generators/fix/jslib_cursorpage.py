@@ -573,7 +573,7 @@ LIB = Lib(
            "src/pager.js": PAGER, "README.md": README, ".gitignore": "node_modules/\n"},
     visible_tests={"test/basic.test.js": VISIBLE},
     hidden_tests={"test/full.test.js": HIDDEN},
-    mutate=["src/cursor.js", "src/pager.js"], difficulty=3, tags=["pagination", "cursor", "api"],
+    mutate=["src/cursor.js", "src/pager.js"], difficulty=2, tags=["pagination", "cursor", "api"],
     verify=JS_VERIFY,
     probe_import="const { paginate, encodeCursor, decodeCursor } = require('./src/cursor');\nconst { clampLimit, pageCount, describeRange, pageWindow } = require('./src/pager');",
     probes=[

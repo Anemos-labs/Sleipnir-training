@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-taxifare-01-const",
+"ok": true
+},
+{
+"id": "fix-py-taxifare-02-negate",
+"ok": true
+},
+{
+"id": "fix-py-taxifare-03-delete",
+"ok": true
+},
+{
+"id": "fix-py-taxifare-04-arith",
+"ok": true
+},
+{
+"id": "fix-py-taxifare-05-swap",
+"ok": true
+},
+{
+"id": "fix-py-taxifare-06-const",
+"ok": true
+},
+{
+"id": "fix-py-taxifare-07-negate",
+"ok": true
+},
+{
+"id": "fix-py-taxifare-08-delete",
+"ok": true
+},
+{
+"id": "fix-py-taxifare-09-arith",
+"ok": true
+},
+{
+"id": "fix-py-taxifare-10-const",
+"ok": true
+}
+]

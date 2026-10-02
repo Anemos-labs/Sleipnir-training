@@ -1,18 +1,18 @@
 [
 {
-"id": "recall-state-orders-01-on-shelf",
+"id": "recall-state-orders-01-rack-count",
 "ok": true
 },
 {
-"id": "recall-state-orders-02-on-shelf",
+"id": "recall-state-orders-02-rack-count",
 "ok": true
 },
 {
-"id": "recall-state-orders-03-where",
+"id": "recall-state-orders-03-on-shelf",
 "ok": true
 },
 {
-"id": "recall-state-orders-04-rack-count",
+"id": "recall-state-orders-04-where",
 "ok": true
 },
 {
@@ -28,11 +28,11 @@
 "ok": true
 },
 {
-"id": "recall-state-orders-08-where",
+"id": "recall-state-orders-08-on-shelf",
 "ok": true
 },
 {
-"id": "recall-state-orders-09-where",
+"id": "recall-state-orders-09-on-shelf",
 "ok": true
 },
 {
@@ -40,15 +40,15 @@
 "ok": true
 },
 {
-"id": "recall-state-orders-11-rack-count",
+"id": "recall-state-orders-11-on-shelf",
 "ok": true
 },
 {
-"id": "recall-state-orders-12-on-shelf",
+"id": "recall-state-orders-12-where",
 "ok": true
 },
 {
-"id": "recall-state-orders-13-where",
+"id": "recall-state-orders-13-on-shelf",
 "ok": true
 },
 {
@@ -68,7 +68,7 @@
 "ok": true
 },
 {
-"id": "recall-state-orders-18-where",
+"id": "recall-state-orders-18-rack-count",
 "ok": true
 }
 ]

@@ -8,15 +8,15 @@
 "ok": true
 },
 {
-"id": "chat-probability-small-03-draw2",
+"id": "chat-probability-small-03-draw",
 "ok": true
 },
 {
-"id": "chat-probability-small-04-dice",
+"id": "chat-probability-small-04-draw2",
 "ok": true
 },
 {
-"id": "chat-probability-small-05-dice",
+"id": "chat-probability-small-05-draw2",
 "ok": true
 },
 {
@@ -28,31 +28,7 @@
 "ok": true
 },
 {
-"id": "chat-probability-small-08-replace",
-"ok": true
-},
-{
-"id": "chat-probability-small-09-game",
-"ok": true
-},
-{
-"id": "chat-probability-small-10-draw",
-"ok": true
-},
-{
-"id": "chat-probability-small-11-dice",
-"ok": true
-},
-{
-"id": "chat-probability-small-12-table",
-"ok": true
-},
-{
-"id": "chat-probability-small-13-shuffle",
-"ok": true
-},
-{
-"id": "chat-probability-small-14-shuffle2",
+"id": "chat-probability-small-08-game",
 "ok": true
 }
 ]

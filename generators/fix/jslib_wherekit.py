@@ -462,7 +462,7 @@ LIB = Lib(
            "src/where.js": WHERE, "src/order.js": ORDER, "README.md": README, ".gitignore": "node_modules/\n"},
     visible_tests={"test/basic.test.js": VISIBLE},
     hidden_tests={"test/full.test.js": HIDDEN},
-    mutate=["src/where.js", "src/order.js", "src/ident.js"], difficulty=3, tags=["sql", "query-builder"],
+    mutate=["src/where.js", "src/order.js", "src/ident.js"], difficulty=2, tags=["sql", "query-builder"],
     verify=JS_VERIFY,
     probe_import="const { buildWhere } = require('./src/where');\nconst { orderBy, limitOffset } = require('./src/order');",
     probes=[

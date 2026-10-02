@@ -1,0 +1,98 @@
+[
+{
+"id": "debug-bisect-patches-01-stationflow-8p-refactor",
+"ok": true
+},
+{
+"id": "debug-bisect-patches-02-scanflow-12p-add",
+"ok": true
+},
+{
+"id": "debug-bisect-patches-03-labflow-16p-add",
+"ok": true
+},
+{
+"id": "debug-bisect-patches-04-stationflow-20p-add",
+"ok": true
+},
+{
+"id": "debug-bisect-patches-05-scanflow-24p-refactor",
+"ok": true
+},
+{
+"id": "debug-bisect-patches-06-labflow-32p-add",
+"ok": true
+},
+{
+"id": "debug-bisect-patches-07-stationflow-44p-add",
+"ok": true
+},
+{
+"id": "debug-bisect-patches-08-scanflow-60p-add-nonmono",
+"ok": true
+},
+{
+"id": "debug-bisect-patches-09-labflow-8p-refactor",
+"ok": true
+},
+{
+"id": "debug-bisect-patches-10-stationflow-12p-add",
+"ok": true
+},
+{
+"id": "debug-bisect-patches-11-scanflow-16p-add",
+"ok": true
+},
+{
+"id": "debug-bisect-patches-12-labflow-20p-refactor",
+"ok": true
+},
+{
+"id": "debug-bisect-patches-13-stationflow-24p-refactor-nonmono",
+"ok": true
+},
+{
+"id": "debug-bisect-patches-14-scanflow-32p-add",
+"ok": true
+},
+{
+"id": "debug-bisect-patches-15-labflow-44p-refactor-nonmono",
+"ok": true
+},
+{
+"id": "debug-bisect-patches-16-scanflow-60p-refactor-nonmono",
+"ok": true
+},
+{
+"id": "debug-bisect-patches-17-labflow-8p-add",
+"ok": true
+},
+{
+"id": "debug-bisect-patches-18-stationflow-12p-add",
+"ok": true
+},
+{
+"id": "debug-bisect-patches-19-scanflow-16p-refactor",
+"ok": true
+},
+{
+"id": "debug-bisect-patches-20-labflow-20p-refactor",
+"ok": true
+},
+{
+"id": "debug-bisect-patches-21-stationflow-24p-refactor",
+"ok": true
+},
+{
+"id": "debug-bisect-patches-22-scanflow-32p-add",
+"ok": true
+},
+{
+"id": "debug-bisect-patches-23-labflow-44p-refactor",
+"ok": true
+},
+{
+"id": "debug-bisect-patches-24-stationflow-60p-refactor-nonmono",
+"ok": true
+}
+]

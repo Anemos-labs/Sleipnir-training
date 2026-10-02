@@ -8,43 +8,27 @@
 "ok": true
 },
 {
-"id": "chat-recipe-scale-03-spoon-rye",
+"id": "chat-recipe-scale-03-scale2-beetroot",
 "ok": true
 },
 {
-"id": "chat-recipe-scale-04-spoon-smoky",
+"id": "chat-recipe-scale-04-pantry-beetroot",
 "ok": true
 },
 {
-"id": "chat-recipe-scale-05-pantry-tomato",
+"id": "chat-recipe-scale-05-pantry-miso",
 "ok": true
 },
 {
-"id": "chat-recipe-scale-06-pantry-walnut-date",
+"id": "chat-recipe-scale-06-pantry-chickpea",
 "ok": true
 },
 {
-"id": "chat-recipe-scale-07-pantry-smoky",
+"id": "chat-recipe-scale-07-pantry-harvest",
 "ok": true
 },
 {
-"id": "chat-recipe-scale-08-pantry-walnut-date",
-"ok": true
-},
-{
-"id": "chat-recipe-scale-09-packs-plum",
-"ok": true
-},
-{
-"id": "chat-recipe-scale-10-scale2-chickpea",
-"ok": true
-},
-{
-"id": "chat-recipe-scale-11-spoon-miso",
-"ok": true
-},
-{
-"id": "chat-recipe-scale-12-pantry-rye",
+"id": "chat-recipe-scale-08-packs-harvest",
 "ok": true
 }
 ]

@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-cronish-01-delete",
+"ok": true
+},
+{
+"id": "fix-py-cronish-02-negate",
+"ok": true
+},
+{
+"id": "fix-py-cronish-03-const",
+"ok": true
+},
+{
+"id": "fix-py-cronish-04-logic",
+"ok": true
+},
+{
+"id": "fix-py-cronish-05-cmp",
+"ok": true
+},
+{
+"id": "fix-py-cronish-06-swap",
+"ok": true
+},
+{
+"id": "fix-py-cronish-07-delete",
+"ok": true
+},
+{
+"id": "fix-py-cronish-08-negate",
+"ok": true
+},
+{
+"id": "fix-py-cronish-09-const",
+"ok": true
+},
+{
+"id": "fix-py-cronish-10-cmp",
+"ok": true
+}
+]

@@ -1,0 +1,50 @@
+[
+{
+"id": "shell-sed-scripts-01-redact-emails-phones",
+"ok": true
+},
+{
+"id": "shell-sed-scripts-02-join-continuation-lines",
+"ok": true
+},
+{
+"id": "shell-sed-scripts-03-ini-section-body",
+"ok": true
+},
+{
+"id": "shell-sed-scripts-04-surname-first-to-given-first",
+"ok": true
+},
+{
+"id": "shell-sed-scripts-05-squeeze-adjacent-duplicates",
+"ok": true
+},
+{
+"id": "shell-sed-scripts-06-paragraphs-to-single-lines",
+"ok": true
+},
+{
+"id": "shell-sed-scripts-07-trim-and-squeeze-text",
+"ok": true
+},
+{
+"id": "shell-sed-scripts-08-quote-every-csv-field",
+"ok": true
+},
+{
+"id": "shell-sed-scripts-09-markdown-links-to-text",
+"ok": true
+},
+{
+"id": "shell-sed-scripts-10-last-three-lines",
+"ok": true
+},
+{
+"id": "shell-sed-scripts-11-fix-strip-html-tags",
+"ok": true
+},
+{
+"id": "shell-sed-scripts-12-rename-identifier-whole-word",
+"ok": true
+}
+]

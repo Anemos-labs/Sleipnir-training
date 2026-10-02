@@ -1,0 +1,42 @@
+[
+{
+"id": "security-sql-injection-01-user-lookup",
+"ok": true
+},
+{
+"id": "security-sql-injection-02-order-id",
+"ok": true
+},
+{
+"id": "security-sql-injection-03-product-search",
+"ok": true
+},
+{
+"id": "security-sql-injection-04-task-sorting",
+"ok": true
+},
+{
+"id": "security-sql-injection-05-id-list",
+"ok": true
+},
+{
+"id": "security-sql-injection-06-table-export",
+"ok": true
+},
+{
+"id": "security-sql-injection-07-second-order",
+"ok": true
+},
+{
+"id": "security-sql-injection-08-comment-script",
+"ok": true
+},
+{
+"id": "security-sql-injection-09-filter-builder",
+"ok": true
+},
+{
+"id": "security-sql-injection-10-account-service",
+"ok": true
+}
+]

@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-stayprice-01-const",
+"ok": true
+},
+{
+"id": "fix-py-stayprice-02-delete",
+"ok": true
+},
+{
+"id": "fix-py-stayprice-03-arith",
+"ok": true
+},
+{
+"id": "fix-py-stayprice-04-negate",
+"ok": true
+},
+{
+"id": "fix-py-stayprice-05-const",
+"ok": true
+},
+{
+"id": "fix-py-stayprice-06-delete",
+"ok": true
+},
+{
+"id": "fix-py-stayprice-07-arith",
+"ok": true
+},
+{
+"id": "fix-py-stayprice-08-negate",
+"ok": true
+},
+{
+"id": "fix-py-stayprice-09-const",
+"ok": true
+},
+{
+"id": "fix-py-stayprice-10-delete",
+"ok": true
+}
+]

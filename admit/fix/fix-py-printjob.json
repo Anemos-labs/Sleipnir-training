@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-printjob-01-cmp",
+"ok": true
+},
+{
+"id": "fix-py-printjob-02-swap",
+"ok": true
+},
+{
+"id": "fix-py-printjob-03-delete",
+"ok": true
+},
+{
+"id": "fix-py-printjob-04-logic",
+"ok": true
+},
+{
+"id": "fix-py-printjob-05-const",
+"ok": true
+},
+{
+"id": "fix-py-printjob-06-arith",
+"ok": true
+},
+{
+"id": "fix-py-printjob-07-negate",
+"ok": true
+},
+{
+"id": "fix-py-printjob-08-delete",
+"ok": true
+},
+{
+"id": "fix-py-printjob-09-const",
+"ok": true
+},
+{
+"id": "fix-py-printjob-10-arith",
+"ok": true
+}
+]

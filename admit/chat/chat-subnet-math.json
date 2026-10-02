@@ -20,7 +20,7 @@
 "ok": true
 },
 {
-"id": "chat-subnet-math-06-split",
+"id": "chat-subnet-math-06-sizing",
 "ok": true
 },
 {
@@ -28,31 +28,7 @@
 "ok": true
 },
 {
-"id": "chat-subnet-math-08-split",
-"ok": true
-},
-{
-"id": "chat-subnet-math-09-summarise",
-"ok": true
-},
-{
-"id": "chat-subnet-math-10-samenet",
-"ok": true
-},
-{
-"id": "chat-subnet-math-11-split",
-"ok": true
-},
-{
-"id": "chat-subnet-math-12-split",
-"ok": true
-},
-{
-"id": "chat-subnet-math-13-summarise",
-"ok": true
-},
-{
-"id": "chat-subnet-math-14-split",
+"id": "chat-subnet-math-08-summarise",
 "ok": true
 }
 ]

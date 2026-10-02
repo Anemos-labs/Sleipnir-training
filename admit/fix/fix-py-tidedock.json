@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-tidedock-01-negate",
+"ok": true
+},
+{
+"id": "fix-py-tidedock-02-delete",
+"ok": true
+},
+{
+"id": "fix-py-tidedock-03-arith",
+"ok": true
+},
+{
+"id": "fix-py-tidedock-04-const",
+"ok": true
+},
+{
+"id": "fix-py-tidedock-05-cmp",
+"ok": true
+},
+{
+"id": "fix-py-tidedock-06-swap",
+"ok": true
+},
+{
+"id": "fix-py-tidedock-07-delete",
+"ok": true
+},
+{
+"id": "fix-py-tidedock-08-arith",
+"ok": true
+},
+{
+"id": "fix-py-tidedock-09-const",
+"ok": true
+},
+{
+"id": "fix-py-tidedock-10-cmp",
+"ok": true
+}
+]

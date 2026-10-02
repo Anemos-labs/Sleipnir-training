@@ -499,7 +499,7 @@ LIB = Lib(
     files={"package.json": PACKAGE_JSON % "cartpromo", "src/promos.js": PROMOS, "src/cart.js": CART, "README.md": README, ".gitignore": "node_modules/\n"},
     visible_tests={"test/basic.test.js": VISIBLE},
     hidden_tests={"test/full.test.js": HIDDEN},
-    mutate=["src/cart.js", "src/promos.js"], difficulty=4, tags=["pricing", "promotions", "checkout"],
+    mutate=["src/cart.js", "src/promos.js"], difficulty=3, tags=["pricing", "promotions", "checkout"],
     verify=JS_VERIFY,
     probe_import="const { priceCart } = require('./src/cart');\nconst { isActive, matches, lineDiscount, roundHalfUp } = require('./src/promos');",
     probes=[

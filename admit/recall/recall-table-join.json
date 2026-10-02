@@ -1,18 +1,18 @@
 [
 {
-"id": "recall-table-join-01-customer-month",
+"id": "recall-table-join-01-order",
 "ok": true
 },
 {
-"id": "recall-table-join-02-customer-month",
+"id": "recall-table-join-02-order",
 "ok": true
 },
 {
-"id": "recall-table-join-03-top-customer",
+"id": "recall-table-join-03-order",
 "ok": true
 },
 {
-"id": "recall-table-join-04-top-customer",
+"id": "recall-table-join-04-order",
 "ok": true
 },
 {
@@ -24,7 +24,7 @@
 "ok": true
 },
 {
-"id": "recall-table-join-07-top-customer",
+"id": "recall-table-join-07-order",
 "ok": true
 },
 {
@@ -32,7 +32,7 @@
 "ok": true
 },
 {
-"id": "recall-table-join-09-customer-month",
+"id": "recall-table-join-09-order",
 "ok": true
 },
 {
@@ -40,7 +40,7 @@
 "ok": true
 },
 {
-"id": "recall-table-join-11-top-customer",
+"id": "recall-table-join-11-order",
 "ok": true
 },
 {
@@ -48,11 +48,11 @@
 "ok": true
 },
 {
-"id": "recall-table-join-13-top-customer",
+"id": "recall-table-join-13-customer-month",
 "ok": true
 },
 {
-"id": "recall-table-join-14-customer-month",
+"id": "recall-table-join-14-order",
 "ok": true
 }
 ]

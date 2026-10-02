@@ -1,0 +1,34 @@
+[
+{
+"id": "robust-scope-forbidden-01-holdqueue-push",
+"ok": true
+},
+{
+"id": "robust-scope-forbidden-02-meterbill-bill",
+"ok": true
+},
+{
+"id": "robust-scope-forbidden-03-samplelabel-check_char",
+"ok": true
+},
+{
+"id": "robust-scope-forbidden-04-tidal-safe_windows",
+"ok": true
+},
+{
+"id": "robust-scope-forbidden-05-holdqueue-push",
+"ok": true
+},
+{
+"id": "robust-scope-forbidden-06-meterbill-usage",
+"ok": true
+},
+{
+"id": "robust-scope-forbidden-07-samplelabel-check_char",
+"ok": true
+},
+{
+"id": "robust-scope-forbidden-08-tidal-safe_windows",
+"ok": true
+}
+]

@@ -178,7 +178,7 @@ def _t12_ride(rng):
 SCEN_TALK = [_t1_train, _t2_oven, _t3_battery, _t4_tipsplit, _t5_paint, _t6_steps, _t7_rent, _t8_coffee, _t9_plants, _t10_fine, _t11_movie, _t12_ride]
 
 
-@family("chat-smalltalk-embedded", category="chat", lang="text", kind="lookup", n=14, mode="answer",
+@family("chat-smalltalk-embedded", category="chat", lang="text", kind="lookup", n=10, mode="answer",
         summary="friendly chit-chat with one real calculation buried in it (when to leave, tins of paint, rent shares, riding time); distractor details at higher levels")
 def gen_talk(rng, n):
     for i in range(n):
@@ -263,10 +263,10 @@ def _q_rem(rng):
 MULTI_Q = [_q_date, _q_conv, _q_pct, _q_time, _q_avg, _q_wd, _q_sum, _q_rem]
 
 
-@family("chat-multi-ask", category="chat", lang="text", kind="lookup", n=10, mode="answer",
+@family("chat-multi-ask", category="chat", lang="text", kind="lookup", n=8, mode="answer",
         summary="one chatty message with three to five unrelated small questions (dates, conversions, percentages, durations, averages); every answer is checked")
 def gen_multi(rng, n):
-    plan = [3, 3, 3, 4, 4, 4, 5, 5, 3, 4]
+    plan = [3, 3, 3, 4, 4, 4, 5, 3]
     for i in range(n):
         d = plan[i % len(plan)]
         for _attempt in range(100):
@@ -390,13 +390,36 @@ def _e6_area(rng):
     return u1, a1, u2, [str(n_tiles), f"{area}"], f"area {area} m2; {n_tiles} tiles", 4
 
 
-SCEN_E = [_e1_stock, _e2_fuel, _e3_hours, _e4_date, _e5_scale, _e6_area]
+def _e7_discount(rng):
+    price, pct, qty = rng.choice([80, 120, 150, 240, 200]), rng.choice([15, 20, 25]), rng.randint(3, 6)
+    per = price * (100 - pct) // 100
+    wrong = per + rng.choice([-5, 5, -10, 10, 4, -4])
+    u1 = f"A jacket costs ${price} and there is {pct}% off. What's the sale price?"
+    a1 = f"{pct}% of {price} is {price * pct // 100}, so the sale price is ${wrong}."
+    u2 = f"We'll buy {qty} for the team. What's the total for all of them, and what is the sale price per jacket again?"
+    return u1, a1, u2, [str(per), str(per * qty)], f"${per} each; total ${per * qty}", 4
 
 
-@family("chat-earlier-mistake", category="chat", lang="text", kind="premise", n=12, mode="answer",
+def _e8_tax(rng):
+    for _ in range(50):
+        net, tax, k = rng.randrange(200, 1000, 100), rng.choice([5, 8, 10]), rng.choice([2, 3, 4, 5, 6])
+        gross = net * (100 + tax) // 100
+        if gross % k == 0:
+            break
+    wrong = gross + rng.choice([-9, 9, -18, 18, 7, -7])
+    u1 = f"An invoice is ${net} before {tax}% tax. What's the total including tax?"
+    a1 = f"{tax}% of {net} is {net * tax // 100}, and {net} + {net * tax // 100} = {wrong}, so the total is ${wrong}."
+    u2 = f"Thanks. We pay in {k} equal monthly instalments. How much is each instalment, and what was the total with tax again?"
+    return u1, a1, u2, [str(gross // k), str(gross)], f"total ${gross}; each ${gross // k}", 4
+
+
+SCEN_E = [_e1_stock, _e2_fuel, _e3_hours, _e4_date, _e5_scale, _e6_area, _e7_discount, _e8_tax]
+
+
+@family("chat-earlier-mistake", category="chat", lang="text", kind="premise", n=8, mode="answer",
         summary="a pasted earlier exchange contains an arithmetic slip by the assistant; the follow-up builds on it, so the answer must use the corrected figure")
 def gen_earlier(rng, n):
-    plan = [4, 4, 4, 4, 5, 5, 4, 5, 4, 4, 5, 4]
+    plan = [4, 4, 4, 4, 4, 5, 4, 5]
     for i in range(n):
         for _attempt in range(100):
             fn = SCEN_E[i % len(SCEN_E)]

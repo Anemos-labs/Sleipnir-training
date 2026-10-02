@@ -4,7 +4,7 @@
 "ok": true
 },
 {
-"id": "chat-code-output-02-py-up-d1",
+"id": "chat-code-output-02-py-customers-d1",
 "ok": true
 },
 {
@@ -12,87 +12,39 @@
 "ok": true
 },
 {
-"id": "chat-code-output-04-ja-handling-d2",
+"id": "chat-code-output-04-py-sensor-d2",
 "ok": true
 },
 {
-"id": "chat-code-output-05-py-two-d2",
+"id": "chat-code-output-05-py-counters-d3",
 "ok": true
 },
 {
-"id": "chat-code-output-06-py-counters-d3",
+"id": "chat-code-output-06-py-shopping-cart-d3",
 "ok": true
 },
 {
-"id": "chat-code-output-07-ja-callbacks-d3",
+"id": "chat-code-output-07-ja-an-d3",
 "ok": true
 },
 {
-"id": "chat-code-output-08-ja-a-d3",
+"id": "chat-code-output-08-py-loyalty-discount-d4",
 "ok": true
 },
 {
-"id": "chat-code-output-09-py-students-d3",
+"id": "chat-code-output-09-ja-tags-d4",
 "ok": true
 },
 {
-"id": "chat-code-output-10-ja-tags-d4",
+"id": "chat-code-output-10-ja-little-d5",
 "ok": true
 },
 {
-"id": "chat-code-output-11-ja-an-d4",
+"id": "chat-code-output-11-py-report-d2",
 "ok": true
 },
 {
-"id": "chat-code-output-12-ja-an-d4",
-"ok": true
-},
-{
-"id": "chat-code-output-13-py-little-d5",
-"ok": true
-},
-{
-"id": "chat-code-output-14-py-little-d5",
-"ok": true
-},
-{
-"id": "chat-code-output-15-py-up-d1",
-"ok": true
-},
-{
-"id": "chat-code-output-16-py-two-d2",
-"ok": true
-},
-{
-"id": "chat-code-output-17-ja-callbacks-d3",
-"ok": true
-},
-{
-"id": "chat-code-output-18-py-loyalty-discount-d3",
-"ok": true
-},
-{
-"id": "chat-code-output-19-py-seating-plan-d4",
-"ok": true
-},
-{
-"id": "chat-code-output-20-ja-handling-d2",
-"ok": true
-},
-{
-"id": "chat-code-output-21-ja-an-d3",
-"ok": true
-},
-{
-"id": "chat-code-output-22-py-retry-ish-d4",
-"ok": true
-},
-{
-"id": "chat-code-output-23-py-little-d5",
-"ok": true
-},
-{
-"id": "chat-code-output-24-py-two-d2",
+"id": "chat-code-output-12-py-counters-d3",
 "ok": true
 }
 ]

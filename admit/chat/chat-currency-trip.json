@@ -4,39 +4,31 @@
 "ok": true
 },
 {
-"id": "chat-currency-trip-02-gbpaud-d3",
+"id": "chat-currency-trip-02-gbpaud-d2",
 "ok": true
 },
 {
-"id": "chat-currency-trip-03-usdeur-d3",
+"id": "chat-currency-trip-03-chfcad-d3",
 "ok": true
 },
 {
-"id": "chat-currency-trip-04-gbpcad-d4",
+"id": "chat-currency-trip-04-cadeur-d3",
 "ok": true
 },
 {
-"id": "chat-currency-trip-05-usdchf-d2",
+"id": "chat-currency-trip-05-usdgbp-d4",
 "ok": true
 },
 {
-"id": "chat-currency-trip-06-cadusd-d4",
+"id": "chat-currency-trip-06-cadeur-d4",
 "ok": true
 },
 {
-"id": "chat-currency-trip-07-chfgbp-d5",
+"id": "chat-currency-trip-07-gbpcad-d5",
 "ok": true
 },
 {
-"id": "chat-currency-trip-08-cadchf-d3",
-"ok": true
-},
-{
-"id": "chat-currency-trip-09-euraud-d4",
-"ok": true
-},
-{
-"id": "chat-currency-trip-10-audchf-d5",
+"id": "chat-currency-trip-08-audusd-d3",
 "ok": true
 }
 ]

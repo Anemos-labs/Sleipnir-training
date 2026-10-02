@@ -287,7 +287,7 @@ Q_LOOKUP = [_q_ic, _q_followup, _q_longest, _q_month_minutes, _q_sev1_count, _q_
 Q_WEIGHTS = [4, 3, 3, 3, 2, 3, 2, 1, 2]
 
 
-@family("research-incident-lookup", category="research", lang="text", kind="lookup", n=20, mode="answer",
+@family("research-incident-lookup", category="research", lang="text", kind="lookup", n=18, mode="answer",
         summary="short factual questions over an incident archive with reports in three formats and later addenda")
 def gen_lookup(rng, n):
     made = 0

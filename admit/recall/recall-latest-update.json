@@ -12,7 +12,7 @@
 "ok": true
 },
 {
-"id": "recall-latest-update-04-asof",
+"id": "recall-latest-update-04-current",
 "ok": true
 },
 {
@@ -20,7 +20,7 @@
 "ok": true
 },
 {
-"id": "recall-latest-update-06-current",
+"id": "recall-latest-update-06-asof",
 "ok": true
 },
 {
@@ -40,11 +40,11 @@
 "ok": true
 },
 {
-"id": "recall-latest-update-11-asof",
+"id": "recall-latest-update-11-current",
 "ok": true
 },
 {
-"id": "recall-latest-update-12-asof",
+"id": "recall-latest-update-12-current",
 "ok": true
 },
 {
@@ -56,7 +56,7 @@
 "ok": true
 },
 {
-"id": "recall-latest-update-15-current",
+"id": "recall-latest-update-15-asof",
 "ok": true
 },
 {
@@ -68,7 +68,7 @@
 "ok": true
 },
 {
-"id": "recall-latest-update-18-asof",
+"id": "recall-latest-update-18-current",
 "ok": true
 },
 {
@@ -80,7 +80,7 @@
 "ok": true
 },
 {
-"id": "recall-latest-update-21-asof",
+"id": "recall-latest-update-21-current",
 "ok": true
 },
 {

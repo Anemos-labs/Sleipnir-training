@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-slaclock-01-negate",
+"ok": true
+},
+{
+"id": "fix-py-slaclock-02-cmp",
+"ok": true
+},
+{
+"id": "fix-py-slaclock-03-delete",
+"ok": true
+},
+{
+"id": "fix-py-slaclock-04-swap",
+"ok": true
+},
+{
+"id": "fix-py-slaclock-05-const",
+"ok": true
+},
+{
+"id": "fix-py-slaclock-06-logic",
+"ok": true
+},
+{
+"id": "fix-py-slaclock-07-arith",
+"ok": true
+},
+{
+"id": "fix-py-slaclock-08-negate",
+"ok": true
+},
+{
+"id": "fix-py-slaclock-09-delete",
+"ok": true
+},
+{
+"id": "fix-py-slaclock-10-swap",
+"ok": true
+}
+]

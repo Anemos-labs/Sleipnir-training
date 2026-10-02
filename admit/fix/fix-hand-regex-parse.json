@@ -1,0 +1,54 @@
+[
+{
+"id": "fix-hand-regex-parse-01-status-and-size-accept-any-unicode-digit",
+"ok": true
+},
+{
+"id": "fix-hand-regex-parse-02-size-dash-not-allowed",
+"ok": true
+},
+{
+"id": "fix-hand-regex-parse-03-ipv4-only",
+"ok": true
+},
+{
+"id": "fix-hand-regex-parse-04-trailing-garbage-allowed",
+"ok": true
+},
+{
+"id": "fix-hand-regex-parse-05-leading-garbage-allowed",
+"ok": true
+},
+{
+"id": "fix-hand-regex-parse-06-quoted-fields-are-greedy",
+"ok": true
+},
+{
+"id": "fix-hand-regex-parse-07-quoted-fields-ignore-escapes",
+"ok": true
+},
+{
+"id": "fix-hand-regex-parse-08-tags-duplicated-by-case",
+"ok": true
+},
+{
+"id": "fix-hand-regex-parse-09-brackets-matched-greedily",
+"ok": true
+},
+{
+"id": "fix-hand-regex-parse-10-slug-anchors-per-line",
+"ok": true
+},
+{
+"id": "fix-hand-regex-parse-11-hashtags-ascii-only",
+"ok": true
+},
+{
+"id": "fix-hand-regex-parse-12-secret-used-as-a-pattern",
+"ok": true
+},
+{
+"id": "fix-hand-regex-parse-13-render-by-repeated-gsub",
+"ok": true
+}
+]

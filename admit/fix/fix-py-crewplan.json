@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-crewplan-01-swap",
+"ok": true
+},
+{
+"id": "fix-py-crewplan-02-cmp",
+"ok": true
+},
+{
+"id": "fix-py-crewplan-03-negate",
+"ok": true
+},
+{
+"id": "fix-py-crewplan-04-const",
+"ok": true
+},
+{
+"id": "fix-py-crewplan-05-arith",
+"ok": true
+},
+{
+"id": "fix-py-crewplan-06-delete",
+"ok": true
+},
+{
+"id": "fix-py-crewplan-07-swap",
+"ok": true
+},
+{
+"id": "fix-py-crewplan-08-negate",
+"ok": true
+},
+{
+"id": "fix-py-crewplan-09-const",
+"ok": true
+},
+{
+"id": "fix-py-crewplan-10-delete",
+"ok": true
+}
+]

@@ -140,9 +140,9 @@ FORBID_POOL = [("sorry", "sorry"), ("apologies", "apologies"), ("unfortunately",
 SIGNS = ["Thanks", "Best", "Regards", "Cheers"]
 
 
-@family("chat-write-email", category="chat", lang="text", kind="greenfield", n=16, summary="draft an email from a described situation under a set of structural constraints (length, subject line, facts, forbidden words, sign-off, bullets)")
+@family("chat-write-email", category="chat", lang="text", kind="greenfield", n=8, summary="draft an email from a described situation under a set of structural constraints (length, subject line, facts, forbidden words, sign-off, bullets)")
 def gen_email(rng, n):
-    plan = [1, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 2, 3, 4, 3, 5]
+    plan = [1, 2, 2, 3, 3, 3, 4, 5]
     for i in range(n):
         d = plan[i % len(plan)]
         sender = rng.choice(C.FIRST)
@@ -243,15 +243,18 @@ SMS_SCEN = [
     ("late", "Running late for {place}. I should arrive around {time}, so please start without me.", ["place", "time"]),
     ("cancel", "I have to cancel our {thing} on {date}. Can we rebook for {date2} at {time}?", ["date", "date2", "time"]),
     ("bring", "Please bring the {thing} to {place} by {time} on {date}. Booking ref {code}.", ["thing", "place", "time", "date", "code"]),
+    ("pickup", "I'll pick you up from {place} at {time} on {date}. Look for the {landmark} car.", ["place", "time", "date"]),
+    ("rsvp", "Yes, I can come on {date}. Shall I bring the {thing}?", ["date", "thing"]),
+    ("moved", "Our {thing} on {date} has moved to {date2} at {time}, same place.", ["thing", "date", "date2", "time"]),
 ]
 PLACES = ["Cafe Orchid", "the Mill Street library", "Platform 2", "the north gate", "Rowan Park bandstand", "the bike shop"]
 LANDMARKS = ["red", "fountain", "blue", "clock", "stone"]
 THINGS_SMS = ["tent", "folding table", "camera", "cake tin", "tool bag", "dentist appointment"]
 
 
-@family("chat-write-sms", category="chat", lang="text", kind="greenfield", n=12, summary="a text message with a hard character limit, required details, a name and a sign-off")
+@family("chat-write-sms", category="chat", lang="text", kind="greenfield", n=8, summary="a text message with a hard character limit, required details, a name and a sign-off")
 def gen_sms(rng, n):
-    plan = [1, 2, 2, 3, 3, 4, 4, 5, 2, 3, 4, 5]
+    plan = [1, 2, 2, 3, 3, 3, 4, 5]
     for i in range(n):
         d = plan[i % len(plan)]
         key, tpl, need = SMS_SCEN[i % len(SMS_SCEN)]
@@ -262,7 +265,7 @@ def gen_sms(rng, n):
         dt = date(2026, rng.randint(1, 11), rng.randint(2, 26))
         dt2 = dt + timedelta(days=rng.randint(2, 9))
         code = f"{rng.choice('KLMNP')}{rng.randint(100, 999)}"
-        thing = rng.choice(THINGS_SMS if key == "cancel" else THINGS_SMS[:5])
+        thing = rng.choice(["salad", "guitar", "board games", "blanket"]) if key == "rsvp" else rng.choice(THINGS_SMS if key in ("cancel", "moved") else THINGS_SMS[:5])
         vals = {"place": place, "time": C.hhmm(t), "date": f"{dt.day} {C.MONTHS[dt.month - 1][:3]}", "date2": f"{dt2.day} {C.MONTHS[dt2.month - 1][:3]}", "landmark": rng.choice(LANDMARKS), "thing": thing, "code": code}
         msg = tpl.format(**vals)
         gold = f"{rcpt}, {msg} {sender[0]}."
@@ -275,8 +278,10 @@ def gen_sms(rng, n):
         limit = (limit + 4) // 5 * 5
         if limit < len(gold):
             limit = len(gold)
-        rules = [{"t": "max_chars", "n": limit}, {"t": "first_line", "re": rf"^{rcpt},", "label": "starts with the name"}, {"t": "last_line", "re": rf"\b{sender[0]}\.?$", "label": "ends with initial"},
-                 {"t": "exclude", "words": ["re:[\\U0001F300-\\U0001FAFF\\u2600-\\u27BF]", "re:\\bu\\b", "re:\\bur\\b"]}, {"t": "lines", "max": 2}]
+        first_re = rf"^{rcpt}," if d >= 4 else rf"^(?:Hi |Hello |Hey |Dear )?{rcpt}\b"
+        rules = [{"t": "max_chars", "n": limit}, {"t": "first_line", "re": first_re, "label": "starts with the name"}, {"t": "last_line", "re": rf"\b{sender[0]}\.?$", "label": "ends with initial"}, {"t": "lines", "max": 2}]
+        if d >= 3:
+            rules.append({"t": "exclude", "words": ["re:[\\U0001F300-\\U0001FAFF\\u2600-\\u27BF]", "re:\\bu\\b", "re:\\bur\\b"]})
         facts_re = {"place": F.word_re(place) if True else "", "time": F.time_re(t), "date": F.date_re(dt), "date2": F.date_re(dt2), "code": F.word_re(code), "thing": F.word_re(thing)}
         for nd in need:
             if nd in facts_re:
@@ -285,7 +290,8 @@ def gen_sms(rng, n):
         K.assert_passes(rules, gold, what=f"sms {i}")
         need_txt = ", ".join(disp[x] for x in need if x in disp)
         situ = {"meet": f"I need to text {rcpt} to arrange meeting up", "keys": f"I'm texting {rcpt} about my spare keys", "late": f"I'm going to be late and need to text {rcpt}",
-                "cancel": f"I have to cancel something with {rcpt} and suggest another time", "bring": f"I'm texting {rcpt} to ask them to bring something"}[key]
+                "cancel": f"I have to cancel something with {rcpt} and suggest another time", "bring": f"I'm texting {rcpt} to ask them to bring something",
+                "pickup": f"I'm texting {rcpt} about picking them up", "rsvp": f"I'm replying to {rcpt}'s invitation and saying yes", "moved": f"I'm telling {rcpt} that our plans have moved"}[key]
         extra = ""
         if d >= 3:
             extra = " No emoji, and no text-speak like 'u' or 'ur'."
@@ -367,9 +373,64 @@ def _memo_server(rng):
 MEMOS = [_memo_bike, _memo_library, _memo_party, _memo_server]
 
 
-@family("chat-write-summary", category="chat", lang="text", kind="greenfield", n=12, summary="summarise a pasted memo within a word limit as bullets or a paragraph; required facts, one confidential item must stay out, no invented numbers")
+def _memo_bake(rng):
+    d = date(2026, rng.randint(3, 10), rng.randint(5, 26))
+    raised = rng.randrange(820, 2450, 5)
+    target = raised + rng.choice([500, 800, 1200])
+    charity = rng.choice(["Riverside Food Bank", "the Hospice Garden Fund", "Little Paws Rescue"])
+    nxt = d + timedelta(days=rng.choice([35, 49, 63]))
+    donor = rng.choice(["Mrs Ellery", "Mr Podesta", "Ms Varga"])
+    text = (f"The bake sale on {d.day} {C.MONTHS[d.month - 1]} raised ${raised:,} towards the ${target:,} goal for {charity}. Forty-two volunteers helped on the day and nearly everything sold by noon. "
+            f"The next sale is planned for {nxt.day} {C.MONTHS[nxt.month - 1]}. One generous donor, {donor}, covered the cost of ingredients; she has asked that her name is not used in any publicity.")
+    facts = [F.money_re(raised * 100), F.word_re(charity.split()[-1]), F.date_re(nxt)]
+    gold_sents = [f"The bake sale raised ${raised:,} of the ${target:,} goal.", f"The money is for {charity}.", f"The next sale is on {nxt.day} {C.MONTHS[nxt.month - 1]}."]
+    return text, facts, [donor, donor.split()[1]], "the donor who covered the ingredients", gold_sents, ["the amount raised", "the charity", "the date of the next sale"]
+
+
+def _memo_water(rng):
+    d = date(2026, rng.randint(2, 9), rng.randint(5, 26))
+    eff = d + timedelta(days=rng.randint(30, 70))
+    old, new = rng.choice([(36, 42), (40, 48), (30, 39)])
+    member = rng.choice(["Mr Linde", "Mrs Achebe", "Mr Kovac"])
+    text = (f"At the meeting on {d.day} {C.MONTHS[d.month - 1]} the allotment committee agreed to raise the annual water charge from ${old} to ${new} per plot, starting on {eff.day} {C.MONTHS[eff.month - 1]}. "
+            f"The rise covers the new meter and a repaired pipe. Pensioners keep a 50% concession. {member} is behind on last year's charge; please do not mention this in anything sent to plot-holders.")
+    facts = [F.num_re(new), F.num_re(old), F.date_re(eff)]
+    gold_sents = [f"The annual water charge rises from ${old} to ${new} per plot.", f"The new charge starts on {eff.day} {C.MONTHS[eff.month - 1]}.", "Pensioners keep their 50% concession."]
+    return text, facts, [member, member.split()[1], "behind"], "the member who is behind on payment", gold_sents, ["the old charge", "the new charge", "the start date"]
+
+
+def _memo_choir(rng):
+    d = date(2026, rng.randint(4, 11), rng.randint(5, 26))
+    st = rng.choice([18, 19]) * 60 + rng.choice([0, 30])
+    price = rng.choice([8, 10, 12])
+    chor = rng.randint(28, 44)
+    fee = rng.randrange(300, 900, 50)
+    text = (f"The spring concert will be held at St Anne's on {d.day} {C.MONTHS[d.month - 1]}, with doors at {C.hhmm(st - 30)} and the music starting at {C.hhmm(st)}. Tickets are ${price} on the door and {chor} choristers will take part. "
+            f"The guest soloist's fee of ${fee} was agreed privately and must not be published. Programme notes are still being written.")
+    facts = [F.date_re(d), F.time_re(st), F.num_re(price)]
+    gold_sents = [f"The spring concert is at St Anne's on {d.day} {C.MONTHS[d.month - 1]}.", f"The music starts at {C.hhmm(st)}.", f"Tickets are ${price} on the door."]
+    return text, facts, [f"${fee}", str(fee), "soloist's fee"], "the guest soloist's fee", gold_sents, ["the date", "the start time", "the ticket price"]
+
+
+def _memo_roof(rng):
+    d = date(2026, rng.randint(1, 9), rng.randint(5, 26))
+    cost = rng.randrange(14000, 36000, 500)
+    raised = rng.randrange(3000, 9000, 250)
+    dl = d + timedelta(days=rng.randint(70, 130))
+    surveyor = rng.choice(["Hartley & Webb", "Pellegrini Surveys", "Oakhurst Associates"])
+    text = (f"The village hall roof needs replacing before the winter. The committee met on {d.day} {C.MONTHS[d.month - 1]} and accepted a quote of ${cost:,}. So far ${raised:,} has been raised. "
+            f"The work has to be completed by {dl.day} {C.MONTHS[dl.month - 1]} to stay inside the grant conditions. The surveyor ({surveyor}) charged an unusually high fee; please leave the firm's name out of anything public.")
+    facts = [F.money_re(cost * 100), F.money_re(raised * 100), F.date_re(dl)]
+    gold_sents = [f"The hall roof will cost ${cost:,}.", f"${raised:,} has been raised so far.", f"The work must be finished by {dl.day} {C.MONTHS[dl.month - 1]}."]
+    return text, facts, [surveyor, surveyor.split()[0], "fee"], "the surveyor's name and fee", gold_sents, ["the cost", "the amount raised so far", "the deadline"]
+
+
+MEMOS += [_memo_bake, _memo_water, _memo_choir, _memo_roof]
+
+
+@family("chat-write-summary", category="chat", lang="text", kind="greenfield", n=8, summary="summarise a pasted memo within a word limit as bullets or a paragraph; required facts, one confidential item must stay out, no invented numbers")
 def gen_summary(rng, n):
-    plan = [2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 3, 4]
+    plan = [2, 2, 2, 3, 3, 4, 4, 5]
     for i in range(n):
         d = plan[i % len(plan)]
         text, facts, conf, conf_desc, gold_sents, disp = MEMOS[i % len(MEMOS)](rng)
@@ -397,7 +458,7 @@ def gen_summary(rng, n):
         # the gold must pass; make allowed numbers include any in gold
         K.assert_passes(rules, gold, what=f"summary {i}")
         form = f"exactly {K_bul} bullet points (lines starting with '- ')" if as_bullets else "a single paragraph with no bullet points"
-        intro = rng.choice(["Our committee secretary pasted these minutes into notes.txt and I need a short summary for the newsletter.", "Please summarise the memo in memo.txt for people who will not read the whole thing.",
+        intro = rng.choice(["Our committee secretary pasted these minutes into memo.txt and I need a short summary for the newsletter.", "Please summarise the memo in memo.txt for people who will not read the whole thing.",
                             "I have to turn the notes in memo.txt into a short summary for the noticeboard."])
         files = {"memo.txt": text + "\n", "notes.txt": "(empty)\n"}
         spec = (f"Keep it to at most {cap} words, as {form}. It has to include {', '.join(disp[:-1])} and {disp[-1]}. "
@@ -472,9 +533,32 @@ def _c_clamp(rng):
 COMMITS = [_c_pagination, _c_none_guard, _c_cache, _c_timeout, _c_trim, _c_clamp]
 
 
-@family("chat-write-commit", category="chat", lang="text", kind="greenfield", n=12, summary="write a commit message for a pasted diff under a house convention (verb list, subject length, blank line, wrapped body, mentions, ticket footer)")
+def _c_retries(rng):
+    fn = rng.choice(["connect", "open_session", "dial"])
+    mod = rng.choice(["netutil", "session", "link"])
+    old, new = rng.choice([(1, 3), (0, 2), (2, 5)])
+    diff = (f"--- a/{mod}.py\n+++ b/{mod}.py\n@@ -5,7 +5,7 @@ import socket\n \n \n-def {fn}(host, port, retries={old}):\n+def {fn}(host, port, retries={new}):\n     last = None\n     for _ in range(retries + 1):\n"
+            f"         try:\n             return socket.create_connection((host, port), timeout=5)\n")
+    subj = f"Raise default retries in {fn} to {new}"
+    body = [f"{fn} gave up after a single flaky handshake, which tripped the", f"nightly sync. Retry up to {new} times by default; callers that care", "can still pass their own value."]
+    return mod, fn, diff, subj, body, "Raise", {"must": [fn, mod]}
+
+
+def _c_rename(rng):
+    old, new = rng.choice([("calc", "compute_total"), ("proc", "process_order"), ("do_it", "apply_discount")])
+    mod = rng.choice(["invoice", "orders", "checkout"])
+    diff = (f"--- a/{mod}.py\n+++ b/{mod}.py\n@@ -3,10 +3,10 @@\n \n-def {old}(lines, rate):\n+def {new}(lines, rate):\n     return sum(l.qty * l.price for l in lines) * (1 + rate)\n \n \n def render(lines, rate):\n-    return f\"Total: {{{old}(lines, rate):.2f}}\"\n+    return f\"Total: {{{new}(lines, rate):.2f}}\"\n")
+    subj = f"Rename {old} to {new}"
+    body = [f"{old} said nothing about what it computed and was easy to confuse", f"with the other helpers. {new} says what it does; the only caller,", "render, is updated."]
+    return mod, new, diff, subj, body, "Rename", {"must": [new, mod]}
+
+
+COMMITS += [_c_retries, _c_rename]
+
+
+@family("chat-write-commit", category="chat", lang="text", kind="greenfield", n=8, summary="write a commit message for a pasted diff under a house convention (verb list, subject length, blank line, wrapped body, mentions, ticket footer)")
 def gen_commit(rng, n):
-    plan = [2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 3, 4]
+    plan = [2, 2, 2, 3, 3, 4, 4, 5]
     for i in range(n):
         d = plan[i % len(plan)]
         mod, fn, diff, subj, body, verb, req = COMMITS[i % len(COMMITS)](rng)
@@ -537,9 +621,9 @@ EVENTS = [("jumble sale", "village hall", "free entry"), ("repair cafe", "librar
           ("choir concert", "St Anne's church", "tickets on the door"), ("book fair", "the school gym", "proceeds go to the library")]
 
 
-@family("chat-write-poster", category="chat", lang="text", kind="greenfield", n=10, summary="poster copy in a fixed line format with character limits per line, a URL, a date and place, exactly three bullets")
+@family("chat-write-poster", category="chat", lang="text", kind="greenfield", n=8, summary="poster copy in a fixed line format with character limits per line, a URL, a date and place, exactly three bullets")
 def gen_poster(rng, n):
-    plan = [2, 2, 3, 3, 4, 4, 5, 3, 4, 5]
+    plan = [2, 2, 2, 3, 3, 4, 4, 5]
     for i in range(n):
         d = plan[i % len(plan)]
         ev, place, extra_note = EVENTS[i % len(EVENTS)]
@@ -560,7 +644,7 @@ def gen_poster(rng, n):
         rules = [{"t": "lines", "min": 8, "max": 8}, {"t": "every_line", "re": r"^(HEADLINE: .+|SUBLINE: .+|- .+|WHEN: .+|WHERE: .+|CTA: .+)$"}, {"t": "bullets", "min": 3, "max": 3},
                  {"t": "include", "any": [rf"re:^HEADLINE: .{{3,{h_lim}}}$"], "label": f"HEADLINE of at most {h_lim} characters"}, {"t": "include", "any": [rf"re:^SUBLINE: .{{3,{s_lim}}}$"], "label": "SUBLINE length"},
                  {"t": "include", "any": [F.date_re(dt)], "label": "date"}, {"t": "include", "any": [F.time_re(st)], "label": "time"}, {"t": "include", "any": [place.lower()], "label": "place"},
-                 {"t": "include", "any": [url], "label": "url"}, {"t": "exclude", "words": ["re:!"]}, {"t": "max_line_chars", "n": 90}]
+                 {"t": "include", "any": [url], "label": "url"}, {"t": "exclude", "words": ["re:!"]}]
         extra_code = f'''
 def extra(text):
     fails = []
@@ -609,9 +693,9 @@ PLAIN_T = {
 }
 
 
-@family("chat-write-plainwords", category="chat", lang="text", kind="greenfield", n=10, summary="rewrite a stuffy paragraph in plain English using a given glossary: banned terms gone, plain terms in, every number kept, sentence length limited")
+@family("chat-write-plainwords", category="chat", lang="text", kind="greenfield", n=8, summary="rewrite a stuffy paragraph in plain English using a given glossary: banned terms gone, plain terms in, every number kept, sentence length limited")
 def gen_plain(rng, n):
-    plan = [2, 2, 3, 3, 3, 4, 4, 5, 3, 4]
+    plan = [2, 2, 2, 3, 3, 4, 4, 5]
     for i in range(n):
         d = plan[i % len(plan)]
         k = {2: 5, 3: 7, 4: 8, 5: 10}[d]
@@ -650,7 +734,7 @@ def extra(text):
     return fails
 '''
         K.assert_passes(rules, gold, extra, what=f"plain {i}")
-        intro = rng.choice(["Our policy text is written like a legal letter and nobody reads it. I need a plain-English version.", "Please rewrite the paragraph in paragraph.txt in plain English; I have a house glossary for the jargon.",
+        intro = rng.choice(["Our policy text (it is in paragraph.txt) is written like a legal letter and nobody reads it. I need a plain-English version.", "Please rewrite the paragraph in paragraph.txt in plain English; I have a house glossary for the jargon.",
                             "The notice in paragraph.txt reads like a contract. Can you make it human?"])
         spec = (f"Use this glossary: whenever the paragraph uses a term on the left, use the plain word on the right instead (and none of the left-hand terms may remain):\n\n{glossary_txt}\n\n"
                 f"Keep every date and number exactly as in the original and do not make the text more than a little longer." + (f" Also keep every sentence to at most {maxs} words, so split the long ones." if maxs else ""))

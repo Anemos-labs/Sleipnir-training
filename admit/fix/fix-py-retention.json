@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-retention-01-negate",
+"ok": true
+},
+{
+"id": "fix-py-retention-02-delete",
+"ok": true
+},
+{
+"id": "fix-py-retention-03-const",
+"ok": true
+},
+{
+"id": "fix-py-retention-04-arith",
+"ok": true
+},
+{
+"id": "fix-py-retention-05-swap",
+"ok": true
+},
+{
+"id": "fix-py-retention-06-logic",
+"ok": true
+},
+{
+"id": "fix-py-retention-07-cmp",
+"ok": true
+},
+{
+"id": "fix-py-retention-08-delete",
+"ok": true
+},
+{
+"id": "fix-py-retention-09-arith",
+"ok": true
+},
+{
+"id": "fix-py-retention-10-delete",
+"ok": true
+}
+]

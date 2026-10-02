@@ -178,7 +178,7 @@ def build(rng, n_req: int):
     return org, reqs, files
 
 
-@family("research-thread-approvals", category="research", lang="text", kind="lookup", n=18, mode="answer",
+@family("research-thread-approvals", category="research", lang="text", kind="lookup", n=16, mode="answer",
         summary="who finally decided purchase requests under a policy with bands, delegation, withdrawn and unauthorised approvals")
 def gen(rng, n):
     made = 0

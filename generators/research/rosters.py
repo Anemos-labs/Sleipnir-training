@@ -85,7 +85,7 @@ def render(rng, org, start, days, initial, swaps, weeks):
     return files
 
 
-@family("research-shift-swaps", category="research", lang="text", kind="greenfield", n=14,
+@family("research-shift-swaps", category="research", lang="text", kind="greenfield", n=12,
         summary="replay swap emails over weekly rosters (stale swaps ignored): roster of a day, shift counts, ineffective swaps (answer.json)")
 def gen(rng, n):
     made = 0

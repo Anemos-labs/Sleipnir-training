@@ -1,0 +1,34 @@
+[
+{
+"id": "robust-false-premise-data-01-sales-rise",
+"ok": true
+},
+{
+"id": "robust-false-premise-data-02-errors-peak",
+"ok": true
+},
+{
+"id": "robust-false-premise-data-03-attendance-total",
+"ok": true
+},
+{
+"id": "robust-false-premise-data-04-buildtime-rise",
+"ok": true
+},
+{
+"id": "robust-false-premise-data-05-rainfall-peak",
+"ok": true
+},
+{
+"id": "robust-false-premise-data-06-tickets-total",
+"ok": true
+},
+{
+"id": "robust-false-premise-data-07-sales-rise",
+"ok": true
+},
+{
+"id": "robust-false-premise-data-08-errors-peak",
+"ok": true
+}
+]

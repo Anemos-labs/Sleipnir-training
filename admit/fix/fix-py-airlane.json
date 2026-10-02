@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-airlane-01-const",
+"ok": true
+},
+{
+"id": "fix-py-airlane-02-delete",
+"ok": true
+},
+{
+"id": "fix-py-airlane-03-cmp",
+"ok": true
+},
+{
+"id": "fix-py-airlane-04-logic",
+"ok": true
+},
+{
+"id": "fix-py-airlane-05-arith",
+"ok": true
+},
+{
+"id": "fix-py-airlane-06-const",
+"ok": true
+},
+{
+"id": "fix-py-airlane-07-delete",
+"ok": true
+},
+{
+"id": "fix-py-airlane-08-cmp",
+"ok": true
+},
+{
+"id": "fix-py-airlane-09-arith",
+"ok": true
+},
+{
+"id": "fix-py-airlane-10-const",
+"ok": true
+}
+]

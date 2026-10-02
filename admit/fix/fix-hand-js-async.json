@@ -1,0 +1,46 @@
+[
+{
+"id": "fix-hand-js-async-01-series-does-not-wait",
+"ok": true
+},
+{
+"id": "fix-hand-js-async-02-results-in-completion-order",
+"ok": true
+},
+{
+"id": "fix-hand-js-async-03-limit-not-applied",
+"ok": true
+},
+{
+"id": "fix-hand-js-async-04-timeout-timer-left-pending",
+"ok": true
+},
+{
+"id": "fix-hand-js-async-05-retry-forgets-to-await",
+"ok": true
+},
+{
+"id": "fix-hand-js-async-06-new-calls-start-after-a-failure",
+"ok": true
+},
+{
+"id": "fix-hand-js-async-07-debounce-never-restarts",
+"ok": true
+},
+{
+"id": "fix-hand-js-async-08-debounce-keeps-the-first-arguments",
+"ok": true
+},
+{
+"id": "fix-hand-js-async-09-debounce-cancel-keeps-the-timer",
+"ok": true
+},
+{
+"id": "fix-hand-js-async-10-throttle-without-trailing-call",
+"ok": true
+},
+{
+"id": "fix-hand-js-async-11-throttle-window-from-last-call",
+"ok": true
+}
+]

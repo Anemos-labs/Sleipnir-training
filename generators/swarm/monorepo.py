@@ -6,7 +6,7 @@ import json
 from fx import Task, dd, family, merged
 
 from . import _bank, _mods_a  # noqa: F401  (registers the bank)
-from ._bank import MAIN, MODS, describe, run_hidden, run_visible, symptoms
+from ._bank import MAIN, MODS, describe, enclosing_function, run_hidden, run_visible, symptoms
 from ._kit import GRADE_CMD, COMPANIES, enum, oxford, pick, score_script, team, unit_test
 
 from . import _mods_b  # noqa: F401,E402
@@ -134,12 +134,13 @@ def fixes_prompt(rng, style, proj, blurb, mods, bugmap, sym):
     return f"{op}\n\nTickets:\n\n{enum(lines, 'numbered')}\n\n{end}".strip()
 
 
-@family("swarm-monorepo-fixes", category="swarm", lang="python", kind="fix", n=16,
+@family("swarm-monorepo-fixes", category="swarm", lang="python", kind="fix", n=20,
         summary="a monorepo of k small library packages, each with a different injected defect; score = fraction of packages whose hidden suite passes")
 def monorepo_fixes(rng, n):
     keys = sorted(MODS)
     plan = [(3, "ticket"), (3, "reports"), (3, "terse"), (4, "ticket"), (4, "mixed"), (4, "audit"), (4, "reports"), (5, "mixed"),
-            (5, "ticket"), (5, "audit"), (5, "terse"), (6, "mixed"), (7, "audit"), (6, "reports"), (3, "audit"), (7, "ticket")]
+            (5, "ticket"), (5, "audit"), (5, "terse"), (6, "mixed"), (7, "audit"), (6, "reports"), (3, "audit"), (7, "ticket"),
+            (2, "ticket"), (2, "reports"), (2, "terse"), (2, "ticket")]
     for i in range(n):
         k, style = plan[i % len(plan)]
         k = min(k, len(keys))
@@ -159,15 +160,15 @@ def monorepo_fixes(rng, n):
         solution = {}
         for m in mods:
             solution.update(m.solution_files())
-        d = 3 if k <= 3 else 4 if k <= 5 else 5
-        if style in ("audit", "terse") and d < 4:
+        d = 2 if k <= 2 else 3 if k <= 3 else 4 if k <= 5 else 5
+        if style in ("audit", "terse") and d < 4 and k > 2:
             d += 1
         yield Task(
             slug=f"{i + 1:02d}-k{k}-{style}" + ("-double" if double else ""),
             prompt=fixes_prompt(rng, style, disp, blurb, mods, bugmap, sym),
             difficulty=d, start=start, hidden=hidden, solution=solution,
             verify=GRADE_CMD, pass_mode="json-score",
-            team=team(rng, min(k, 6)),
+            team=team(rng, min(max(k, 2), 6)),
             tags=["monorepo", "independent-components", style],
             notes={"packages": [m.key for m in mods], "bugs": {m.key: [b.key for b in bugmap[m.key]] for m in mods}, "style": style},
         )
@@ -332,9 +333,9 @@ REVIEW_CHECK = dd('''
 ''')
 
 
-def review_ok(b):
-    w = b.where
-    return w.isidentifier() and not w.startswith("_") and not w.isupper()
+def review_ok(mod, b):
+    fn = enclosing_function(mod, b)
+    return bool(fn) and not fn.startswith("_")
 
 
 @family("swarm-review-fix", category="swarm", lang="python", kind="fix", n=10,
@@ -349,12 +350,12 @@ def review_fix(rng, n):
         clean = [MODS[x] for x in picked[k:]]
         bugmap, truth = {}, []
         for m in bad:
-            pool = [b for b in m.bugs if review_ok(b)]
+            pool = [b for b in m.bugs if review_ok(m, b)]
             b = pick(rng, pool)
             if run_hidden(m, b).ok:
                 raise RuntimeError(f"{m.key}/{b.key} not caught")
             bugmap[m.key] = [b]
-            truth.append(f"{m.key}.{b.where}")
+            truth.append(f"{m.key}.{enclosing_function(m, b)}")
         mods = bad + clean
         rng.shuffle(mods)
         proj, disp, blurb = pick(rng, PROJECTS)

@@ -212,7 +212,8 @@ HF_README = dd('''
     ## Dues (`harborfees/dues.py`)
 
     * `daily_due(gt)`: marginal bands per gross tonne and day: 8 cents for the first 500 GT, 5 cents for the GT from
-      501 to 3000, 3 cents above 3000. `gt <= 0` is a `ValueError`.
+      501 to 3000, 3 cents above 3000. `gt <= 0` is a `ValueError`, and so it is in every function below; a call of
+      `minutes <= 0` is a `ValueError` in all of them as well.
     * `days_charged(minutes)`: every started 24 hours (1440 minutes) is a day. `minutes <= 0` is a `ValueError`.
     * `stay_dues(gt, minutes)`: a call of at most 120 minutes is a turnaround and pays half of one daily due (rounded
       down). Otherwise the first 7 days pay the full daily due and every further day 70% of it, each such day rounded
@@ -481,7 +482,7 @@ HARBORFEES = Lib(
            "README.md": HF_README, ".gitignore": GITIGNORE},
     visible_tests={"tests/test_basic.py": HF_VISIBLE},
     hidden_tests={"tests/test_full.py": HF_HIDDEN},
-    mutate=["harborfees/dues.py", "harborfees/pilot.py"], difficulty=3, tags=["port", "tariff", "money"],
+    mutate=["harborfees/dues.py", "harborfees/pilot.py"], difficulty=2, tags=["port", "tariff", "money"],
     probes=[
         "daily_due(501)", "daily_due(3001)", "days_charged(1441)", "stay_dues(1000, 120)", "stay_dues(1000, 121)",
         "stay_dues(501, 10_081)", "stay_dues(1000, 14_400)", "harbour_dues(100, 600)", "harbour_dues(501, 1440, green=True)",
@@ -811,16 +812,14 @@ POINTSBANK = Lib(
     hidden_tests={"tests/test_full.py": PB_HIDDEN},
     mutate=["pointsbank/lots.py", "pointsbank/tiers.py"], difficulty=3, tags=["loyalty", "expiry", "dates"],
     probes=[
-        "expiry_of(date(2024, 8, 31))", "expiry_of(date(2022, 8, 10))", "balance(LOTS, date(2025, 9, 30))", "balance(LOTS, date(2025, 10, 1))",
-        "redeem(LOTS, 70, date(2025, 6, 1))", "redeem(LOTS, 70, date(2025, 10, 1))", "redeem(LOTS, 40, date(2025, 6, 1))",
-        "expiring(LOTS, date(2025, 8, 31))", "expiring(LOTS, date(2025, 8, 30))", "tier_for(999)", "tier_for(5000)",
+        "expiry_of(date(2024, 8, 31))", "expiry_of(date(2022, 8, 10))", "balance([(date(2025, 1, 10), 100, date(2026, 7, 31)), (date(2024, 12, 5), 50, date(2026, 6, 30)), (date(2024, 3, 1), 40, date(2025, 9, 30))], date(2025, 9, 30))", "balance([(date(2025, 1, 10), 100, date(2026, 7, 31)), (date(2024, 12, 5), 50, date(2026, 6, 30)), (date(2024, 3, 1), 40, date(2025, 9, 30))], date(2025, 10, 1))",
+        "redeem([(date(2025, 1, 10), 100, date(2026, 7, 31)), (date(2024, 12, 5), 50, date(2026, 6, 30)), (date(2024, 3, 1), 40, date(2025, 9, 30))], 70, date(2025, 6, 1))", "redeem([(date(2025, 1, 10), 100, date(2026, 7, 31)), (date(2024, 12, 5), 50, date(2026, 6, 30)), (date(2024, 3, 1), 40, date(2025, 9, 30))], 70, date(2025, 10, 1))", "redeem([(date(2025, 1, 10), 100, date(2026, 7, 31)), (date(2024, 12, 5), 50, date(2026, 6, 30)), (date(2024, 3, 1), 40, date(2025, 9, 30))], 40, date(2025, 6, 1))",
+        "expiring([(date(2025, 1, 10), 100, date(2026, 7, 31)), (date(2024, 12, 5), 50, date(2026, 6, 30)), (date(2024, 3, 1), 40, date(2025, 9, 30))], date(2025, 8, 31))", "expiring([(date(2025, 1, 10), 100, date(2026, 7, 31)), (date(2024, 12, 5), 50, date(2026, 6, 30)), (date(2024, 3, 1), 40, date(2025, 9, 30))], date(2025, 8, 30))", "tier_for(999)", "tier_for(5000)",
         "purchase_points(9999, 'silver')", "purchase_points(10_000, 'platinum')",
         "earned_in_window([(date(2024, 6, 1), 500), (date(2024, 6, 2), 300), (date(2025, 6, 1), 200)], date(2025, 6, 1))",
         "earn_purchase([], [(date(2025, 5, 1), 1000)], 10_000, date(2025, 6, 1))[2]",
     ],
-    probe_import=("from datetime import date\nfrom pointsbank.lots import *\nfrom pointsbank.tiers import *\n"
-                  "LOTS = [(date(2025, 1, 10), 100, date(2026, 7, 31)), (date(2024, 12, 5), 50, date(2026, 6, 30)), "
-                  "(date(2024, 3, 1), 40, date(2025, 9, 30))]"),
+    probe_import="from datetime import date\nfrom pointsbank.lots import *\nfrom pointsbank.tiers import *",
 )
 
 # ======================================================================================================================

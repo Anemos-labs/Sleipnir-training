@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-go-unitfmt-01-arith",
+"ok": true
+},
+{
+"id": "fix-go-unitfmt-02-cmp",
+"ok": true
+},
+{
+"id": "fix-go-unitfmt-03-swap",
+"ok": true
+},
+{
+"id": "fix-go-unitfmt-04-negate",
+"ok": true
+},
+{
+"id": "fix-go-unitfmt-05-const",
+"ok": true
+},
+{
+"id": "fix-go-unitfmt-06-delete",
+"ok": true
+},
+{
+"id": "fix-go-unitfmt-07-arith",
+"ok": true
+},
+{
+"id": "fix-go-unitfmt-08-cmp",
+"ok": true
+}
+]

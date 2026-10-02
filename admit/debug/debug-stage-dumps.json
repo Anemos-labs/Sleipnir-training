@@ -1,0 +1,98 @@
+[
+{
+"id": "debug-stage-dumps-01-orderimport-parse",
+"ok": true
+},
+{
+"id": "debug-stage-dumps-02-sensorcal-calibrate",
+"ok": true
+},
+{
+"id": "debug-stage-dumps-03-sensorcal-alerts",
+"ok": true
+},
+{
+"id": "debug-stage-dumps-04-orderimport-dedupe",
+"ok": true
+},
+{
+"id": "debug-stage-dumps-05-orderimport-dedupe",
+"ok": true
+},
+{
+"id": "debug-stage-dumps-06-orderimport-money",
+"ok": true
+},
+{
+"id": "debug-stage-dumps-07-sensorcal-decode",
+"ok": true
+},
+{
+"id": "debug-stage-dumps-08-sensorcal-frames",
+"ok": true
+},
+{
+"id": "debug-stage-dumps-09-sensorcal-calibrate",
+"ok": true
+},
+{
+"id": "debug-stage-dumps-10-orderimport-money",
+"ok": true
+},
+{
+"id": "debug-stage-dumps-11-orderimport-utc",
+"ok": true
+},
+{
+"id": "debug-stage-dumps-12-orderimport-daily",
+"ok": true
+},
+{
+"id": "debug-stage-dumps-13-sensorcal-frames",
+"ok": true
+},
+{
+"id": "debug-stage-dumps-14-orderimport-money",
+"ok": true
+},
+{
+"id": "debug-stage-dumps-15-orderimport-enrich",
+"ok": true
+},
+{
+"id": "debug-stage-dumps-16-orderimport-dedupe",
+"ok": true
+},
+{
+"id": "debug-stage-dumps-17-orderimport-parse",
+"ok": true
+},
+{
+"id": "debug-stage-dumps-18-sensorcal-decode",
+"ok": true
+},
+{
+"id": "debug-stage-dumps-19-orderimport-utc",
+"ok": true
+},
+{
+"id": "debug-stage-dumps-20-orderimport-utc",
+"ok": true
+},
+{
+"id": "debug-stage-dumps-21-orderimport-parse",
+"ok": true
+},
+{
+"id": "debug-stage-dumps-22-orderimport-daily",
+"ok": true
+},
+{
+"id": "debug-stage-dumps-23-sensorcal-smooth",
+"ok": true
+},
+{
+"id": "debug-stage-dumps-24-sensorcal-smooth",
+"ok": true
+}
+]

@@ -1,0 +1,66 @@
+[
+{
+"id": "feature-go-docindex-01-prefix",
+"ok": true
+},
+{
+"id": "feature-go-docindex-02-stopwords",
+"ok": true
+},
+{
+"id": "feature-go-docindex-03-stemmer",
+"ok": true
+},
+{
+"id": "feature-go-docindex-04-stopwords-prefix-cache",
+"ok": true
+},
+{
+"id": "feature-go-docindex-05-any",
+"ok": true
+},
+{
+"id": "feature-go-docindex-06-phrase",
+"ok": true
+},
+{
+"id": "feature-go-docindex-07-paging",
+"ok": true
+},
+{
+"id": "feature-go-docindex-08-stopwords-paging",
+"ok": true
+},
+{
+"id": "feature-go-docindex-09-cache",
+"ok": true
+},
+{
+"id": "feature-go-docindex-10-any",
+"ok": true
+},
+{
+"id": "feature-go-docindex-11-prefix",
+"ok": true
+},
+{
+"id": "feature-go-docindex-12-phrase-paging",
+"ok": true
+},
+{
+"id": "feature-go-docindex-13-paging",
+"ok": true
+},
+{
+"id": "feature-go-docindex-14-stemmer",
+"ok": true
+},
+{
+"id": "feature-go-docindex-15-cache",
+"ok": true
+},
+{
+"id": "feature-go-docindex-16-phrase-prefix-paging",
+"ok": true
+}
+]

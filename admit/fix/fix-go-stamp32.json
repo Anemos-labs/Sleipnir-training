@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-go-stamp32-01-cmp",
+"ok": true
+},
+{
+"id": "fix-go-stamp32-02-delete",
+"ok": true
+},
+{
+"id": "fix-go-stamp32-03-const",
+"ok": true
+},
+{
+"id": "fix-go-stamp32-04-arith",
+"ok": true
+},
+{
+"id": "fix-go-stamp32-05-logic",
+"ok": true
+},
+{
+"id": "fix-go-stamp32-06-negate",
+"ok": true
+},
+{
+"id": "fix-go-stamp32-07-cmp",
+"ok": true
+},
+{
+"id": "fix-go-stamp32-08-const",
+"ok": true
+}
+]

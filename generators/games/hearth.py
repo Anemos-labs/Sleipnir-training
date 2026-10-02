@@ -974,3 +974,250 @@ def gen_fix(rng, n):
         ctx = {"files": ["game.go"], "verify": _scen.VERIFY[LANG]}
         yield _kit.bug_task(game=GAME, lang=LANG, base_files=base, tests=tests, hidden=hidden, bug=bug, ctx=ctx, rng=rng, used=used, k=k,
                             tags=["tower-defence", "tick-order"], timeout_s=240, extra_notes={"rules": r})
+
+
+# ----------------------------------------------------------------------------------------------------- AI tournament
+
+def hard_level(rng, w: int, h: int, segs: int, r: dict, waves: int = 5) -> str:
+    lv = [ln for ln in make_level(rng, w, h, segs, 1, r).split("\n") if not ln.startswith(("wave", "lives", "gold"))]
+    lv.append(f"gold {rng.choice([24, 30, 36])}")
+    lv.append(f"lives {rng.choice([4, 5, 6])}")
+    t = 0
+    for k in range(waves):
+        kind = ["imp", "bat", "ogre", "imp", "ogre"][k % 5]
+        count = rng.randint(4, 8) if kind != "ogre" else rng.randint(2, 4)
+        lv.append(f"wave {t} {kind} {count} {rng.choice([1, 2])}")
+        t += rng.randint(8, 16)
+    return "\n".join(lv)
+
+
+AI_EXTRA = tabs(dd(r'''
+
+    // Width returns the number of columns of the keep.
+    func (g *Game) Width() int { return g.w }
+
+    // Height returns the number of rows of the keep.
+    func (g *Game) Height() int { return g.h }
+
+    // Path returns a copy of the path cells (x, y) from the spawn cell (index 0) to the hearth (the last one).
+    func (g *Game) Path() [][2]int { return append([][2]int(nil), g.path...) }
+
+    // Tick returns the number of ticks run so far.
+    func (g *Game) Tick() int { return g.tick }
+
+    // TowerCount returns how many towers of the given kind ("arrow", "mortar", "frost") stand now.
+    func (g *Game) TowerCount(kind string) int {
+        n := 0
+        for _, t := range g.towers {
+            if t.kind == kind {
+                n++
+            }
+        }
+        return n
+    }
+
+    // Clone returns an independent copy of the game: commands applied to the copy do not affect the original.
+    func (g *Game) Clone() *Game {
+        c := *g
+        c.towers = make([]*tower, len(g.towers))
+        for i, t := range g.towers {
+            tt := *t
+            c.towers[i] = &tt
+        }
+        c.enemies = make([]*enemy, len(g.enemies))
+        for i, e := range g.enemies {
+            ee := *e
+            c.enemies[i] = &ee
+        }
+        return &c
+    }
+'''))
+
+AI_STUB = tabs(dd('''
+    package hearth
+
+    // Plan returns the command to run now (it may be "tick"); it is called again after every command while the game is running.
+    // A command that is not in g.LegalMoves() loses the level on the spot.
+    func Plan(g *Game) string {
+        return "tick"
+    }
+'''))
+
+AI_GOLD = tabs(dd('''
+    package hearth
+
+    import (
+        "strconv"
+        "strings"
+    )
+
+    // Plan builds where a tower covers the most of the path for its price (arrows first), and otherwise lets time pass.
+    func Plan(g *Game) string {
+        best, bestV := "tick", 0.0
+        path := g.Path()
+        for _, c := range g.LegalMoves() {
+            f := strings.Fields(c)
+            if f[0] != "build" || f[1] == "frost" {
+                continue
+            }
+            x, _ := strconv.Atoi(f[2])
+            y, _ := strconv.Atoi(f[3])
+            rng, cost := 2, 6.0
+            if f[1] == "mortar" {
+                rng, cost = 3, 12.0
+            }
+            cov := 0
+            for i := 1; i < len(path)-1; i++ {
+                dx, dy := path[i][0]-x, path[i][1]-y
+                if dx < 0 {
+                    dx = -dx
+                }
+                if dy < 0 {
+                    dy = -dy
+                }
+                if dx+dy <= rng {
+                    cov++
+                }
+            }
+            v := float64(cov) / cost
+            if f[1] == "arrow" {
+                v += 0.05
+            }
+            if f[1] == "mortar" && g.TowerCount("arrow") < 3 {
+                v -= 1
+            }
+            if v > bestV {
+                best, bestV = c, v
+            }
+        }
+        return best
+    }
+'''))
+
+AI_ARENA = tabs(dd('''
+    // Command arena runs hearth.Plan on the sample levels: go run ./cmd/arena
+    package main
+
+    import (
+        "fmt"
+
+        "example.com/hearth"
+    )
+
+    var levels = []string{
+    @@LEVELS@@
+    }
+
+    func main() {
+        won := 0
+        for i, level := range levels {
+            g, err := hearth.NewGame(level)
+            if err != nil {
+                panic(err)
+            }
+            for g.Status() == "playing" && g.Tick() < 2000 {
+                cmd := hearth.Plan(g)
+                if _, err := g.Apply(cmd); err != nil {
+                    fmt.Printf("level %d: illegal command %q: lost\\n", i+1, cmd)
+                    break
+                }
+            }
+            fmt.Printf("level %d: %s after %d ticks (gold %d, lives %d)\\n", i+1, g.Status(), g.Tick(), g.Gold(), g.Lives())
+            if g.Status() == "won" {
+                won++
+            }
+        }
+        fmt.Printf("won %d of %d\\n", won, len(levels))
+    }
+'''))
+
+AI_SCORE = tabs(dd('''
+    package main
+
+    import (
+        "encoding/json"
+        "fmt"
+
+        "example.com/hearth"
+    )
+
+    var levels = []string{
+    @@LEVELS@@
+    }
+
+    const floor, goal = 0.4, 0.9
+
+    func main() {
+        won := 0
+        for _, level := range levels {
+            g, err := hearth.NewGame(level)
+            if err != nil {
+                panic(err)
+            }
+            for g.Status() == "playing" && g.Tick() < 2000 {
+                if _, err := g.Apply(hearth.Plan(g)); err != nil {
+                    break
+                }
+            }
+            if g.Status() == "won" {
+                won++
+            }
+        }
+        rate := float64(won) / float64(len(levels))
+        score := (rate - floor) / (goal - floor)
+        if score < 0 {
+            score = 0
+        }
+        if score > 1 {
+            score = 1
+        }
+        fmt.Printf("won %d of %d levels (full score from %.0f%%)\\n", won, len(levels), goal*100)
+        out, _ := json.Marshal(map[string]float64{"score": float64(int(score*10000)) / 10000})
+        fmt.Println(string(out))
+    }
+'''))
+
+
+def _go_levels(levels: list[str]) -> str:
+    return "\n".join("\t\"" + lv.replace("\n", "\\n") + "\"," for lv in levels)
+
+
+AI_VARIANTS = [dict(rules={}, d=3), dict(rules=dict(FROST=True, SELL=75), d=3), dict(rules=dict(SELL=25, LIVES=6), d=4), dict(rules=dict(FROST=True, SELL=60, GOLD=26), d=4)]
+
+
+def ai_readme(r: dict) -> str:
+    return readme(r).replace("## Tests\n", dd('''
+        ## Your task: the builder
+
+        `ai.go` must define `Plan(g *Game) string`: the command to run now. The check calls it again after every command while the game is running, so `tick` is a valid answer (and the usual one once you cannot or do not want to build). A command that is
+        not in `g.LegalMoves()` loses the level on the spot. The engine (`game.go`, given, do not edit) has a few read-only helpers: `g.Width()`, `g.Height()`, `g.Path()` (the path cells from the spawn to the hearth), `g.Tick()`, `g.TowerCount(kind)`,
+        and `g.Clone()`, an independent copy of the game that you may play forward to look ahead; `Gold()`, `Lives()` and `Status()` as above.
+
+        `go run ./cmd/arena` plays `Plan` on three sample levels. The check plays 12 other levels (little gold, few lives, waves of imps, bats and ogres; each level is given up after 2000 ticks) and counts the levels that end `won`. The score is
+        `clamp((levels won / 12 - 0.4) / (0.9 - 0.4), 0, 1)`: 1.0 needs at least 11 of the 12 levels.
+
+        ## Tests
+    '''), 1)
+
+
+@family("games-hearth-ai", category="games", lang="go", kind="greenfield", n=4,
+        summary="write the auto-builder AI of a Hearthline keep (go); the fraction of generated levels it wins is the score (json-score)")
+def gen_ai(rng, n):
+    for i, v in enumerate(AI_VARIANTS[:n]):
+        r = {**DEFAULT, **v["rules"]}
+        sol = project(r)
+        samples = [hard_level(rng, rng.choice([9, 10]), rng.choice([6, 7]), rng.choice([3, 4]), r, waves=4) for _ in range(3)]
+        graded = [hard_level(rng, rng.choice([9, 10, 12]), rng.choice([6, 7, 8]), rng.choice([3, 4, 5]), r) for _ in range(12)]
+        files = {"game.go": sol["game.go"] + "\n" + AI_EXTRA, "go.mod": sol["go.mod"], "ai.go": AI_STUB, "README.md": ai_readme(r),
+                 "cmd/arena/main.go": AI_ARENA.replace("@@LEVELS@@", _go_levels(samples))}
+        hidden = {"cmd/score/main.go": AI_SCORE.replace("@@LEVELS@@", _go_levels(graded))}
+        s0, s1, out = _kit.check_scores(start=files, hidden=hidden, solution={"ai.go": AI_GOLD}, verify="go run ./cmd/score", name=f"hearth-ai-{i}", timeout_s=240)
+        voices = [
+            "Our Hearthline keep needs an auto-builder: `Plan` in `ai.go` returns the next command (build, sell or tick). README.md explains the helpers the engine offers and how the share of generated levels it wins is graded; `go run ./cmd/arena` shows three samples.",
+            "`Plan` in `ai.go` never builds anything, so the keep falls to the first ogre. Write a builder that wins most of the levels the check generates (README.md has the details and the scoring). Gold is tight, so where you build matters.",
+            "I want an AI that defends a Hearthline keep on its own: pick sensible tower positions (the path, the ranges and the prices are all in README.md), and tick when there is nothing worth buying. It is judged on how many of 12 hidden levels it wins.",
+            "Implement the defender for Hearthline in `ai.go`. Mind that every tick has a fixed order (README.md) and that gold is scarce. `g.Clone()` lets you test a command before committing to it.",
+        ]
+        yield Task(slug=f"{i + 1:02d}-" + ("frost" if r["FROST"] else "nofrost") + f"-sell{r['SELL']}", prompt=voices[i % len(voices)], difficulty=v["d"], start=files, hidden=hidden,
+                   solution={"ai.go": AI_GOLD}, verify="go run ./cmd/score", pass_mode="json-score", protected=["game.go", "cmd/arena/main.go"], timeout_s=240,
+                   tags=["bot", "tower-defence", "tournament", "ai"], notes={"rules": r, "gold": out.strip().splitlines()[-2], "stub_score": s0})

@@ -8,51 +8,27 @@
 "ok": true
 },
 {
-"id": "chat-premise-fact-03-month_days",
+"id": "chat-premise-fact-03-units",
 "ok": true
 },
 {
-"id": "chat-premise-fact-04-weekday",
+"id": "chat-premise-fact-04-month_days",
 "ok": true
 },
 {
-"id": "chat-premise-fact-05-month_days",
+"id": "chat-premise-fact-05-weekday",
 "ok": true
 },
 {
-"id": "chat-premise-fact-06-units",
+"id": "chat-premise-fact-06-tz",
 "ok": true
 },
 {
-"id": "chat-premise-fact-07-leap",
+"id": "chat-premise-fact-07-tz",
 "ok": true
 },
 {
-"id": "chat-premise-fact-08-leap",
-"ok": true
-},
-{
-"id": "chat-premise-fact-09-leap",
-"ok": true
-},
-{
-"id": "chat-premise-fact-10-combo_units_month",
-"ok": true
-},
-{
-"id": "chat-premise-fact-11-combo_units_month",
-"ok": true
-},
-{
-"id": "chat-premise-fact-12-units",
-"ok": true
-},
-{
-"id": "chat-premise-fact-13-month_days",
-"ok": true
-},
-{
-"id": "chat-premise-fact-14-leap",
+"id": "chat-premise-fact-08-combo_tz_weekday",
 "ok": true
 }
 ]

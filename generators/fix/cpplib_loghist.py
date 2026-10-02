@@ -1,0 +1,1770 @@
+"""Log-linear latency histogram (c++): exact small buckets, power-of-two ranges split linearly, clamping, nearest-rank percentiles and merging; bugs injected into the library."""
+from fx import Lib, dd
+
+from generators.fix import _lang3
+
+README1 = dd(r'''
+    # loghist
+
+    A fixed-size histogram for latencies (whole microseconds) with a bounded relative error: small values have exact buckets, and every power-of-two range above them is cut into
+    the same number of equal-width buckets.
+
+    ## Buckets
+
+    A histogram is created with `sub_bits` = `k` (`1..6`) and a `max_value`. Let `S = 2^k`.
+
+    * A value `v < 2*S` has its own bucket: **index `v`** (width 1).
+    * A value `v >= 2*S` has `e = floor(log2(v))` and `shift = e - k` (so `shift >= 1`); its bucket index is `shift * S + (v >> shift)`. The bucket covers the `2^shift` values
+      that share the same `v >> shift`.
+    * `bucket_low(i)` and `bucket_high(i)` are the smallest and largest value of bucket `i` (both inclusive): for `i < 2*S`, `i` and `i`; otherwise with `shift = i / S - 1`
+      and `m = i - shift * S`, the low is `m << shift` and the high is `((m + 1) << shift) - 1`.
+    * The histogram has `index(max_value) + 1` buckets. A value above `max_value` is *clamped*: it is counted in the last bucket and also in `overflow()`.
+
+    (For example, with `k = 2` (`S = 4`): values 0..7 have buckets 0..7; 8 and 9 share bucket 8, 10 and 11 bucket 9, ..., 14 and 15 bucket 11; 16..19 share bucket 12, 20..23 bucket 13; and so on.)
+
+    ## API (`include/loghist.hpp`, namespace `loghist`)
+
+    * `Histogram(int sub_bits, uint64_t max_value)`: `std::invalid_argument` unless `1 <= sub_bits <= 6` and `max_value >= 1` and `max_value < 2^62`.
+    * `static uint64_t bucket_index_of(int sub_bits, uint64_t v)`, `size_t bucket_count() const`, `uint64_t bucket_low(size_t i) const`, `uint64_t bucket_high(size_t i) const` (the last
+      bucket's high is **not** cut at `max_value`); `bucket_low` / `bucket_high` throw `std::out_of_range` for `i >= bucket_count()`.
+    * `void record(uint64_t v, uint64_t n = 1)`: add `n` observations of `v` (clamped as above; `n == 0` does nothing).
+    * `uint64_t total() const`: all observations; `uint64_t overflow() const`: observations above `max_value`; `uint64_t count_at(size_t i) const` (throws `std::out_of_range`).
+    * `uint64_t percentile(int permille) const`: the **nearest-rank** percentile in thousandths (500 is the median, 990 the 99th percentile): with `rank = ceil(total * permille / 1000)` (at least 1)
+      it is the `bucket_high` of the first bucket at which the running count reaches `rank`, **capped at `max_value`**. `0` when nothing was recorded. `std::invalid_argument` unless
+      `1 <= permille <= 1000`.
+    * `uint64_t min_recorded() const` / `uint64_t max_recorded() const`: `bucket_low` of the first non-empty bucket and `bucket_high` of the last one (capped at `max_value`); both `0` when empty.
+    * `void merge(const Histogram &other)`: adds the other histogram's counts and overflow; `std::invalid_argument` (changing nothing) unless both have the same `sub_bits` and `max_value`.
+    * `std::vector<std::array<uint64_t, 3>> nonempty() const`: `{low, high, count}` of each non-empty bucket in index order (the last bucket's high capped at `max_value`).
+''')
+
+F2 = dd(r'''
+    #ifndef LOGHIST_HPP
+    #define LOGHIST_HPP
+
+    #include <array>
+    #include <cstddef>
+    #include <cstdint>
+    #include <stdexcept>
+    #include <vector>
+
+    namespace loghist {
+
+    class Histogram {
+    public:
+        Histogram(int sub_bits, uint64_t max_value);
+
+        static uint64_t bucket_index_of(int sub_bits, uint64_t v);
+        size_t bucket_count() const { return counts_.size(); }
+        uint64_t bucket_low(size_t i) const;
+        uint64_t bucket_high(size_t i) const;
+
+        void record(uint64_t v, uint64_t n = 1);
+        uint64_t total() const { return total_; }
+        uint64_t overflow() const { return overflow_; }
+        uint64_t count_at(size_t i) const;
+        uint64_t percentile(int permille) const;
+        uint64_t min_recorded() const;
+        uint64_t max_recorded() const;
+        void merge(const Histogram &other);
+        std::vector<std::array<uint64_t, 3>> nonempty() const;
+
+    private:
+        int k_;
+        uint64_t max_;
+        std::vector<uint64_t> counts_;
+        uint64_t total_ = 0;
+        uint64_t overflow_ = 0;
+    };
+
+    }  // namespace loghist
+
+    #endif
+''')
+
+F3 = dd(r'''
+    #include "loghist.hpp"
+
+    namespace loghist {
+
+    static int floor_log2(uint64_t v) {
+        int e = 0;
+        while (v > 1) {
+            v >>= 1;
+            e++;
+        }
+        return e;
+    }
+
+    uint64_t Histogram::bucket_index_of(int sub_bits, uint64_t v) {
+        uint64_t S = uint64_t{1} << sub_bits;
+        if (v < 2 * S) return v;
+        int shift = floor_log2(v) - sub_bits;
+        return static_cast<uint64_t>(shift) * S + (v >> shift);
+    }
+
+    Histogram::Histogram(int sub_bits, uint64_t max_value) : k_(sub_bits), max_(max_value) {
+        if (sub_bits < 1 || sub_bits > 6 || max_value < 1 || max_value >= (uint64_t{1} << 62)) throw std::invalid_argument("bad histogram parameters");
+        counts_.assign(static_cast<size_t>(bucket_index_of(sub_bits, max_value)) + 1, 0);
+    }
+
+    uint64_t Histogram::bucket_low(size_t i) const {
+        if (i >= counts_.size()) throw std::out_of_range("bucket index");
+        uint64_t S = uint64_t{1} << k_;
+        if (i < 2 * S) return i;
+        uint64_t shift = i / S - 1;
+        uint64_t m = i - shift * S;
+        return m << shift;
+    }
+
+    uint64_t Histogram::bucket_high(size_t i) const {
+        if (i >= counts_.size()) throw std::out_of_range("bucket index");
+        uint64_t S = uint64_t{1} << k_;
+        if (i < 2 * S) return i;
+        uint64_t shift = i / S - 1;
+        uint64_t m = i - shift * S;
+        return ((m + 1) << shift) - 1;
+    }
+
+    void Histogram::record(uint64_t v, uint64_t n) {
+        if (n == 0) return;
+        size_t at;
+        if (v > max_) {
+            at = counts_.size() - 1;
+            overflow_ += n;
+        } else {
+            at = static_cast<size_t>(bucket_index_of(k_, v));
+        }
+        counts_[at] += n;
+        total_ += n;
+    }
+
+    uint64_t Histogram::count_at(size_t i) const {
+        if (i >= counts_.size()) throw std::out_of_range("bucket index");
+        return counts_[i];
+    }
+
+    uint64_t Histogram::percentile(int permille) const {
+        if (permille < 1 || permille > 1000) throw std::invalid_argument("permille out of range");
+        if (total_ == 0) return 0;
+        uint64_t rank = (total_ * static_cast<uint64_t>(permille) + 999) / 1000;
+        if (rank < 1) rank = 1;
+        uint64_t run = 0;
+        for (size_t i = 0; i < counts_.size(); i++) {
+            run += counts_[i];
+            if (run >= rank) {
+                uint64_t hi = bucket_high(i);
+                return hi > max_ ? max_ : hi;
+            }
+        }
+        return max_;
+    }
+
+    uint64_t Histogram::min_recorded() const {
+        for (size_t i = 0; i < counts_.size(); i++) {
+            if (counts_[i] > 0) return bucket_low(i);
+        }
+        return 0;
+    }
+
+    uint64_t Histogram::max_recorded() const {
+        for (size_t i = counts_.size(); i > 0; i--) {
+            if (counts_[i - 1] > 0) {
+                uint64_t hi = bucket_high(i - 1);
+                return hi > max_ ? max_ : hi;
+            }
+        }
+        return 0;
+    }
+
+    void Histogram::merge(const Histogram &other) {
+        if (other.k_ != k_ || other.max_ != max_) throw std::invalid_argument("histograms differ");
+        for (size_t i = 0; i < counts_.size(); i++) counts_[i] += other.counts_[i];
+        total_ += other.total_;
+        overflow_ += other.overflow_;
+    }
+
+    std::vector<std::array<uint64_t, 3>> Histogram::nonempty() const {
+        std::vector<std::array<uint64_t, 3>> out;
+        for (size_t i = 0; i < counts_.size(); i++) {
+            if (counts_[i] == 0) continue;
+            uint64_t hi = bucket_high(i);
+            out.push_back({bucket_low(i), hi > max_ ? max_ : hi, counts_[i]});
+        }
+        return out;
+    }
+
+    }  // namespace loghist
+''')
+
+V4 = dd(r'''
+    #include "harness.hpp"
+    #include "loghist.hpp"
+
+    using namespace loghist;
+
+    int main() {
+        h_init();
+        Histogram h(2, 1000);
+        CHECK_EQ(Histogram::bucket_index_of(2, 5), 5u);
+        CHECK_EQ(Histogram::bucket_index_of(2, 9), 8u);
+        h.record(3);
+        h.record(10, 2);
+        CHECK_EQ(h.total(), 3u);
+        CHECK_EQ(h.percentile(1000), 11u);
+        return h_report();
+    }
+''')
+
+H5 = dd(r'''
+    #include <string>
+    #include <vector>
+
+    #include "harness.hpp"
+    #include "loghist.hpp"
+
+    using namespace loghist;
+
+    typedef unsigned long long ull;
+
+    struct IndexCase { int k; ull v, index, low, high; };
+    struct Rec { ull v, n; };
+    struct HistCase {
+        int k;
+        ull max;
+        const Rec *recs;
+        int nrecs;
+        int nbuckets;
+        ull total, overflow, minr, maxr, spare;
+        int nne;
+        const ull (*ne)[3];
+        const ull *pct;
+    };
+
+    static const IndexCase INDEXES[] = {
+        {1, 0ULL, 0ULL, 0ULL, 0ULL},
+        {1, 1ULL, 1ULL, 1ULL, 1ULL},
+        {1, 2ULL, 2ULL, 2ULL, 2ULL},
+        {1, 3ULL, 3ULL, 3ULL, 3ULL},
+        {1, 4ULL, 4ULL, 4ULL, 5ULL},
+        {1, 5ULL, 4ULL, 4ULL, 5ULL},
+        {1, 6ULL, 5ULL, 6ULL, 7ULL},
+        {1, 7ULL, 5ULL, 6ULL, 7ULL},
+        {1, 8ULL, 6ULL, 8ULL, 11ULL},
+        {1, 9ULL, 6ULL, 8ULL, 11ULL},
+        {1, 10ULL, 6ULL, 8ULL, 11ULL},
+        {1, 11ULL, 6ULL, 8ULL, 11ULL},
+        {1, 14ULL, 7ULL, 12ULL, 15ULL},
+        {1, 15ULL, 7ULL, 12ULL, 15ULL},
+        {1, 16ULL, 8ULL, 16ULL, 23ULL},
+        {1, 17ULL, 8ULL, 16ULL, 23ULL},
+        {1, 18ULL, 8ULL, 16ULL, 23ULL},
+        {1, 19ULL, 8ULL, 16ULL, 23ULL},
+        {1, 30ULL, 9ULL, 24ULL, 31ULL},
+        {1, 31ULL, 9ULL, 24ULL, 31ULL},
+        {1, 32ULL, 10ULL, 32ULL, 47ULL},
+        {1, 33ULL, 10ULL, 32ULL, 47ULL},
+        {1, 34ULL, 10ULL, 32ULL, 47ULL},
+        {1, 35ULL, 10ULL, 32ULL, 47ULL},
+        {1, 62ULL, 11ULL, 48ULL, 63ULL},
+        {1, 63ULL, 11ULL, 48ULL, 63ULL},
+        {1, 64ULL, 12ULL, 64ULL, 95ULL},
+        {1, 65ULL, 12ULL, 64ULL, 95ULL},
+        {1, 66ULL, 12ULL, 64ULL, 95ULL},
+        {1, 67ULL, 12ULL, 64ULL, 95ULL},
+        {1, 126ULL, 13ULL, 96ULL, 127ULL},
+        {1, 127ULL, 13ULL, 96ULL, 127ULL},
+        {1, 128ULL, 14ULL, 128ULL, 191ULL},
+        {1, 129ULL, 14ULL, 128ULL, 191ULL},
+        {1, 130ULL, 14ULL, 128ULL, 191ULL},
+        {1, 131ULL, 14ULL, 128ULL, 191ULL},
+        {1, 254ULL, 15ULL, 192ULL, 255ULL},
+        {1, 255ULL, 15ULL, 192ULL, 255ULL},
+        {1, 256ULL, 16ULL, 256ULL, 383ULL},
+        {1, 257ULL, 16ULL, 256ULL, 383ULL},
+        {1, 258ULL, 16ULL, 256ULL, 383ULL},
+        {1, 259ULL, 16ULL, 256ULL, 383ULL},
+        {1, 510ULL, 17ULL, 384ULL, 511ULL},
+        {1, 511ULL, 17ULL, 384ULL, 511ULL},
+        {1, 512ULL, 18ULL, 512ULL, 767ULL},
+        {1, 513ULL, 18ULL, 512ULL, 767ULL},
+        {1, 514ULL, 18ULL, 512ULL, 767ULL},
+        {1, 515ULL, 18ULL, 512ULL, 767ULL},
+        {1, 632ULL, 18ULL, 512ULL, 767ULL},
+        {1, 963ULL, 19ULL, 768ULL, 1023ULL},
+        {1, 1022ULL, 19ULL, 768ULL, 1023ULL},
+        {1, 1023ULL, 19ULL, 768ULL, 1023ULL},
+        {1, 1024ULL, 20ULL, 1024ULL, 1535ULL},
+        {1, 1025ULL, 20ULL, 1024ULL, 1535ULL},
+        {1, 1026ULL, 20ULL, 1024ULL, 1535ULL},
+        {1, 1027ULL, 20ULL, 1024ULL, 1535ULL},
+        {1, 2046ULL, 21ULL, 1536ULL, 2047ULL},
+        {1, 2047ULL, 21ULL, 1536ULL, 2047ULL},
+        {1, 2048ULL, 22ULL, 2048ULL, 3071ULL},
+        {1, 2049ULL, 22ULL, 2048ULL, 3071ULL},
+        {1, 2050ULL, 22ULL, 2048ULL, 3071ULL},
+        {1, 2051ULL, 22ULL, 2048ULL, 3071ULL},
+        {1, 4094ULL, 23ULL, 3072ULL, 4095ULL},
+        {1, 4095ULL, 23ULL, 3072ULL, 4095ULL},
+        {1, 4096ULL, 24ULL, 4096ULL, 6143ULL},
+        {1, 4097ULL, 24ULL, 4096ULL, 6143ULL},
+        {1, 4098ULL, 24ULL, 4096ULL, 6143ULL},
+        {1, 4099ULL, 24ULL, 4096ULL, 6143ULL},
+        {1, 8190ULL, 25ULL, 6144ULL, 8191ULL},
+        {1, 8191ULL, 25ULL, 6144ULL, 8191ULL},
+        {1, 8192ULL, 26ULL, 8192ULL, 12287ULL},
+        {1, 8193ULL, 26ULL, 8192ULL, 12287ULL},
+        {1, 8194ULL, 26ULL, 8192ULL, 12287ULL},
+        {1, 8195ULL, 26ULL, 8192ULL, 12287ULL},
+        {1, 16382ULL, 27ULL, 12288ULL, 16383ULL},
+        {1, 16383ULL, 27ULL, 12288ULL, 16383ULL},
+        {1, 16384ULL, 28ULL, 16384ULL, 24575ULL},
+        {1, 16385ULL, 28ULL, 16384ULL, 24575ULL},
+        {1, 16386ULL, 28ULL, 16384ULL, 24575ULL},
+        {1, 16387ULL, 28ULL, 16384ULL, 24575ULL},
+        {1, 23865ULL, 28ULL, 16384ULL, 24575ULL},
+        {1, 32766ULL, 29ULL, 24576ULL, 32767ULL},
+        {1, 32767ULL, 29ULL, 24576ULL, 32767ULL},
+        {1, 32768ULL, 30ULL, 32768ULL, 49151ULL},
+        {1, 32769ULL, 30ULL, 32768ULL, 49151ULL},
+        {1, 32770ULL, 30ULL, 32768ULL, 49151ULL},
+        {1, 32771ULL, 30ULL, 32768ULL, 49151ULL},
+        {1, 65534ULL, 31ULL, 49152ULL, 65535ULL},
+        {1, 65535ULL, 31ULL, 49152ULL, 65535ULL},
+        {1, 65536ULL, 32ULL, 65536ULL, 98303ULL},
+        {1, 65537ULL, 32ULL, 65536ULL, 98303ULL},
+        {1, 65538ULL, 32ULL, 65536ULL, 98303ULL},
+        {1, 65539ULL, 32ULL, 65536ULL, 98303ULL},
+        {1, 131070ULL, 33ULL, 98304ULL, 131071ULL},
+        {1, 131071ULL, 33ULL, 98304ULL, 131071ULL},
+        {1, 131072ULL, 34ULL, 131072ULL, 196607ULL},
+        {1, 131073ULL, 34ULL, 131072ULL, 196607ULL},
+        {1, 131074ULL, 34ULL, 131072ULL, 196607ULL},
+        {1, 131075ULL, 34ULL, 131072ULL, 196607ULL},
+        {1, 208550ULL, 35ULL, 196608ULL, 262143ULL},
+        {1, 262142ULL, 35ULL, 196608ULL, 262143ULL},
+        {1, 262143ULL, 35ULL, 196608ULL, 262143ULL},
+        {1, 262144ULL, 36ULL, 262144ULL, 393215ULL},
+        {1, 262145ULL, 36ULL, 262144ULL, 393215ULL},
+        {1, 262146ULL, 36ULL, 262144ULL, 393215ULL},
+        {1, 262147ULL, 36ULL, 262144ULL, 393215ULL},
+        {1, 491854ULL, 37ULL, 393216ULL, 524287ULL},
+        {1, 524286ULL, 37ULL, 393216ULL, 524287ULL},
+        {1, 524287ULL, 37ULL, 393216ULL, 524287ULL},
+        {1, 524288ULL, 38ULL, 524288ULL, 786431ULL},
+        {1, 524289ULL, 38ULL, 524288ULL, 786431ULL},
+        {1, 524290ULL, 38ULL, 524288ULL, 786431ULL},
+        {1, 524291ULL, 38ULL, 524288ULL, 786431ULL},
+        {1, 833820ULL, 39ULL, 786432ULL, 1048575ULL},
+        {1, 1048574ULL, 39ULL, 786432ULL, 1048575ULL},
+        {1, 1048575ULL, 39ULL, 786432ULL, 1048575ULL},
+        {1, 1048576ULL, 40ULL, 1048576ULL, 1572863ULL},
+        {1, 1048577ULL, 40ULL, 1048576ULL, 1572863ULL},
+        {1, 1048578ULL, 40ULL, 1048576ULL, 1572863ULL},
+        {1, 1048579ULL, 40ULL, 1048576ULL, 1572863ULL},
+        {1, 2097150ULL, 41ULL, 1572864ULL, 2097151ULL},
+        {1, 2097151ULL, 41ULL, 1572864ULL, 2097151ULL},
+        {1, 2097152ULL, 42ULL, 2097152ULL, 3145727ULL},
+        {1, 2097153ULL, 42ULL, 2097152ULL, 3145727ULL},
+        {1, 2097154ULL, 42ULL, 2097152ULL, 3145727ULL},
+        {1, 2097155ULL, 42ULL, 2097152ULL, 3145727ULL},
+        {1, 2677714ULL, 42ULL, 2097152ULL, 3145727ULL},
+        {1, 4194302ULL, 43ULL, 3145728ULL, 4194303ULL},
+        {1, 4194303ULL, 43ULL, 3145728ULL, 4194303ULL},
+        {1, 4194304ULL, 44ULL, 4194304ULL, 6291455ULL},
+        {1, 4194305ULL, 44ULL, 4194304ULL, 6291455ULL},
+        {1, 4194306ULL, 44ULL, 4194304ULL, 6291455ULL},
+        {1, 4194307ULL, 44ULL, 4194304ULL, 6291455ULL},
+        {1, 8388606ULL, 45ULL, 6291456ULL, 8388607ULL},
+        {1, 8388607ULL, 45ULL, 6291456ULL, 8388607ULL},
+        {1, 8388608ULL, 46ULL, 8388608ULL, 12582911ULL},
+        {1, 8388609ULL, 46ULL, 8388608ULL, 12582911ULL},
+        {1, 8388610ULL, 46ULL, 8388608ULL, 12582911ULL},
+        {1, 8388611ULL, 46ULL, 8388608ULL, 12582911ULL},
+        {1, 16777214ULL, 47ULL, 12582912ULL, 16777215ULL},
+        {1, 16777215ULL, 47ULL, 12582912ULL, 16777215ULL},
+        {1, 16777216ULL, 48ULL, 16777216ULL, 25165823ULL},
+        {1, 16777217ULL, 48ULL, 16777216ULL, 25165823ULL},
+        {1, 16777218ULL, 48ULL, 16777216ULL, 25165823ULL},
+        {1, 16777219ULL, 48ULL, 16777216ULL, 25165823ULL},
+        {1, 33554430ULL, 49ULL, 25165824ULL, 33554431ULL},
+        {1, 33554431ULL, 49ULL, 25165824ULL, 33554431ULL},
+        {1, 33554432ULL, 50ULL, 33554432ULL, 50331647ULL},
+        {1, 33554433ULL, 50ULL, 33554432ULL, 50331647ULL},
+        {1, 33554434ULL, 50ULL, 33554432ULL, 50331647ULL},
+        {1, 33554435ULL, 50ULL, 33554432ULL, 50331647ULL},
+        {1, 67108862ULL, 51ULL, 50331648ULL, 67108863ULL},
+        {1, 67108863ULL, 51ULL, 50331648ULL, 67108863ULL},
+        {1, 67108864ULL, 52ULL, 67108864ULL, 100663295ULL},
+        {1, 67108865ULL, 52ULL, 67108864ULL, 100663295ULL},
+        {1, 67108866ULL, 52ULL, 67108864ULL, 100663295ULL},
+        {1, 67108867ULL, 52ULL, 67108864ULL, 100663295ULL},
+        {1, 109494177ULL, 53ULL, 100663296ULL, 134217727ULL},
+        {1, 134217726ULL, 53ULL, 100663296ULL, 134217727ULL},
+        {1, 134217727ULL, 53ULL, 100663296ULL, 134217727ULL},
+        {1, 134217728ULL, 54ULL, 134217728ULL, 201326591ULL},
+        {1, 134217729ULL, 54ULL, 134217728ULL, 201326591ULL},
+        {1, 134217730ULL, 54ULL, 134217728ULL, 201326591ULL},
+        {1, 134217731ULL, 54ULL, 134217728ULL, 201326591ULL},
+        {1, 268435454ULL, 55ULL, 201326592ULL, 268435455ULL},
+        {1, 268435455ULL, 55ULL, 201326592ULL, 268435455ULL},
+        {1, 268435456ULL, 56ULL, 268435456ULL, 402653183ULL},
+        {1, 268435457ULL, 56ULL, 268435456ULL, 402653183ULL},
+        {1, 268435458ULL, 56ULL, 268435456ULL, 402653183ULL},
+        {1, 268435459ULL, 56ULL, 268435456ULL, 402653183ULL},
+        {1, 536870910ULL, 57ULL, 402653184ULL, 536870911ULL},
+        {1, 536870911ULL, 57ULL, 402653184ULL, 536870911ULL},
+        {1, 536870912ULL, 58ULL, 536870912ULL, 805306367ULL},
+        {1, 536870913ULL, 58ULL, 536870912ULL, 805306367ULL},
+        {1, 536870914ULL, 58ULL, 536870912ULL, 805306367ULL},
+        {1, 536870915ULL, 58ULL, 536870912ULL, 805306367ULL},
+        {1, 940725539ULL, 59ULL, 805306368ULL, 1073741823ULL},
+        {1, 1070867289ULL, 59ULL, 805306368ULL, 1073741823ULL},
+        {1, 1073741822ULL, 59ULL, 805306368ULL, 1073741823ULL},
+        {1, 1073741823ULL, 59ULL, 805306368ULL, 1073741823ULL},
+        {1, 1073741824ULL, 60ULL, 1073741824ULL, 1610612735ULL},
+        {1, 1073741825ULL, 60ULL, 1073741824ULL, 1610612735ULL},
+        {1, 1073741826ULL, 60ULL, 1073741824ULL, 1610612735ULL},
+        {1, 1073741827ULL, 60ULL, 1073741824ULL, 1610612735ULL},
+        {1, 1910554750ULL, 61ULL, 1610612736ULL, 2147483647ULL},
+        {1, 2147483646ULL, 61ULL, 1610612736ULL, 2147483647ULL},
+        {1, 2147483647ULL, 61ULL, 1610612736ULL, 2147483647ULL},
+        {1, 2147483648ULL, 62ULL, 2147483648ULL, 3221225471ULL},
+        {1, 2147483649ULL, 62ULL, 2147483648ULL, 3221225471ULL},
+        {1, 2147483650ULL, 62ULL, 2147483648ULL, 3221225471ULL},
+        {1, 2147483651ULL, 62ULL, 2147483648ULL, 3221225471ULL},
+        {1, 4294967294ULL, 63ULL, 3221225472ULL, 4294967295ULL},
+        {1, 4294967295ULL, 63ULL, 3221225472ULL, 4294967295ULL},
+        {1, 4294967296ULL, 64ULL, 4294967296ULL, 6442450943ULL},
+        {1, 4294967297ULL, 64ULL, 4294967296ULL, 6442450943ULL},
+        {1, 4294967298ULL, 64ULL, 4294967296ULL, 6442450943ULL},
+        {1, 4294967299ULL, 64ULL, 4294967296ULL, 6442450943ULL},
+        {1, 8589934590ULL, 65ULL, 6442450944ULL, 8589934591ULL},
+        {1, 8589934591ULL, 65ULL, 6442450944ULL, 8589934591ULL},
+        {1, 8589934592ULL, 66ULL, 8589934592ULL, 12884901887ULL},
+        {1, 8589934593ULL, 66ULL, 8589934592ULL, 12884901887ULL},
+        {1, 8589934594ULL, 66ULL, 8589934592ULL, 12884901887ULL},
+        {1, 8589934595ULL, 66ULL, 8589934592ULL, 12884901887ULL},
+        {1, 9687062585ULL, 66ULL, 8589934592ULL, 12884901887ULL},
+        {1, 13558573197ULL, 67ULL, 12884901888ULL, 17179869183ULL},
+        {1, 17179869182ULL, 67ULL, 12884901888ULL, 17179869183ULL},
+        {1, 17179869183ULL, 67ULL, 12884901888ULL, 17179869183ULL},
+        {1, 17179869184ULL, 68ULL, 17179869184ULL, 25769803775ULL},
+        {1, 17179869185ULL, 68ULL, 17179869184ULL, 25769803775ULL},
+        {1, 17179869186ULL, 68ULL, 17179869184ULL, 25769803775ULL},
+        {1, 17179869187ULL, 68ULL, 17179869184ULL, 25769803775ULL},
+        {1, 28457294497ULL, 69ULL, 25769803776ULL, 34359738367ULL},
+        {1, 32341274917ULL, 69ULL, 25769803776ULL, 34359738367ULL},
+        {1, 34359738366ULL, 69ULL, 25769803776ULL, 34359738367ULL},
+        {1, 34359738367ULL, 69ULL, 25769803776ULL, 34359738367ULL},
+        {1, 34359738368ULL, 70ULL, 34359738368ULL, 51539607551ULL},
+        {1, 34359738369ULL, 70ULL, 34359738368ULL, 51539607551ULL},
+        {1, 34359738370ULL, 70ULL, 34359738368ULL, 51539607551ULL},
+        {1, 34359738371ULL, 70ULL, 34359738368ULL, 51539607551ULL},
+        {1, 68719476734ULL, 71ULL, 51539607552ULL, 68719476735ULL},
+        {1, 68719476735ULL, 71ULL, 51539607552ULL, 68719476735ULL},
+        {1, 68719476736ULL, 72ULL, 68719476736ULL, 103079215103ULL},
+        {1, 68719476737ULL, 72ULL, 68719476736ULL, 103079215103ULL},
+        {1, 68719476738ULL, 72ULL, 68719476736ULL, 103079215103ULL},
+        {1, 68719476739ULL, 72ULL, 68719476736ULL, 103079215103ULL},
+        {1, 137438953470ULL, 73ULL, 103079215104ULL, 137438953471ULL},
+        {1, 137438953471ULL, 73ULL, 103079215104ULL, 137438953471ULL},
+        {1, 137438953472ULL, 74ULL, 137438953472ULL, 206158430207ULL},
+        {1, 137438953473ULL, 74ULL, 137438953472ULL, 206158430207ULL},
+        {1, 137438953474ULL, 74ULL, 137438953472ULL, 206158430207ULL},
+        {1, 137438953475ULL, 74ULL, 137438953472ULL, 206158430207ULL},
+        {1, 274877906942ULL, 75ULL, 206158430208ULL, 274877906943ULL},
+        {1, 274877906943ULL, 75ULL, 206158430208ULL, 274877906943ULL},
+        {1, 274877906944ULL, 76ULL, 274877906944ULL, 412316860415ULL},
+        {1, 274877906945ULL, 76ULL, 274877906944ULL, 412316860415ULL},
+        {1, 274877906946ULL, 76ULL, 274877906944ULL, 412316860415ULL},
+        {1, 274877906947ULL, 76ULL, 274877906944ULL, 412316860415ULL},
+        {1, 447607446178ULL, 77ULL, 412316860416ULL, 549755813887ULL},
+        {1, 549755813886ULL, 77ULL, 412316860416ULL, 549755813887ULL},
+        {1, 549755813887ULL, 77ULL, 412316860416ULL, 549755813887ULL},
+        {1, 549755813888ULL, 78ULL, 549755813888ULL, 824633720831ULL},
+        {1, 549755813889ULL, 78ULL, 549755813888ULL, 824633720831ULL},
+        {1, 549755813890ULL, 78ULL, 549755813888ULL, 824633720831ULL},
+        {1, 549755813891ULL, 78ULL, 549755813888ULL, 824633720831ULL},
+        {1, 927465761770ULL, 79ULL, 824633720832ULL, 1099511627775ULL},
+        {1, 1266144105303ULL, 80ULL, 1099511627776ULL, 1649267441663ULL},
+        {1, 2920502260535ULL, 82ULL, 2199023255552ULL, 3298534883327ULL},
+        {1, 29476383372210ULL, 89ULL, 26388279066624ULL, 35184372088831ULL},
+        {1, 35050984821620ULL, 89ULL, 26388279066624ULL, 35184372088831ULL},
+        {1, 40712710044172ULL, 90ULL, 35184372088832ULL, 52776558133247ULL},
+        {1, 53585071007144ULL, 91ULL, 52776558133248ULL, 70368744177663ULL},
+        {1, 862132511034525ULL, 99ULL, 844424930131968ULL, 1125899906842623ULL},
+        {1, 4611686018427387903ULL, 123ULL, 3458764513820540928ULL, 4611686018427387903ULL},
+        {2, 0ULL, 0ULL, 0ULL, 0ULL},
+        {2, 1ULL, 1ULL, 1ULL, 1ULL},
+        {2, 2ULL, 2ULL, 2ULL, 2ULL},
+        {2, 3ULL, 3ULL, 3ULL, 3ULL},
+        {2, 4ULL, 4ULL, 4ULL, 4ULL},
+        {2, 5ULL, 5ULL, 5ULL, 5ULL},
+        {2, 6ULL, 6ULL, 6ULL, 6ULL},
+        {2, 7ULL, 7ULL, 7ULL, 7ULL},
+        {2, 8ULL, 8ULL, 8ULL, 9ULL},
+        {2, 9ULL, 8ULL, 8ULL, 9ULL},
+        {2, 10ULL, 9ULL, 10ULL, 11ULL},
+        {2, 11ULL, 9ULL, 10ULL, 11ULL},
+        {2, 12ULL, 10ULL, 12ULL, 13ULL},
+        {2, 13ULL, 10ULL, 12ULL, 13ULL},
+        {2, 14ULL, 11ULL, 14ULL, 15ULL},
+        {2, 15ULL, 11ULL, 14ULL, 15ULL},
+        {2, 16ULL, 12ULL, 16ULL, 19ULL},
+        {2, 17ULL, 12ULL, 16ULL, 19ULL},
+        {2, 18ULL, 12ULL, 16ULL, 19ULL},
+        {2, 19ULL, 12ULL, 16ULL, 19ULL},
+        {2, 30ULL, 15ULL, 28ULL, 31ULL},
+        {2, 31ULL, 15ULL, 28ULL, 31ULL},
+        {2, 32ULL, 16ULL, 32ULL, 39ULL},
+        {2, 33ULL, 16ULL, 32ULL, 39ULL},
+        {2, 34ULL, 16ULL, 32ULL, 39ULL},
+        {2, 35ULL, 16ULL, 32ULL, 39ULL},
+        {2, 39ULL, 16ULL, 32ULL, 39ULL},
+        {2, 42ULL, 17ULL, 40ULL, 47ULL},
+        {2, 62ULL, 19ULL, 56ULL, 63ULL},
+        {2, 63ULL, 19ULL, 56ULL, 63ULL},
+        {2, 64ULL, 20ULL, 64ULL, 79ULL},
+        {2, 65ULL, 20ULL, 64ULL, 79ULL},
+        {2, 66ULL, 20ULL, 64ULL, 79ULL},
+        {2, 67ULL, 20ULL, 64ULL, 79ULL},
+        {2, 126ULL, 23ULL, 112ULL, 127ULL},
+        {2, 127ULL, 23ULL, 112ULL, 127ULL},
+        {2, 128ULL, 24ULL, 128ULL, 159ULL},
+        {2, 129ULL, 24ULL, 128ULL, 159ULL},
+        {2, 130ULL, 24ULL, 128ULL, 159ULL},
+        {2, 131ULL, 24ULL, 128ULL, 159ULL},
+        {2, 254ULL, 27ULL, 224ULL, 255ULL},
+        {2, 255ULL, 27ULL, 224ULL, 255ULL},
+        {2, 256ULL, 28ULL, 256ULL, 319ULL},
+        {2, 257ULL, 28ULL, 256ULL, 319ULL},
+        {2, 258ULL, 28ULL, 256ULL, 319ULL},
+        {2, 259ULL, 28ULL, 256ULL, 319ULL},
+        {2, 510ULL, 31ULL, 448ULL, 511ULL},
+        {2, 511ULL, 31ULL, 448ULL, 511ULL},
+        {2, 512ULL, 32ULL, 512ULL, 639ULL},
+        {2, 513ULL, 32ULL, 512ULL, 639ULL},
+        {2, 514ULL, 32ULL, 512ULL, 639ULL},
+        {2, 515ULL, 32ULL, 512ULL, 639ULL},
+        {2, 1022ULL, 35ULL, 896ULL, 1023ULL},
+        {2, 1023ULL, 35ULL, 896ULL, 1023ULL},
+        {2, 1024ULL, 36ULL, 1024ULL, 1279ULL},
+        {2, 1025ULL, 36ULL, 1024ULL, 1279ULL},
+        {2, 1026ULL, 36ULL, 1024ULL, 1279ULL},
+        {2, 1027ULL, 36ULL, 1024ULL, 1279ULL},
+        {2, 2046ULL, 39ULL, 1792ULL, 2047ULL},
+        {2, 2047ULL, 39ULL, 1792ULL, 2047ULL},
+        {2, 2048ULL, 40ULL, 2048ULL, 2559ULL},
+        {2, 2049ULL, 40ULL, 2048ULL, 2559ULL},
+        {2, 2050ULL, 40ULL, 2048ULL, 2559ULL},
+        {2, 2051ULL, 40ULL, 2048ULL, 2559ULL},
+        {2, 2997ULL, 41ULL, 2560ULL, 3071ULL},
+        {2, 4094ULL, 43ULL, 3584ULL, 4095ULL},
+        {2, 4095ULL, 43ULL, 3584ULL, 4095ULL},
+        {2, 4096ULL, 44ULL, 4096ULL, 5119ULL},
+        {2, 4097ULL, 44ULL, 4096ULL, 5119ULL},
+        {2, 4098ULL, 44ULL, 4096ULL, 5119ULL},
+        {2, 4099ULL, 44ULL, 4096ULL, 5119ULL},
+        {2, 8190ULL, 47ULL, 7168ULL, 8191ULL},
+        {2, 8191ULL, 47ULL, 7168ULL, 8191ULL},
+        {2, 8192ULL, 48ULL, 8192ULL, 10239ULL},
+        {2, 8193ULL, 48ULL, 8192ULL, 10239ULL},
+        {2, 8194ULL, 48ULL, 8192ULL, 10239ULL},
+        {2, 8195ULL, 48ULL, 8192ULL, 10239ULL},
+        {2, 16382ULL, 51ULL, 14336ULL, 16383ULL},
+        {2, 16383ULL, 51ULL, 14336ULL, 16383ULL},
+        {2, 16384ULL, 52ULL, 16384ULL, 20479ULL},
+        {2, 16385ULL, 52ULL, 16384ULL, 20479ULL},
+        {2, 16386ULL, 52ULL, 16384ULL, 20479ULL},
+        {2, 16387ULL, 52ULL, 16384ULL, 20479ULL},
+        {2, 32766ULL, 55ULL, 28672ULL, 32767ULL},
+        {2, 32767ULL, 55ULL, 28672ULL, 32767ULL},
+        {2, 32768ULL, 56ULL, 32768ULL, 40959ULL},
+        {2, 32769ULL, 56ULL, 32768ULL, 40959ULL},
+        {2, 32770ULL, 56ULL, 32768ULL, 40959ULL},
+        {2, 32771ULL, 56ULL, 32768ULL, 40959ULL},
+        {2, 63012ULL, 59ULL, 57344ULL, 65535ULL},
+        {2, 65534ULL, 59ULL, 57344ULL, 65535ULL},
+        {2, 65535ULL, 59ULL, 57344ULL, 65535ULL},
+        {2, 65536ULL, 60ULL, 65536ULL, 81919ULL},
+        {2, 65537ULL, 60ULL, 65536ULL, 81919ULL},
+        {2, 65538ULL, 60ULL, 65536ULL, 81919ULL},
+        {2, 65539ULL, 60ULL, 65536ULL, 81919ULL},
+        {2, 79050ULL, 60ULL, 65536ULL, 81919ULL},
+        {2, 131070ULL, 63ULL, 114688ULL, 131071ULL},
+        {2, 131071ULL, 63ULL, 114688ULL, 131071ULL},
+        {2, 131072ULL, 64ULL, 131072ULL, 163839ULL},
+        {2, 131073ULL, 64ULL, 131072ULL, 163839ULL},
+        {2, 131074ULL, 64ULL, 131072ULL, 163839ULL},
+        {2, 131075ULL, 64ULL, 131072ULL, 163839ULL},
+        {2, 262142ULL, 67ULL, 229376ULL, 262143ULL},
+        {2, 262143ULL, 67ULL, 229376ULL, 262143ULL},
+        {2, 262144ULL, 68ULL, 262144ULL, 327679ULL},
+        {2, 262145ULL, 68ULL, 262144ULL, 327679ULL},
+        {2, 262146ULL, 68ULL, 262144ULL, 327679ULL},
+        {2, 262147ULL, 68ULL, 262144ULL, 327679ULL},
+        {2, 303122ULL, 68ULL, 262144ULL, 327679ULL},
+        {2, 524286ULL, 71ULL, 458752ULL, 524287ULL},
+        {2, 524287ULL, 71ULL, 458752ULL, 524287ULL},
+        {2, 524288ULL, 72ULL, 524288ULL, 655359ULL},
+        {2, 524289ULL, 72ULL, 524288ULL, 655359ULL},
+        {2, 524290ULL, 72ULL, 524288ULL, 655359ULL},
+        {2, 524291ULL, 72ULL, 524288ULL, 655359ULL},
+        {2, 858278ULL, 74ULL, 786432ULL, 917503ULL},
+        {2, 1048574ULL, 75ULL, 917504ULL, 1048575ULL},
+        {2, 1048575ULL, 75ULL, 917504ULL, 1048575ULL},
+        {2, 1048576ULL, 76ULL, 1048576ULL, 1310719ULL},
+        {2, 1048577ULL, 76ULL, 1048576ULL, 1310719ULL},
+        {2, 1048578ULL, 76ULL, 1048576ULL, 1310719ULL},
+        {2, 1048579ULL, 76ULL, 1048576ULL, 1310719ULL},
+        {2, 2097150ULL, 79ULL, 1835008ULL, 2097151ULL},
+        {2, 2097151ULL, 79ULL, 1835008ULL, 2097151ULL},
+        {2, 2097152ULL, 80ULL, 2097152ULL, 2621439ULL},
+        {2, 2097153ULL, 80ULL, 2097152ULL, 2621439ULL},
+        {2, 2097154ULL, 80ULL, 2097152ULL, 2621439ULL},
+        {2, 2097155ULL, 80ULL, 2097152ULL, 2621439ULL},
+        {2, 2784280ULL, 81ULL, 2621440ULL, 3145727ULL},
+        {2, 4194302ULL, 83ULL, 3670016ULL, 4194303ULL},
+        {2, 4194303ULL, 83ULL, 3670016ULL, 4194303ULL},
+        {2, 4194304ULL, 84ULL, 4194304ULL, 5242879ULL},
+        {2, 4194305ULL, 84ULL, 4194304ULL, 5242879ULL},
+        {2, 4194306ULL, 84ULL, 4194304ULL, 5242879ULL},
+        {2, 4194307ULL, 84ULL, 4194304ULL, 5242879ULL},
+        {2, 5012845ULL, 84ULL, 4194304ULL, 5242879ULL},
+        {2, 6143556ULL, 85ULL, 5242880ULL, 6291455ULL},
+        {2, 8388606ULL, 87ULL, 7340032ULL, 8388607ULL},
+        {2, 8388607ULL, 87ULL, 7340032ULL, 8388607ULL},
+        {2, 8388608ULL, 88ULL, 8388608ULL, 10485759ULL},
+        {2, 8388609ULL, 88ULL, 8388608ULL, 10485759ULL},
+        {2, 8388610ULL, 88ULL, 8388608ULL, 10485759ULL},
+        {2, 8388611ULL, 88ULL, 8388608ULL, 10485759ULL},
+        {2, 9705935ULL, 88ULL, 8388608ULL, 10485759ULL},
+        {2, 16777214ULL, 91ULL, 14680064ULL, 16777215ULL},
+        {2, 16777215ULL, 91ULL, 14680064ULL, 16777215ULL},
+        {2, 16777216ULL, 92ULL, 16777216ULL, 20971519ULL},
+        {2, 16777217ULL, 92ULL, 16777216ULL, 20971519ULL},
+        {2, 16777218ULL, 92ULL, 16777216ULL, 20971519ULL},
+        {2, 16777219ULL, 92ULL, 16777216ULL, 20971519ULL},
+        {2, 33554430ULL, 95ULL, 29360128ULL, 33554431ULL},
+        {2, 33554431ULL, 95ULL, 29360128ULL, 33554431ULL},
+        {2, 33554432ULL, 96ULL, 33554432ULL, 41943039ULL},
+        {2, 33554433ULL, 96ULL, 33554432ULL, 41943039ULL},
+        {2, 33554434ULL, 96ULL, 33554432ULL, 41943039ULL},
+        {2, 33554435ULL, 96ULL, 33554432ULL, 41943039ULL},
+        {2, 63423023ULL, 99ULL, 58720256ULL, 67108863ULL},
+        {2, 67108862ULL, 99ULL, 58720256ULL, 67108863ULL},
+        {2, 67108863ULL, 99ULL, 58720256ULL, 67108863ULL},
+        {2, 67108864ULL, 100ULL, 67108864ULL, 83886079ULL},
+        {2, 67108865ULL, 100ULL, 67108864ULL, 83886079ULL},
+        {2, 67108866ULL, 100ULL, 67108864ULL, 83886079ULL},
+        {2, 67108867ULL, 100ULL, 67108864ULL, 83886079ULL},
+        {2, 134217726ULL, 103ULL, 117440512ULL, 134217727ULL},
+        {2, 134217727ULL, 103ULL, 117440512ULL, 134217727ULL},
+        {2, 134217728ULL, 104ULL, 134217728ULL, 167772159ULL},
+        {2, 134217729ULL, 104ULL, 134217728ULL, 167772159ULL},
+        {2, 134217730ULL, 104ULL, 134217728ULL, 167772159ULL},
+        {2, 134217731ULL, 104ULL, 134217728ULL, 167772159ULL},
+        {2, 268435454ULL, 107ULL, 234881024ULL, 268435455ULL},
+        {2, 268435455ULL, 107ULL, 234881024ULL, 268435455ULL},
+        {2, 268435456ULL, 108ULL, 268435456ULL, 335544319ULL},
+        {2, 268435457ULL, 108ULL, 268435456ULL, 335544319ULL},
+        {2, 268435458ULL, 108ULL, 268435456ULL, 335544319ULL},
+        {2, 268435459ULL, 108ULL, 268435456ULL, 335544319ULL},
+        {2, 536870910ULL, 111ULL, 469762048ULL, 536870911ULL},
+        {2, 536870911ULL, 111ULL, 469762048ULL, 536870911ULL},
+        {2, 536870912ULL, 112ULL, 536870912ULL, 671088639ULL},
+        {2, 536870913ULL, 112ULL, 536870912ULL, 671088639ULL},
+        {2, 536870914ULL, 112ULL, 536870912ULL, 671088639ULL},
+        {2, 536870915ULL, 112ULL, 536870912ULL, 671088639ULL},
+        {2, 844054145ULL, 114ULL, 805306368ULL, 939524095ULL},
+        {2, 845827561ULL, 114ULL, 805306368ULL, 939524095ULL},
+        {2, 1073741822ULL, 115ULL, 939524096ULL, 1073741823ULL},
+        {2, 1073741823ULL, 115ULL, 939524096ULL, 1073741823ULL},
+        {2, 1073741824ULL, 116ULL, 1073741824ULL, 1342177279ULL},
+        {2, 1073741825ULL, 116ULL, 1073741824ULL, 1342177279ULL},
+        {2, 1073741826ULL, 116ULL, 1073741824ULL, 1342177279ULL},
+        {2, 1073741827ULL, 116ULL, 1073741824ULL, 1342177279ULL},
+        {2, 2147483646ULL, 119ULL, 1879048192ULL, 2147483647ULL},
+        {2, 2147483647ULL, 119ULL, 1879048192ULL, 2147483647ULL},
+        {2, 2147483648ULL, 120ULL, 2147483648ULL, 2684354559ULL},
+        {2, 2147483649ULL, 120ULL, 2147483648ULL, 2684354559ULL},
+        {2, 2147483650ULL, 120ULL, 2147483648ULL, 2684354559ULL},
+        {2, 2147483651ULL, 120ULL, 2147483648ULL, 2684354559ULL},
+        {2, 4294967294ULL, 123ULL, 3758096384ULL, 4294967295ULL},
+        {2, 4294967295ULL, 123ULL, 3758096384ULL, 4294967295ULL},
+        {2, 4294967296ULL, 124ULL, 4294967296ULL, 5368709119ULL},
+        {2, 4294967297ULL, 124ULL, 4294967296ULL, 5368709119ULL},
+        {2, 4294967298ULL, 124ULL, 4294967296ULL, 5368709119ULL},
+        {2, 4294967299ULL, 124ULL, 4294967296ULL, 5368709119ULL},
+        {2, 8589934590ULL, 127ULL, 7516192768ULL, 8589934591ULL},
+        {2, 8589934591ULL, 127ULL, 7516192768ULL, 8589934591ULL},
+        {2, 8589934592ULL, 128ULL, 8589934592ULL, 10737418239ULL},
+        {2, 8589934593ULL, 128ULL, 8589934592ULL, 10737418239ULL},
+        {2, 8589934594ULL, 128ULL, 8589934592ULL, 10737418239ULL},
+        {2, 8589934595ULL, 128ULL, 8589934592ULL, 10737418239ULL},
+        {2, 8604464973ULL, 128ULL, 8589934592ULL, 10737418239ULL},
+        {2, 17179869182ULL, 131ULL, 15032385536ULL, 17179869183ULL},
+        {2, 17179869183ULL, 131ULL, 15032385536ULL, 17179869183ULL},
+        {2, 17179869184ULL, 132ULL, 17179869184ULL, 21474836479ULL},
+        {2, 17179869185ULL, 132ULL, 17179869184ULL, 21474836479ULL},
+        {2, 17179869186ULL, 132ULL, 17179869184ULL, 21474836479ULL},
+        {2, 17179869187ULL, 132ULL, 17179869184ULL, 21474836479ULL},
+        {2, 34359738366ULL, 135ULL, 30064771072ULL, 34359738367ULL},
+        {2, 34359738367ULL, 135ULL, 30064771072ULL, 34359738367ULL},
+        {2, 34359738368ULL, 136ULL, 34359738368ULL, 42949672959ULL},
+        {2, 34359738369ULL, 136ULL, 34359738368ULL, 42949672959ULL},
+        {2, 34359738370ULL, 136ULL, 34359738368ULL, 42949672959ULL},
+        {2, 34359738371ULL, 136ULL, 34359738368ULL, 42949672959ULL},
+        {2, 45989118891ULL, 137ULL, 42949672960ULL, 51539607551ULL},
+        {2, 60885972148ULL, 139ULL, 60129542144ULL, 68719476735ULL},
+        {2, 68719476734ULL, 139ULL, 60129542144ULL, 68719476735ULL},
+        {2, 68719476735ULL, 139ULL, 60129542144ULL, 68719476735ULL},
+        {2, 68719476736ULL, 140ULL, 68719476736ULL, 85899345919ULL},
+        {2, 68719476737ULL, 140ULL, 68719476736ULL, 85899345919ULL},
+        {2, 68719476738ULL, 140ULL, 68719476736ULL, 85899345919ULL},
+        {2, 68719476739ULL, 140ULL, 68719476736ULL, 85899345919ULL},
+        {2, 137438953470ULL, 143ULL, 120259084288ULL, 137438953471ULL},
+        {2, 137438953471ULL, 143ULL, 120259084288ULL, 137438953471ULL},
+        {2, 137438953472ULL, 144ULL, 137438953472ULL, 171798691839ULL},
+        {2, 137438953473ULL, 144ULL, 137438953472ULL, 171798691839ULL},
+        {2, 137438953474ULL, 144ULL, 137438953472ULL, 171798691839ULL},
+        {2, 137438953475ULL, 144ULL, 137438953472ULL, 171798691839ULL},
+        {2, 203219783999ULL, 145ULL, 171798691840ULL, 206158430207ULL},
+        {2, 274877906942ULL, 147ULL, 240518168576ULL, 274877906943ULL},
+        {2, 274877906943ULL, 147ULL, 240518168576ULL, 274877906943ULL},
+        {2, 274877906944ULL, 148ULL, 274877906944ULL, 343597383679ULL},
+        {2, 274877906945ULL, 148ULL, 274877906944ULL, 343597383679ULL},
+        {2, 274877906946ULL, 148ULL, 274877906944ULL, 343597383679ULL},
+        {2, 274877906947ULL, 148ULL, 274877906944ULL, 343597383679ULL},
+        {2, 549755813886ULL, 151ULL, 481036337152ULL, 549755813887ULL},
+        {2, 549755813887ULL, 151ULL, 481036337152ULL, 549755813887ULL},
+        {2, 549755813888ULL, 152ULL, 549755813888ULL, 687194767359ULL},
+        {2, 549755813889ULL, 152ULL, 549755813888ULL, 687194767359ULL},
+        {2, 549755813890ULL, 152ULL, 549755813888ULL, 687194767359ULL},
+        {2, 549755813891ULL, 152ULL, 549755813888ULL, 687194767359ULL},
+        {2, 929249005490ULL, 154ULL, 824633720832ULL, 962072674303ULL},
+        {2, 983397600918ULL, 155ULL, 962072674304ULL, 1099511627775ULL},
+        {2, 6057889044279ULL, 165ULL, 5497558138880ULL, 6597069766655ULL},
+        {2, 63728763729429ULL, 179ULL, 61572651155456ULL, 70368744177663ULL},
+        {2, 297023384107108ULL, 188ULL, 281474976710656ULL, 351843720888319ULL},
+        {2, 4611686018427387903ULL, 243ULL, 4035225266123964416ULL, 4611686018427387903ULL},
+        {3, 0ULL, 0ULL, 0ULL, 0ULL},
+        {3, 1ULL, 1ULL, 1ULL, 1ULL},
+        {3, 2ULL, 2ULL, 2ULL, 2ULL},
+        {3, 3ULL, 3ULL, 3ULL, 3ULL},
+        {3, 4ULL, 4ULL, 4ULL, 4ULL},
+        {3, 5ULL, 5ULL, 5ULL, 5ULL},
+        {3, 6ULL, 6ULL, 6ULL, 6ULL},
+        {3, 7ULL, 7ULL, 7ULL, 7ULL},
+        {3, 8ULL, 8ULL, 8ULL, 8ULL},
+        {3, 9ULL, 9ULL, 9ULL, 9ULL},
+        {3, 10ULL, 10ULL, 10ULL, 10ULL},
+        {3, 11ULL, 11ULL, 11ULL, 11ULL},
+        {3, 14ULL, 14ULL, 14ULL, 14ULL},
+        {3, 15ULL, 15ULL, 15ULL, 15ULL},
+        {3, 16ULL, 16ULL, 16ULL, 17ULL},
+        {3, 17ULL, 16ULL, 16ULL, 17ULL},
+        {3, 18ULL, 17ULL, 18ULL, 19ULL},
+        {3, 19ULL, 17ULL, 18ULL, 19ULL},
+        {3, 24ULL, 20ULL, 24ULL, 25ULL},
+        {3, 25ULL, 20ULL, 24ULL, 25ULL},
+        {3, 30ULL, 23ULL, 30ULL, 31ULL},
+        {3, 31ULL, 23ULL, 30ULL, 31ULL},
+        {3, 32ULL, 24ULL, 32ULL, 35ULL},
+        {3, 33ULL, 24ULL, 32ULL, 35ULL},
+        {3, 34ULL, 24ULL, 32ULL, 35ULL},
+        {3, 35ULL, 24ULL, 32ULL, 35ULL},
+        {3, 62ULL, 31ULL, 60ULL, 63ULL},
+        {3, 63ULL, 31ULL, 60ULL, 63ULL},
+        {3, 64ULL, 32ULL, 64ULL, 71ULL},
+        {3, 65ULL, 32ULL, 64ULL, 71ULL},
+        {3, 66ULL, 32ULL, 64ULL, 71ULL},
+        {3, 67ULL, 32ULL, 64ULL, 71ULL},
+        {3, 80ULL, 34ULL, 80ULL, 87ULL},
+        {3, 126ULL, 39ULL, 120ULL, 127ULL},
+        {3, 127ULL, 39ULL, 120ULL, 127ULL},
+        {3, 128ULL, 40ULL, 128ULL, 143ULL},
+        {3, 129ULL, 40ULL, 128ULL, 143ULL},
+        {3, 130ULL, 40ULL, 128ULL, 143ULL},
+        {3, 131ULL, 40ULL, 128ULL, 143ULL},
+        {3, 254ULL, 47ULL, 240ULL, 255ULL},
+        {3, 255ULL, 47ULL, 240ULL, 255ULL},
+        {3, 256ULL, 48ULL, 256ULL, 287ULL},
+        {3, 257ULL, 48ULL, 256ULL, 287ULL},
+        {3, 258ULL, 48ULL, 256ULL, 287ULL},
+        {3, 259ULL, 48ULL, 256ULL, 287ULL},
+        {3, 348ULL, 50ULL, 320ULL, 351ULL},
+        {3, 510ULL, 55ULL, 480ULL, 511ULL},
+        {3, 511ULL, 55ULL, 480ULL, 511ULL},
+        {3, 512ULL, 56ULL, 512ULL, 575ULL},
+        {3, 513ULL, 56ULL, 512ULL, 575ULL},
+        {3, 514ULL, 56ULL, 512ULL, 575ULL},
+        {3, 515ULL, 56ULL, 512ULL, 575ULL},
+        {3, 738ULL, 59ULL, 704ULL, 767ULL},
+        {3, 817ULL, 60ULL, 768ULL, 831ULL},
+        {3, 1022ULL, 63ULL, 960ULL, 1023ULL},
+        {3, 1023ULL, 63ULL, 960ULL, 1023ULL},
+        {3, 1024ULL, 64ULL, 1024ULL, 1151ULL},
+        {3, 1025ULL, 64ULL, 1024ULL, 1151ULL},
+        {3, 1026ULL, 64ULL, 1024ULL, 1151ULL},
+        {3, 1027ULL, 64ULL, 1024ULL, 1151ULL},
+        {3, 2046ULL, 71ULL, 1920ULL, 2047ULL},
+        {3, 2047ULL, 71ULL, 1920ULL, 2047ULL},
+        {3, 2048ULL, 72ULL, 2048ULL, 2303ULL},
+        {3, 2049ULL, 72ULL, 2048ULL, 2303ULL},
+        {3, 2050ULL, 72ULL, 2048ULL, 2303ULL},
+        {3, 2051ULL, 72ULL, 2048ULL, 2303ULL},
+        {3, 4094ULL, 79ULL, 3840ULL, 4095ULL},
+        {3, 4095ULL, 79ULL, 3840ULL, 4095ULL},
+        {3, 4096ULL, 80ULL, 4096ULL, 4607ULL},
+        {3, 4097ULL, 80ULL, 4096ULL, 4607ULL},
+        {3, 4098ULL, 80ULL, 4096ULL, 4607ULL},
+        {3, 4099ULL, 80ULL, 4096ULL, 4607ULL},
+        {3, 5582ULL, 82ULL, 5120ULL, 5631ULL},
+        {3, 8190ULL, 87ULL, 7680ULL, 8191ULL},
+        {3, 8191ULL, 87ULL, 7680ULL, 8191ULL},
+        {3, 8192ULL, 88ULL, 8192ULL, 9215ULL},
+        {3, 8193ULL, 88ULL, 8192ULL, 9215ULL},
+        {3, 8194ULL, 88ULL, 8192ULL, 9215ULL},
+        {3, 8195ULL, 88ULL, 8192ULL, 9215ULL},
+        {3, 9731ULL, 89ULL, 9216ULL, 10239ULL},
+        {3, 16382ULL, 95ULL, 15360ULL, 16383ULL},
+        {3, 16383ULL, 95ULL, 15360ULL, 16383ULL},
+        {3, 16384ULL, 96ULL, 16384ULL, 18431ULL},
+        {3, 16385ULL, 96ULL, 16384ULL, 18431ULL},
+        {3, 16386ULL, 96ULL, 16384ULL, 18431ULL},
+        {3, 16387ULL, 96ULL, 16384ULL, 18431ULL},
+        {3, 32766ULL, 103ULL, 30720ULL, 32767ULL},
+        {3, 32767ULL, 103ULL, 30720ULL, 32767ULL},
+        {3, 32768ULL, 104ULL, 32768ULL, 36863ULL},
+        {3, 32769ULL, 104ULL, 32768ULL, 36863ULL},
+        {3, 32770ULL, 104ULL, 32768ULL, 36863ULL},
+        {3, 32771ULL, 104ULL, 32768ULL, 36863ULL},
+        {3, 59724ULL, 110ULL, 57344ULL, 61439ULL},
+        {3, 65534ULL, 111ULL, 61440ULL, 65535ULL},
+        {3, 65535ULL, 111ULL, 61440ULL, 65535ULL},
+        {3, 65536ULL, 112ULL, 65536ULL, 73727ULL},
+        {3, 65537ULL, 112ULL, 65536ULL, 73727ULL},
+        {3, 65538ULL, 112ULL, 65536ULL, 73727ULL},
+        {3, 65539ULL, 112ULL, 65536ULL, 73727ULL},
+        {3, 89910ULL, 114ULL, 81920ULL, 90111ULL},
+        {3, 92092ULL, 115ULL, 90112ULL, 98303ULL},
+        {3, 131070ULL, 119ULL, 122880ULL, 131071ULL},
+        {3, 131071ULL, 119ULL, 122880ULL, 131071ULL},
+        {3, 131072ULL, 120ULL, 131072ULL, 147455ULL},
+        {3, 131073ULL, 120ULL, 131072ULL, 147455ULL},
+        {3, 131074ULL, 120ULL, 131072ULL, 147455ULL},
+        {3, 131075ULL, 120ULL, 131072ULL, 147455ULL},
+        {3, 262142ULL, 127ULL, 245760ULL, 262143ULL},
+        {3, 262143ULL, 127ULL, 245760ULL, 262143ULL},
+        {3, 262144ULL, 128ULL, 262144ULL, 294911ULL},
+        {3, 262145ULL, 128ULL, 262144ULL, 294911ULL},
+        {3, 262146ULL, 128ULL, 262144ULL, 294911ULL},
+        {3, 262147ULL, 128ULL, 262144ULL, 294911ULL},
+        {3, 321043ULL, 129ULL, 294912ULL, 327679ULL},
+        {3, 524286ULL, 135ULL, 491520ULL, 524287ULL},
+        {3, 524287ULL, 135ULL, 491520ULL, 524287ULL},
+        {3, 524288ULL, 136ULL, 524288ULL, 589823ULL},
+        {3, 524289ULL, 136ULL, 524288ULL, 589823ULL},
+        {3, 524290ULL, 136ULL, 524288ULL, 589823ULL},
+        {3, 524291ULL, 136ULL, 524288ULL, 589823ULL},
+        {3, 866433ULL, 141ULL, 851968ULL, 917503ULL},
+        {3, 962684ULL, 142ULL, 917504ULL, 983039ULL},
+        {3, 1048574ULL, 143ULL, 983040ULL, 1048575ULL},
+        {3, 1048575ULL, 143ULL, 983040ULL, 1048575ULL},
+        {3, 1048576ULL, 144ULL, 1048576ULL, 1179647ULL},
+        {3, 1048577ULL, 144ULL, 1048576ULL, 1179647ULL},
+        {3, 1048578ULL, 144ULL, 1048576ULL, 1179647ULL},
+        {3, 1048579ULL, 144ULL, 1048576ULL, 1179647ULL},
+        {3, 1529744ULL, 147ULL, 1441792ULL, 1572863ULL},
+        {3, 2097150ULL, 151ULL, 1966080ULL, 2097151ULL},
+        {3, 2097151ULL, 151ULL, 1966080ULL, 2097151ULL},
+        {3, 2097152ULL, 152ULL, 2097152ULL, 2359295ULL},
+        {3, 2097153ULL, 152ULL, 2097152ULL, 2359295ULL},
+        {3, 2097154ULL, 152ULL, 2097152ULL, 2359295ULL},
+        {3, 2097155ULL, 152ULL, 2097152ULL, 2359295ULL},
+        {3, 4194302ULL, 159ULL, 3932160ULL, 4194303ULL},
+        {3, 4194303ULL, 159ULL, 3932160ULL, 4194303ULL},
+        {3, 4194304ULL, 160ULL, 4194304ULL, 4718591ULL},
+        {3, 4194305ULL, 160ULL, 4194304ULL, 4718591ULL},
+        {3, 4194306ULL, 160ULL, 4194304ULL, 4718591ULL},
+        {3, 4194307ULL, 160ULL, 4194304ULL, 4718591ULL},
+        {3, 8388606ULL, 167ULL, 7864320ULL, 8388607ULL},
+        {3, 8388607ULL, 167ULL, 7864320ULL, 8388607ULL},
+        {3, 8388608ULL, 168ULL, 8388608ULL, 9437183ULL},
+        {3, 8388609ULL, 168ULL, 8388608ULL, 9437183ULL},
+        {3, 8388610ULL, 168ULL, 8388608ULL, 9437183ULL},
+        {3, 8388611ULL, 168ULL, 8388608ULL, 9437183ULL},
+        {3, 16777214ULL, 175ULL, 15728640ULL, 16777215ULL},
+        {3, 16777215ULL, 175ULL, 15728640ULL, 16777215ULL},
+        {3, 16777216ULL, 176ULL, 16777216ULL, 18874367ULL},
+        {3, 16777217ULL, 176ULL, 16777216ULL, 18874367ULL},
+        {3, 16777218ULL, 176ULL, 16777216ULL, 18874367ULL},
+        {3, 16777219ULL, 176ULL, 16777216ULL, 18874367ULL},
+        {3, 33554430ULL, 183ULL, 31457280ULL, 33554431ULL},
+        {3, 33554431ULL, 183ULL, 31457280ULL, 33554431ULL},
+        {3, 33554432ULL, 184ULL, 33554432ULL, 37748735ULL},
+        {3, 33554433ULL, 184ULL, 33554432ULL, 37748735ULL},
+        {3, 33554434ULL, 184ULL, 33554432ULL, 37748735ULL},
+        {3, 33554435ULL, 184ULL, 33554432ULL, 37748735ULL},
+        {3, 67108862ULL, 191ULL, 62914560ULL, 67108863ULL},
+        {3, 67108863ULL, 191ULL, 62914560ULL, 67108863ULL},
+        {3, 67108864ULL, 192ULL, 67108864ULL, 75497471ULL},
+        {3, 67108865ULL, 192ULL, 67108864ULL, 75497471ULL},
+        {3, 67108866ULL, 192ULL, 67108864ULL, 75497471ULL},
+        {3, 67108867ULL, 192ULL, 67108864ULL, 75497471ULL},
+        {3, 98863003ULL, 195ULL, 92274688ULL, 100663295ULL},
+        {3, 134217726ULL, 199ULL, 125829120ULL, 134217727ULL},
+        {3, 134217727ULL, 199ULL, 125829120ULL, 134217727ULL},
+        {3, 134217728ULL, 200ULL, 134217728ULL, 150994943ULL},
+        {3, 134217729ULL, 200ULL, 134217728ULL, 150994943ULL},
+        {3, 134217730ULL, 200ULL, 134217728ULL, 150994943ULL},
+        {3, 134217731ULL, 200ULL, 134217728ULL, 150994943ULL},
+        {3, 268435454ULL, 207ULL, 251658240ULL, 268435455ULL},
+        {3, 268435455ULL, 207ULL, 251658240ULL, 268435455ULL},
+        {3, 268435456ULL, 208ULL, 268435456ULL, 301989887ULL},
+        {3, 268435457ULL, 208ULL, 268435456ULL, 301989887ULL},
+        {3, 268435458ULL, 208ULL, 268435456ULL, 301989887ULL},
+        {3, 268435459ULL, 208ULL, 268435456ULL, 301989887ULL},
+        {3, 380956300ULL, 211ULL, 369098752ULL, 402653183ULL},
+        {3, 536870910ULL, 215ULL, 503316480ULL, 536870911ULL},
+        {3, 536870911ULL, 215ULL, 503316480ULL, 536870911ULL},
+        {3, 536870912ULL, 216ULL, 536870912ULL, 603979775ULL},
+        {3, 536870913ULL, 216ULL, 536870912ULL, 603979775ULL},
+        {3, 536870914ULL, 216ULL, 536870912ULL, 603979775ULL},
+        {3, 536870915ULL, 216ULL, 536870912ULL, 603979775ULL},
+        {3, 655871079ULL, 217ULL, 603979776ULL, 671088639ULL},
+        {3, 1073741822ULL, 223ULL, 1006632960ULL, 1073741823ULL},
+        {3, 1073741823ULL, 223ULL, 1006632960ULL, 1073741823ULL},
+        {3, 1073741824ULL, 224ULL, 1073741824ULL, 1207959551ULL},
+        {3, 1073741825ULL, 224ULL, 1073741824ULL, 1207959551ULL},
+        {3, 1073741826ULL, 224ULL, 1073741824ULL, 1207959551ULL},
+        {3, 1073741827ULL, 224ULL, 1073741824ULL, 1207959551ULL},
+        {3, 1743275783ULL, 228ULL, 1610612736ULL, 1744830463ULL},
+        {3, 2147483646ULL, 231ULL, 2013265920ULL, 2147483647ULL},
+        {3, 2147483647ULL, 231ULL, 2013265920ULL, 2147483647ULL},
+        {3, 2147483648ULL, 232ULL, 2147483648ULL, 2415919103ULL},
+        {3, 2147483649ULL, 232ULL, 2147483648ULL, 2415919103ULL},
+        {3, 2147483650ULL, 232ULL, 2147483648ULL, 2415919103ULL},
+        {3, 2147483651ULL, 232ULL, 2147483648ULL, 2415919103ULL},
+        {3, 4294967294ULL, 239ULL, 4026531840ULL, 4294967295ULL},
+        {3, 4294967295ULL, 239ULL, 4026531840ULL, 4294967295ULL},
+        {3, 4294967296ULL, 240ULL, 4294967296ULL, 4831838207ULL},
+        {3, 4294967297ULL, 240ULL, 4294967296ULL, 4831838207ULL},
+        {3, 4294967298ULL, 240ULL, 4294967296ULL, 4831838207ULL},
+        {3, 4294967299ULL, 240ULL, 4294967296ULL, 4831838207ULL},
+        {3, 7719029809ULL, 246ULL, 7516192768ULL, 8053063679ULL},
+        {3, 8589934590ULL, 247ULL, 8053063680ULL, 8589934591ULL},
+        {3, 8589934591ULL, 247ULL, 8053063680ULL, 8589934591ULL},
+        {3, 8589934592ULL, 248ULL, 8589934592ULL, 9663676415ULL},
+        {3, 8589934593ULL, 248ULL, 8589934592ULL, 9663676415ULL},
+        {3, 8589934594ULL, 248ULL, 8589934592ULL, 9663676415ULL},
+        {3, 8589934595ULL, 248ULL, 8589934592ULL, 9663676415ULL},
+        {3, 17179869182ULL, 255ULL, 16106127360ULL, 17179869183ULL},
+        {3, 17179869183ULL, 255ULL, 16106127360ULL, 17179869183ULL},
+        {3, 17179869184ULL, 256ULL, 17179869184ULL, 19327352831ULL},
+        {3, 17179869185ULL, 256ULL, 17179869184ULL, 19327352831ULL},
+        {3, 17179869186ULL, 256ULL, 17179869184ULL, 19327352831ULL},
+        {3, 17179869187ULL, 256ULL, 17179869184ULL, 19327352831ULL},
+        {3, 18991302932ULL, 256ULL, 17179869184ULL, 19327352831ULL},
+        {3, 34359738366ULL, 263ULL, 32212254720ULL, 34359738367ULL},
+        {3, 34359738367ULL, 263ULL, 32212254720ULL, 34359738367ULL},
+        {3, 34359738368ULL, 264ULL, 34359738368ULL, 38654705663ULL},
+        {3, 34359738369ULL, 264ULL, 34359738368ULL, 38654705663ULL},
+        {3, 34359738370ULL, 264ULL, 34359738368ULL, 38654705663ULL},
+        {3, 34359738371ULL, 264ULL, 34359738368ULL, 38654705663ULL},
+        {3, 68719476734ULL, 271ULL, 64424509440ULL, 68719476735ULL},
+        {3, 68719476735ULL, 271ULL, 64424509440ULL, 68719476735ULL},
+        {3, 68719476736ULL, 272ULL, 68719476736ULL, 77309411327ULL},
+        {3, 68719476737ULL, 272ULL, 68719476736ULL, 77309411327ULL},
+        {3, 68719476738ULL, 272ULL, 68719476736ULL, 77309411327ULL},
+        {3, 68719476739ULL, 272ULL, 68719476736ULL, 77309411327ULL},
+        {3, 86107875901ULL, 274ULL, 85899345920ULL, 94489280511ULL},
+        {3, 137438953470ULL, 279ULL, 128849018880ULL, 137438953471ULL},
+        {3, 137438953471ULL, 279ULL, 128849018880ULL, 137438953471ULL},
+        {3, 137438953472ULL, 280ULL, 137438953472ULL, 154618822655ULL},
+        {3, 137438953473ULL, 280ULL, 137438953472ULL, 154618822655ULL},
+        {3, 137438953474ULL, 280ULL, 137438953472ULL, 154618822655ULL},
+        {3, 137438953475ULL, 280ULL, 137438953472ULL, 154618822655ULL},
+        {3, 178171537569ULL, 282ULL, 171798691840ULL, 188978561023ULL},
+        {3, 274877906942ULL, 287ULL, 257698037760ULL, 274877906943ULL},
+        {3, 274877906943ULL, 287ULL, 257698037760ULL, 274877906943ULL},
+        {3, 274877906944ULL, 288ULL, 274877906944ULL, 309237645311ULL},
+        {3, 274877906945ULL, 288ULL, 274877906944ULL, 309237645311ULL},
+        {3, 274877906946ULL, 288ULL, 274877906944ULL, 309237645311ULL},
+        {3, 274877906947ULL, 288ULL, 274877906944ULL, 309237645311ULL},
+        {3, 549755813886ULL, 295ULL, 515396075520ULL, 549755813887ULL},
+        {3, 549755813887ULL, 295ULL, 515396075520ULL, 549755813887ULL},
+        {3, 549755813888ULL, 296ULL, 549755813888ULL, 618475290623ULL},
+        {3, 549755813889ULL, 296ULL, 549755813888ULL, 618475290623ULL},
+        {3, 549755813890ULL, 296ULL, 549755813888ULL, 618475290623ULL},
+        {3, 549755813891ULL, 296ULL, 549755813888ULL, 618475290623ULL},
+        {3, 1900363469428ULL, 309ULL, 1786706395136ULL, 1924145348607ULL},
+        {3, 5155231480577ULL, 321ULL, 4947802324992ULL, 5497558138879ULL},
+        {3, 282482252635088ULL, 368ULL, 281474976710656ULL, 316659348799487ULL},
+        {3, 4611686018427387903ULL, 479ULL, 4323455642275676160ULL, 4611686018427387903ULL},
+        {4, 0ULL, 0ULL, 0ULL, 0ULL},
+        {4, 1ULL, 1ULL, 1ULL, 1ULL},
+        {4, 2ULL, 2ULL, 2ULL, 2ULL},
+        {4, 3ULL, 3ULL, 3ULL, 3ULL},
+        {4, 4ULL, 4ULL, 4ULL, 4ULL},
+        {4, 5ULL, 5ULL, 5ULL, 5ULL},
+        {4, 6ULL, 6ULL, 6ULL, 6ULL},
+        {4, 7ULL, 7ULL, 7ULL, 7ULL},
+        {4, 8ULL, 8ULL, 8ULL, 8ULL},
+        {4, 9ULL, 9ULL, 9ULL, 9ULL},
+        {4, 10ULL, 10ULL, 10ULL, 10ULL},
+        {4, 11ULL, 11ULL, 11ULL, 11ULL},
+        {4, 14ULL, 14ULL, 14ULL, 14ULL},
+        {4, 15ULL, 15ULL, 15ULL, 15ULL},
+        {4, 16ULL, 16ULL, 16ULL, 16ULL},
+        {4, 17ULL, 17ULL, 17ULL, 17ULL},
+        {4, 18ULL, 18ULL, 18ULL, 18ULL},
+        {4, 19ULL, 19ULL, 19ULL, 19ULL},
+        {4, 21ULL, 21ULL, 21ULL, 21ULL},
+        {4, 30ULL, 30ULL, 30ULL, 30ULL},
+        {4, 31ULL, 31ULL, 31ULL, 31ULL},
+        {4, 32ULL, 32ULL, 32ULL, 33ULL},
+        {4, 33ULL, 32ULL, 32ULL, 33ULL},
+        {4, 34ULL, 33ULL, 34ULL, 35ULL},
+        {4, 35ULL, 33ULL, 34ULL, 35ULL},
+        {4, 48ULL, 40ULL, 48ULL, 49ULL},
+        {4, 49ULL, 40ULL, 48ULL, 49ULL},
+        {4, 60ULL, 46ULL, 60ULL, 61ULL},
+        {4, 62ULL, 47ULL, 62ULL, 63ULL},
+        {4, 63ULL, 47ULL, 62ULL, 63ULL},
+        {4, 64ULL, 48ULL, 64ULL, 67ULL},
+        {4, 65ULL, 48ULL, 64ULL, 67ULL},
+        {4, 66ULL, 48ULL, 64ULL, 67ULL},
+        {4, 67ULL, 48ULL, 64ULL, 67ULL},
+        {4, 100ULL, 57ULL, 100ULL, 103ULL},
+        {4, 126ULL, 63ULL, 124ULL, 127ULL},
+        {4, 127ULL, 63ULL, 124ULL, 127ULL},
+        {4, 128ULL, 64ULL, 128ULL, 135ULL},
+        {4, 129ULL, 64ULL, 128ULL, 135ULL},
+        {4, 130ULL, 64ULL, 128ULL, 135ULL},
+        {4, 131ULL, 64ULL, 128ULL, 135ULL},
+        {4, 254ULL, 79ULL, 248ULL, 255ULL},
+        {4, 255ULL, 79ULL, 248ULL, 255ULL},
+        {4, 256ULL, 80ULL, 256ULL, 271ULL},
+        {4, 257ULL, 80ULL, 256ULL, 271ULL},
+        {4, 258ULL, 80ULL, 256ULL, 271ULL},
+        {4, 259ULL, 80ULL, 256ULL, 271ULL},
+        {4, 464ULL, 93ULL, 464ULL, 479ULL},
+        {4, 510ULL, 95ULL, 496ULL, 511ULL},
+        {4, 511ULL, 95ULL, 496ULL, 511ULL},
+        {4, 512ULL, 96ULL, 512ULL, 543ULL},
+        {4, 513ULL, 96ULL, 512ULL, 543ULL},
+        {4, 514ULL, 96ULL, 512ULL, 543ULL},
+        {4, 515ULL, 96ULL, 512ULL, 543ULL},
+        {4, 642ULL, 100ULL, 640ULL, 671ULL},
+        {4, 1022ULL, 111ULL, 992ULL, 1023ULL},
+        {4, 1023ULL, 111ULL, 992ULL, 1023ULL},
+        {4, 1024ULL, 112ULL, 1024ULL, 1087ULL},
+        {4, 1025ULL, 112ULL, 1024ULL, 1087ULL},
+        {4, 1026ULL, 112ULL, 1024ULL, 1087ULL},
+        {4, 1027ULL, 112ULL, 1024ULL, 1087ULL},
+        {4, 2046ULL, 127ULL, 1984ULL, 2047ULL},
+        {4, 2047ULL, 127ULL, 1984ULL, 2047ULL},
+        {4, 2048ULL, 128ULL, 2048ULL, 2175ULL},
+        {4, 2049ULL, 128ULL, 2048ULL, 2175ULL},
+        {4, 2050ULL, 128ULL, 2048ULL, 2175ULL},
+        {4, 2051ULL, 128ULL, 2048ULL, 2175ULL},
+        {4, 2139ULL, 128ULL, 2048ULL, 2175ULL},
+        {4, 4094ULL, 143ULL, 3968ULL, 4095ULL},
+        {4, 4095ULL, 143ULL, 3968ULL, 4095ULL},
+        {4, 4096ULL, 144ULL, 4096ULL, 4351ULL},
+        {4, 4097ULL, 144ULL, 4096ULL, 4351ULL},
+        {4, 4098ULL, 144ULL, 4096ULL, 4351ULL},
+        {4, 4099ULL, 144ULL, 4096ULL, 4351ULL},
+        {4, 8190ULL, 159ULL, 7936ULL, 8191ULL},
+        {4, 8191ULL, 159ULL, 7936ULL, 8191ULL},
+        {4, 8192ULL, 160ULL, 8192ULL, 8703ULL},
+        {4, 8193ULL, 160ULL, 8192ULL, 8703ULL},
+        {4, 8194ULL, 160ULL, 8192ULL, 8703ULL},
+        {4, 8195ULL, 160ULL, 8192ULL, 8703ULL},
+        {4, 16382ULL, 175ULL, 15872ULL, 16383ULL},
+        {4, 16383ULL, 175ULL, 15872ULL, 16383ULL},
+        {4, 16384ULL, 176ULL, 16384ULL, 17407ULL},
+        {4, 16385ULL, 176ULL, 16384ULL, 17407ULL},
+        {4, 16386ULL, 176ULL, 16384ULL, 17407ULL},
+        {4, 16387ULL, 176ULL, 16384ULL, 17407ULL},
+        {4, 32766ULL, 191ULL, 31744ULL, 32767ULL},
+        {4, 32767ULL, 191ULL, 31744ULL, 32767ULL},
+        {4, 32768ULL, 192ULL, 32768ULL, 34815ULL},
+        {4, 32769ULL, 192ULL, 32768ULL, 34815ULL},
+        {4, 32770ULL, 192ULL, 32768ULL, 34815ULL},
+        {4, 32771ULL, 192ULL, 32768ULL, 34815ULL},
+        {4, 38144ULL, 194ULL, 36864ULL, 38911ULL},
+        {4, 65534ULL, 207ULL, 63488ULL, 65535ULL},
+        {4, 65535ULL, 207ULL, 63488ULL, 65535ULL},
+        {4, 65536ULL, 208ULL, 65536ULL, 69631ULL},
+        {4, 65537ULL, 208ULL, 65536ULL, 69631ULL},
+        {4, 65538ULL, 208ULL, 65536ULL, 69631ULL},
+        {4, 65539ULL, 208ULL, 65536ULL, 69631ULL},
+        {4, 67525ULL, 208ULL, 65536ULL, 69631ULL},
+        {4, 131070ULL, 223ULL, 126976ULL, 131071ULL},
+        {4, 131071ULL, 223ULL, 126976ULL, 131071ULL},
+        {4, 131072ULL, 224ULL, 131072ULL, 139263ULL},
+        {4, 131073ULL, 224ULL, 131072ULL, 139263ULL},
+        {4, 131074ULL, 224ULL, 131072ULL, 139263ULL},
+        {4, 131075ULL, 224ULL, 131072ULL, 139263ULL},
+        {4, 188869ULL, 231ULL, 188416ULL, 196607ULL},
+        {4, 262142ULL, 239ULL, 253952ULL, 262143ULL},
+        {4, 262143ULL, 239ULL, 253952ULL, 262143ULL},
+        {4, 262144ULL, 240ULL, 262144ULL, 278527ULL},
+        {4, 262145ULL, 240ULL, 262144ULL, 278527ULL},
+        {4, 262146ULL, 240ULL, 262144ULL, 278527ULL},
+        {4, 262147ULL, 240ULL, 262144ULL, 278527ULL},
+        {4, 524286ULL, 255ULL, 507904ULL, 524287ULL},
+        {4, 524287ULL, 255ULL, 507904ULL, 524287ULL},
+        {4, 524288ULL, 256ULL, 524288ULL, 557055ULL},
+        {4, 524289ULL, 256ULL, 524288ULL, 557055ULL},
+        {4, 524290ULL, 256ULL, 524288ULL, 557055ULL},
+        {4, 524291ULL, 256ULL, 524288ULL, 557055ULL},
+        {4, 879156ULL, 266ULL, 851968ULL, 884735ULL},
+        {4, 1048574ULL, 271ULL, 1015808ULL, 1048575ULL},
+        {4, 1048575ULL, 271ULL, 1015808ULL, 1048575ULL},
+        {4, 1048576ULL, 272ULL, 1048576ULL, 1114111ULL},
+        {4, 1048577ULL, 272ULL, 1048576ULL, 1114111ULL},
+        {4, 1048578ULL, 272ULL, 1048576ULL, 1114111ULL},
+        {4, 1048579ULL, 272ULL, 1048576ULL, 1114111ULL},
+        {4, 2097150ULL, 287ULL, 2031616ULL, 2097151ULL},
+        {4, 2097151ULL, 287ULL, 2031616ULL, 2097151ULL},
+        {4, 2097152ULL, 288ULL, 2097152ULL, 2228223ULL},
+        {4, 2097153ULL, 288ULL, 2097152ULL, 2228223ULL},
+        {4, 2097154ULL, 288ULL, 2097152ULL, 2228223ULL},
+        {4, 2097155ULL, 288ULL, 2097152ULL, 2228223ULL},
+        {4, 4194302ULL, 303ULL, 4063232ULL, 4194303ULL},
+        {4, 4194303ULL, 303ULL, 4063232ULL, 4194303ULL},
+        {4, 4194304ULL, 304ULL, 4194304ULL, 4456447ULL},
+        {4, 4194305ULL, 304ULL, 4194304ULL, 4456447ULL},
+        {4, 4194306ULL, 304ULL, 4194304ULL, 4456447ULL},
+        {4, 4194307ULL, 304ULL, 4194304ULL, 4456447ULL},
+        {4, 6257861ULL, 311ULL, 6029312ULL, 6291455ULL},
+        {4, 8388606ULL, 319ULL, 8126464ULL, 8388607ULL},
+        {4, 8388607ULL, 319ULL, 8126464ULL, 8388607ULL},
+        {4, 8388608ULL, 320ULL, 8388608ULL, 8912895ULL},
+        {4, 8388609ULL, 320ULL, 8388608ULL, 8912895ULL},
+        {4, 8388610ULL, 320ULL, 8388608ULL, 8912895ULL},
+        {4, 8388611ULL, 320ULL, 8388608ULL, 8912895ULL},
+        {4, 8921315ULL, 321ULL, 8912896ULL, 9437183ULL},
+        {4, 16777214ULL, 335ULL, 16252928ULL, 16777215ULL},
+        {4, 16777215ULL, 335ULL, 16252928ULL, 16777215ULL},
+        {4, 16777216ULL, 336ULL, 16777216ULL, 17825791ULL},
+        {4, 16777217ULL, 336ULL, 16777216ULL, 17825791ULL},
+        {4, 16777218ULL, 336ULL, 16777216ULL, 17825791ULL},
+        {4, 16777219ULL, 336ULL, 16777216ULL, 17825791ULL},
+        {4, 33554430ULL, 351ULL, 32505856ULL, 33554431ULL},
+        {4, 33554431ULL, 351ULL, 32505856ULL, 33554431ULL},
+        {4, 33554432ULL, 352ULL, 33554432ULL, 35651583ULL},
+        {4, 33554433ULL, 352ULL, 33554432ULL, 35651583ULL},
+        {4, 33554434ULL, 352ULL, 33554432ULL, 35651583ULL},
+        {4, 33554435ULL, 352ULL, 33554432ULL, 35651583ULL},
+        {4, 54195697ULL, 361ULL, 52428800ULL, 54525951ULL},
+        {4, 67108862ULL, 367ULL, 65011712ULL, 67108863ULL},
+        {4, 67108863ULL, 367ULL, 65011712ULL, 67108863ULL},
+        {4, 67108864ULL, 368ULL, 67108864ULL, 71303167ULL},
+        {4, 67108865ULL, 368ULL, 67108864ULL, 71303167ULL},
+        {4, 67108866ULL, 368ULL, 67108864ULL, 71303167ULL},
+        {4, 67108867ULL, 368ULL, 67108864ULL, 71303167ULL},
+        {4, 92454411ULL, 374ULL, 92274688ULL, 96468991ULL},
+        {4, 134217726ULL, 383ULL, 130023424ULL, 134217727ULL},
+        {4, 134217727ULL, 383ULL, 130023424ULL, 134217727ULL},
+        {4, 134217728ULL, 384ULL, 134217728ULL, 142606335ULL},
+        {4, 134217729ULL, 384ULL, 134217728ULL, 142606335ULL},
+        {4, 134217730ULL, 384ULL, 134217728ULL, 142606335ULL},
+        {4, 134217731ULL, 384ULL, 134217728ULL, 142606335ULL},
+        {4, 268435454ULL, 399ULL, 260046848ULL, 268435455ULL},
+        {4, 268435455ULL, 399ULL, 260046848ULL, 268435455ULL},
+        {4, 268435456ULL, 400ULL, 268435456ULL, 285212671ULL},
+        {4, 268435457ULL, 400ULL, 268435456ULL, 285212671ULL},
+        {4, 268435458ULL, 400ULL, 268435456ULL, 285212671ULL},
+        {4, 268435459ULL, 400ULL, 268435456ULL, 285212671ULL},
+        {4, 536870910ULL, 415ULL, 520093696ULL, 536870911ULL},
+        {4, 536870911ULL, 415ULL, 520093696ULL, 536870911ULL},
+        {4, 536870912ULL, 416ULL, 536870912ULL, 570425343ULL},
+        {4, 536870913ULL, 416ULL, 536870912ULL, 570425343ULL},
+        {4, 536870914ULL, 416ULL, 536870912ULL, 570425343ULL},
+        {4, 536870915ULL, 416ULL, 536870912ULL, 570425343ULL},
+        {4, 1073741822ULL, 431ULL, 1040187392ULL, 1073741823ULL},
+        {4, 1073741823ULL, 431ULL, 1040187392ULL, 1073741823ULL},
+        {4, 1073741824ULL, 432ULL, 1073741824ULL, 1140850687ULL},
+        {4, 1073741825ULL, 432ULL, 1073741824ULL, 1140850687ULL},
+        {4, 1073741826ULL, 432ULL, 1073741824ULL, 1140850687ULL},
+        {4, 1073741827ULL, 432ULL, 1073741824ULL, 1140850687ULL},
+        {4, 2147483646ULL, 447ULL, 2080374784ULL, 2147483647ULL},
+        {4, 2147483647ULL, 447ULL, 2080374784ULL, 2147483647ULL},
+        {4, 2147483648ULL, 448ULL, 2147483648ULL, 2281701375ULL},
+        {4, 2147483649ULL, 448ULL, 2147483648ULL, 2281701375ULL},
+        {4, 2147483650ULL, 448ULL, 2147483648ULL, 2281701375ULL},
+        {4, 2147483651ULL, 448ULL, 2147483648ULL, 2281701375ULL},
+        {4, 4294967294ULL, 463ULL, 4160749568ULL, 4294967295ULL},
+        {4, 4294967295ULL, 463ULL, 4160749568ULL, 4294967295ULL},
+        {4, 4294967296ULL, 464ULL, 4294967296ULL, 4563402751ULL},
+        {4, 4294967297ULL, 464ULL, 4294967296ULL, 4563402751ULL},
+        {4, 4294967298ULL, 464ULL, 4294967296ULL, 4563402751ULL},
+        {4, 4294967299ULL, 464ULL, 4294967296ULL, 4563402751ULL},
+        {4, 8589934590ULL, 479ULL, 8321499136ULL, 8589934591ULL},
+        {4, 8589934591ULL, 479ULL, 8321499136ULL, 8589934591ULL},
+        {4, 8589934592ULL, 480ULL, 8589934592ULL, 9126805503ULL},
+        {4, 8589934593ULL, 480ULL, 8589934592ULL, 9126805503ULL},
+        {4, 8589934594ULL, 480ULL, 8589934592ULL, 9126805503ULL},
+        {4, 8589934595ULL, 480ULL, 8589934592ULL, 9126805503ULL},
+        {4, 17179869182ULL, 495ULL, 16642998272ULL, 17179869183ULL},
+        {4, 17179869183ULL, 495ULL, 16642998272ULL, 17179869183ULL},
+        {4, 17179869184ULL, 496ULL, 17179869184ULL, 18253611007ULL},
+        {4, 17179869185ULL, 496ULL, 17179869184ULL, 18253611007ULL},
+        {4, 17179869186ULL, 496ULL, 17179869184ULL, 18253611007ULL},
+        {4, 17179869187ULL, 496ULL, 17179869184ULL, 18253611007ULL},
+        {4, 34359738366ULL, 511ULL, 33285996544ULL, 34359738367ULL},
+        {4, 34359738367ULL, 511ULL, 33285996544ULL, 34359738367ULL},
+        {4, 34359738368ULL, 512ULL, 34359738368ULL, 36507222015ULL},
+        {4, 34359738369ULL, 512ULL, 34359738368ULL, 36507222015ULL},
+        {4, 34359738370ULL, 512ULL, 34359738368ULL, 36507222015ULL},
+        {4, 34359738371ULL, 512ULL, 34359738368ULL, 36507222015ULL},
+        {4, 68719476734ULL, 527ULL, 66571993088ULL, 68719476735ULL},
+        {4, 68719476735ULL, 527ULL, 66571993088ULL, 68719476735ULL},
+        {4, 68719476736ULL, 528ULL, 68719476736ULL, 73014444031ULL},
+        {4, 68719476737ULL, 528ULL, 68719476736ULL, 73014444031ULL},
+        {4, 68719476738ULL, 528ULL, 68719476736ULL, 73014444031ULL},
+        {4, 68719476739ULL, 528ULL, 68719476736ULL, 73014444031ULL},
+        {4, 137438953470ULL, 543ULL, 133143986176ULL, 137438953471ULL},
+        {4, 137438953471ULL, 543ULL, 133143986176ULL, 137438953471ULL},
+        {4, 137438953472ULL, 544ULL, 137438953472ULL, 146028888063ULL},
+        {4, 137438953473ULL, 544ULL, 137438953472ULL, 146028888063ULL},
+        {4, 137438953474ULL, 544ULL, 137438953472ULL, 146028888063ULL},
+        {4, 137438953475ULL, 544ULL, 137438953472ULL, 146028888063ULL},
+        {4, 274877906942ULL, 559ULL, 266287972352ULL, 274877906943ULL},
+        {4, 274877906943ULL, 559ULL, 266287972352ULL, 274877906943ULL},
+        {4, 274877906944ULL, 560ULL, 274877906944ULL, 292057776127ULL},
+        {4, 274877906945ULL, 560ULL, 274877906944ULL, 292057776127ULL},
+        {4, 274877906946ULL, 560ULL, 274877906944ULL, 292057776127ULL},
+        {4, 274877906947ULL, 560ULL, 274877906944ULL, 292057776127ULL},
+        {4, 525350530911ULL, 574ULL, 515396075520ULL, 532575944703ULL},
+        {4, 549755813886ULL, 575ULL, 532575944704ULL, 549755813887ULL},
+        {4, 549755813887ULL, 575ULL, 532575944704ULL, 549755813887ULL},
+        {4, 549755813888ULL, 576ULL, 549755813888ULL, 584115552255ULL},
+        {4, 549755813889ULL, 576ULL, 549755813888ULL, 584115552255ULL},
+        {4, 549755813890ULL, 576ULL, 549755813888ULL, 584115552255ULL},
+        {4, 549755813891ULL, 576ULL, 549755813888ULL, 584115552255ULL},
+        {4, 692060007482ULL, 580ULL, 687194767360ULL, 721554505727ULL},
+        {4, 6354416245550ULL, 631ULL, 6322191859712ULL, 6597069766655ULL},
+        {4, 41491190739415ULL, 674ULL, 39582418599936ULL, 41781441855487ULL},
+        {4, 63829751793520ULL, 685ULL, 63771674411008ULL, 65970697666559ULL},
+        {4, 126732229243129ULL, 700ULL, 123145302310912ULL, 127543348822015ULL},
+        {4, 465925731712610ULL, 730ULL, 457396837154816ULL, 474989023199231ULL},
+        {4, 698512003178249ULL, 739ULL, 668503069687808ULL, 703687441776639ULL},
+        {4, 977055664806040ULL, 747ULL, 949978046398464ULL, 985162418487295ULL},
+        {4, 4611686018427387903ULL, 943ULL, 4467570830351532032ULL, 4611686018427387903ULL},
+        {6, 0ULL, 0ULL, 0ULL, 0ULL},
+        {6, 1ULL, 1ULL, 1ULL, 1ULL},
+        {6, 2ULL, 2ULL, 2ULL, 2ULL},
+        {6, 3ULL, 3ULL, 3ULL, 3ULL},
+        {6, 4ULL, 4ULL, 4ULL, 4ULL},
+        {6, 5ULL, 5ULL, 5ULL, 5ULL},
+        {6, 6ULL, 6ULL, 6ULL, 6ULL},
+        {6, 7ULL, 7ULL, 7ULL, 7ULL},
+        {6, 8ULL, 8ULL, 8ULL, 8ULL},
+        {6, 9ULL, 9ULL, 9ULL, 9ULL},
+        {6, 10ULL, 10ULL, 10ULL, 10ULL},
+        {6, 11ULL, 11ULL, 11ULL, 11ULL},
+        {6, 14ULL, 14ULL, 14ULL, 14ULL},
+        {6, 15ULL, 15ULL, 15ULL, 15ULL},
+        {6, 16ULL, 16ULL, 16ULL, 16ULL},
+        {6, 17ULL, 17ULL, 17ULL, 17ULL},
+        {6, 18ULL, 18ULL, 18ULL, 18ULL},
+        {6, 19ULL, 19ULL, 19ULL, 19ULL},
+        {6, 30ULL, 30ULL, 30ULL, 30ULL},
+        {6, 31ULL, 31ULL, 31ULL, 31ULL},
+        {6, 32ULL, 32ULL, 32ULL, 32ULL},
+        {6, 33ULL, 33ULL, 33ULL, 33ULL},
+        {6, 34ULL, 34ULL, 34ULL, 34ULL},
+        {6, 35ULL, 35ULL, 35ULL, 35ULL},
+        {6, 62ULL, 62ULL, 62ULL, 62ULL},
+        {6, 63ULL, 63ULL, 63ULL, 63ULL},
+        {6, 64ULL, 64ULL, 64ULL, 64ULL},
+        {6, 65ULL, 65ULL, 65ULL, 65ULL},
+        {6, 66ULL, 66ULL, 66ULL, 66ULL},
+        {6, 67ULL, 67ULL, 67ULL, 67ULL},
+        {6, 126ULL, 126ULL, 126ULL, 126ULL},
+        {6, 127ULL, 127ULL, 127ULL, 127ULL},
+        {6, 128ULL, 128ULL, 128ULL, 129ULL},
+        {6, 129ULL, 128ULL, 128ULL, 129ULL},
+        {6, 130ULL, 129ULL, 130ULL, 131ULL},
+        {6, 131ULL, 129ULL, 130ULL, 131ULL},
+        {6, 192ULL, 160ULL, 192ULL, 193ULL},
+        {6, 193ULL, 160ULL, 192ULL, 193ULL},
+        {6, 203ULL, 165ULL, 202ULL, 203ULL},
+        {6, 254ULL, 191ULL, 254ULL, 255ULL},
+        {6, 255ULL, 191ULL, 254ULL, 255ULL},
+        {6, 256ULL, 192ULL, 256ULL, 259ULL},
+        {6, 257ULL, 192ULL, 256ULL, 259ULL},
+        {6, 258ULL, 192ULL, 256ULL, 259ULL},
+        {6, 259ULL, 192ULL, 256ULL, 259ULL},
+        {6, 510ULL, 255ULL, 508ULL, 511ULL},
+        {6, 511ULL, 255ULL, 508ULL, 511ULL},
+        {6, 512ULL, 256ULL, 512ULL, 519ULL},
+        {6, 513ULL, 256ULL, 512ULL, 519ULL},
+        {6, 514ULL, 256ULL, 512ULL, 519ULL},
+        {6, 515ULL, 256ULL, 512ULL, 519ULL},
+        {6, 542ULL, 259ULL, 536ULL, 543ULL},
+        {6, 594ULL, 266ULL, 592ULL, 599ULL},
+        {6, 1022ULL, 319ULL, 1016ULL, 1023ULL},
+        {6, 1023ULL, 319ULL, 1016ULL, 1023ULL},
+        {6, 1024ULL, 320ULL, 1024ULL, 1039ULL},
+        {6, 1025ULL, 320ULL, 1024ULL, 1039ULL},
+        {6, 1026ULL, 320ULL, 1024ULL, 1039ULL},
+        {6, 1027ULL, 320ULL, 1024ULL, 1039ULL},
+        {6, 2046ULL, 383ULL, 2032ULL, 2047ULL},
+        {6, 2047ULL, 383ULL, 2032ULL, 2047ULL},
+        {6, 2048ULL, 384ULL, 2048ULL, 2079ULL},
+        {6, 2049ULL, 384ULL, 2048ULL, 2079ULL},
+        {6, 2050ULL, 384ULL, 2048ULL, 2079ULL},
+        {6, 2051ULL, 384ULL, 2048ULL, 2079ULL},
+        {6, 4094ULL, 447ULL, 4064ULL, 4095ULL},
+        {6, 4095ULL, 447ULL, 4064ULL, 4095ULL},
+        {6, 4096ULL, 448ULL, 4096ULL, 4159ULL},
+        {6, 4097ULL, 448ULL, 4096ULL, 4159ULL},
+        {6, 4098ULL, 448ULL, 4096ULL, 4159ULL},
+        {6, 4099ULL, 448ULL, 4096ULL, 4159ULL},
+        {6, 8190ULL, 511ULL, 8128ULL, 8191ULL},
+        {6, 8191ULL, 511ULL, 8128ULL, 8191ULL},
+        {6, 8192ULL, 512ULL, 8192ULL, 8319ULL},
+        {6, 8193ULL, 512ULL, 8192ULL, 8319ULL},
+        {6, 8194ULL, 512ULL, 8192ULL, 8319ULL},
+        {6, 8195ULL, 512ULL, 8192ULL, 8319ULL},
+        {6, 16382ULL, 575ULL, 16256ULL, 16383ULL},
+        {6, 16383ULL, 575ULL, 16256ULL, 16383ULL},
+        {6, 16384ULL, 576ULL, 16384ULL, 16639ULL},
+        {6, 16385ULL, 576ULL, 16384ULL, 16639ULL},
+        {6, 16386ULL, 576ULL, 16384ULL, 16639ULL},
+        {6, 16387ULL, 576ULL, 16384ULL, 16639ULL},
+        {6, 32766ULL, 639ULL, 32512ULL, 32767ULL},
+        {6, 32767ULL, 639ULL, 32512ULL, 32767ULL},
+        {6, 32768ULL, 640ULL, 32768ULL, 33279ULL},
+        {6, 32769ULL, 640ULL, 32768ULL, 33279ULL},
+        {6, 32770ULL, 640ULL, 32768ULL, 33279ULL},
+        {6, 32771ULL, 640ULL, 32768ULL, 33279ULL},
+        {6, 42717ULL, 659ULL, 42496ULL, 43007ULL},
+        {6, 65534ULL, 703ULL, 65024ULL, 65535ULL},
+        {6, 65535ULL, 703ULL, 65024ULL, 65535ULL},
+        {6, 65536ULL, 704ULL, 65536ULL, 66559ULL},
+        {6, 65537ULL, 704ULL, 65536ULL, 66559ULL},
+        {6, 65538ULL, 704ULL, 65536ULL, 66559ULL},
+        {6, 65539ULL, 704ULL, 65536ULL, 66559ULL},
+        {6, 65581ULL, 704ULL, 65536ULL, 66559ULL},
+        {6, 84418ULL, 722ULL, 83968ULL, 84991ULL},
+        {6, 131070ULL, 767ULL, 130048ULL, 131071ULL},
+        {6, 131071ULL, 767ULL, 130048ULL, 131071ULL},
+        {6, 131072ULL, 768ULL, 131072ULL, 133119ULL},
+        {6, 131073ULL, 768ULL, 131072ULL, 133119ULL},
+        {6, 131074ULL, 768ULL, 131072ULL, 133119ULL},
+        {6, 131075ULL, 768ULL, 131072ULL, 133119ULL},
+        {6, 262142ULL, 831ULL, 260096ULL, 262143ULL},
+        {6, 262143ULL, 831ULL, 260096ULL, 262143ULL},
+        {6, 262144ULL, 832ULL, 262144ULL, 266239ULL},
+        {6, 262145ULL, 832ULL, 262144ULL, 266239ULL},
+        {6, 262146ULL, 832ULL, 262144ULL, 266239ULL},
+        {6, 262147ULL, 832ULL, 262144ULL, 266239ULL},
+        {6, 524286ULL, 895ULL, 520192ULL, 524287ULL},
+        {6, 524287ULL, 895ULL, 520192ULL, 524287ULL},
+        {6, 524288ULL, 896ULL, 524288ULL, 532479ULL},
+        {6, 524289ULL, 896ULL, 524288ULL, 532479ULL},
+        {6, 524290ULL, 896ULL, 524288ULL, 532479ULL},
+        {6, 524291ULL, 896ULL, 524288ULL, 532479ULL},
+        {6, 543308ULL, 898ULL, 540672ULL, 548863ULL},
+        {6, 586483ULL, 903ULL, 581632ULL, 589823ULL},
+        {6, 681251ULL, 915ULL, 679936ULL, 688127ULL},
+        {6, 773668ULL, 926ULL, 770048ULL, 778239ULL},
+        {6, 1048574ULL, 959ULL, 1040384ULL, 1048575ULL},
+        {6, 1048575ULL, 959ULL, 1040384ULL, 1048575ULL},
+        {6, 1048576ULL, 960ULL, 1048576ULL, 1064959ULL},
+        {6, 1048577ULL, 960ULL, 1048576ULL, 1064959ULL},
+        {6, 1048578ULL, 960ULL, 1048576ULL, 1064959ULL},
+        {6, 1048579ULL, 960ULL, 1048576ULL, 1064959ULL},
+        {6, 2097150ULL, 1023ULL, 2080768ULL, 2097151ULL},
+        {6, 2097151ULL, 1023ULL, 2080768ULL, 2097151ULL},
+        {6, 2097152ULL, 1024ULL, 2097152ULL, 2129919ULL},
+        {6, 2097153ULL, 1024ULL, 2097152ULL, 2129919ULL},
+        {6, 2097154ULL, 1024ULL, 2097152ULL, 2129919ULL},
+        {6, 2097155ULL, 1024ULL, 2097152ULL, 2129919ULL},
+        {6, 4194302ULL, 1087ULL, 4161536ULL, 4194303ULL},
+        {6, 4194303ULL, 1087ULL, 4161536ULL, 4194303ULL},
+        {6, 4194304ULL, 1088ULL, 4194304ULL, 4259839ULL},
+        {6, 4194305ULL, 1088ULL, 4194304ULL, 4259839ULL},
+        {6, 4194306ULL, 1088ULL, 4194304ULL, 4259839ULL},
+        {6, 4194307ULL, 1088ULL, 4194304ULL, 4259839ULL},
+        {6, 8388606ULL, 1151ULL, 8323072ULL, 8388607ULL},
+        {6, 8388607ULL, 1151ULL, 8323072ULL, 8388607ULL},
+        {6, 8388608ULL, 1152ULL, 8388608ULL, 8519679ULL},
+        {6, 8388609ULL, 1152ULL, 8388608ULL, 8519679ULL},
+        {6, 8388610ULL, 1152ULL, 8388608ULL, 8519679ULL},
+        {6, 8388611ULL, 1152ULL, 8388608ULL, 8519679ULL},
+        {6, 16777214ULL, 1215ULL, 16646144ULL, 16777215ULL},
+        {6, 16777215ULL, 1215ULL, 16646144ULL, 16777215ULL},
+        {6, 16777216ULL, 1216ULL, 16777216ULL, 17039359ULL},
+        {6, 16777217ULL, 1216ULL, 16777216ULL, 17039359ULL},
+        {6, 16777218ULL, 1216ULL, 16777216ULL, 17039359ULL},
+        {6, 16777219ULL, 1216ULL, 16777216ULL, 17039359ULL},
+        {6, 33554430ULL, 1279ULL, 33292288ULL, 33554431ULL},
+        {6, 33554431ULL, 1279ULL, 33292288ULL, 33554431ULL},
+        {6, 33554432ULL, 1280ULL, 33554432ULL, 34078719ULL},
+        {6, 33554433ULL, 1280ULL, 33554432ULL, 34078719ULL},
+        {6, 33554434ULL, 1280ULL, 33554432ULL, 34078719ULL},
+        {6, 33554435ULL, 1280ULL, 33554432ULL, 34078719ULL},
+        {6, 48892120ULL, 1309ULL, 48758784ULL, 49283071ULL},
+        {6, 67108862ULL, 1343ULL, 66584576ULL, 67108863ULL},
+        {6, 67108863ULL, 1343ULL, 66584576ULL, 67108863ULL},
+        {6, 67108864ULL, 1344ULL, 67108864ULL, 68157439ULL},
+        {6, 67108865ULL, 1344ULL, 67108864ULL, 68157439ULL},
+        {6, 67108866ULL, 1344ULL, 67108864ULL, 68157439ULL},
+        {6, 67108867ULL, 1344ULL, 67108864ULL, 68157439ULL},
+        {6, 134217726ULL, 1407ULL, 133169152ULL, 134217727ULL},
+        {6, 134217727ULL, 1407ULL, 133169152ULL, 134217727ULL},
+        {6, 134217728ULL, 1408ULL, 134217728ULL, 136314879ULL},
+        {6, 134217729ULL, 1408ULL, 134217728ULL, 136314879ULL},
+        {6, 134217730ULL, 1408ULL, 134217728ULL, 136314879ULL},
+        {6, 134217731ULL, 1408ULL, 134217728ULL, 136314879ULL},
+        {6, 268435454ULL, 1471ULL, 266338304ULL, 268435455ULL},
+        {6, 268435455ULL, 1471ULL, 266338304ULL, 268435455ULL},
+        {6, 268435456ULL, 1472ULL, 268435456ULL, 272629759ULL},
+        {6, 268435457ULL, 1472ULL, 268435456ULL, 272629759ULL},
+        {6, 268435458ULL, 1472ULL, 268435456ULL, 272629759ULL},
+        {6, 268435459ULL, 1472ULL, 268435456ULL, 272629759ULL},
+        {6, 536870910ULL, 1535ULL, 532676608ULL, 536870911ULL},
+        {6, 536870911ULL, 1535ULL, 532676608ULL, 536870911ULL},
+        {6, 536870912ULL, 1536ULL, 536870912ULL, 545259519ULL},
+        {6, 536870913ULL, 1536ULL, 536870912ULL, 545259519ULL},
+        {6, 536870914ULL, 1536ULL, 536870912ULL, 545259519ULL},
+        {6, 536870915ULL, 1536ULL, 536870912ULL, 545259519ULL},
+        {6, 830772324ULL, 1571ULL, 830472192ULL, 838860799ULL},
+        {6, 1073741822ULL, 1599ULL, 1065353216ULL, 1073741823ULL},
+        {6, 1073741823ULL, 1599ULL, 1065353216ULL, 1073741823ULL},
+        {6, 1073741824ULL, 1600ULL, 1073741824ULL, 1090519039ULL},
+        {6, 1073741825ULL, 1600ULL, 1073741824ULL, 1090519039ULL},
+        {6, 1073741826ULL, 1600ULL, 1073741824ULL, 1090519039ULL},
+        {6, 1073741827ULL, 1600ULL, 1073741824ULL, 1090519039ULL},
+        {6, 2147483646ULL, 1663ULL, 2130706432ULL, 2147483647ULL},
+        {6, 2147483647ULL, 1663ULL, 2130706432ULL, 2147483647ULL},
+        {6, 2147483648ULL, 1664ULL, 2147483648ULL, 2181038079ULL},
+        {6, 2147483649ULL, 1664ULL, 2147483648ULL, 2181038079ULL},
+        {6, 2147483650ULL, 1664ULL, 2147483648ULL, 2181038079ULL},
+        {6, 2147483651ULL, 1664ULL, 2147483648ULL, 2181038079ULL},
+        {6, 4294967294ULL, 1727ULL, 4261412864ULL, 4294967295ULL},
+        {6, 4294967295ULL, 1727ULL, 4261412864ULL, 4294967295ULL},
+        {6, 4294967296ULL, 1728ULL, 4294967296ULL, 4362076159ULL},
+        {6, 4294967297ULL, 1728ULL, 4294967296ULL, 4362076159ULL},
+        {6, 4294967298ULL, 1728ULL, 4294967296ULL, 4362076159ULL},
+        {6, 4294967299ULL, 1728ULL, 4294967296ULL, 4362076159ULL},
+        {6, 8589934590ULL, 1791ULL, 8522825728ULL, 8589934591ULL},
+        {6, 8589934591ULL, 1791ULL, 8522825728ULL, 8589934591ULL},
+        {6, 8589934592ULL, 1792ULL, 8589934592ULL, 8724152319ULL},
+        {6, 8589934593ULL, 1792ULL, 8589934592ULL, 8724152319ULL},
+        {6, 8589934594ULL, 1792ULL, 8589934592ULL, 8724152319ULL},
+        {6, 8589934595ULL, 1792ULL, 8589934592ULL, 8724152319ULL},
+        {6, 17179869182ULL, 1855ULL, 17045651456ULL, 17179869183ULL},
+        {6, 17179869183ULL, 1855ULL, 17045651456ULL, 17179869183ULL},
+        {6, 17179869184ULL, 1856ULL, 17179869184ULL, 17448304639ULL},
+        {6, 17179869185ULL, 1856ULL, 17179869184ULL, 17448304639ULL},
+        {6, 17179869186ULL, 1856ULL, 17179869184ULL, 17448304639ULL},
+        {6, 17179869187ULL, 1856ULL, 17179869184ULL, 17448304639ULL},
+        {6, 34359738366ULL, 1919ULL, 34091302912ULL, 34359738367ULL},
+        {6, 34359738367ULL, 1919ULL, 34091302912ULL, 34359738367ULL},
+        {6, 34359738368ULL, 1920ULL, 34359738368ULL, 34896609279ULL},
+        {6, 34359738369ULL, 1920ULL, 34359738368ULL, 34896609279ULL},
+        {6, 34359738370ULL, 1920ULL, 34359738368ULL, 34896609279ULL},
+        {6, 34359738371ULL, 1920ULL, 34359738368ULL, 34896609279ULL},
+        {6, 48776099470ULL, 1946ULL, 48318382080ULL, 48855252991ULL},
+        {6, 61305010731ULL, 1970ULL, 61203283968ULL, 61740154879ULL},
+        {6, 68719476734ULL, 1983ULL, 68182605824ULL, 68719476735ULL},
+        {6, 68719476735ULL, 1983ULL, 68182605824ULL, 68719476735ULL},
+        {6, 68719476736ULL, 1984ULL, 68719476736ULL, 69793218559ULL},
+        {6, 68719476737ULL, 1984ULL, 68719476736ULL, 69793218559ULL},
+        {6, 68719476738ULL, 1984ULL, 68719476736ULL, 69793218559ULL},
+        {6, 68719476739ULL, 1984ULL, 68719476736ULL, 69793218559ULL},
+        {6, 137438953470ULL, 2047ULL, 136365211648ULL, 137438953471ULL},
+        {6, 137438953471ULL, 2047ULL, 136365211648ULL, 137438953471ULL},
+        {6, 137438953472ULL, 2048ULL, 137438953472ULL, 139586437119ULL},
+        {6, 137438953473ULL, 2048ULL, 137438953472ULL, 139586437119ULL},
+        {6, 137438953474ULL, 2048ULL, 137438953472ULL, 139586437119ULL},
+        {6, 137438953475ULL, 2048ULL, 137438953472ULL, 139586437119ULL},
+        {6, 274877906942ULL, 2111ULL, 272730423296ULL, 274877906943ULL},
+        {6, 274877906943ULL, 2111ULL, 272730423296ULL, 274877906943ULL},
+        {6, 274877906944ULL, 2112ULL, 274877906944ULL, 279172874239ULL},
+        {6, 274877906945ULL, 2112ULL, 274877906944ULL, 279172874239ULL},
+        {6, 274877906946ULL, 2112ULL, 274877906944ULL, 279172874239ULL},
+        {6, 274877906947ULL, 2112ULL, 274877906944ULL, 279172874239ULL},
+        {6, 307813037062ULL, 2119ULL, 304942678016ULL, 309237645311ULL},
+        {6, 549755813886ULL, 2175ULL, 545460846592ULL, 549755813887ULL},
+        {6, 549755813887ULL, 2175ULL, 545460846592ULL, 549755813887ULL},
+        {6, 549755813888ULL, 2176ULL, 549755813888ULL, 558345748479ULL},
+        {6, 549755813889ULL, 2176ULL, 549755813888ULL, 558345748479ULL},
+        {6, 549755813890ULL, 2176ULL, 549755813888ULL, 558345748479ULL},
+        {6, 549755813891ULL, 2176ULL, 549755813888ULL, 558345748479ULL},
+        {6, 728372698915ULL, 2196ULL, 721554505728ULL, 730144440319ULL},
+        {6, 5169920790523ULL, 2379ULL, 5153960755200ULL, 5222680231935ULL},
+        {6, 6256800544930ULL, 2395ULL, 6253472382976ULL, 6322191859711ULL},
+        {6, 37273812196833ULL, 2563ULL, 36833639530496ULL, 37383395344383ULL},
+        {6, 49265029246216ULL, 2585ULL, 48928267436032ULL, 49478023249919ULL},
+        {6, 66748136485693ULL, 2617ULL, 66520453480448ULL, 67070209294335ULL},
+        {6, 67168365853253ULL, 2618ULL, 67070209294336ULL, 67619965108223ULL},
+        {6, 96876710975391ULL, 2648ULL, 96757023244288ULL, 97856534872063ULL},
+        {6, 194187681527010ULL, 2712ULL, 193514046488576ULL, 195713069744127ULL},
+        {6, 4611686018427387903ULL, 3647ULL, 4575657221408423936ULL, 4611686018427387903ULL},
+    };
+
+    static const Rec R0[] = {{97ULL, 1ULL}, {63ULL, 100ULL}, {83ULL, 2ULL}, {12ULL, 2ULL}, {49ULL, 2ULL}, {98ULL, 1ULL}, {34ULL, 0ULL}, {705ULL, 1ULL}, {0ULL, 1ULL}, {69ULL, 1ULL}, {99ULL, 0ULL}, {54ULL, 0ULL}, {28ULL, 100ULL}, {63ULL, 5ULL}, {29ULL, 0ULL}, {58ULL, 1ULL}, {99ULL, 100ULL}, {0ULL, 1ULL}, {92ULL, 100ULL}, {95ULL, 1ULL}, {1096ULL, 0ULL}, {54ULL, 5ULL}, {786ULL, 1ULL}, {75ULL, 2ULL}, {617ULL, 2ULL}, {4ULL, 2ULL}, {51ULL, 2ULL}, {46ULL, 5ULL}, {894ULL, 0ULL}, {11ULL, 2ULL}, {13ULL, 100ULL}, {50ULL, 1ULL}, {3ULL, 2ULL}, {90ULL, 100ULL}, {99ULL, 0ULL}, {64ULL, 1ULL}, {100ULL, 5ULL}, {100ULL, 2ULL}, {73ULL, 1ULL}, {34ULL, 0ULL}, {93ULL, 1ULL}, {94ULL, 5ULL}, {631ULL, 100ULL}, {54ULL, 1ULL}, {46ULL, 5ULL}, {64ULL, 2ULL}, {45ULL, 2ULL}, {68ULL, 5ULL}, {78ULL, 1ULL}, {3ULL, 100ULL}, {22ULL, 5ULL}, {11ULL, 100ULL}, {32ULL, 1ULL}, {789ULL, 1ULL}, {2ULL, 2ULL}, {96ULL, 1ULL}, {14ULL, 100ULL}, {44ULL, 1ULL}, {20ULL, 1ULL}, {21ULL, 0ULL}};
+    static const unsigned long long NE0[][3] = {{0ULL,0ULL,2ULL}, {2ULL,2ULL,2ULL}, {3ULL,3ULL,102ULL}, {4ULL,5ULL,2ULL}, {8ULL,11ULL,102ULL}, {12ULL,15ULL,202ULL}, {16ULL,23ULL,6ULL}, {24ULL,31ULL,100ULL}, {32ULL,47ULL,14ULL}, {48ULL,63ULL,117ULL}, {64ULL,95ULL,222ULL}, {96ULL,100ULL,215ULL}};
+    static const unsigned long long P0[] = {0ULL, 11ULL, 15ULL, 63ULL, 95ULL, 100ULL, 100ULL, 100ULL, 100ULL, 100ULL};
+    static const HistCase H0 = {1, 100ULL, R0, 60, 14, 1086ULL, 105ULL, 0ULL, 100ULL, 0ULL, 12, NE0, P0};
+    static const Rec R1[] = {{0ULL, 1ULL}, {43ULL, 0ULL}, {1874ULL, 1ULL}, {54ULL, 5ULL}, {174ULL, 1ULL}, {999ULL, 100ULL}, {521ULL, 1ULL}, {455ULL, 5ULL}, {9ULL, 100ULL}, {119ULL, 1ULL}, {999ULL, 5ULL}, {45ULL, 1ULL}, {45ULL, 1ULL}, {130ULL, 5ULL}, {131ULL, 0ULL}, {915ULL, 2ULL}, {752ULL, 5ULL}, {1001ULL, 100ULL}, {370ULL, 100ULL}, {1000ULL, 100ULL}, {189ULL, 2ULL}, {255ULL, 2ULL}, {127ULL, 5ULL}, {815ULL, 1ULL}, {465ULL, 2ULL}, {185ULL, 5ULL}, {498ULL, 0ULL}, {83ULL, 100ULL}, {170ULL, 5ULL}, {122ULL, 1ULL}, {180ULL, 100ULL}, {530ULL, 5ULL}, {602ULL, 2ULL}, {53ULL, 2ULL}, {956ULL, 0ULL}, {77ULL, 100ULL}, {1743ULL, 1ULL}, {1000ULL, 0ULL}, {147ULL, 0ULL}, {151ULL, 1ULL}, {937ULL, 1ULL}, {139ULL, 100ULL}, {53ULL, 1ULL}, {183ULL, 100ULL}, {92ULL, 1ULL}, {172ULL, 1ULL}, {17ULL, 1ULL}, {5ULL, 1ULL}, {40ULL, 0ULL}, {177ULL, 1ULL}, {11ULL, 100ULL}, {1000ULL, 1ULL}, {157ULL, 0ULL}, {115ULL, 1ULL}, {7ULL, 1ULL}, {196ULL, 5ULL}, {923ULL, 1ULL}, {883ULL, 5ULL}, {484ULL, 1ULL}, {175ULL, 1ULL}, {1024ULL, 2ULL}, {970ULL, 1ULL}, {799ULL, 2ULL}, {83ULL, 1ULL}, {1349ULL, 1ULL}, {107ULL, 0ULL}, {142ULL, 1ULL}, {259ULL, 1ULL}, {43ULL, 1ULL}, {59ULL, 5ULL}, {0ULL, 1ULL}, {113ULL, 1ULL}, {151ULL, 1ULL}, {819ULL, 5ULL}, {262ULL, 0ULL}, {134ULL, 100ULL}, {9ULL, 2ULL}, {28ULL, 5ULL}, {246ULL, 1ULL}, {46ULL, 100ULL}};
+    static const unsigned long long NE1[][3] = {{0ULL,0ULL,2ULL}, {5ULL,5ULL,1ULL}, {7ULL,7ULL,1ULL}, {8ULL,9ULL,102ULL}, {10ULL,11ULL,100ULL}, {16ULL,19ULL,1ULL}, {28ULL,31ULL,5ULL}, {40ULL,47ULL,103ULL}, {48ULL,55ULL,8ULL}, {56ULL,63ULL,5ULL}, {64ULL,79ULL,100ULL}, {80ULL,95ULL,102ULL}, {112ULL,127ULL,9ULL}, {128ULL,159ULL,208ULL}, {160ULL,191ULL,216ULL}, {192ULL,223ULL,5ULL}, {224ULL,255ULL,3ULL}, {256ULL,319ULL,1ULL}, {320ULL,383ULL,100ULL}, {448ULL,511ULL,8ULL}, {512ULL,639ULL,8ULL}, {640ULL,767ULL,5ULL}, {768ULL,895ULL,13ULL}, {896ULL,1000ULL,316ULL}};
+    static const unsigned long long P1[] = {0ULL, 11ULL, 79ULL, 159ULL, 383ULL, 1000ULL, 1000ULL, 1000ULL, 1000ULL, 1000ULL};
+    static const HistCase H1 = {2, 1000ULL, R1, 80, 36, 1422ULL, 105ULL, 0ULL, 1000ULL, 0ULL, 24, NE1, P1};
+    static const Rec R2[] = {{34ULL, 1ULL}, {38ULL, 2ULL}, {4ULL, 5ULL}, {30ULL, 1ULL}, {12ULL, 0ULL}, {35ULL, 2ULL}, {9ULL, 1ULL}, {33ULL, 2ULL}, {42ULL, 100ULL}, {48ULL, 5ULL}, {49ULL, 1ULL}, {325ULL, 2ULL}, {24ULL, 0ULL}, {27ULL, 2ULL}, {36ULL, 2ULL}, {50ULL, 1ULL}, {8ULL, 2ULL}, {43ULL, 2ULL}, {19ULL, 2ULL}, {24ULL, 5ULL}, {37ULL, 2ULL}, {21ULL, 0ULL}, {0ULL, 100ULL}, {38ULL, 0ULL}, {44ULL, 100ULL}, {34ULL, 5ULL}, {45ULL, 0ULL}, {36ULL, 1ULL}, {4ULL, 2ULL}, {545ULL, 1ULL}, {4ULL, 2ULL}, {70ULL, 1ULL}, {26ULL, 100ULL}, {38ULL, 5ULL}, {24ULL, 0ULL}, {35ULL, 1ULL}, {2ULL, 1ULL}, {6ULL, 5ULL}, {12ULL, 2ULL}, {16ULL, 1ULL}, {21ULL, 1ULL}, {8ULL, 100ULL}, {29ULL, 100ULL}, {41ULL, 100ULL}, {35ULL, 1ULL}, {32ULL, 1ULL}, {46ULL, 0ULL}, {19ULL, 2ULL}, {51ULL, 5ULL}, {50ULL, 2ULL}};
+    static const unsigned long long NE2[][3] = {{0ULL,0ULL,100ULL}, {2ULL,2ULL,1ULL}, {4ULL,4ULL,9ULL}, {6ULL,6ULL,5ULL}, {8ULL,8ULL,102ULL}, {9ULL,9ULL,1ULL}, {12ULL,12ULL,2ULL}, {16ULL,17ULL,1ULL}, {18ULL,19ULL,4ULL}, {20ULL,21ULL,1ULL}, {24ULL,25ULL,5ULL}, {26ULL,27ULL,102ULL}, {28ULL,29ULL,100ULL}, {30ULL,31ULL,1ULL}, {32ULL,35ULL,13ULL}, {36ULL,39ULL,12ULL}, {40ULL,43ULL,202ULL}, {44ULL,47ULL,100ULL}, {48ULL,50ULL,18ULL}};
+    static const unsigned long long P2[] = {0ULL, 0ULL, 8ULL, 29ULL, 43ULL, 47ULL, 47ULL, 50ULL, 50ULL, 50ULL};
+    static const HistCase H2 = {3, 50ULL, R2, 50, 29, 779ULL, 9ULL, 0ULL, 50ULL, 0ULL, 19, NE2, P2};
+    static const Rec R3[] = {{3ULL, 0ULL}, {4ULL, 1ULL}, {12ULL, 5ULL}, {0ULL, 1ULL}, {11ULL, 1ULL}, {3ULL, 1ULL}, {0ULL, 100ULL}, {8ULL, 100ULL}, {5ULL, 1ULL}, {11ULL, 1ULL}, {360ULL, 0ULL}, {7ULL, 1ULL}, {8ULL, 1ULL}, {16ULL, 1ULL}, {16ULL, 100ULL}, {6ULL, 2ULL}, {9ULL, 2ULL}, {7ULL, 1ULL}, {1ULL, 1ULL}, {8ULL, 5ULL}, {15ULL, 0ULL}, {6ULL, 1ULL}, {6ULL, 0ULL}, {8ULL, 1ULL}, {10ULL, 0ULL}, {10ULL, 1ULL}, {740ULL, 1ULL}, {7ULL, 1ULL}, {5ULL, 1ULL}, {1ULL, 1ULL}};
+    static const unsigned long long NE3[][3] = {{0ULL,0ULL,101ULL}, {1ULL,1ULL,2ULL}, {3ULL,3ULL,1ULL}, {4ULL,4ULL,1ULL}, {5ULL,5ULL,2ULL}, {6ULL,6ULL,3ULL}, {7ULL,7ULL,3ULL}, {8ULL,9ULL,109ULL}, {10ULL,11ULL,3ULL}, {12ULL,13ULL,5ULL}, {14ULL,15ULL,102ULL}};
+    static const unsigned long long P3[] = {0ULL, 0ULL, 0ULL, 9ULL, 15ULL, 15ULL, 15ULL, 15ULL, 15ULL, 15ULL};
+    static const HistCase H3 = {2, 15ULL, R3, 30, 12, 332ULL, 102ULL, 0ULL, 15ULL, 0ULL, 11, NE3, P3};
+    static const Rec R4[] = {{777820ULL, 1ULL}, {988230ULL, 100ULL}, {967127ULL, 5ULL}, {119ULL, 100ULL}, {0ULL, 1ULL}, {120ULL, 100ULL}, {139ULL, 1ULL}, {13751ULL, 0ULL}, {71ULL, 1ULL}, {999999ULL, 1ULL}, {75425ULL, 1ULL}, {466444ULL, 1ULL}, {1ULL, 1ULL}, {173913ULL, 100ULL}, {80ULL, 1ULL}, {710756ULL, 0ULL}, {176ULL, 1ULL}, {999999ULL, 1ULL}, {106ULL, 1ULL}, {1000001ULL, 1ULL}, {154ULL, 5ULL}, {173ULL, 0ULL}, {79ULL, 1ULL}, {1000492ULL, 0ULL}, {123ULL, 2ULL}, {59769ULL, 1ULL}, {0ULL, 0ULL}, {103ULL, 1ULL}, {439172ULL, 1ULL}, {2ULL, 2ULL}, {46ULL, 5ULL}, {1000000ULL, 1ULL}, {974814ULL, 100ULL}, {1000001ULL, 5ULL}, {134ULL, 1ULL}, {113301ULL, 5ULL}, {835952ULL, 1ULL}, {1000037ULL, 2ULL}, {0ULL, 1ULL}, {156ULL, 1ULL}, {1000001ULL, 1ULL}, {0ULL, 1ULL}, {321043ULL, 1ULL}, {657253ULL, 1ULL}, {324328ULL, 2ULL}, {12ULL, 1ULL}, {999999ULL, 1ULL}, {152ULL, 1ULL}, {1000466ULL, 0ULL}, {14ULL, 0ULL}, {126ULL, 1ULL}, {1000133ULL, 0ULL}, {139226ULL, 0ULL}, {1000423ULL, 1ULL}, {95ULL, 1ULL}, {107ULL, 1ULL}, {158ULL, 100ULL}, {133ULL, 2ULL}, {1000001ULL, 2ULL}, {120ULL, 2ULL}, {0ULL, 2ULL}, {1000544ULL, 1ULL}, {523577ULL, 100ULL}, {22ULL, 2ULL}, {200ULL, 5ULL}, {1000369ULL, 1ULL}, {812539ULL, 1ULL}, {696273ULL, 1ULL}, {381085ULL, 5ULL}, {294494ULL, 100ULL}, {197ULL, 0ULL}, {991478ULL, 1ULL}, {608867ULL, 100ULL}, {140ULL, 100ULL}, {171ULL, 1ULL}, {128ULL, 0ULL}, {373891ULL, 1ULL}, {88ULL, 0ULL}, {999999ULL, 1ULL}, {1000000ULL, 100ULL}, {1000460ULL, 1ULL}, {1000000ULL, 5ULL}, {1000000ULL, 100ULL}, {122ULL, 1ULL}, {754645ULL, 0ULL}, {180173ULL, 5ULL}, {609060ULL, 5ULL}, {441232ULL, 1ULL}, {812336ULL, 100ULL}, {755409ULL, 1ULL}, {150ULL, 2ULL}, {189522ULL, 1ULL}, {189302ULL, 0ULL}, {494493ULL, 1ULL}, {34ULL, 1ULL}, {46ULL, 2ULL}, {9ULL, 2ULL}, {97ULL, 0ULL}, {618832ULL, 1ULL}, {95ULL, 1ULL}, {71ULL, 100ULL}, {29ULL, 0ULL}, {1000382ULL, 1ULL}, {316022ULL, 1ULL}, {131ULL, 1ULL}, {1000001ULL, 1ULL}, {1000429ULL, 2ULL}, {1000657ULL, 5ULL}, {36ULL, 1ULL}, {591249ULL, 2ULL}, {1000000ULL, 5ULL}, {169ULL, 1ULL}, {83ULL, 5ULL}, {1000000ULL, 1ULL}, {934576ULL, 5ULL}, {110ULL, 1ULL}, {122ULL, 0ULL}, {40ULL, 5ULL}, {777022ULL, 1ULL}, {106ULL, 1ULL}};
+    static const unsigned long long NE4[][3] = {{0ULL,0ULL,5ULL}, {1ULL,1ULL,1ULL}, {2ULL,2ULL,2ULL}, {9ULL,9ULL,2ULL}, {12ULL,12ULL,1ULL}, {22ULL,22ULL,2ULL}, {34ULL,34ULL,1ULL}, {36ULL,36ULL,1ULL}, {40ULL,40ULL,5ULL}, {46ULL,46ULL,7ULL}, {70ULL,71ULL,101ULL}, {78ULL,79ULL,1ULL}, {80ULL,81ULL,1ULL}, {82ULL,83ULL,5ULL}, {94ULL,95ULL,2ULL}, {102ULL,103ULL,1ULL}, {106ULL,107ULL,3ULL}, {110ULL,111ULL,1ULL}, {118ULL,119ULL,100ULL}, {120ULL,121ULL,102ULL}, {122ULL,123ULL,3ULL}, {126ULL,127ULL,1ULL}, {128ULL,131ULL,1ULL}, {132ULL,135ULL,3ULL}, {136ULL,139ULL,1ULL}, {140ULL,143ULL,100ULL}, {148ULL,151ULL,2ULL}, {152ULL,155ULL,6ULL}, {156ULL,159ULL,101ULL}, {168ULL,171ULL,2ULL}, {176ULL,179ULL,1ULL}, {200ULL,203ULL,5ULL}, {59392ULL,60415ULL,1ULL}, {73728ULL,75775ULL,1ULL}, {112640ULL,114687ULL,5ULL}, {172032ULL,176127ULL,100ULL}, {176128ULL,180223ULL,5ULL}, {188416ULL,192511ULL,1ULL}, {286720ULL,294911ULL,100ULL}, {311296ULL,319487ULL,1ULL}, {319488ULL,327679ULL,3ULL}, {368640ULL,376831ULL,1ULL}, {376832ULL,385023ULL,5ULL}, {434176ULL,442367ULL,2ULL}, {458752ULL,466943ULL,1ULL}, {491520ULL,499711ULL,1ULL}, {516096ULL,524287ULL,100ULL}, {589824ULL,606207ULL,2ULL}, {606208ULL,622591ULL,106ULL}, {655360ULL,671743ULL,1ULL}, {688128ULL,704511ULL,1ULL}, {753664ULL,770047ULL,1ULL}, {770048ULL,786431ULL,2ULL}, {802816ULL,819199ULL,101ULL}, {835584ULL,851967ULL,1ULL}, {933888ULL,950271ULL,5ULL}, {966656ULL,983039ULL,105ULL}, {983040ULL,999423ULL,101ULL}, {999424ULL,1000000ULL,240ULL}};
+    static const unsigned long long P4[] = {0ULL, 119ULL, 143ULL, 294911ULL, 983039ULL, 1000000ULL, 1000000ULL, 1000000ULL, 1000000ULL, 1000000ULL};
+    static const HistCase H4 = {5, 1000000ULL, R4, 120, 510, 1563ULL, 24ULL, 0ULL, 1000000ULL, 0ULL, 59, NE4, P4};
+    static const Rec R5[] = {{882566437ULL, 1ULL}, {66ULL, 1ULL}, {169ULL, 5ULL}, {194ULL, 0ULL}, {197ULL, 1ULL}, {50ULL, 0ULL}, {1000000932ULL, 5ULL}, {101157442ULL, 1ULL}, {751107871ULL, 100ULL}, {711783528ULL, 100ULL}, {94606369ULL, 100ULL}, {23ULL, 1ULL}, {1000000824ULL, 1ULL}, {24ULL, 100ULL}, {162ULL, 100ULL}, {11ULL, 5ULL}, {1000000001ULL, 2ULL}, {1000000000ULL, 5ULL}, {749375533ULL, 100ULL}, {983862842ULL, 1ULL}, {262954761ULL, 5ULL}, {91ULL, 5ULL}, {128ULL, 0ULL}, {125439233ULL, 5ULL}, {335308800ULL, 0ULL}, {123ULL, 1ULL}, {53ULL, 100ULL}, {1000000714ULL, 5ULL}, {199ULL, 1ULL}, {85ULL, 5ULL}, {1000000001ULL, 1ULL}, {99ULL, 1ULL}, {125ULL, 1ULL}, {152ULL, 0ULL}, {0ULL, 2ULL}, {22ULL, 5ULL}, {955106825ULL, 2ULL}, {97ULL, 100ULL}, {109ULL, 2ULL}, {104ULL, 1ULL}, {174ULL, 1ULL}, {184ULL, 100ULL}, {0ULL, 1ULL}, {269656890ULL, 5ULL}, {1000000192ULL, 1ULL}, {353733654ULL, 5ULL}, {105ULL, 2ULL}, {287695698ULL, 5ULL}, {122ULL, 2ULL}, {96ULL, 2ULL}, {119ULL, 1ULL}, {41ULL, 5ULL}, {154ULL, 1ULL}, {101ULL, 2ULL}, {169852198ULL, 100ULL}, {1ULL, 5ULL}, {14ULL, 1ULL}, {198ULL, 5ULL}, {183ULL, 1ULL}, {127ULL, 100ULL}, {987062555ULL, 1ULL}, {68ULL, 5ULL}, {200ULL, 100ULL}, {1000000503ULL, 1ULL}, {25ULL, 1ULL}, {37ULL, 0ULL}, {651310494ULL, 1ULL}, {160ULL, 0ULL}, {26ULL, 1ULL}, {496834617ULL, 0ULL}, {1000000644ULL, 1ULL}, {136372319ULL, 5ULL}, {1000000085ULL, 1ULL}, {978606522ULL, 1ULL}, {999999999ULL, 2ULL}, {849686777ULL, 0ULL}, {48ULL, 2ULL}, {112ULL, 2ULL}, {512638513ULL, 0ULL}, {892738014ULL, 100ULL}, {93ULL, 1ULL}, {8ULL, 1ULL}, {296120693ULL, 1ULL}, {121ULL, 2ULL}, {95ULL, 1ULL}, {267979993ULL, 100ULL}, {256035381ULL, 5ULL}, {793543245ULL, 1ULL}, {8ULL, 1ULL}, {1000000000ULL, 0ULL}, {19ULL, 1ULL}, {122444165ULL, 2ULL}, {498271006ULL, 0ULL}, {19ULL, 1ULL}, {133ULL, 1ULL}, {181ULL, 1ULL}, {189ULL, 1ULL}, {912754900ULL, 2ULL}, {237936669ULL, 0ULL}, {977728247ULL, 1ULL}, {41ULL, 100ULL}, {61ULL, 5ULL}, {844410079ULL, 100ULL}, {202020470ULL, 100ULL}, {97ULL, 5ULL}, {101ULL, 100ULL}, {1000000000ULL, 0ULL}, {139ULL, 100ULL}, {291949943ULL, 0ULL}, {38ULL, 1ULL}, {144237829ULL, 2ULL}, {3ULL, 1ULL}, {15ULL, 1ULL}, {580117084ULL, 1ULL}, {639541730ULL, 1ULL}, {57ULL, 100ULL}, {195ULL, 5ULL}, {315141244ULL, 1ULL}, {185ULL, 5ULL}, {1000000172ULL, 0ULL}, {28ULL, 0ULL}, {0ULL, 0ULL}, {999999999ULL, 0ULL}, {274544309ULL, 2ULL}, {167ULL, 100ULL}, {692262304ULL, 1ULL}, {3ULL, 1ULL}, {785806443ULL, 0ULL}, {1000000001ULL, 100ULL}, {628008076ULL, 5ULL}, {388748266ULL, 1ULL}, {242936037ULL, 100ULL}, {177ULL, 1ULL}, {13ULL, 1ULL}, {2ULL, 1ULL}, {0ULL, 2ULL}, {1000000089ULL, 0ULL}, {293377657ULL, 1ULL}, {107ULL, 5ULL}, {169ULL, 2ULL}, {999999999ULL, 5ULL}, {891795504ULL, 2ULL}, {1000000001ULL, 1ULL}, {8ULL, 1ULL}, {112449451ULL, 100ULL}, {27ULL, 100ULL}, {41ULL, 1ULL}, {100ULL, 2ULL}, {135ULL, 100ULL}, {871466319ULL, 100ULL}};
+    static const unsigned long long NE5[][3] = {{0ULL,0ULL,5ULL}, {1ULL,1ULL,5ULL}, {2ULL,2ULL,1ULL}, {3ULL,3ULL,2ULL}, {8ULL,8ULL,3ULL}, {11ULL,11ULL,5ULL}, {13ULL,13ULL,1ULL}, {14ULL,14ULL,1ULL}, {15ULL,15ULL,1ULL}, {19ULL,19ULL,2ULL}, {22ULL,22ULL,5ULL}, {23ULL,23ULL,1ULL}, {24ULL,24ULL,100ULL}, {25ULL,25ULL,1ULL}, {26ULL,26ULL,1ULL}, {27ULL,27ULL,100ULL}, {38ULL,38ULL,1ULL}, {41ULL,41ULL,106ULL}, {48ULL,48ULL,2ULL}, {53ULL,53ULL,100ULL}, {57ULL,57ULL,100ULL}, {61ULL,61ULL,5ULL}, {66ULL,66ULL,1ULL}, {68ULL,68ULL,5ULL}, {85ULL,85ULL,5ULL}, {91ULL,91ULL,5ULL}, {93ULL,93ULL,1ULL}, {95ULL,95ULL,1ULL}, {96ULL,96ULL,2ULL}, {97ULL,97ULL,105ULL}, {99ULL,99ULL,1ULL}, {100ULL,100ULL,2ULL}, {101ULL,101ULL,102ULL}, {104ULL,104ULL,1ULL}, {105ULL,105ULL,2ULL}, {107ULL,107ULL,5ULL}, {109ULL,109ULL,2ULL}, {112ULL,112ULL,2ULL}, {119ULL,119ULL,1ULL}, {121ULL,121ULL,2ULL}, {122ULL,122ULL,2ULL}, {123ULL,123ULL,1ULL}, {125ULL,125ULL,1ULL}, {127ULL,127ULL,100ULL}, {132ULL,133ULL,1ULL}, {134ULL,135ULL,100ULL}, {138ULL,139ULL,100ULL}, {154ULL,155ULL,1ULL}, {162ULL,163ULL,100ULL}, {166ULL,167ULL,100ULL}, {168ULL,169ULL,7ULL}, {174ULL,175ULL,1ULL}, {176ULL,177ULL,1ULL}, {180ULL,181ULL,1ULL}, {182ULL,183ULL,1ULL}, {184ULL,185ULL,105ULL}, {188ULL,189ULL,1ULL}, {194ULL,195ULL,5ULL}, {196ULL,197ULL,1ULL}, {198ULL,199ULL,6ULL}, {200ULL,201ULL,100ULL}, {94371840ULL,95420415ULL,100ULL}, {100663296ULL,101711871ULL,1ULL}, {112197632ULL,113246207ULL,100ULL}, {121634816ULL,122683391ULL,2ULL}, {124780544ULL,125829119ULL,5ULL}, {136314880ULL,138412031ULL,5ULL}, {142606336ULL,144703487ULL,2ULL}, {167772160ULL,169869311ULL,100ULL}, {201326592ULL,203423743ULL,100ULL}, {241172480ULL,243269631ULL,100ULL}, {255852544ULL,257949695ULL,5ULL}, {262144000ULL,264241151ULL,5ULL}, {266338304ULL,268435455ULL,100ULL}, {268435456ULL,272629759ULL,5ULL}, {272629760ULL,276824063ULL,2ULL}, {285212672ULL,289406975ULL,5ULL}, {289406976ULL,293601279ULL,1ULL}, {293601280ULL,297795583ULL,1ULL}, {314572800ULL,318767103ULL,1ULL}, {352321536ULL,356515839ULL,5ULL}, {385875968ULL,390070271ULL,1ULL}, {578813952ULL,587202559ULL,1ULL}, {620756992ULL,629145599ULL,5ULL}, {637534208ULL,645922815ULL,1ULL}, {645922816ULL,654311423ULL,1ULL}, {687865856ULL,696254463ULL,1ULL}, {704643072ULL,713031679ULL,100ULL}, {746586112ULL,754974719ULL,200ULL}, {788529152ULL,796917759ULL,1ULL}, {838860800ULL,847249407ULL,100ULL}, {864026624ULL,872415231ULL,100ULL}, {880803840ULL,889192447ULL,1ULL}, {889192448ULL,897581055ULL,102ULL}, {905969664ULL,914358271ULL,2ULL}, {947912704ULL,956301311ULL,2ULL}, {973078528ULL,981467135ULL,2ULL}, {981467136ULL,989855743ULL,2ULL}, {998244352ULL,1000000000ULL,131ULL}};
+    static const unsigned long long P5[] = {0ULL, 41ULL, 101ULL, 201ULL, 713031679ULL, 872415231ULL, 897581055ULL, 1000000000ULL, 1000000000ULL, 1000000000ULL};
+    static const HistCase H5 = {6, 1000000000ULL, R5, 150, 1592, 2926ULL, 119ULL, 0ULL, 1000000000ULL, 0ULL, 99, NE5, P5};
+    static const Rec R6[] = {{38ULL, 2ULL}, {208460025899ULL, 1ULL}, {82526500300ULL, 1ULL}, {17ULL, 1ULL}, {108ULL, 1ULL}, {1099511627902ULL, 1ULL}, {874393242357ULL, 1ULL}, {0ULL, 5ULL}, {1099511628072ULL, 2ULL}, {30ULL, 5ULL}, {174ULL, 1ULL}, {146ULL, 0ULL}, {24ULL, 5ULL}, {131272962243ULL, 5ULL}, {174ULL, 5ULL}, {80ULL, 2ULL}, {796515361840ULL, 1ULL}, {46ULL, 0ULL}, {633287920698ULL, 5ULL}, {0ULL, 5ULL}, {193ULL, 1ULL}, {125ULL, 2ULL}, {171ULL, 1ULL}, {748671844812ULL, 0ULL}, {127ULL, 5ULL}, {1040541465985ULL, 0ULL}, {681617718070ULL, 0ULL}, {624684270448ULL, 0ULL}, {171ULL, 1ULL}, {118ULL, 1ULL}, {29ULL, 2ULL}, {196ULL, 1ULL}, {63ULL, 2ULL}, {127ULL, 1ULL}, {102ULL, 5ULL}, {35ULL, 100ULL}, {140ULL, 1ULL}, {790215859018ULL, 0ULL}, {1099511628756ULL, 1ULL}, {45ULL, 1ULL}, {59ULL, 1ULL}, {150ULL, 1ULL}, {1ULL, 1ULL}, {94ULL, 5ULL}, {278971431360ULL, 0ULL}, {1099511628749ULL, 5ULL}, {119141468289ULL, 2ULL}, {1099511628574ULL, 100ULL}, {861395513032ULL, 2ULL}, {26ULL, 2ULL}, {416879180072ULL, 1ULL}, {1099511627775ULL, 1ULL}, {153ULL, 1ULL}, {145ULL, 1ULL}, {802939620933ULL, 5ULL}, {53ULL, 5ULL}, {162ULL, 1ULL}, {1099511627777ULL, 2ULL}, {124ULL, 2ULL}, {79ULL, 1ULL}, {191ULL, 1ULL}, {355159679478ULL, 5ULL}, {135ULL, 1ULL}, {139ULL, 1ULL}, {574861820150ULL, 5ULL}, {42ULL, 1ULL}, {428863775114ULL, 100ULL}, {102ULL, 0ULL}, {1099511627980ULL, 5ULL}, {187ULL, 1ULL}, {1099511627777ULL, 2ULL}, {177ULL, 5ULL}, {1099511627775ULL, 100ULL}, {1099511627777ULL, 1ULL}, {26ULL, 1ULL}, {86ULL, 1ULL}, {156ULL, 100ULL}, {167ULL, 1ULL}, {264830198841ULL, 2ULL}, {441308492946ULL, 2ULL}, {1099511628220ULL, 100ULL}, {870683607418ULL, 2ULL}, {21ULL, 0ULL}, {32ULL, 1ULL}, {119ULL, 100ULL}, {772825538282ULL, 1ULL}, {43512244350ULL, 1ULL}, {954080817032ULL, 100ULL}, {54ULL, 1ULL}, {74ULL, 5ULL}, {150ULL, 1ULL}, {107ULL, 100ULL}, {189ULL, 1ULL}, {1099511628454ULL, 5ULL}, {1099511628305ULL, 2ULL}, {1099511628675ULL, 5ULL}, {38ULL, 5ULL}, {970116313111ULL, 100ULL}, {1ULL, 100ULL}, {309977868831ULL, 2ULL}};
+    static const unsigned long long NE6[][3] = {{0ULL,0ULL,10ULL}, {1ULL,1ULL,101ULL}, {17ULL,17ULL,1ULL}, {24ULL,24ULL,5ULL}, {26ULL,26ULL,3ULL}, {29ULL,29ULL,2ULL}, {30ULL,30ULL,5ULL}, {32ULL,33ULL,1ULL}, {34ULL,35ULL,100ULL}, {38ULL,39ULL,7ULL}, {42ULL,43ULL,1ULL}, {44ULL,45ULL,1ULL}, {52ULL,53ULL,5ULL}, {54ULL,55ULL,1ULL}, {58ULL,59ULL,1ULL}, {62ULL,63ULL,2ULL}, {72ULL,75ULL,5ULL}, {76ULL,79ULL,1ULL}, {80ULL,83ULL,2ULL}, {84ULL,87ULL,1ULL}, {92ULL,95ULL,5ULL}, {100ULL,103ULL,5ULL}, {104ULL,107ULL,100ULL}, {108ULL,111ULL,1ULL}, {116ULL,119ULL,101ULL}, {124ULL,127ULL,10ULL}, {128ULL,135ULL,1ULL}, {136ULL,143ULL,2ULL}, {144ULL,151ULL,3ULL}, {152ULL,159ULL,101ULL}, {160ULL,167ULL,2ULL}, {168ULL,175ULL,8ULL}, {176ULL,183ULL,5ULL}, {184ULL,191ULL,3ULL}, {192ULL,199ULL,2ULL}, {42949672960ULL,45097156607ULL,1ULL}, {81604378624ULL,85899345919ULL,1ULL}, {115964116992ULL,120259084287ULL,2ULL}, {128849018880ULL,133143986175ULL,5ULL}, {206158430208ULL,214748364799ULL,1ULL}, {257698037760ULL,266287972351ULL,2ULL}, {309237645312ULL,326417514495ULL,2ULL}, {343597383680ULL,360777252863ULL,5ULL}, {412316860416ULL,429496729599ULL,101ULL}, {429496729600ULL,446676598783ULL,2ULL}, {549755813888ULL,584115552255ULL,5ULL}, {618475290624ULL,652835028991ULL,5ULL}, {755914244096ULL,790273982463ULL,1ULL}, {790273982464ULL,824633720831ULL,6ULL}, {858993459200ULL,893353197567ULL,5ULL}, {927712935936ULL,962072674303ULL,100ULL}, {962072674304ULL,996432412671ULL,100ULL}, {1065151889408ULL,1099511627775ULL,101ULL}, {1099511627776ULL,1099511627776ULL,231ULL}};
+    static const unsigned long long P6[] = {0ULL, 33ULL, 107ULL, 429496729599ULL, 1099511627775ULL, 1099511627776ULL, 1099511627776ULL, 1099511627776ULL, 1099511627776ULL, 1099511627776ULL};
+    static const HistCase H6 = {4, 1099511627776ULL, R6, 100, 593, 1280ULL, 231ULL, 0ULL, 1099511627776ULL, 0ULL, 54, NE6, P6};
+    static const Rec R7[] = {{1ULL, 1ULL}, {0ULL, 1ULL}, {0ULL, 2ULL}, {1ULL, 2ULL}, {1ULL, 5ULL}, {1ULL, 1ULL}, {0ULL, 0ULL}, {1ULL, 2ULL}, {0ULL, 0ULL}, {1ULL, 1ULL}};
+    static const unsigned long long NE7[][3] = {{0ULL,0ULL,3ULL}, {1ULL,1ULL,12ULL}};
+    static const unsigned long long P7[] = {0ULL, 0ULL, 1ULL, 1ULL, 1ULL, 1ULL, 1ULL, 1ULL, 1ULL, 1ULL};
+    static const HistCase H7 = {1, 1ULL, R7, 10, 2, 15ULL, 0ULL, 0ULL, 1ULL, 0ULL, 2, NE7, P7};
+    static const Rec R8[] = {{5ULL, 1ULL}, {0ULL, 1ULL}, {1ULL, 1ULL}, {0ULL, 0ULL}, {7ULL, 0ULL}, {2ULL, 1ULL}, {2ULL, 5ULL}, {612ULL, 1ULL}, {6ULL, 100ULL}, {1ULL, 1ULL}, {3ULL, 0ULL}, {1ULL, 100ULL}, {3ULL, 2ULL}, {0ULL, 1ULL}, {0ULL, 2ULL}, {6ULL, 100ULL}, {0ULL, 1ULL}, {1ULL, 5ULL}, {3ULL, 100ULL}, {0ULL, 1ULL}};
+    static const unsigned long long NE8[][3] = {{0ULL,0ULL,6ULL}, {1ULL,1ULL,107ULL}, {2ULL,2ULL,6ULL}, {3ULL,3ULL,102ULL}, {5ULL,5ULL,1ULL}, {6ULL,6ULL,200ULL}, {8ULL,8ULL,1ULL}};
+    static const unsigned long long P8[] = {0ULL, 1ULL, 1ULL, 3ULL, 6ULL, 6ULL, 6ULL, 6ULL, 8ULL, 8ULL};
+    static const HistCase H8 = {2, 8ULL, R8, 20, 9, 423ULL, 1ULL, 0ULL, 8ULL, 0ULL, 7, NE8, P8};
+    static const Rec R9[] = {{13ULL, 2ULL}, {6ULL, 2ULL}, {859ULL, 1ULL}, {5ULL, 1ULL}, {10ULL, 1ULL}, {11ULL, 1ULL}, {4ULL, 5ULL}, {13ULL, 1ULL}, {284ULL, 2ULL}, {9ULL, 0ULL}, {14ULL, 100ULL}, {261ULL, 2ULL}, {1ULL, 5ULL}, {4ULL, 1ULL}, {17ULL, 5ULL}, {7ULL, 1ULL}, {14ULL, 2ULL}, {10ULL, 100ULL}, {7ULL, 2ULL}, {1ULL, 2ULL}};
+    static const unsigned long long NE9[][3] = {{1ULL,1ULL,7ULL}, {4ULL,4ULL,6ULL}, {5ULL,5ULL,1ULL}, {6ULL,6ULL,2ULL}, {7ULL,7ULL,3ULL}, {10ULL,10ULL,101ULL}, {11ULL,11ULL,1ULL}, {13ULL,13ULL,3ULL}, {14ULL,14ULL,102ULL}, {16ULL,16ULL,10ULL}};
+    static const unsigned long long P9[] = {1ULL, 10ULL, 10ULL, 10ULL, 14ULL, 14ULL, 14ULL, 16ULL, 16ULL, 16ULL};
+    static const HistCase H9 = {3, 16ULL, R9, 20, 17, 236ULL, 10ULL, 1ULL, 16ULL, 0ULL, 10, NE9, P9};
+    static const Rec R10[] = {{143ULL, 100ULL}, {4611686018427387902ULL, 2ULL}, {1751537126674979378ULL, 1ULL}, {4611686018427388390ULL, 0ULL}, {868135662961366053ULL, 2ULL}, {23ULL, 5ULL}, {4611686018427388613ULL, 0ULL}, {101ULL, 2ULL}, {582593577029467830ULL, 1ULL}, {61ULL, 5ULL}, {118ULL, 1ULL}, {50ULL, 5ULL}, {75ULL, 2ULL}, {21ULL, 2ULL}, {2907919076410379431ULL, 100ULL}, {73ULL, 1ULL}, {196ULL, 1ULL}, {74ULL, 2ULL}, {4ULL, 100ULL}, {1934301718819376095ULL, 1ULL}, {181ULL, 2ULL}, {144ULL, 0ULL}, {172ULL, 1ULL}, {79ULL, 1ULL}, {104ULL, 100ULL}, {4611686018427387903ULL, 1ULL}, {552419148925104815ULL, 2ULL}, {1737549264179820384ULL, 2ULL}, {1207958133670896862ULL, 2ULL}, {3641879517272963007ULL, 2ULL}, {0ULL, 1ULL}, {4611686018427388901ULL, 100ULL}, {1943458790125241535ULL, 1ULL}, {154ULL, 0ULL}, {1966822948903305708ULL, 2ULL}, {197ULL, 5ULL}, {75ULL, 2ULL}, {23ULL, 1ULL}, {143045939831380056ULL, 5ULL}, {159ULL, 2ULL}};
+    static const unsigned long long NE10[][3] = {{0ULL,0ULL,1ULL}, {4ULL,4ULL,100ULL}, {21ULL,21ULL,2ULL}, {23ULL,23ULL,6ULL}, {50ULL,50ULL,5ULL}, {61ULL,61ULL,5ULL}, {73ULL,73ULL,1ULL}, {74ULL,74ULL,2ULL}, {75ULL,75ULL,4ULL}, {79ULL,79ULL,1ULL}, {101ULL,101ULL,2ULL}, {104ULL,104ULL,100ULL}, {118ULL,118ULL,1ULL}, {142ULL,143ULL,100ULL}, {158ULL,159ULL,2ULL}, {172ULL,173ULL,1ULL}, {180ULL,181ULL,2ULL}, {196ULL,197ULL,6ULL}, {142989288169013248ULL,144115188075855871ULL,5ULL}, {549439154539200512ULL,553942754166571007ULL,2ULL}, {576460752303423488ULL,585467951558164479ULL,1ULL}, {864691128455135232ULL,873698327709876223ULL,2ULL}, {1206964700135292928ULL,1224979098644774911ULL,2ULL}, {1729382256910270464ULL,1747396655419752447ULL,2ULL}, {1747396655419752448ULL,1765411053929234431ULL,1ULL}, {1927540640514572288ULL,1945555039024054271ULL,2ULL}, {1963569437533536256ULL,1981583836043018239ULL,2ULL}, {2882303761517117440ULL,2918332558536081407ULL,100ULL}, {3638908498915360768ULL,3674937295934324735ULL,2ULL}, {4575657221408423936ULL,4611686018427387903ULL,103ULL}};
+    static const unsigned long long P10[] = {0ULL, 4ULL, 104ULL, 143ULL, 2918332558536081407ULL, 4611686018427387903ULL, 4611686018427387903ULL, 4611686018427387903ULL, 4611686018427387903ULL, 4611686018427387903ULL};
+    static const HistCase H10 = {6, 4611686018427387903ULL, R10, 40, 3648, 565ULL, 100ULL, 0ULL, 4611686018427387903ULL, 0ULL, 30, NE10, P10};
+
+    static const HistCase *HISTS[] = {&H0, &H1, &H2, &H3, &H4, &H5, &H6, &H7, &H8, &H9, &H10};
+
+    static void test_index_table() {
+        for (size_t i = 0; i < sizeof INDEXES / sizeof INDEXES[0]; i++) {
+            const IndexCase &c = INDEXES[i];
+            std::string ctx = "k=" + std::to_string(c.k) + " v=" + std::to_string(c.v);
+            uint64_t idx = Histogram::bucket_index_of(c.k, c.v);
+            CHECK_EQ_CTX(ctx, idx, c.index);
+            /* the bucket bounds, through a histogram large enough to hold the value */
+            if (c.v < (1ULL << 40)) {
+                Histogram h(c.k, (1ULL << 41));
+                CHECK_EQ_CTX(ctx, h.bucket_low(static_cast<size_t>(idx)), c.low);
+                CHECK_EQ_CTX(ctx, h.bucket_high(static_cast<size_t>(idx)), c.high);
+            }
+        }
+    }
+
+    static void test_known_layout() {
+        /* k = 2: S = 4 */
+        Histogram h(2, 1000);
+        CHECK_EQ(Histogram::bucket_index_of(2, 0), 0u);
+        CHECK_EQ(Histogram::bucket_index_of(2, 7), 7u);
+        CHECK_EQ(Histogram::bucket_index_of(2, 8), 8u);
+        CHECK_EQ(Histogram::bucket_index_of(2, 9), 8u);
+        CHECK_EQ(Histogram::bucket_index_of(2, 10), 9u);
+        CHECK_EQ(Histogram::bucket_index_of(2, 15), 11u);
+        CHECK_EQ(Histogram::bucket_index_of(2, 16), 12u);
+        CHECK_EQ(Histogram::bucket_index_of(2, 19), 12u);
+        CHECK_EQ(Histogram::bucket_index_of(2, 20), 13u);
+        CHECK_EQ(Histogram::bucket_index_of(2, 31), 15u);
+        CHECK_EQ(Histogram::bucket_index_of(2, 32), 16u);
+        CHECK_EQ(h.bucket_low(8), 8u);
+        CHECK_EQ(h.bucket_high(8), 9u);
+        CHECK_EQ(h.bucket_low(12), 16u);
+        CHECK_EQ(h.bucket_high(12), 19u);
+        CHECK_EQ(h.bucket_low(15), 28u);
+        CHECK_EQ(h.bucket_high(15), 31u);
+        CHECK_EQ(h.bucket_count(), static_cast<size_t>(Histogram::bucket_index_of(2, 1000)) + 1);
+        CHECK_EQ(h.bucket_count(), 36u);
+        CHECK_THROWS(h.bucket_low(36), std::out_of_range);
+        CHECK_THROWS(h.bucket_high(36), std::out_of_range);
+        CHECK_THROWS(h.count_at(36), std::out_of_range);
+        CHECK_EQ(h.bucket_low(35), 896u);
+        CHECK_THROWS(h.bucket_low(100000), std::out_of_range);
+        CHECK_EQ(h.bucket_high(35), 1023u);  /* the last bucket is not cut at max_value */
+    }
+
+    static void test_constructor() {
+        CHECK_THROWS(Histogram(0, 100), std::invalid_argument);
+        CHECK_THROWS(Histogram(7, 100), std::invalid_argument);
+        CHECK_THROWS(Histogram(-1, 100), std::invalid_argument);
+        CHECK_THROWS(Histogram(3, 0), std::invalid_argument);
+        CHECK_THROWS(Histogram(3, 1ULL << 62), std::invalid_argument);
+        CHECK_THROWS(Histogram(3, ~0ULL), std::invalid_argument);
+        Histogram a(1, 1);
+        CHECK_EQ(a.bucket_count(), 2u);
+        Histogram b(6, (1ULL << 62) - 1);
+        CHECK_EQ(b.bucket_count(), static_cast<size_t>(Histogram::bucket_index_of(6, (1ULL << 62) - 1)) + 1);
+        CHECK_EQ(Histogram::bucket_index_of(6, (1ULL << 62) - 1), 3647u);
+        CHECK_EQ(b.bucket_count(), 3648u);
+        Histogram c(6, 128);
+        CHECK_EQ(c.bucket_count(), 129u);
+        Histogram d(6, 127);
+        CHECK_EQ(d.bucket_count(), 128u);
+    }
+
+    static void test_hist_table() {
+        static const int PCTS[] = {1, 100, 250, 500, 750, 900, 950, 990, 999, 1000};
+        for (size_t hi = 0; hi < sizeof HISTS / sizeof HISTS[0]; hi++) {
+            const HistCase &c = *HISTS[hi];
+            std::string ctx = "histogram " + std::to_string(hi) + " (k=" + std::to_string(c.k) + ", max=" + std::to_string(c.max) + ")";
+            Histogram h(c.k, c.max);
+            CHECK_EQ_CTX(ctx, h.total(), 0ULL);
+            CHECK_EQ_CTX(ctx, h.percentile(500), 0ULL);
+            CHECK_EQ_CTX(ctx, h.min_recorded(), 0ULL);
+            CHECK_EQ_CTX(ctx, h.max_recorded(), 0ULL);
+            for (int i = 0; i < c.nrecs; i++) h.record(c.recs[i].v, c.recs[i].n);
+            CHECK_EQ_CTX(ctx, h.bucket_count(), static_cast<size_t>(c.nbuckets));
+            CHECK_EQ_CTX(ctx, h.total(), c.total);
+            CHECK_EQ_CTX(ctx, h.overflow(), c.overflow);
+            CHECK_EQ_CTX(ctx, h.min_recorded(), c.minr);
+            CHECK_EQ_CTX(ctx, h.max_recorded(), c.maxr);
+            for (size_t p = 0; p < sizeof PCTS / sizeof PCTS[0]; p++) {
+                CHECK_EQ_CTX(ctx + " p" + std::to_string(PCTS[p]), h.percentile(PCTS[p]), c.pct[p]);
+            }
+            std::vector<std::array<uint64_t, 3>> ne = h.nonempty();
+            CHECK_EQ_CTX(ctx, ne.size(), static_cast<size_t>(c.nne));
+            for (size_t i = 0; i < ne.size() && i < static_cast<size_t>(c.nne); i++) {
+                CHECK_EQ_CTX(ctx + " bucket " + std::to_string(i), ne[i][0], c.ne[i][0]);
+                CHECK_EQ_CTX(ctx + " bucket " + std::to_string(i), ne[i][1], c.ne[i][1]);
+                CHECK_EQ_CTX(ctx + " bucket " + std::to_string(i), ne[i][2], c.ne[i][2]);
+            }
+            /* the sum of the bucket counts is the total */
+            uint64_t sum = 0;
+            for (size_t i = 0; i < h.bucket_count(); i++) sum += h.count_at(i);
+            CHECK_EQ_CTX(ctx, sum, c.total);
+        }
+    }
+
+    static void test_percentile_args() {
+        Histogram h(3, 1000);
+        h.record(10);
+        CHECK_THROWS(h.percentile(0), std::invalid_argument);
+        CHECK_THROWS(h.percentile(-5), std::invalid_argument);
+        CHECK_THROWS(h.percentile(1001), std::invalid_argument);
+        CHECK_EQ(h.percentile(1), 10u);
+        CHECK_EQ(h.percentile(1000), 10u);
+        /* nearest rank: 4 observations, p=250 -> rank 1, p=251 -> rank 2, p=500 -> rank 2, p=501 -> rank 3 */
+        Histogram q(3, 1000);
+        q.record(1);
+        q.record(2);
+        q.record(3);
+        q.record(4);
+        CHECK_EQ(q.percentile(250), 1u);
+        CHECK_EQ(q.percentile(251), 2u);
+        CHECK_EQ(q.percentile(500), 2u);
+        CHECK_EQ(q.percentile(501), 3u);
+        CHECK_EQ(q.percentile(750), 3u);
+        CHECK_EQ(q.percentile(751), 4u);
+        CHECK_EQ(q.percentile(1000), 4u);
+        /* the high of an inexact bucket is reported, capped at max_value */
+        Histogram r(2, 30);
+        r.record(17);
+        CHECK_EQ(r.percentile(500), 19u);
+        r.record(1000);
+        CHECK_EQ(r.percentile(1000), 30u);
+        CHECK_EQ(r.max_recorded(), 30u);
+        CHECK_EQ(r.min_recorded(), 16u);
+        CHECK_EQ(r.overflow(), 1u);
+        CHECK_EQ(r.total(), 2u);
+    }
+
+    static void test_record_edges() {
+        Histogram h(2, 100);
+        h.record(5, 0);
+        CHECK_EQ(h.total(), 0u);
+        h.record(100);
+        CHECK_EQ(h.overflow(), 0u);
+        h.record(101);
+        CHECK_EQ(h.overflow(), 1u);
+        h.record(~0ULL, 3);
+        CHECK_EQ(h.overflow(), 4u);
+        CHECK_EQ(h.total(), 5u);
+        size_t last = h.bucket_count() - 1;
+        CHECK_EQ(h.count_at(last), 5u);
+        h.record(0, 7);
+        CHECK_EQ(h.count_at(0), 7u);
+        CHECK_EQ(h.min_recorded(), 0u);
+        CHECK_EQ(h.total(), 12u);
+        Histogram big(3, 1000);
+        big.record(1ULL << 40, 1ULL << 40);
+        CHECK_EQ(big.total(), 1ULL << 40);
+        CHECK_EQ(big.overflow(), 1ULL << 40);
+    }
+
+    static void test_merge() {
+        Histogram a(3, 1000), b(3, 1000);
+        a.record(5, 2);
+        a.record(100, 3);
+        a.record(5000, 1);
+        b.record(5, 1);
+        b.record(999, 4);
+        b.record(1001, 2);
+        a.merge(b);
+        CHECK_EQ(a.total(), 13u);
+        CHECK_EQ(a.overflow(), 3u);
+        CHECK_EQ(b.total(), 7u);
+        CHECK_EQ(a.percentile(1), 5u);
+        CHECK_EQ(a.percentile(500), 1000u);
+        auto ne = a.nonempty();
+        CHECK_EQ(ne.size(), 3u);
+        CHECK_EQ(ne[0][2], 3u);
+        CHECK_EQ(ne[1][0], 96u);
+        CHECK_EQ(ne[1][1], 103u);
+        CHECK_EQ(ne[1][2], 3u);
+        CHECK_EQ(ne[2][2], 7u);
+        Histogram other_k(2, 1000), other_max(3, 999);
+        CHECK_THROWS(a.merge(other_k), std::invalid_argument);
+        CHECK_THROWS(a.merge(other_max), std::invalid_argument);
+        CHECK_EQ(a.total(), 13u);
+        Histogram empty(3, 1000);
+        a.merge(empty);
+        CHECK_EQ(a.total(), 13u);
+    }
+
+    int main() {
+        h_init();
+        test_index_table();
+        test_known_layout();
+        test_constructor();
+        test_hist_table();
+        test_percentile_args();
+        test_record_edges();
+        test_merge();
+        return h_report();
+    }
+''')
+
+LIB = Lib(
+    name="loghist", lang="cpp", title="the loghist latency histogram",
+    blurb="The service's metrics agent records request latencies in a loghist histogram, which keeps small values exact and larger ones within a bounded relative error.",
+    files={"README.md": README1, "include/loghist.hpp": F2, "src/loghist.cpp": F3},
+    visible_tests={"tests/test_main.cpp": V4, "tests/harness.hpp": _lang3.CPP_HARNESS},
+    hidden_tests={"tests/test_main.cpp": H5},
+    mutate=["src/loghist.cpp"], difficulty=3, tags=["histogram", "percentiles", "bit-twiddling"],
+    verify=_lang3.CPP_VERIFY,
+)
+
+_lang3.add(LIB, n=8)

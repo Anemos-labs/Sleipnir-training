@@ -177,7 +177,9 @@ def gen_count(rng, n):
         desc = describe(dom, flt)
         ph = [f"How many {dom['plural']} {desc} are in this archive?{ins}",
               f"Count the {dom['plural']} {desc}. Read the files, don't estimate.{ins}",
-              f"I need a number for a report: {dom['plural']} {desc}, how many?{ins}"]
+              f"I need a number for a report: {dom['plural']} {desc}, how many?{ins}",
+              f"Can you tell me how many {dom['plural']} there are {desc}?{ins}",
+              f"For the monthly figures: the number of {dom['plural']} {desc}.{ins}"]
         made += 1
         d = k + (nrec >= 80) + (nrec >= 160)
         yield W.say_task(slug=f"{made:02d}-{dkey}-{k}cond", prompt=W.voice(rng, org, rng.choice(ph)), difficulty=min(5, d), start=files, contains=[c],
@@ -202,7 +204,9 @@ def gen_find(rng, n):
         desc = describe(dom, flt)
         ph = [f"List every {dom['noun']} {desc}. Write `answer.json` as {{\"ids\": [\"{dom['prefix']}-0001\", ...]}} with the record ids in any order.",
               f"Which {dom['plural']} {desc}? I need the full list of ids in `answer.json` under the key `ids`.",
-              f"Please find all {dom['plural']} {desc} and save their ids to `answer.json` ({{\"ids\": [...]}})."]
+              f"Please find all {dom['plural']} {desc} and save their ids to `answer.json` ({{\"ids\": [...]}}).",
+              f"Pull out the ids of the {dom['plural']} {desc}. I want them in `answer.json`, key `ids`, as strings exactly as in the filenames.",
+              f"Which {dom['plural']} {desc}? Please put the complete list of ids in `answer.json` ({{\"ids\": [...]}}); order doesn't matter."]
         made += 1
         d = len(flt) + (nrec >= 80) + (nrec >= 160)
         yield W.file_task(slug=f"{made:02d}-{dkey}-{len(ids)}ids", prompt=W.voice(rng, org, rng.choice(ph)), difficulty=min(5, d), start=files,
@@ -239,7 +243,9 @@ def gen_order(rng, n):
         sel.sort(key=lambda r: (r["priority"], r["due"], r["id"]))
         ids = [r["id"] for r in sel]
         ph = [f"Make me a work queue: all {dom['plural']} {desc}, ordered by priority (P1 first), then earliest due date, then id. Write `order.json` as {{\"queue\": [\"<id>\", ...]}}.",
-              f"Which {dom['plural']} {desc} should be handled first? Give me the full ordering in `order.json` under `queue`: most urgent priority first, ties broken by the earlier due date, then by id (ascending)."]
+              f"Which {dom['plural']} {desc} should be handled first? Give me the full ordering in `order.json` under `queue`: most urgent priority first, ties broken by the earlier due date, then by id (ascending).",
+              f"Please sort the {dom['plural']} {desc} into a queue and save it as `order.json` ({{\"queue\": [...]}}): P1 before P2 and so on, then the earlier due date, then the lower id.",
+              f"I'm planning next week's work. List, in `order.json` under `queue`, every {dom['noun']} {desc}, ordered by priority (P1 first), then due date (earliest first), then id."]
         made += 1
         d = 2 + (tier != "easy") + (len(sel) >= 6) + (len(sel) >= 10) + (nrec >= 60)
         yield W.file_task(slug=f"{made:02d}-{dkey}-{len(ids)}", prompt=W.voice(rng, org, rng.choice(ph)), difficulty=min(5, d), start=files,

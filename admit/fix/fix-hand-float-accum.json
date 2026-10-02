@@ -1,0 +1,46 @@
+[
+{
+"id": "fix-hand-float-accum-01-approx-equal-is-exact-equality",
+"ok": true
+},
+{
+"id": "fix-hand-float-accum-02-percent-change-divides-by-zero",
+"ok": true
+},
+{
+"id": "fix-hand-float-accum-03-mean-uses-plain-sum",
+"ok": true
+},
+{
+"id": "fix-hand-float-accum-04-bins-computed-in-binary-floats",
+"ok": true
+},
+{
+"id": "fix-hand-float-accum-05-moving-average-updates-a-running-sum",
+"ok": true
+},
+{
+"id": "fix-hand-float-accum-06-variance-by-the-textbook-shortcut",
+"ok": true
+},
+{
+"id": "fix-hand-float-accum-07-approx-eq-is-exact",
+"ok": true
+},
+{
+"id": "fix-hand-float-accum-08-cents-truncated",
+"ok": true
+},
+{
+"id": "fix-hand-float-accum-09-argmax-prefers-the-last-tie",
+"ok": true
+},
+{
+"id": "fix-hand-float-accum-10-mean-accumulated-in-f32",
+"ok": true
+},
+{
+"id": "fix-hand-float-accum-11-median-sorts-with-partial-cmp",
+"ok": true
+}
+]

@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-arrears-01-negate",
+"ok": true
+},
+{
+"id": "fix-py-arrears-02-cmp",
+"ok": true
+},
+{
+"id": "fix-py-arrears-03-arith",
+"ok": true
+},
+{
+"id": "fix-py-arrears-04-delete",
+"ok": true
+},
+{
+"id": "fix-py-arrears-05-swap",
+"ok": true
+},
+{
+"id": "fix-py-arrears-06-const",
+"ok": true
+},
+{
+"id": "fix-py-arrears-07-cmp",
+"ok": true
+},
+{
+"id": "fix-py-arrears-08-arith",
+"ok": true
+},
+{
+"id": "fix-py-arrears-09-delete",
+"ok": true
+},
+{
+"id": "fix-py-arrears-10-const",
+"ok": true
+}
+]

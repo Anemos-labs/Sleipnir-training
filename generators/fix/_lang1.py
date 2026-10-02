@@ -21,8 +21,10 @@ CARGO_CONFIG = '[env]\nRUST_BACKTRACE = { value = "0", force = true }\n'
 
 
 def cargo(name: str) -> str:
-    """Cargo.toml without dependencies; doc tests are off so indented doc comments never become tests."""
-    return langs.cargo_toml(name).replace("[dependencies]", "[lib]\ndoctest = false\n\n[dependencies]")
+    """Cargo.toml without dependencies; doc tests are off so indented doc comments never become tests, and the
+    dev profile skips debug info and incremental state so every test run compiles quickly."""
+    toml = langs.cargo_toml(name).replace("[dependencies]", "[lib]\ndoctest = false\n\n[dependencies]")
+    return toml + "\n[profile.dev]\ndebug = 0\nincremental = false\n"
 
 
 _THREAD_ID = re.compile(r"(thread '[^']*') \(\d+\) panicked")

@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-pointsbank-01-cmp",
+"ok": true
+},
+{
+"id": "fix-py-pointsbank-02-const",
+"ok": true
+},
+{
+"id": "fix-py-pointsbank-03-swap",
+"ok": true
+},
+{
+"id": "fix-py-pointsbank-04-delete",
+"ok": true
+},
+{
+"id": "fix-py-pointsbank-05-negate",
+"ok": true
+},
+{
+"id": "fix-py-pointsbank-06-arith",
+"ok": true
+},
+{
+"id": "fix-py-pointsbank-07-cmp",
+"ok": true
+},
+{
+"id": "fix-py-pointsbank-08-const",
+"ok": true
+},
+{
+"id": "fix-py-pointsbank-09-delete",
+"ok": true
+},
+{
+"id": "fix-py-pointsbank-10-negate",
+"ok": true
+}
+]

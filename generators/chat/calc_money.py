@@ -32,10 +32,10 @@ BS_INTRO = [
 ]
 
 
-@family("chat-bill-split", category="chat", lang="text", kind="lookup", n=12, mode="answer",
+@family("chat-bill-split", category="chat", lang="text", kind="lookup", n=8, mode="answer",
         summary="restaurant bill with shared dishes, tax, tip, coupon, gift card or birthday rule; each person's final amount")
 def gen_bill(rng, n):
-    plan = [2, 3, 3, 4, 5, 2, 3, 4, 5, 3, 4, 3]
+    plan = [2, 2, 2, 3, 3, 4, 4, 5]
     for i in range(n):
         d = plan[i % len(plan)]
         for _attempt in range(100):
@@ -134,10 +134,10 @@ def _t(m):
     return f"{m // 60:02d}:{m % 60:02d}"
 
 
-@family("chat-shift-pay", category="chat", lang="text", kind="lookup", n=12, mode="answer",
+@family("chat-shift-pay", category="chat", lang="text", kind="lookup", n=8, mode="answer",
         summary="weekly gross pay from a pasted timesheet with unpaid gaps, weekly overtime, night uplift, Sunday premium, a lead rate")
 def gen_pay(rng, n):
-    plan = [2, 3, 3, 4, 4, 5, 2, 3, 4, 5, 3, 4]
+    plan = [2, 2, 2, 3, 3, 4, 4, 5]
     for i in range(n):
         d = plan[i % len(plan)]
         for _attempt in range(200):
@@ -232,7 +232,7 @@ def gen_pay(rng, n):
             reg = C.register_for(rng)
             if d >= 4 and rng.random() < 0.5:
                 files = {"timesheet.txt": "\n".join(tbl) + "\n"}
-                prompt = C.chat(rng, intro.replace("Here is my timesheet.", "My timesheet is in timesheet.txt.").replace("This is what I actually worked (I keep my own notes).", "My own notes of what I actually worked are in timesheet.txt."), ask, None, reg, spec=spec)
+                prompt = C.chat(rng, intro.replace(" Here is my timesheet.", "").replace(" This is what I actually worked (I keep my own notes).", "").replace(" Here are my notes.", ""), ask, None, reg, spec="My hours for the week are in timesheet.txt (one line per day). " + spec)
                 start = files
             else:
                 prompt = C.chat(rng, intro, ask, C.block("\n".join(tbl)), reg, spec=spec)
@@ -257,10 +257,10 @@ THINGS = ["a standing desk", "a pair of trail shoes", "a second-hand cargo bike"
           "a pressure cooker", "noise-cancelling headphones", "a record player", "a garden shed", "a drum kit", "a wool coat", "a e-reader"]
 
 
-@family("chat-price-traps", category="chat", lang="text", kind="lookup", n=14, mode="answer",
+@family("chat-price-traps", category="chat", lang="text", kind="lookup", n=8, mode="answer",
         summary="discount stacking, reverse sales tax, margin vs markup, up-then-down percentages, plan comparisons")
 def gen_traps(rng, n):
-    plan = [1, 2, 2, 3, 3, 3, 4, 4, 5, 2, 3, 4, 3, 5]
+    plan = [1, 2, 2, 3, 3, 3, 4, 5]
     for i in range(n):
         d = plan[i % len(plan)]
         for _attempt in range(300):
@@ -419,10 +419,10 @@ def _simulate_loan(principal, apr_bp, pay):
     return m, last, tot_int
 
 
-@family("chat-savings-sim", category="chat", lang="text", kind="lookup", n=12, mode="answer",
+@family("chat-savings-sim", category="chat", lang="text", kind="lookup", n=8, mode="answer",
         summary="month-by-month savings and loan simulations with per-month rounding, fees and bonuses; first month crossing a target")
 def gen_savings(rng, n):
-    plan = [2, 3, 3, 4, 4, 5, 3, 4, 5, 2, 3, 4]
+    plan = [2, 2, 2, 3, 3, 4, 4, 5]
     for i in range(n):
         d = plan[i % len(plan)]
         for _attempt in range(200):
@@ -450,7 +450,7 @@ def gen_savings(rng, n):
                 if bonus:
                     rules.append(f"After month 12 and every 12 months after that, the bank adds a loyalty bonus of {bonus}% of the balance (rounded to the nearest cent, halves up), after that month's fee.")
                 spec = " ".join(rules)
-                ask = f"What is the balance after {months} months, and in which month (counting the first month as month 1) does the balance first reach {C.money_c(target)} or more?"
+                ask = f"What is the balance after {months} months, and in which month (counting the first month as month 1) does the end-of-month balance first reach {C.money_c(target)} or more?"
                 ask += " Give the balance as dollars and cents, and the month as 'month N'."
                 contains = [C.money(hist[-1]), f"month {first}"]
                 gold = f"Balance after {months} months: {C.money(hist[-1])}; first reaches the target in month {first}."
@@ -490,10 +490,10 @@ def _floor_c(x: Fraction) -> int:
     return x.numerator // x.denominator
 
 
-@family("chat-currency-trip", category="chat", lang="text", kind="lookup", n=10, mode="answer",
+@family("chat-currency-trip", category="chat", lang="text", kind="lookup", n=8, mode="answer",
         summary="currency exchange with spreads, flat fees and floor rounding; round trips and kiosk-versus-card comparisons")
 def gen_currency(rng, n):
-    plan = [2, 3, 3, 4, 2, 4, 5, 3, 4, 5]
+    plan = [2, 2, 3, 3, 4, 4, 5, 3]
     for i in range(n):
         d = plan[i % len(plan)]
         for _attempt in range(100):

@@ -16,43 +16,19 @@
 "ok": true
 },
 {
-"id": "chat-restraint-explain-05-slots",
+"id": "chat-restraint-explain-05-shipping",
 "ok": true
 },
 {
-"id": "chat-restraint-explain-06-loyalty",
+"id": "chat-restraint-explain-06-opts",
 "ok": true
 },
 {
-"id": "chat-restraint-explain-07-loyalty",
+"id": "chat-restraint-explain-07-limits",
 "ok": true
 },
 {
-"id": "chat-restraint-explain-08-slots",
-"ok": true
-},
-{
-"id": "chat-restraint-explain-09-loyalty",
-"ok": true
-},
-{
-"id": "chat-restraint-explain-10-slots",
-"ok": true
-},
-{
-"id": "chat-restraint-explain-11-limits",
-"ok": true
-},
-{
-"id": "chat-restraint-explain-12-loyalty",
-"ok": true
-},
-{
-"id": "chat-restraint-explain-13-opts",
-"ok": true
-},
-{
-"id": "chat-restraint-explain-14-slots",
+"id": "chat-restraint-explain-08-limits",
 "ok": true
 }
 ]

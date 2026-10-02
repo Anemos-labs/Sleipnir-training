@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-billcycle-01-delete",
+"ok": true
+},
+{
+"id": "fix-py-billcycle-02-const",
+"ok": true
+},
+{
+"id": "fix-py-billcycle-03-swap",
+"ok": true
+},
+{
+"id": "fix-py-billcycle-04-logic",
+"ok": true
+},
+{
+"id": "fix-py-billcycle-05-arith",
+"ok": true
+},
+{
+"id": "fix-py-billcycle-06-cmp",
+"ok": true
+},
+{
+"id": "fix-py-billcycle-07-delete",
+"ok": true
+},
+{
+"id": "fix-py-billcycle-08-const",
+"ok": true
+},
+{
+"id": "fix-py-billcycle-09-arith",
+"ok": true
+},
+{
+"id": "fix-py-billcycle-10-cmp",
+"ok": true
+}
+]

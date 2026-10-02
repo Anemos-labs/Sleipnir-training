@@ -1,0 +1,58 @@
+[
+{
+"id": "feature-py-meterreads-01-json-output",
+"ok": true
+},
+{
+"id": "feature-py-meterreads-02-bill",
+"ok": true
+},
+{
+"id": "feature-py-meterreads-03-config",
+"ok": true
+},
+{
+"id": "feature-py-meterreads-04-outliers-config",
+"ok": true
+},
+{
+"id": "feature-py-meterreads-05-unit",
+"ok": true
+},
+{
+"id": "feature-py-meterreads-06-monthly",
+"ok": true
+},
+{
+"id": "feature-py-meterreads-07-unit",
+"ok": true
+},
+{
+"id": "feature-py-meterreads-08-json-output-outliers-config",
+"ok": true
+},
+{
+"id": "feature-py-meterreads-09-bill",
+"ok": true
+},
+{
+"id": "feature-py-meterreads-10-json-output",
+"ok": true
+},
+{
+"id": "feature-py-meterreads-11-monthly",
+"ok": true
+},
+{
+"id": "feature-py-meterreads-12-outliers-config",
+"ok": true
+},
+{
+"id": "feature-py-meterreads-13-json-output",
+"ok": true
+},
+{
+"id": "feature-py-meterreads-14-config",
+"ok": true
+}
+]

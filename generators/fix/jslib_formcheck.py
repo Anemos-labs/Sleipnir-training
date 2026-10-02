@@ -594,7 +594,7 @@ LIB = Lib(
            "README.md": README, ".gitignore": "node_modules/\n"},
     visible_tests={"test/basic.test.js": VISIBLE},
     hidden_tests={"test/full.test.js": HIDDEN},
-    mutate=["src/validate.js", "src/rules.js", "src/path.js"], difficulty=3, tags=["validation", "forms"],
+    mutate=["src/validate.js", "src/rules.js", "src/path.js"], difficulty=2, tags=["validation", "forms"],
     verify=JS_VERIFY,
     probe_import="const { validate } = require('./src/validate');\nconst { join } = require('./src/path');\nconst { isMissing, checkString, checkNumber, checkBoolean } = require('./src/rules');",
     probes=[

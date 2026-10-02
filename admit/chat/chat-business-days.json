@@ -24,27 +24,11 @@
 "ok": true
 },
 {
-"id": "chat-business-days-07-chain",
+"id": "chat-business-days-07-deadline",
 "ok": true
 },
 {
-"id": "chat-business-days-08-deadline",
-"ok": true
-},
-{
-"id": "chat-business-days-09-deadline",
-"ok": true
-},
-{
-"id": "chat-business-days-10-deadline",
-"ok": true
-},
-{
-"id": "chat-business-days-11-chain",
-"ok": true
-},
-{
-"id": "chat-business-days-12-count",
+"id": "chat-business-days-08-chain",
 "ok": true
 }
 ]

@@ -642,7 +642,7 @@ def _base_b() -> Base:
         Bug("notes-hash-default-array", 2, {le: [("      @entries.each_with_object({}) do |e, groups|\n        (groups[e.bin] ||= []) << e.note if e.note\n      end\n",
                                                   "      groups = Hash.new([])\n      @entries.each { |e| groups[e.bin] << e.note if e.note }\n      groups\n")]}, P["notes-default"]),
         Bug("label-mutates-argument", 2, {ut: [("    name.strip.upcase\n", "    name.strip!\n    name.upcase!\n    name\n")]}, P["label-mutates"]),
-        Bug("verbose-or-equals", 2, {se: [("      @verbose = true if @verbose.nil?\n      @verbose\n", "      @verbose ||= true\n")]}, P["verbose-or"]),
+        Bug("verbose-or-equals", 1, {se: [("      @verbose = true if @verbose.nil?\n      @verbose\n", "      @verbose ||= true\n")]}, P["verbose-or"]),
         Bug("unique-bang-returns-nil", 3, {ut: [("    skus.uniq.sort\n", "    skus.uniq!.sort\n")]}, P["uniq-bang"]),
         Bug("default-bins-shared", 3, {se: shared_bins}, P["bins-shared"]),
         Bug("snapshot-shares-entries", 3, {le: [shallow]}, P["snapshot-shallow"]),

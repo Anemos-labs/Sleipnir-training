@@ -32,6 +32,8 @@ HARNESS_SRC = r'''
 import base64
 import difflib
 import gzip
+import hashlib
+import io
 import json
 import os
 import re
@@ -39,7 +41,9 @@ import shutil
 import signal
 import subprocess
 import sys
+import tarfile
 import tempfile
+import time
 
 EPOCH = 1700000000
 
@@ -59,6 +63,15 @@ def apply_tree(box, tree):
             os.symlink(ent["to"], full)
         else:
             os.makedirs(os.path.dirname(full), exist_ok=True)
+            if "tar" in ent:
+                with tarfile.open(full, "w") as tf:
+                    for name, body in sorted(ent["tar"].items()):
+                        data = body.encode("utf-8")
+                        ti = tarfile.TarInfo(name)
+                        ti.size, ti.mtime, ti.mode = len(data), 0, 0o644
+                        tf.addfile(ti, io.BytesIO(data))
+                os.utime(full, (ent.get("m", EPOCH), ent.get("m", EPOCH)))
+                continue
             with open(full, "wb") as f:
                 raw = base64.b64decode(ent["b"]) if "b" in ent else ent.get("c", "").encode("utf-8")
                 f.write(gzip.compress(raw, mtime=0) if ent.get("gz") else raw)
@@ -71,7 +84,7 @@ def apply_tree(box, tree):
 
 def apply_ops(box, ops):
     for op in ops:
-        full = os.path.join(box, op["path"])
+        full = os.path.join(box, op.get("path", ""))
         kind = op["op"]
         if kind == "write":
             os.makedirs(os.path.dirname(full), exist_ok=True)
@@ -81,6 +94,8 @@ def apply_ops(box, ops):
                 os.utime(full, (op["m"], op["m"]))
         elif kind == "touch":
             os.utime(full, (op["m"], op["m"]))
+        elif kind == "sleep":
+            time.sleep(op["s"])
         elif kind == "touchall":
             if os.path.isdir(full):
                 for d, dns, fns in os.walk(full, topdown=False):
@@ -121,6 +136,20 @@ def snapshot(box, mtimes, dirs, nlink=False, sorted_paths=()):
             if os.path.islink(p):
                 out[r] = {"t": "l", "to": os.readlink(p)}
                 continue
+            if fn.endswith((".tar", ".tgz", ".tar.gz")):
+                try:
+                    with tarfile.open(p) as tf:
+                        lines = []
+                        for m in tf.getmembers():
+                            nm = m.name[2:] if m.name.startswith("./") else m.name
+                            if m.isfile():
+                                lines.append(nm + "\t" + hashlib.sha256(tf.extractfile(m).read()).hexdigest()[:16])
+                            elif m.issym():
+                                lines.append(nm + "\t-> " + m.linkname)
+                    out[r] = {"t": "f", "c": "\n".join(sorted(lines)), "tarlist": True}
+                    continue
+                except Exception:
+                    pass
             with open(p, "rb") as fh:
                 raw = fh.read()
             gz = False
@@ -165,7 +194,7 @@ def run_scenario(repo, spec, scn, timeout=20):
                 argv = list(spec["runner"]) + [script] + list(r.get("args", []))
             else:
                 argv = [spec.get("shell", "bash"), script] + list(r.get("args", []))
-            env = {"PATH": os.environ.get("PATH", "/usr/bin:/bin"), "HOME": tmp, "LC_ALL": "C.UTF-8", "TZ": "UTC", "USER": "tester"}
+            env = {"PATH": os.environ.get("PATH", "/usr/bin:/bin"), "HOME": tmp, "LC_ALL": "C.UTF-8", "TZ": "UTC", "USER": "tester", "SHX_SCRIPT": script}
             env.update(r.get("env", {}))
             cwd = os.path.join(box, r.get("cwd", "."))
             p = subprocess.Popen(argv, cwd=cwd, env=env, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, start_new_session=True)
@@ -175,7 +204,7 @@ def run_scenario(repo, spec, scn, timeout=20):
             except subprocess.TimeoutExpired:
                 os.killpg(p.pid, signal.SIGKILL)
                 out, err = p.communicate()
-                rc = 124
+                rc = -999
             results.append({"rc": rc, "stdout": out.decode("utf-8", "replace"), "stderr": err.decode("utf-8", "replace")})
         tree = snapshot(box, set(scn.get("mtimes", [])), scn.get("dirs", "empty"), scn.get("nlink", False), set(scn.get("sorted", [])))
         return results, tree
@@ -306,6 +335,14 @@ def HL(to: str) -> dict:
     return {"t": "h", "to": to}
 
 
+def TAR(members: dict, m: int | None = None) -> dict:
+    """a tar archive fixture with the given {member name: text} regular files"""
+    d = {"t": "f", "tar": dict(members)}
+    if m is not None:
+        d["m"] = m
+    return d
+
+
 def D() -> dict:
     return {"t": "d"}
 
@@ -395,6 +432,8 @@ def _render_example(spec: ShellSpec, s: dict, results: list, tree: dict) -> str:
             out.append(f"{_fmt_name(p)} -> {e['to']}")
         elif e["t"] == "h":
             out.append(f"{_fmt_name(p)}    [hard link to {_fmt_name(e['to'])}]")
+        elif "tar" in e:
+            out.append(f"{_fmt_name(p)}    [tar archive holding: {', '.join(sorted(e['tar']))}]")
         else:
             body = e.get("c", "")
             first = body.split("\n")[0][:50]
@@ -417,7 +456,16 @@ def _render_example(spec: ShellSpec, s: dict, results: list, tree: dict) -> str:
             out += ["prints nothing."]
         if res["rc"] != 0:
             out += ["", f"and exits with status {res['rc']}."]
-    changed = [p for p in sorted(tree) if p not in s["files"] or tree[p] != s["files"][p]]
+    def _same(p):
+        f = s["files"].get(p)
+        if f is None:
+            return False
+        if "tar" in f and tree[p].get("tarlist"):
+            return True
+        if f["t"] == "h" and tree[p]["t"] == "f":
+            return True
+        return tree[p] == f
+    changed = [p for p in sorted(tree) if not _same(p)]
     gone = [p for p in sorted(s["files"]) if p not in tree and s["files"][p]["t"] != "d"]
     if changed or gone:
         out += ["", "and leaves the directory like this (only differences from the start are listed):", "", "```"]
@@ -425,6 +473,9 @@ def _render_example(spec: ShellSpec, s: dict, results: list, tree: dict) -> str:
             out.append(f"- {_fmt_name(p)}")
         for p in changed:
             e = tree[p]
+            if e.get("tarlist"):
+                out.append(f"+ {_fmt_name(p)}    [tar archive holding: {', '.join(l.split(chr(9))[0] for l in e['c'].split(chr(10)))}]")
+                continue
             out.append(f"+ {_fmt_name(p)}" + ("/" if e["t"] == "d" else f" -> {e['to']}" if e["t"] == "l" else (f"    [{e.get('c', '').split(chr(10))[0][:50]}]" if e.get("c") else "")))
         out.append("```")
     return "\n".join(out) + "\n"
@@ -462,7 +513,7 @@ def shell_tasks(family_key: str, specs: list[ShellSpec], rng: random.Random, n: 
                     if probs:
                         raise RuntimeError(f"{spec.slug}: oracle disagrees with the reference on {s['name']}: {probs[:3]}")
                 for r in res:
-                    if r["rc"] == 124:
+                    if r["rc"] == -999:
                         raise RuntimeError(f"{spec.slug}: reference timed out on {s['name']}")
                 s = dict(s)
                 s["expected"] = {"runs": [{"rc": r["rc"], "stdout": r["stdout"]} for r in res], "tree": tree}

@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-envelopes-01-const",
+"ok": true
+},
+{
+"id": "fix-py-envelopes-02-cmp",
+"ok": true
+},
+{
+"id": "fix-py-envelopes-03-swap",
+"ok": true
+},
+{
+"id": "fix-py-envelopes-04-negate",
+"ok": true
+},
+{
+"id": "fix-py-envelopes-05-arith",
+"ok": true
+},
+{
+"id": "fix-py-envelopes-06-delete",
+"ok": true
+},
+{
+"id": "fix-py-envelopes-07-cmp",
+"ok": true
+},
+{
+"id": "fix-py-envelopes-08-swap",
+"ok": true
+},
+{
+"id": "fix-py-envelopes-09-negate",
+"ok": true
+},
+{
+"id": "fix-py-envelopes-10-arith",
+"ok": true
+}
+]

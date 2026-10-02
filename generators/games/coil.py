@@ -535,34 +535,9 @@ def greedy_moves(rng, seed: int, r: dict, ticks: int, careless: int) -> list[str
     return out
 
 
-def bite_sequences(rng, r: dict, count: int = 3) -> list[tuple[int, list[str]]]:
-    """Random games (python model) that end a prefix with a bite that costs more than the whole score."""
-    out = []
-    for sd in range(1, 4000):
-        m = Model(sd, r)
-        moves = []
-        for _ in range(120):
-            if m.status:
-                break
-            legal = m.legal()
-            mv = rng.choice(legal)
-            before = m.score
-            ev = m.apply(mv)
-            moves.append(mv)
-            if ev.startswith("bite"):
-                if int(ev.split()[1]) > before:
-                    out.append((sd, moves + [rng.choice(m.legal()) for _ in range(0)]))
-                break
-        if len(out) >= count:
-            break
-    return out
-
-
 def scripts(rng, r: dict) -> dict[str, str]:
     parts = []
-    if r["BITE"]:
-        for i, (sd, mv) in enumerate(bite_sequences(rng, r)):
-            parts.append(f"# scenario early bite {i + 1}\n> new {sd}\n" + "\n".join(f"> do {m}" for m in mv) + "\n> render\n> status\n> legal")
+
     for i, sd in enumerate((1, 2, 3, 4, 5, 65535, 65536, 4294967295)):
         mv = greedy_moves(rng, sd, r, 260, careless=[0, 30, 60][i % 3])
         parts.append(f"# scenario greedy {i + 1} seed {sd}\n> new {sd}\n> render\n" + "\n".join(f"> do {m}" + ("\n> render" if k % 13 == 12 else "") for k, m in enumerate(mv)) + "\n> render\n> status\n> legal")
@@ -680,12 +655,12 @@ BUGS = [
     Bug("pepper-shrink", "Peppers shrink the snake to nothing",
         "A pepper can leave the snake with a single segment; the README says its length never goes below 2.",
         [("g->len = g->len > 4 ? g->len - 2 : 2;", "g->len = g->len > 2 ? g->len - 2 : 1;")], difficulty=2, rules=dict(PEPPER=2)),
-    Bug("bite-floor", "Bites can make the score negative",
-        "After a bite the score can go below zero (shown as e.g. -2): it should stop at 0.",
-        [("g->score = g->score >= cut ? g->score - cut : 0;", "g->score = g->score - cut;")], difficulty=2, rules=dict(BITE=1)),
-    Bug("rng-mask", "The generator uses the wrong width",
-        "With big seeds (more than 65535) the food ends up in different places than the README says; small seeds behave.",
-        [("g->state = seed & 0xFFFFu;", "g->state = seed;")], difficulty=3),
+    Bug("bite-score", "Bites don't cost any points",
+        "Getting severed costs nothing: after a bite the score is the same as before, but the README says the score drops by the number of stones that were made.",
+        [("g->score = g->score >= cut ? g->score - cut : 0;", "")], difficulty=1, rules=dict(BITE=1)),
+    Bug("rng-shift", "Food lands in different cells than the README says",
+        "For a given seed the food appears in other cells than the README's generator would pick: the index into the free cells seems to use different bits of the state.",
+        [("int k = next_random(g) % empty;", "int k = (next_random(g) >> 2) % empty;")], difficulty=3),
     Bug("pepper-schedule", "Peppers come one food too early",
         "Peppers show up on the wrong food: the first pepper appears after one fewer apple than the README says.",
         [("g->fkind = (PEPPER_EVERY > 0 && g->foods % PEPPER_EVERY == 0) ? 1 : 0;", "g->fkind = (PEPPER_EVERY > 0 && (g->foods + 1) % PEPPER_EVERY == 0) ? 1 : 0;")], difficulty=3, rules=dict(PEPPER=3)),
@@ -701,8 +676,8 @@ BUGS = [
 ]
 _B = {b.id: b for b in BUGS}
 BUGS_ALL = BUGS + [
-    _kit.combine(_B["reverse-legal"], _B["bite-floor"], difficulty=3),
-    _kit.combine(_B["pepper-schedule"], _B["rng-mask"], difficulty=4),
+    _kit.combine(_B["reverse-legal"], _B["bite-score"], difficulty=3),
+    _kit.combine(_B["pepper-schedule"], _B["rng-shift"], difficulty=4),
 ]
 
 

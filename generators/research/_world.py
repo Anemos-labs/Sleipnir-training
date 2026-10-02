@@ -886,7 +886,7 @@ def numfmt(rng: random.Random, n: int, labels: tuple = ("Answer", "Count", "Tota
     if n >= 100:
         return rng.choice([" Digits only.", " Just the number.", "", " Plain digits, no separators."]), str(n)
     lab = rng.choice(list(labels))
-    return f" End your reply with a line `{lab}: <number>`.", f"{lab}: {n}"
+    return f" End your reply with a line `{lab}: [<number>]`.", f"{lab}: [{n}]"
 
 
 _SING = {"credits": "credit", "members": "member", "passes": "pass", "days": "day", "people": "person", "minutes": "minute", "hours": "hour",

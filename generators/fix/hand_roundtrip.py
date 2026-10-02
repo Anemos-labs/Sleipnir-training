@@ -616,10 +616,10 @@ def _base_b() -> Base:
     bugs = [
         Bug("empty-slices-and-maps-omitted", 3, {f: [('Tags    []string       `json:"tags"`', 'Tags    []string       `json:"tags,omitempty"`'), ('Scores  map[string]int `json:"scores"`', 'Scores  map[string]int `json:"scores,omitempty"`')]}, P["omitempty"]),
         Bug("money-marshals-through-a-pointer", 3, {f: [("func (m Money) MarshalJSON() ([]byte, error) {\n\tv := int64(m)\n", "func (m *Money) MarshalJSON() ([]byte, error) {\n\tv := int64(*m)\n")]}, P["money-ptr"], reported=rep_money),
-        Bug("join-time-forced-to-utc", 2, {f: [("func Encode(p Profile) ([]byte, error) {\n\treturn json.Marshal(p)\n", "func Encode(p Profile) ([]byte, error) {\n\tp.Joined = p.Joined.UTC()\n\treturn json.Marshal(p)\n")]}, P["utc"]),
+        Bug("join-time-forced-to-utc", 1, {f: [("func Encode(p Profile) ([]byte, error) {\n\treturn json.Marshal(p)\n", "func Encode(p Profile) ([]byte, error) {\n\tp.Joined = p.Joined.UTC()\n\treturn json.Marshal(p)\n")]}, P["utc"]),
         Bug("extra-numbers-are-floats", 4, {f: [("\tdec := json.NewDecoder(bytes.NewReader(data))\n\tdec.UseNumber()\n\tif err := dec.Decode(&p); err != nil {\n\t\treturn Profile{}, err\n\t}\n",
                                                  "\tif err := json.Unmarshal(data, &p); err != nil {\n\t\treturn Profile{}, err\n\t}\n"), ('\t"bytes"\n', "")]}, P["extra-float"]),
-        Bug("unknown-fields-rejected", 2, {f: [("\tdec.UseNumber()\n", "\tdec.UseNumber()\n\tdec.DisallowUnknownFields()\n")]}, P["strict"]),
+        Bug("unknown-fields-rejected", 1, {f: [("\tdec.UseNumber()\n", "\tdec.UseNumber()\n\tdec.DisallowUnknownFields()\n")]}, P["strict"]),
     ]
     return Base("profile", "go", good, B_VISIBLE, B_HIDDEN, bugs)
 

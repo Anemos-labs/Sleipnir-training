@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-ticketing-01-const",
+"ok": true
+},
+{
+"id": "fix-py-ticketing-02-arith",
+"ok": true
+},
+{
+"id": "fix-py-ticketing-03-swap",
+"ok": true
+},
+{
+"id": "fix-py-ticketing-04-cmp",
+"ok": true
+},
+{
+"id": "fix-py-ticketing-05-delete",
+"ok": true
+},
+{
+"id": "fix-py-ticketing-06-const",
+"ok": true
+},
+{
+"id": "fix-py-ticketing-07-arith",
+"ok": true
+},
+{
+"id": "fix-py-ticketing-08-cmp",
+"ok": true
+},
+{
+"id": "fix-py-ticketing-09-delete",
+"ok": true
+},
+{
+"id": "fix-py-ticketing-10-const",
+"ok": true
+}
+]

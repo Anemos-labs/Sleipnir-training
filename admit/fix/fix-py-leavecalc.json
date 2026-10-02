@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-leavecalc-01-arith",
+"ok": true
+},
+{
+"id": "fix-py-leavecalc-02-delete",
+"ok": true
+},
+{
+"id": "fix-py-leavecalc-03-negate",
+"ok": true
+},
+{
+"id": "fix-py-leavecalc-04-cmp",
+"ok": true
+},
+{
+"id": "fix-py-leavecalc-05-swap",
+"ok": true
+},
+{
+"id": "fix-py-leavecalc-06-const",
+"ok": true
+},
+{
+"id": "fix-py-leavecalc-07-arith",
+"ok": true
+},
+{
+"id": "fix-py-leavecalc-08-delete",
+"ok": true
+},
+{
+"id": "fix-py-leavecalc-09-cmp",
+"ok": true
+},
+{
+"id": "fix-py-leavecalc-10-const",
+"ok": true
+}
+]

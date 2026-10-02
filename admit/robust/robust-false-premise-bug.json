@@ -1,0 +1,26 @@
+[
+{
+"id": "robust-false-premise-bug-01-basket",
+"ok": true
+},
+{
+"id": "robust-false-premise-bug-02-timesheet",
+"ok": true
+},
+{
+"id": "robust-false-premise-bug-03-gradebook",
+"ok": true
+},
+{
+"id": "robust-false-premise-bug-04-inventory",
+"ok": true
+},
+{
+"id": "robust-false-premise-bug-05-playlist",
+"ok": true
+},
+{
+"id": "robust-false-premise-bug-06-ledger",
+"ok": true
+}
+]

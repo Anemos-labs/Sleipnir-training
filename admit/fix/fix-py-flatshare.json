@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-flatshare-01-swap",
+"ok": true
+},
+{
+"id": "fix-py-flatshare-02-cmp",
+"ok": true
+},
+{
+"id": "fix-py-flatshare-03-negate",
+"ok": true
+},
+{
+"id": "fix-py-flatshare-04-const",
+"ok": true
+},
+{
+"id": "fix-py-flatshare-05-arith",
+"ok": true
+},
+{
+"id": "fix-py-flatshare-06-delete",
+"ok": true
+},
+{
+"id": "fix-py-flatshare-07-swap",
+"ok": true
+},
+{
+"id": "fix-py-flatshare-08-negate",
+"ok": true
+},
+{
+"id": "fix-py-flatshare-09-const",
+"ok": true
+},
+{
+"id": "fix-py-flatshare-10-arith",
+"ok": true
+}
+]

@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-powerbill-01-delete",
+"ok": true
+},
+{
+"id": "fix-py-powerbill-02-negate",
+"ok": true
+},
+{
+"id": "fix-py-powerbill-03-cmp",
+"ok": true
+},
+{
+"id": "fix-py-powerbill-04-arith",
+"ok": true
+},
+{
+"id": "fix-py-powerbill-05-const",
+"ok": true
+},
+{
+"id": "fix-py-powerbill-06-delete",
+"ok": true
+},
+{
+"id": "fix-py-powerbill-07-negate",
+"ok": true
+},
+{
+"id": "fix-py-powerbill-08-cmp",
+"ok": true
+},
+{
+"id": "fix-py-powerbill-09-arith",
+"ok": true
+},
+{
+"id": "fix-py-powerbill-10-const",
+"ok": true
+}
+]

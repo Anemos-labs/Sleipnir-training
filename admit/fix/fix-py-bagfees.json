@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-bagfees-01-arith",
+"ok": true
+},
+{
+"id": "fix-py-bagfees-02-delete",
+"ok": true
+},
+{
+"id": "fix-py-bagfees-03-swap",
+"ok": true
+},
+{
+"id": "fix-py-bagfees-04-negate",
+"ok": true
+},
+{
+"id": "fix-py-bagfees-05-const",
+"ok": true
+},
+{
+"id": "fix-py-bagfees-06-cmp",
+"ok": true
+},
+{
+"id": "fix-py-bagfees-07-arith",
+"ok": true
+},
+{
+"id": "fix-py-bagfees-08-delete",
+"ok": true
+},
+{
+"id": "fix-py-bagfees-09-swap",
+"ok": true
+},
+{
+"id": "fix-py-bagfees-10-negate",
+"ok": true
+}
+]

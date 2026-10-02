@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-workcal-01-const",
+"ok": true
+},
+{
+"id": "fix-py-workcal-02-negate",
+"ok": true
+},
+{
+"id": "fix-py-workcal-03-arith",
+"ok": true
+},
+{
+"id": "fix-py-workcal-04-logic",
+"ok": true
+},
+{
+"id": "fix-py-workcal-05-cmp",
+"ok": true
+},
+{
+"id": "fix-py-workcal-06-delete",
+"ok": true
+},
+{
+"id": "fix-py-workcal-07-const",
+"ok": true
+},
+{
+"id": "fix-py-workcal-08-negate",
+"ok": true
+},
+{
+"id": "fix-py-workcal-09-arith",
+"ok": true
+},
+{
+"id": "fix-py-workcal-10-cmp",
+"ok": true
+}
+]

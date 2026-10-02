@@ -366,7 +366,7 @@ def _base_a() -> Base:
         Bug("pages-off-by-one", 2, {"jobboard/pager.py": [("    if total == 0:\n        return 1\n    return (total + per_page - 1) // per_page",
                                                           "    return total // per_page + 1")]}, P["extra-page"]),
         Bug("cap-resets", 2, {"jobboard/pager.py": [("    return min(n, MAX_PER_PAGE)", "    if n > MAX_PER_PAGE:\n        return DEFAULT_PER_PAGE\n    return n")]}, P["cap-fallback"]),
-        Bug("empty-is-zero-pages", 2, {"jobboard/pager.py": [("    if total == 0:\n        return 1\n    return (total + per_page - 1) // per_page",
+        Bug("empty-is-zero-pages", 1, {"jobboard/pager.py": [("    if total == 0:\n        return 1\n    return (total + per_page - 1) // per_page",
                                                              "    return (total + per_page - 1) // per_page")]}, P["empty-zero"]),
         Bug("next-from-item-count", 3, {"jobboard/api.py": [("    prev, nxt = neighbours(page, pages)\n",
                                                             "    prev, _ = neighbours(page, pages)\n    nxt = page + 1 if len(items) == per_page else None\n")]},

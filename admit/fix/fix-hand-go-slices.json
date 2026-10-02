@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-hand-go-slices-01-top-sorts-the-queue-itself",
+"ok": true
+},
+{
+"id": "fix-hand-go-slices-02-remove-while-ranging",
+"ok": true
+},
+{
+"id": "fix-hand-go-slices-03-page-is-a-view",
+"ok": true
+},
+{
+"id": "fix-hand-go-slices-04-announcers-share-the-loop-variable",
+"ok": true
+},
+{
+"id": "fix-hand-go-slices-05-insert-through-an-aliased-tail",
+"ok": true
+},
+{
+"id": "fix-hand-go-slices-06-keys-in-map-order",
+"ok": true
+},
+{
+"id": "fix-hand-go-slices-07-counter-needs-make",
+"ok": true
+},
+{
+"id": "fix-hand-go-slices-08-values-returns-a-view",
+"ok": true
+},
+{
+"id": "fix-hand-go-slices-09-dedup-in-place",
+"ok": true
+},
+{
+"id": "fix-hand-go-slices-10-chunks-share-spare-capacity",
+"ok": true
+}
+]

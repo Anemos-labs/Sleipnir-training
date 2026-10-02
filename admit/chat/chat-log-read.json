@@ -28,39 +28,7 @@
 "ok": true
 },
 {
-"id": "chat-log-read-08-outage-access",
-"ok": true
-},
-{
-"id": "chat-log-read-09-brute-kv",
-"ok": true
-},
-{
-"id": "chat-log-read-10-outage_file-kv",
-"ok": true
-},
-{
-"id": "chat-log-read-11-path_status-access",
-"ok": true
-},
-{
-"id": "chat-log-read-12-window-json",
-"ok": true
-},
-{
-"id": "chat-log-read-13-outage-kv",
-"ok": true
-},
-{
-"id": "chat-log-read-14-outage_file-kv",
-"ok": true
-},
-{
-"id": "chat-log-read-15-slowest-kv",
-"ok": true
-},
-{
-"id": "chat-log-read-16-brute-access",
+"id": "chat-log-read-08-rate_window-json",
 "ok": true
 }
 ]

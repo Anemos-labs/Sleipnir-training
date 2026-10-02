@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-ledgermatch-01-arith",
+"ok": true
+},
+{
+"id": "fix-py-ledgermatch-02-negate",
+"ok": true
+},
+{
+"id": "fix-py-ledgermatch-03-const",
+"ok": true
+},
+{
+"id": "fix-py-ledgermatch-04-cmp",
+"ok": true
+},
+{
+"id": "fix-py-ledgermatch-05-delete",
+"ok": true
+},
+{
+"id": "fix-py-ledgermatch-06-logic",
+"ok": true
+},
+{
+"id": "fix-py-ledgermatch-07-swap",
+"ok": true
+},
+{
+"id": "fix-py-ledgermatch-08-arith",
+"ok": true
+},
+{
+"id": "fix-py-ledgermatch-09-const",
+"ok": true
+},
+{
+"id": "fix-py-ledgermatch-10-cmp",
+"ok": true
+}
+]

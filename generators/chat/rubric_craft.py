@@ -42,9 +42,9 @@ AUDIENCE = [("a curious nine-year-old", 110), ("my retired grandfather who ran a
             ("a CEO who has sixty seconds", 90), ("a friend who is nervous about all things technical", 130)]
 
 
-@family("chat-rubric-explain", category="chat", lang="text", kind="advice", n=12, mode="rubric", summary="explain a concept to a stated audience under length and vocabulary limits; graded on the core ideas, level, an analogy and the limits")
+@family("chat-rubric-explain", category="chat", lang="text", kind="advice", n=9, mode="rubric", summary="explain a concept to a stated audience under length and vocabulary limits; graded on the core ideas, level, an analogy and the limits")
 def gen_explain(rng, n):
-    plan = [2, 2, 3, 3, 3, 3, 4, 4, 4, 2, 3, 5]
+    plan = [2, 2, 3, 3, 3, 4, 4, 5, 2]
     for i in range(n):
         d = plan[i % len(plan)]
         c = CONCEPTS[i % len(CONCEPTS)]
@@ -91,9 +91,9 @@ BRAIN = [
 ]
 
 
-@family("chat-rubric-brainstorm", category="chat", lang="text", kind="advice", n=10, mode="rubric", summary="brainstorm a fixed number of items under per-item limits and banned words; graded on constraint compliance, variety and fit to the context")
+@family("chat-rubric-brainstorm", category="chat", lang="text", kind="advice", n=9, mode="rubric", summary="brainstorm a fixed number of items under per-item limits and banned words; graded on constraint compliance, variety and fit to the context")
 def gen_brain(rng, n):
-    plan = [1, 2, 2, 3, 3, 3, 4, 4, 3, 5]
+    plan = [2, 2, 3, 3, 3, 4, 4, 5, 2]
     for i in range(n):
         d = plan[i % len(plan)]
         what, noun, lim = BRAIN[i % len(BRAIN)]
@@ -173,9 +173,35 @@ def _rw_restaurant(rng):
 REWRITES = [_rw_parking, _rw_invoice, _rw_rambling, _rw_feedback, _rw_coffee, _rw_restaurant]
 
 
-@family("chat-rubric-rewrite", category="chat", lang="text", kind="advice", n=12, mode="rubric", summary="rewrite a pasted message in a different tone while keeping every fact; graded on facts kept, tone shift, no leftover harshness and the requested length")
+def _rw_roommate(rng):
+    who = rng.choice(C.FIRST)
+    n = rng.choice([4, 5, 6])
+    wd = rng.choice(["Monday", "Wednesday", "Friday"])
+    msg = f"To everyone in the flat: whoever keeps leaving dirty dishes will find them in their bed next time. That's the {n}th time this week and the rota says {wd} was {who}'s turn. Grow up."
+    return msg, [str(n), who, wd], ["in their bed", "Grow up"], "firm but friendly, suitable for a group chat", "a message for the flat's group chat that gets the dishes done without a fight"
+
+
+def _rw_refund(rng):
+    dt = date(2026, rng.randint(1, 11), rng.randint(2, 26))
+    amt = rng.randrange(40, 400, 5)
+    k, m = rng.choice([(5, 19), (7, 24), (10, 31)])
+    msg = f"On {_ms(dt)} you promised my ${amt} refund would arrive within {k} days. It has been {m} days. This is basically theft and I'm done being polite."
+    return msg, [_ms(dt), f"${amt}", str(k), str(m)], ["theft", "done being polite"], "calm but firm", "a follow-up email to customer service that makes the deadline clear"
+
+
+def _rw_decline_job(rng):
+    co = rng.choice(["Finch Analytics", "Brightwater Labs", "Halvorsen & Co"])
+    sal = rng.randrange(48, 70, 2) * 1000
+    msg = f"Thanks but no. The salary is a joke compared with what {co} offered me (${sal:,}) and your office looked awful. Don't contact me again."
+    return msg, [co, f"${sal:,}"], ["a joke", "awful", "Don't contact me again"], "gracious and brief", "a polite decline that leaves the door open"
+
+
+REWRITES += [_rw_roommate, _rw_refund, _rw_decline_job]
+
+
+@family("chat-rubric-rewrite", category="chat", lang="text", kind="advice", n=9, mode="rubric", summary="rewrite a pasted message in a different tone while keeping every fact; graded on facts kept, tone shift, no leftover harshness and the requested length")
 def gen_rewrite(rng, n):
-    plan = [2, 2, 3, 3, 3, 3, 4, 4, 4, 2, 3, 5]
+    plan = [2, 2, 3, 3, 3, 4, 4, 5, 2]
     for i in range(n):
         d = plan[i % len(plan)]
         fn = REWRITES[i % len(REWRITES)]
@@ -215,9 +241,22 @@ DRAFTS = [
 ]
 
 
-@family("chat-rubric-critique", category="chat", lang="text", kind="advice", n=12, mode="rubric", summary="give feedback on a pasted draft with three planted flaws; graded on naming the real flaws, prioritising, quoting the text and showing one concrete rewrite")
+DRAFTS += [
+    dict(key="thanks", kind="a thank-you email to a client after a big project", flaws=[("generic gratitude with no specifics about what the client did", ["specific", "generic", "detail", "example"]), ("the actual next-step request is hidden at the very end", ["buried", "request", "next step", "end"]),
+                                                                                      ("too many exclamation marks make it feel insincere", ["exclamation", "!!", "tone", "insincere"])],
+         text="Dear Marcus, Thank you so much!!! It has been amazing working with you and we are so grateful for everything!!! You have been a wonderful client and we couldn't have done it without you!!! We really hope we can work together again soon!!! P.S. could you send over the signed completion form by Friday?"),
+    dict(key="bio", kind="a 60-word conference speaker bio", flaws=[("every sentence starts with 'I'", ["start with I", "repetit", "every sentence", "I am"]), ("it lists job titles instead of saying what the audience will gain", ["titles", "audience", "gain", "value"]),
+                                                               ("there is no hook or personal detail to make it memorable", ["hook", "memorable", "personal", "detail"])],
+         text="I am a senior software engineer. I have been a team lead and an engineering manager. I am also a principal consultant at a large firm. I have worked with many technologies. I am speaking about software."),
+    dict(key="invite", kind="a meeting invitation to my team", flaws=[("no agenda or purpose is stated", ["agenda", "purpose", "why"]), ("the time has no time zone although the team spans three", ["time zone", "timezone", "ambiguous"]),
+                                                                 ("the preamble is long and the ask is a throwaway line", ["preamble", "long", "ask", "lead"])],
+         text="Hi all, I hope you are all well and had a lovely weekend, and I wanted to reach out because there are quite a few things going on at the moment, as you know, and it would probably be good if we could all find some time to catch up about stuff. How about Thursday at 3? Let me know."),
+]
+
+
+@family("chat-rubric-critique", category="chat", lang="text", kind="advice", n=9, mode="rubric", summary="give feedback on a pasted draft with three planted flaws; graded on naming the real flaws, prioritising, quoting the text and showing one concrete rewrite")
 def gen_critique(rng, n):
-    plan = [2, 2, 3, 3, 3, 3, 4, 4, 4, 2, 3, 5]
+    plan = [2, 2, 3, 3, 3, 4, 4, 5, 2]
     for i in range(n):
         d = plan[i % len(plan)]
         dr = DRAFTS[i % len(DRAFTS)]
@@ -225,7 +264,7 @@ def gen_critique(rng, n):
         ask = rng.choice(["What's wrong with it? Be straight with me.", "Can you tell me the main problems, in order of importance?", "Give me honest feedback."]) + (" Please don't rewrite the whole thing, just show me one example fix." if d >= 3 else "")
         prompt = C.chat(rng, intro, ask, C.block(dr["text"]), C.register_for(rng))
         f1, f2, f3 = dr["flaws"]
-        rub = R((f"Identifies the main planted problems, including: {f1[0]}; {f2[0]}; {f3[0]}", 4), ("Points to the actual text (quotes or paraphrases specific phrases) instead of giving generic writing advice", 3),
+        rub = R((f"Identifies the main problems in the draft, including: {f1[0]}; {f2[0]}; {f3[0]}", 4), ("Points to the actual text (quotes or paraphrases specific phrases) instead of giving generic writing advice", 3),
                 ("Orders the feedback by importance and keeps it to the few points that matter", 2), ("Shows one concrete improved sentence or opening rather than rewriting everything", 2 if d >= 3 else 1))
         kw = [k for fl in dr["flaws"] for k in fl[1]]
         yield Task(slug=f"{i + 1:02d}-{dr['key']}-d{d}", prompt=prompt, difficulty=d, rubric=rub, checks={"max_words": 330, "must_include_any": kw}, tags=["critique", "feedback"], notes={"draft": dr["key"]})
@@ -256,9 +295,22 @@ DISPUTES = [
 ]
 
 
-@family("chat-rubric-opinions", category="chat", lang="text", kind="advice", n=10, mode="rubric", summary="summarise three people's positions in a pasted thread neutrally, with the point of agreement and the decision still open")
+DISPUTES += [
+    ("cutting the library's Saturday hours to save money", [("Rosa", "I'm against it. Saturday is the only day my kids can come.", "is against it because Saturday is the only day her children can visit"),
+                                                          ("Ed", "I'm for it if the savings go to new books.", "is for it if the savings go to new books"),
+                                                          ("Yusuf", "Could we open later on Saturday instead of closing the whole day?", "suggests opening later on Saturday instead")], "the library matters to the town"),
+    ("adding a bike lane on Mill Road by removing some parking", [("Greta", "I support it. My commute is scary at the moment.", "supports it because her commute feels unsafe"),
+                                                                 ("Walt", "I'm against it. Shops on Mill Road depend on people who drive.", "is against it because shops depend on drivers"),
+                                                                 ("Anya", "Why not trial it for the summer and count the customers?", "suggests a summer trial and counting customers")], "everyone wants safer streets"),
+    ("rotating who cleans the shared kitchen every week instead of paying a cleaner", [("Lou", "I'd rather pay a cleaner, I never have time.", "prefers paying a cleaner because of lack of time"),
+                                                                                         ("Mo", "A rota is free and fairer.", "supports a rota because it is free and fair"),
+                                                                                         ("Ivy", "Maybe a cleaner once a month and a rota in between?", "proposes a monthly cleaner plus a rota")], "the kitchen needs to stay clean"),
+]
+
+
+@family("chat-rubric-opinions", category="chat", lang="text", kind="advice", n=9, mode="rubric", summary="summarise three people's positions in a pasted thread neutrally, with the point of agreement and the decision still open")
 def gen_opinions(rng, n):
-    plan = [2, 2, 3, 3, 3, 4, 4, 3, 4, 5]
+    plan = [2, 2, 3, 3, 3, 4, 4, 5, 2]
     for i in range(n):
         d = plan[i % len(plan)]
         issue, people, common = DISPUTES[i % len(DISPUTES)]
@@ -284,9 +336,16 @@ PIECES = [
 ]
 
 
-@family("chat-rubric-short-piece", category="chat", lang="text", kind="advice", n=10, mode="rubric", summary="a short piece of writing (toast, speech, bio, note) that must work in the given personal facts, tone and length")
+PIECES += [
+    ("a birthday card message for my grandmother {a}, who turns 80", "{a} taught me to bake, still beats everyone at cards, and calls every Sunday at six", ["bake", "cards", "Sunday"], 70),
+    ("a note to the new neighbours at number {y}", "I'm {a}, next door; the bins go out on Wednesday; the cat from number {y} often visits; I'm happy to lend a ladder", ["Wednesday", "cat", "ladder"], 90),
+    ("a LinkedIn post announcing I'm leaving my job of {y} years (warm, not boasting)", "I'm {a}; I'm grateful to my team, proudest of the training programme I built, and starting a new role in a few weeks", ["training programme", "team"], 110),
+]
+
+
+@family("chat-rubric-short-piece", category="chat", lang="text", kind="advice", n=9, mode="rubric", summary="a short piece of writing (toast, speech, bio, note) that must work in the given personal facts, tone and length")
 def gen_piece(rng, n):
-    plan = [2, 2, 3, 3, 3, 4, 4, 3, 4, 5]
+    plan = [2, 2, 3, 3, 3, 4, 4, 5, 2]
     for i in range(n):
         d = plan[i % len(plan)]
         what, facts, kws, cap = PIECES[i % len(PIECES)]

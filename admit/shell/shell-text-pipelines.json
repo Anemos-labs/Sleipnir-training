@@ -1,0 +1,50 @@
+[
+{
+"id": "shell-text-pipelines-01-tags-in-both-files",
+"ok": true
+},
+{
+"id": "shell-text-pipelines-02-lines-only-in-first-file",
+"ok": true
+},
+{
+"id": "shell-text-pipelines-03-most-frequent-error-codes",
+"ok": true
+},
+{
+"id": "shell-text-pipelines-04-merge-sorted-logs",
+"ok": true
+},
+{
+"id": "shell-text-pipelines-05-scores-for-known-people",
+"ok": true
+},
+{
+"id": "shell-text-pipelines-06-transpose-key-value-lines",
+"ok": true
+},
+{
+"id": "shell-text-pipelines-07-first-seen-key-ignoring-case",
+"ok": true
+},
+{
+"id": "shell-text-pipelines-08-lines-by-initial",
+"ok": true
+},
+{
+"id": "shell-text-pipelines-09-expand-number-ranges",
+"ok": true
+},
+{
+"id": "shell-text-pipelines-10-collapse-numbers-to-ranges",
+"ok": true
+},
+{
+"id": "shell-text-pipelines-11-items-into-columns",
+"ok": true
+},
+{
+"id": "shell-text-pipelines-12-fix-most-frequent-lines",
+"ok": true
+}
+]

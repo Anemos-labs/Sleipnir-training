@@ -348,7 +348,7 @@ def _base_a() -> Base:
            "            self.cache.drop(self._key(old, region))\n")
     bugs = [
         Bug("key-omits-region", 2, {sv: [("        return (sku, region)\n", "        return sku\n")]}, P["region-key"]),
-        Bug("ttl-boundary-inclusive", 2, {ca: [("        if self.clock.time() - stored_at >= self.ttl:", "        if self.clock.time() - stored_at > self.ttl:")]}, P["ttl-edge"]),
+        Bug("ttl-boundary-inclusive", 1, {ca: [("        if self.clock.time() - stored_at >= self.ttl:", "        if self.clock.time() - stored_at > self.ttl:")]}, P["ttl-edge"]),
         Bug("misses-not-cached", 2, {sv: [("        value = self.cache.get(key, _MISS)\n        if value is not _MISS:\n            return value\n",
                                            "        value = self.cache.get(key)\n        if value is not None:\n            return value\n")]}, P["negative"]),
         Bug("import-skips-invalidation", 3, {sv: [imp]}, P["import-stale"]),

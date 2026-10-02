@@ -1,0 +1,34 @@
+[
+{
+"id": "security-command-injection-01-notify-echo",
+"ok": true
+},
+{
+"id": "security-command-injection-02-archive-label",
+"ok": true
+},
+{
+"id": "security-command-injection-03-host-lookup",
+"ok": true
+},
+{
+"id": "security-command-injection-04-greeting-quotes",
+"ok": true
+},
+{
+"id": "security-command-injection-05-job-runner",
+"ok": true
+},
+{
+"id": "security-command-injection-06-option-injection",
+"ok": true
+},
+{
+"id": "security-command-injection-07-sed-pipeline",
+"ok": true
+},
+{
+"id": "security-command-injection-08-step-runner",
+"ok": true
+}
+]

@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-bikehire-01-delete",
+"ok": true
+},
+{
+"id": "fix-py-bikehire-02-swap",
+"ok": true
+},
+{
+"id": "fix-py-bikehire-03-cmp",
+"ok": true
+},
+{
+"id": "fix-py-bikehire-04-arith",
+"ok": true
+},
+{
+"id": "fix-py-bikehire-05-const",
+"ok": true
+},
+{
+"id": "fix-py-bikehire-06-negate",
+"ok": true
+},
+{
+"id": "fix-py-bikehire-07-delete",
+"ok": true
+},
+{
+"id": "fix-py-bikehire-08-swap",
+"ok": true
+},
+{
+"id": "fix-py-bikehire-09-arith",
+"ok": true
+},
+{
+"id": "fix-py-bikehire-10-const",
+"ok": true
+}
+]

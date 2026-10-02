@@ -39,10 +39,10 @@ def _on_or_after(d, allowed):
     return d
 
 
-@family("chat-date-offset", category="chat", lang="text", kind="lookup", n=16, mode="answer",
+@family("chat-date-offset", category="chat", lang="text", kind="lookup", n=8, mode="answer",
         summary="calendar arithmetic in daily-life clothes: add days, nth weekday, month-end clamps, ISO weeks, leap birthdays, shipping chains")
 def gen_date(rng, n):
-    plan = [1, 2, 2, 3, 3, 3, 4, 4, 2, 3, 4, 5, 3, 4, 1, 5]
+    plan = [1, 2, 2, 3, 3, 3, 4, 5]
     for i in range(n):
         d = plan[i % len(plan)]
         for _attempt in range(100):
@@ -196,10 +196,10 @@ def _add_work(d, k, work, hol):
     return cur
 
 
-@family("chat-business-days", category="chat", lang="text", kind="lookup", n=12, mode="answer",
+@family("chat-business-days", category="chat", lang="text", kind="lookup", n=8, mode="answer",
         summary="working-day deadlines and counts with holiday lists, odd working weeks, and a two-calendar delivery chain")
 def gen_bdays(rng, n):
-    plan = [2, 3, 3, 3, 4, 4, 5, 2, 3, 4, 5, 3]
+    plan = [2, 2, 2, 3, 3, 4, 4, 5]
     for i in range(n):
         d = plan[i % len(plan)]
         for _attempt in range(100):
@@ -286,10 +286,10 @@ def _off(m):
     return f"UTC{sign}{a // 60}" + (f":{a % 60:02d}" if a % 60 else "")
 
 
-@family("chat-flight-times", category="chat", lang="text", kind="lookup", n=12, mode="answer",
+@family("chat-flight-times", category="chat", lang="text", kind="lookup", n=8, mode="answer",
         summary="itineraries in local times with fixed UTC offsets: leg durations, layovers, total elapsed, arrival on the home clock")
 def gen_flights(rng, n):
-    plan = [2, 3, 3, 3, 4, 4, 5, 2, 3, 4, 5, 3]
+    plan = [2, 2, 2, 3, 3, 4, 4, 5]
     for i in range(n):
         d = plan[i % len(plan)]
         for _attempt in range(100):
@@ -357,10 +357,10 @@ def gen_flights(rng, n):
 TEAM_ROLES = ["design lead", "backend dev", "customer success manager", "QA engineer", "data analyst", "product owner", "support engineer", "researcher"]
 
 
-@family("chat-meeting-slot", category="chat", lang="text", kind="lookup", n=10, mode="answer",
+@family("chat-meeting-slot", category="chat", lang="text", kind="lookup", n=8, mode="answer",
         summary="earliest common meeting slot across fixed UTC offsets with working hours and busy blocks, answer in UTC and one local clock")
 def gen_slot(rng, n):
-    plan = [3, 3, 4, 4, 5, 3, 4, 5, 4, 5]
+    plan = [3, 3, 3, 4, 4, 5, 3, 4]
     for i in range(n):
         d = plan[i % len(plan)]
         for _attempt in range(300):
@@ -487,10 +487,10 @@ CRONS = {
 }
 
 
-@family("chat-cron-next", category="chat", lang="text", kind="lookup", n=14, mode="answer",
+@family("chat-cron-next", category="chat", lang="text", kind="lookup", n=8, mode="answer",
         summary="when does this crontab line fire next (or how often): ranges, steps, lists, and day-of-month versus weekday semantics")
 def gen_cron(rng, n):
-    plan = [1, 1, 2, 2, 3, 3, 3, 4, 4, 5, 5, 2, 3, 4]
+    plan = [1, 2, 2, 3, 3, 3, 4, 5]
     for i in range(n):
         d = plan[i % len(plan)]
         for _attempt in range(100):
@@ -529,10 +529,10 @@ def gen_cron(rng, n):
 # chat-recurring-events
 
 
-@family("chat-recurring-events", category="chat", lang="text", kind="lookup", n=12, mode="answer",
+@family("chat-recurring-events", category="chat", lang="text", kind="lookup", n=8, mode="answer",
         summary="recurring-meeting dates: nth weekdays, every-k-days series, cancelled dates, collections that coincide")
 def gen_recur(rng, n):
-    plan = [2, 3, 3, 4, 4, 5, 2, 3, 4, 5, 3, 4]
+    plan = [2, 2, 2, 3, 3, 4, 4, 5]
     for i in range(n):
         d = plan[i % len(plan)]
         for _attempt in range(200):
@@ -630,10 +630,10 @@ def _fmt_t(m, style):
     return f"{h:02d}:{mi:02d}"
 
 
-@family("chat-timesheet-sum", category="chat", lang="text", kind="lookup", n=12, mode="answer",
+@family("chat-timesheet-sum", category="chat", lang="text", kind="lookup", n=8, mode="answer",
         summary="add up messy hand-written work-time ranges (am/pm, 24h, compact, overnight, unpaid breaks) and compare to a contract")
 def gen_timesheet(rng, n):
-    plan = [1, 2, 2, 3, 3, 3, 4, 4, 5, 2, 3, 4]
+    plan = [1, 2, 2, 3, 3, 3, 4, 5]
     for i in range(n):
         d = plan[i % len(plan)]
         for _attempt in range(100):
@@ -700,10 +700,10 @@ def _departures(rules):
     return out
 
 
-@family("chat-bus-timetable", category="chat", lang="text", kind="lookup", n=12, mode="answer",
+@family("chat-bus-timetable", category="chat", lang="text", kind="lookup", n=8, mode="answer",
         summary="bus services described by headway bands: first bus after I arrive, riding time, transfers, last-service cut-offs")
 def gen_bus(rng, n):
-    plan = [2, 2, 3, 3, 4, 4, 5, 3, 4, 5, 2, 3]
+    plan = [2, 2, 2, 3, 3, 4, 4, 5]
     for i in range(n):
         d = plan[i % len(plan)]
         for _attempt in range(200):

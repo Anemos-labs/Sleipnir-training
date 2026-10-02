@@ -143,7 +143,7 @@ def totals(vendors, rows_all, depts_filter=None, quarters=None, rates=None):
     return tot
 
 
-@family("research-vendor-ledger", category="research", lang="text", kind="greenfield", n=16,
+@family("research-vendor-ledger", category="research", lang="text", kind="greenfield", n=14,
         summary="vendor totals from department ledgers in three layouts, with aliases, voids, credits and currency conversion (out.csv)")
 def gen(rng, n):
     made = 0

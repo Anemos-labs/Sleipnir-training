@@ -1,0 +1,66 @@
+[
+{
+"id": "debug-works-on-my-machine-01-encoding",
+"ok": true
+},
+{
+"id": "debug-works-on-my-machine-02-timezone",
+"ok": true
+},
+{
+"id": "debug-works-on-my-machine-03-hashseed",
+"ok": true
+},
+{
+"id": "debug-works-on-my-machine-04-case",
+"ok": true
+},
+{
+"id": "debug-works-on-my-machine-05-pyversion",
+"ok": true
+},
+{
+"id": "debug-works-on-my-machine-06-crlf",
+"ok": true
+},
+{
+"id": "debug-works-on-my-machine-07-envvar",
+"ok": true
+},
+{
+"id": "debug-works-on-my-machine-08-cwd",
+"ok": true
+},
+{
+"id": "debug-works-on-my-machine-09-encoding",
+"ok": true
+},
+{
+"id": "debug-works-on-my-machine-10-timezone",
+"ok": true
+},
+{
+"id": "debug-works-on-my-machine-11-hashseed",
+"ok": true
+},
+{
+"id": "debug-works-on-my-machine-12-case",
+"ok": true
+},
+{
+"id": "debug-works-on-my-machine-13-pyversion",
+"ok": true
+},
+{
+"id": "debug-works-on-my-machine-14-crlf",
+"ok": true
+},
+{
+"id": "debug-works-on-my-machine-15-envvar",
+"ok": true
+},
+{
+"id": "debug-works-on-my-machine-16-cwd",
+"ok": true
+}
+]

@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-go-retrywin-01-cmp",
+"ok": true
+},
+{
+"id": "fix-go-retrywin-02-const",
+"ok": true
+},
+{
+"id": "fix-go-retrywin-03-swap",
+"ok": true
+},
+{
+"id": "fix-go-retrywin-04-delete",
+"ok": true
+},
+{
+"id": "fix-go-retrywin-05-arith",
+"ok": true
+},
+{
+"id": "fix-go-retrywin-06-negate",
+"ok": true
+},
+{
+"id": "fix-go-retrywin-07-cmp",
+"ok": true
+},
+{
+"id": "fix-go-retrywin-08-const",
+"ok": true
+}
+]

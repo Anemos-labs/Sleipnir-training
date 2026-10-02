@@ -97,12 +97,12 @@ def regress_task(lib: TLib, cand: E.Cand, rng: random.Random, slug: str, fix_too
     prompt = regress_prompt(rng, lib, kind, text, one, fix_too)
     scen = [
         {"name": "fixed code, your tests", "expect": "pass", "gate": True, "sources": {cand.path: ref}},
-        {"name": "fixed code, shifted lines and file hash", "expect": "pass", "marker": True, "sources": {cand.path: ref}},
+        {"name": "fixed code, shifted lines and file hash", "expect": "pass", "gate": True, "marker": True, "sources": {cand.path: ref}},
         {"name": "buggy code, your tests", "expect": "fail", "sources": {cand.path: bug}},
     ]
     if fix_too:
         scen.append({"name": "your fix against the full behaviour suite", "expect": "pass", "strip": STRIP[lib.lang],
-                     "files": merged(lib.gold, lib.strip_keep), "sources": {}})
+                     "files": merged(lib.gold, {p: lib.files[p] for p in lib.files if p == "tests/__init__.py"}, lib.strip_keep), "sources": {}})
     spec = E.base_spec(lib, scen)
     spec["ref"] = {cand.path: ref}
     d = lib.difficulty - 1 + (1 if kind == "excerpt" else 0) + (1 if fix_too else 0)
@@ -176,7 +176,9 @@ def broken_suite(lib: TLib, rng: random.Random, k: int) -> tuple[dict[str, str],
                 break
         if len(chosen) < k:
             return None
-        tests = gold_tests(lib.files, lib.py_imports, lib.py_groups, header=lib.py_header, corrupt=chosen)
+        gpath = next(iter(lib.gold))
+        cls = re.search(r"class (\w+)\(", lib.gold[gpath]).group(1)
+        tests = gold_tests(lib.files, lib.py_imports, lib.py_groups, header=lib.py_header, path=gpath, cls=cls, corrupt=chosen)
     else:
         if len(lib.wrong_edits) < k:
             return None
@@ -280,10 +282,14 @@ def internals_task(lib: TLib, rng: random.Random, chosen: list[E.Cand], slug: st
     if not on_ref.ok or on_ref2.ok:
         raise RuntimeError(f"{lib.name}: internals suite must pass on the original and fail on the refactored variant")
     scen = [E.sc_base(), E.sc_marker(), {"name": "refactored module, your tests", "expect": "pass", "sources": refac}]
+    # the solution cannot delete files: the behavioural suite takes the place of the internals suite
+    (ipath,) = list(lib.internals)
+    (gpath,) = list(lib.gold)
+    sol = {ipath: lib.gold[gpath]}
     spec = E.base_spec(lib, scen, E.mutant_specs(chosen))
     return Task(
         slug=slug, prompt=internals_prompt(rng, lib), difficulty=max(1, min(5, lib.difficulty)), kind="refactor",
-        start=merged(lib.files, lib.stub, lib.internals), hidden=hidden_files(spec), solution=dict(lib.gold), verify=VERIFY,
+        start=merged(lib.files, lib.stub, lib.internals), hidden=hidden_files(spec), solution=sol, verify=VERIFY,
         pass_mode="json-score", protect_tests=False, protected=protect_globs(lib), timeout_s=max(150, lib.timeout * (len(chosen) + 4) + 60),
         tags=["repair-suite", "implementation-details", *lib.tags], notes={"library": lib.name, "mutants": [c.desc for c in chosen], "instance": inst},
     )

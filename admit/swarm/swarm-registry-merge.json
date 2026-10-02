@@ -46,5 +46,13 @@
 {
 "id": "swarm-registry-merge-12-k7-boxtext",
 "ok": true
+},
+{
+"id": "swarm-registry-merge-13-k2-headtail",
+"ok": true
+},
+{
+"id": "swarm-registry-merge-14-k2-bullets",
+"ok": true
 }
 ]

@@ -1,0 +1,50 @@
+[
+{
+"id": "chat-quick-format-01-date",
+"ok": true
+},
+{
+"id": "chat-quick-format-02-name",
+"ok": true
+},
+{
+"id": "chat-quick-format-03-snake",
+"ok": true
+},
+{
+"id": "chat-quick-format-04-title",
+"ok": true
+},
+{
+"id": "chat-quick-format-05-phone",
+"ok": true
+},
+{
+"id": "chat-quick-format-06-upper",
+"ok": true
+},
+{
+"id": "chat-quick-format-07-money",
+"ok": true
+},
+{
+"id": "chat-quick-format-08-clock",
+"ok": true
+},
+{
+"id": "chat-quick-format-09-slug",
+"ok": true
+},
+{
+"id": "chat-quick-format-10-date",
+"ok": true
+},
+{
+"id": "chat-quick-format-11-name",
+"ok": true
+},
+{
+"id": "chat-quick-format-12-snake",
+"ok": true
+}
+]

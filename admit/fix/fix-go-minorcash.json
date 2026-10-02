@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-go-minorcash-01-delete",
+"ok": true
+},
+{
+"id": "fix-go-minorcash-02-cmp",
+"ok": true
+},
+{
+"id": "fix-go-minorcash-03-arith",
+"ok": true
+},
+{
+"id": "fix-go-minorcash-04-logic",
+"ok": true
+},
+{
+"id": "fix-go-minorcash-05-const",
+"ok": true
+},
+{
+"id": "fix-go-minorcash-06-negate",
+"ok": true
+},
+{
+"id": "fix-go-minorcash-07-delete",
+"ok": true
+},
+{
+"id": "fix-go-minorcash-08-cmp",
+"ok": true
+}
+]

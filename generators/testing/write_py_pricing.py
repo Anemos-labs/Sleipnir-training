@@ -2,6 +2,7 @@
 from fx import family
 
 from . import _engine as E
+from . import _pl_games as PG
 from . import _pl_labels as PLL
 from . import _pl_pricing as PL
 
@@ -16,3 +17,9 @@ def gen(rng, n):
         summary="write a unittest suite for an identifier codec with a check character; scored by seeded bugs caught")
 def gen_codes(rng, n):
     yield from E.write_family([PLL.labelcode], rng, n)
+
+
+@family("testing-write-py-games", category="testing", lang="python", kind="feature", n=12,
+        summary="write a unittest suite for a turn-order tracker and a seat allocator; scored by seeded bugs caught")
+def gen_games(rng, n):
+    yield from E.write_family([PG.initiative, PG.seatmap], rng, n)

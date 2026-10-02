@@ -515,7 +515,7 @@ def _base_b() -> Base:
     case = ("        key = norm.lower()\n", "        key = norm\n")
     bugs = [
         Bug("junk-directory-extracted", 2, {pl: [('        if norm.split("/")[0] == "__MACOSX":\n            continue\n', "")]}, P["junk"]),
-        Bug("absolute-names-accepted", 2, {pl: [('        if clean.startswith("/"):\n            raise Unsafe(f"absolute path: {name}")\n', '        clean = clean.lstrip("/")\n')]}, P["absolute"]),
+        Bug("absolute-names-accepted", 1, {pl: [('        if clean.startswith("/"):\n            raise Unsafe(f"absolute path: {name}")\n', '        clean = clean.lstrip("/")\n')]}, P["absolute"]),
         Bug("any-dotdot-is-unsafe", 2, {pl: [('        clean = name.replace("\\\\", "/")\n', '        clean = name.replace("\\\\", "/")\n        if ".." in clean.split("/"):\n            raise Unsafe(f"parent reference: {name}")\n')]}, P["inner-dotdot"]),
         Bug("backslashes-kept", 3, {pl: [back]}, P["backslash"]),
         Bug("collisions-are-case-sensitive", 3, {pl: [case]}, P["case"]),

@@ -23,7 +23,7 @@ AR_README = dd('''
       fee is interest plus flat fee.
     * `amount_due(principal, due, paid_on)`: the principal plus the late fee.
     * `breakdown(principal, due, paid_on)`: a dict `{"principal": ..., "interest": ..., "fees": ...}` with the capped
-      interest and the flat fee of `late_fee`.
+      interest and the flat fee of `late_fee` (`principal <= 0` is a `ValueError` here too).
     * `allocate_payment(debt, payment)`: `debt` is such a dict. A payment is used **fees first, then interest, then
       principal**. Returns `(new_debt, overpayment)`; the overpayment is what is left after the whole debt is cleared.
       `payment <= 0` is a `ValueError`; the argument is not modified.

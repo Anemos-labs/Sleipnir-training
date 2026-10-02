@@ -439,7 +439,7 @@ class CliSpec:
         return {
             "python": f"python3 src/{t}.py",
             "javascript": f"node src/{t}.js",
-            "ruby": f"ruby src/{t}.rb",
+            "ruby": f"ruby --disable-gems src/{t}.rb",
             "bash": f"bash src/{t}.sh",
             "go": f"build/{t}",
             "rust": f"target/debug/{t}",

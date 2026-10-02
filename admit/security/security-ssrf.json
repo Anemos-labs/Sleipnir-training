@@ -1,0 +1,34 @@
+[
+{
+"id": "security-ssrf-01-preview-schemes",
+"ok": true
+},
+{
+"id": "security-ssrf-02-webhook-prefix",
+"ok": true
+},
+{
+"id": "security-ssrf-03-playlist-suffix",
+"ok": true
+},
+{
+"id": "security-ssrf-04-avatar-proxy",
+"ok": true
+},
+{
+"id": "security-ssrf-05-ipv6-blind-spot",
+"ok": true
+},
+{
+"id": "security-ssrf-06-tenant-wildcards",
+"ok": true
+},
+{
+"id": "security-ssrf-07-unfurl-redirects",
+"ok": true
+},
+{
+"id": "security-ssrf-08-rebinding-sender",
+"ok": true
+}
+]

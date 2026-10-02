@@ -28,31 +28,7 @@
 "ok": true
 },
 {
-"id": "chat-price-traps-08-tax_rev",
-"ok": true
-},
-{
-"id": "chat-price-traps-09-margin",
-"ok": true
-},
-{
-"id": "chat-price-traps-10-stack_two",
-"ok": true
-},
-{
-"id": "chat-price-traps-11-margin",
-"ok": true
-},
-{
-"id": "chat-price-traps-12-tax_rev",
-"ok": true
-},
-{
-"id": "chat-price-traps-13-stack_two",
-"ok": true
-},
-{
-"id": "chat-price-traps-14-margin",
+"id": "chat-price-traps-08-margin",
 "ok": true
 }
 ]

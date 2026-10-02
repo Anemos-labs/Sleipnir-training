@@ -8,31 +8,31 @@
 "ok": true
 },
 {
-"id": "research-authority-lookup-03-diff",
+"id": "research-authority-lookup-03-value",
 "ok": true
 },
 {
-"id": "research-authority-lookup-04-count",
+"id": "research-authority-lookup-04-diff",
 "ok": true
 },
 {
-"id": "research-authority-lookup-05-diff",
+"id": "research-authority-lookup-05-value",
 "ok": true
 },
 {
-"id": "research-authority-lookup-06-extreme",
+"id": "research-authority-lookup-06-value",
 "ok": true
 },
 {
-"id": "research-authority-lookup-07-extreme",
+"id": "research-authority-lookup-07-value",
 "ok": true
 },
 {
-"id": "research-authority-lookup-08-diff",
+"id": "research-authority-lookup-08-count",
 "ok": true
 },
 {
-"id": "research-authority-lookup-09-count",
+"id": "research-authority-lookup-09-extreme",
 "ok": true
 },
 {
@@ -44,15 +44,15 @@
 "ok": true
 },
 {
-"id": "research-authority-lookup-12-count",
+"id": "research-authority-lookup-12-value",
 "ok": true
 },
 {
-"id": "research-authority-lookup-13-value",
+"id": "research-authority-lookup-13-count",
 "ok": true
 },
 {
-"id": "research-authority-lookup-14-value",
+"id": "research-authority-lookup-14-diff",
 "ok": true
 },
 {
@@ -60,31 +60,15 @@
 "ok": true
 },
 {
-"id": "research-authority-lookup-16-diff",
+"id": "research-authority-lookup-16-count",
 "ok": true
 },
 {
-"id": "research-authority-lookup-17-count",
+"id": "research-authority-lookup-17-diff",
 "ok": true
 },
 {
-"id": "research-authority-lookup-18-diff",
-"ok": true
-},
-{
-"id": "research-authority-lookup-19-extreme",
-"ok": true
-},
-{
-"id": "research-authority-lookup-20-count",
-"ok": true
-},
-{
-"id": "research-authority-lookup-21-extreme",
-"ok": true
-},
-{
-"id": "research-authority-lookup-22-count",
+"id": "research-authority-lookup-18-count",
 "ok": true
 }
 ]

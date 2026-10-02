@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-fxdesk-01-delete",
+"ok": true
+},
+{
+"id": "fix-py-fxdesk-02-arith",
+"ok": true
+},
+{
+"id": "fix-py-fxdesk-03-cmp",
+"ok": true
+},
+{
+"id": "fix-py-fxdesk-04-const",
+"ok": true
+},
+{
+"id": "fix-py-fxdesk-05-negate",
+"ok": true
+},
+{
+"id": "fix-py-fxdesk-06-delete",
+"ok": true
+},
+{
+"id": "fix-py-fxdesk-07-arith",
+"ok": true
+},
+{
+"id": "fix-py-fxdesk-08-cmp",
+"ok": true
+},
+{
+"id": "fix-py-fxdesk-09-const",
+"ok": true
+},
+{
+"id": "fix-py-fxdesk-10-delete",
+"ok": true
+}
+]

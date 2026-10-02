@@ -224,7 +224,7 @@ README = dd("""
 """)
 
 
-@family("research-tariff-bill", category="research", lang="text", kind="lookup", n=20, mode="answer",
+@family("research-tariff-bill", category="research", lang="text", kind="lookup", n=18, mode="answer",
         summary="tariff in force on a date, which notice set it, and an exact bill across tariff changes")
 def gen(rng, n):
     made = 0

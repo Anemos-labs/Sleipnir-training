@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-harborfees-01-cmp",
+"ok": true
+},
+{
+"id": "fix-py-harborfees-02-delete",
+"ok": true
+},
+{
+"id": "fix-py-harborfees-03-const",
+"ok": true
+},
+{
+"id": "fix-py-harborfees-04-arith",
+"ok": true
+},
+{
+"id": "fix-py-harborfees-05-cmp",
+"ok": true
+},
+{
+"id": "fix-py-harborfees-06-delete",
+"ok": true
+},
+{
+"id": "fix-py-harborfees-07-const",
+"ok": true
+},
+{
+"id": "fix-py-harborfees-08-arith",
+"ok": true
+},
+{
+"id": "fix-py-harborfees-09-cmp",
+"ok": true
+},
+{
+"id": "fix-py-harborfees-10-delete",
+"ok": true
+}
+]

@@ -1,0 +1,82 @@
+[
+{
+"id": "debug-config-drift-01-reports-typed-number-json",
+"ok": true
+},
+{
+"id": "debug-config-drift-02-mailer-host-slash-ini",
+"ok": true
+},
+{
+"id": "debug-config-drift-03-reports-port-json",
+"ok": true
+},
+{
+"id": "debug-config-drift-04-mailer-bool-string-toml",
+"ok": true
+},
+{
+"id": "debug-config-drift-05-reports-env-ref-ini",
+"ok": true
+},
+{
+"id": "debug-config-drift-06-imgproxy-unit-ini",
+"ok": true
+},
+{
+"id": "debug-config-drift-07-imgproxy-url-slash-ini",
+"ok": true
+},
+{
+"id": "debug-config-drift-08-reports-path-toml",
+"ok": true
+},
+{
+"id": "debug-config-drift-09-imgproxy-typo-key-ini",
+"ok": true
+},
+{
+"id": "debug-config-drift-10-mailer-env-ref-ini",
+"ok": true
+},
+{
+"id": "debug-config-drift-11-mailer-port-env",
+"ok": true
+},
+{
+"id": "debug-config-drift-12-imgproxy-url-scheme-env",
+"ok": true
+},
+{
+"id": "debug-config-drift-13-mailer-unit-toml",
+"ok": true
+},
+{
+"id": "debug-config-drift-14-reports-typo-key-env",
+"ok": true
+},
+{
+"id": "debug-config-drift-15-mailer-typo-key-json",
+"ok": true
+},
+{
+"id": "debug-config-drift-16-imgproxy-env-ref-toml",
+"ok": true
+},
+{
+"id": "debug-config-drift-17-imgproxy-typed-number-toml",
+"ok": true
+},
+{
+"id": "debug-config-drift-18-reports-typed-number-json",
+"ok": true
+},
+{
+"id": "debug-config-drift-19-mailer-host-slash-env",
+"ok": true
+},
+{
+"id": "debug-config-drift-20-reports-port-toml",
+"ok": true
+}
+]

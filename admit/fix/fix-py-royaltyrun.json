@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-royaltyrun-01-delete",
+"ok": true
+},
+{
+"id": "fix-py-royaltyrun-02-cmp",
+"ok": true
+},
+{
+"id": "fix-py-royaltyrun-03-const",
+"ok": true
+},
+{
+"id": "fix-py-royaltyrun-04-swap",
+"ok": true
+},
+{
+"id": "fix-py-royaltyrun-05-arith",
+"ok": true
+},
+{
+"id": "fix-py-royaltyrun-06-delete",
+"ok": true
+},
+{
+"id": "fix-py-royaltyrun-07-const",
+"ok": true
+},
+{
+"id": "fix-py-royaltyrun-08-arith",
+"ok": true
+},
+{
+"id": "fix-py-royaltyrun-09-delete",
+"ok": true
+},
+{
+"id": "fix-py-royaltyrun-10-const",
+"ok": true
+}
+]

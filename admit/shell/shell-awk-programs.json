@@ -1,0 +1,50 @@
+[
+{
+"id": "shell-awk-programs-01-exact-ledger-balances",
+"ok": true
+},
+{
+"id": "shell-awk-programs-02-page-view-sessions",
+"ok": true
+},
+{
+"id": "shell-awk-programs-03-latest-record-per-key",
+"ok": true
+},
+{
+"id": "shell-awk-programs-04-text-histogram",
+"ok": true
+},
+{
+"id": "shell-awk-programs-05-join-pets-and-visits",
+"ok": true
+},
+{
+"id": "shell-awk-programs-06-aligned-table",
+"ok": true
+},
+{
+"id": "shell-awk-programs-07-job-log-states",
+"ok": true
+},
+{
+"id": "shell-awk-programs-08-word-wrap-paragraphs",
+"ok": true
+},
+{
+"id": "shell-awk-programs-09-best-two-per-group",
+"ok": true
+},
+{
+"id": "shell-awk-programs-10-hourly-buckets",
+"ok": true
+},
+{
+"id": "shell-awk-programs-11-quoted-key-values",
+"ok": true
+},
+{
+"id": "shell-awk-programs-12-fix-endpoint-stats",
+"ok": true
+}
+]

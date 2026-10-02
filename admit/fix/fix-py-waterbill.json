@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-waterbill-01-negate",
+"ok": true
+},
+{
+"id": "fix-py-waterbill-02-logic",
+"ok": true
+},
+{
+"id": "fix-py-waterbill-03-arith",
+"ok": true
+},
+{
+"id": "fix-py-waterbill-04-const",
+"ok": true
+},
+{
+"id": "fix-py-waterbill-05-cmp",
+"ok": true
+},
+{
+"id": "fix-py-waterbill-06-delete",
+"ok": true
+},
+{
+"id": "fix-py-waterbill-07-arith",
+"ok": true
+},
+{
+"id": "fix-py-waterbill-08-const",
+"ok": true
+},
+{
+"id": "fix-py-waterbill-09-delete",
+"ok": true
+},
+{
+"id": "fix-py-waterbill-10-arith",
+"ok": true
+}
+]

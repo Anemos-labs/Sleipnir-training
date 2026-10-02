@@ -348,7 +348,7 @@ LIB = Lib(
     files={"package.json": PACKAGE_JSON % "permgate", "src/rules.js": RULES, "src/policy.js": POLICY, "README.md": README, ".gitignore": "node_modules/\n"},
     visible_tests={"test/basic.test.js": VISIBLE},
     hidden_tests={"test/full.test.js": HIDDEN},
-    mutate=["src/policy.js", "src/rules.js"], difficulty=2, tags=["access-control", "roles", "permissions"],
+    mutate=["src/policy.js", "src/rules.js"], difficulty=1, tags=["access-control", "roles", "permissions"],
     verify=JS_VERIFY,
     probe_import="const { Policy } = require('./src/policy');\nconst { parseRule, patternMatch, ruleMatches } = require('./src/rules');",
     probes=[

@@ -1,0 +1,50 @@
+[
+{
+"id": "greenfield-dice-01-rust-n20-s30-l2",
+"ok": true
+},
+{
+"id": "greenfield-dice-02-javascript-n12-s30-l3",
+"ok": true
+},
+{
+"id": "greenfield-dice-03-c-n20-s20-l3",
+"ok": true
+},
+{
+"id": "greenfield-dice-04-python-n10-s20-l4",
+"ok": true
+},
+{
+"id": "greenfield-dice-05-ruby-n10-s100-l4",
+"ok": true
+},
+{
+"id": "greenfield-dice-06-rust-n10-s30-l2",
+"ok": true
+},
+{
+"id": "greenfield-dice-07-javascript-n10-s100-l3",
+"ok": true
+},
+{
+"id": "greenfield-dice-08-c-n12-s100-l4",
+"ok": true
+},
+{
+"id": "greenfield-dice-09-ruby-n10-s20-l4",
+"ok": true
+},
+{
+"id": "greenfield-dice-10-rust-n10-s20-l3",
+"ok": true
+},
+{
+"id": "greenfield-dice-11-javascript-n10-s30-l4",
+"ok": true
+},
+{
+"id": "greenfield-dice-12-c-n12-s20-l2",
+"ok": true
+}
+]

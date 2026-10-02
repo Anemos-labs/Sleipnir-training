@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-hexdump-01-delete",
+"ok": true
+},
+{
+"id": "fix-py-hexdump-02-cmp",
+"ok": true
+},
+{
+"id": "fix-py-hexdump-03-logic",
+"ok": true
+},
+{
+"id": "fix-py-hexdump-04-negate",
+"ok": true
+},
+{
+"id": "fix-py-hexdump-05-const",
+"ok": true
+},
+{
+"id": "fix-py-hexdump-06-arith",
+"ok": true
+},
+{
+"id": "fix-py-hexdump-07-delete",
+"ok": true
+},
+{
+"id": "fix-py-hexdump-08-cmp",
+"ok": true
+},
+{
+"id": "fix-py-hexdump-09-negate",
+"ok": true
+},
+{
+"id": "fix-py-hexdump-10-const",
+"ok": true
+}
+]

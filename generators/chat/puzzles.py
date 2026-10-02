@@ -162,10 +162,10 @@ CATNOUN = {"shed": "shed colours", "awning": "awning colours", "scarf": "scarf c
            "product": "products", "crop": "crops", "dish": "dishes", "drink": "drinks"}
 
 
-@family("chat-logic-grid", category="chat", lang="text", kind="puzzle", n=14, mode="answer",
+@family("chat-logic-grid", category="chat", lang="text", kind="puzzle", n=8, mode="answer",
         summary="who-sat-where logic grids with a unique solution (verified by a solver); the answer is a pair of digit strings")
 def gen_grid(rng, n_inst):
-    plan = [(3, 2, 1), (3, 3, 2), (4, 2, 2), (4, 3, 3), (4, 3, 3), (5, 2, 3), (5, 3, 4), (5, 3, 5), (3, 3, 2), (4, 3, 3), (5, 3, 4), (4, 2, 2), (5, 3, 5), (4, 3, 3)]
+    plan = [(3, 2, 1), (3, 3, 2), (4, 2, 2), (4, 3, 3), (4, 3, 3), (5, 2, 3), (5, 3, 4), (5, 3, 5)]
     for i in range(n_inst):
         n, n_attr, d = plan[i % len(plan)]
         theme = rng.choice(THEMES)
@@ -293,7 +293,7 @@ THINGS_ORDER = {
 }
 
 
-@family("chat-ordering-puzzle", category="chat", lang="text", kind="puzzle", n=12, mode="answer",
+@family("chat-ordering-puzzle", category="chat", lang="text", kind="puzzle", n=8, mode="answer",
         summary="work out one linear order from before/next/end/gap clues (unique by brute force); answer is a digit string")
 def gen_order(rng, n_inst):
     plan = [5, 5, 6, 6, 6, 7, 7, 8, 5, 6, 7, 8]
@@ -374,10 +374,10 @@ def _frac(f: Fraction) -> str:
     return f"{f.numerator}/{f.denominator}" if f.denominator != 1 else f"{f.numerator}"
 
 
-@family("chat-probability-small", category="chat", lang="text", kind="lookup", n=14, mode="answer",
+@family("chat-probability-small", category="chat", lang="text", kind="lookup", n=8, mode="answer",
         summary="exact small-number probabilities by enumeration: draws, custom dice, shuffles, committees, conditional on a pasted table, expected payout")
 def gen_prob(rng, n_inst):
-    plan = [2, 2, 3, 3, 3, 4, 4, 4, 5, 2, 3, 4, 3, 5]
+    plan = [2, 2, 2, 3, 3, 4, 4, 5]
     for i in range(n_inst):
         d = plan[i % len(plan)]
         for _attempt in range(100):
@@ -482,10 +482,10 @@ def _count_codes(alphabet, L, rule):
     return cnt
 
 
-@family("chat-counting-small", category="chat", lang="text", kind="lookup", n=12, mode="answer",
+@family("chat-counting-small", category="chat", lang="text", kind="lookup", n=8, mode="answer",
         summary="count codes, seatings, grid routes and handouts under constraints; the number comes from brute force")
 def gen_counting(rng, n_inst):
-    plan = [2, 3, 3, 4, 4, 5, 2, 3, 4, 5, 3, 4]
+    plan = [2, 2, 2, 3, 3, 4, 4, 5]
     for i in range(n_inst):
         d = plan[i % len(plan)]
         for _attempt in range(100):
@@ -591,7 +591,7 @@ def _apply(ops, arr):
 
 def _op_text(op, nm="person"):
     if op[0] == "rot":
-        return f"the first {op[1]} {nm}{'s' if op[1] > 1 else ''} in the list move to the back, keeping their order"
+        return f"the first {op[1]} {'person' if op[1] == 1 else 'people'} in the list move to the back, keeping their order"
     if op[0] == "swap":
         return f"the people in positions {op[1] + 1} and {op[2] + 1} swap places"
     if op[0] == "rev":
@@ -599,10 +599,10 @@ def _op_text(op, nm="person"):
     return f"the person in position {op[1] + 1} jumps to the front of the list"
 
 
-@family("chat-rota-simulation", category="chat", lang="text", kind="lookup", n=10, mode="answer",
+@family("chat-rota-simulation", category="chat", lang="text", kind="lookup", n=8, mode="answer",
         summary="a rota that is reshuffled by a fixed rule every week: who is where after many weeks (cycle structure matters)")
 def gen_rota(rng, n_inst):
-    plan = [2, 3, 3, 4, 4, 5, 3, 4, 5, 2]
+    plan = [2, 2, 2, 3, 3, 4, 4, 5]
     for i in range(n_inst):
         d = plan[i % len(plan)]
         for _attempt in range(100):

@@ -387,7 +387,7 @@ def _base_a() -> Base:
     stale = ("        del self._by_canon[oc]\n        self.index.remove(oc)\n        self._by_canon[nc] = new.strip()\n        self.index.add(nc)\n",
              "        del self._by_canon[oc]\n        self._by_canon[nc] = new.strip()\n")
     bugs = [
-        Bug("lower-instead-of-casefold", 2, {c: [("    s = s.casefold()", "    s = s.lower()")]}, P["lower"]),
+        Bug("lower-instead-of-casefold", 1, {c: [("    s = s.casefold()", "    s = s.lower()")]}, P["lower"]),
         Bug("nfc-misses-compat-forms", 3, {c: [nfc]}, P["nfc"]),
         Bug("length-in-bytes", 2, {c: [("    if not (MIN_LEN <= len(canon) <= MAX_LEN):", '    if not (MIN_LEN <= len(canon.encode("utf-8")) <= MAX_LEN):')]}, P["bytes"]),
         Bug("format-chars-kept", 3, {c: [('    s = "".join(ch for ch in s if unicodedata.category(ch) != "Cf")\n', "")]}, P["cf"]),

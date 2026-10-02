@@ -8,7 +8,7 @@
 "ok": true
 },
 {
-"id": "chat-write-redact-03-8lines-d3",
+"id": "chat-write-redact-03-6lines-d2",
 "ok": true
 },
 {
@@ -28,15 +28,7 @@
 "ok": true
 },
 {
-"id": "chat-write-redact-08-10lines-d4",
-"ok": true
-},
-{
-"id": "chat-write-redact-09-12lines-d5",
-"ok": true
-},
-{
-"id": "chat-write-redact-10-8lines-d3",
+"id": "chat-write-redact-08-12lines-d5",
 "ok": true
 }
 ]

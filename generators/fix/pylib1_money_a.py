@@ -191,9 +191,8 @@ VM_HIDDEN = dd('''
             for price, numer in table.items():
                 self.assertEqual(band_numerator(price), numer, price)
 
-        def test_zero_and_negative(self):
+        def test_zero(self):
             self.assertEqual(band_numerator(0), 0)
-            self.assertEqual(band_numerator(-5), 0)
 
         def test_round_div(self):
             self.assertEqual(round_div(5, 10), 1)
@@ -326,7 +325,7 @@ VELDMARK = Lib(
            "veldmark/lodge.py": VM_LODGE, "README.md": VM_README, ".gitignore": GITIGNORE},
     visible_tests={"tests/test_basic.py": VM_VISIBLE},
     hidden_tests={"tests/test_full.py": VM_HIDDEN},
-    mutate=["veldmark/bands.py", "veldmark/duty.py", "veldmark/lodge.py"], difficulty=3, tags=["tax", "bands", "rounding"],
+    mutate=["veldmark/bands.py", "veldmark/duty.py", "veldmark/lodge.py"], difficulty=2, tags=["tax", "bands", "rounding"],
     probes=[
         "band_numerator(400_001)", "round_div(25_000, 10_000)", "transfer_duty(150_025)", "transfer_duty(19_999, investment=True)",
         "transfer_duty(200_000, investment=True, resident=False)", "relief(450_001)", "relief(600_000)",

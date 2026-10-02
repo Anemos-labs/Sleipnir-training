@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-go-polysum-01-arith",
+"ok": true
+},
+{
+"id": "fix-go-polysum-02-negate",
+"ok": true
+},
+{
+"id": "fix-go-polysum-03-cmp",
+"ok": true
+},
+{
+"id": "fix-go-polysum-04-const",
+"ok": true
+},
+{
+"id": "fix-go-polysum-05-delete",
+"ok": true
+},
+{
+"id": "fix-go-polysum-06-logic",
+"ok": true
+},
+{
+"id": "fix-go-polysum-07-arith",
+"ok": true
+},
+{
+"id": "fix-go-polysum-08-cmp",
+"ok": true
+}
+]

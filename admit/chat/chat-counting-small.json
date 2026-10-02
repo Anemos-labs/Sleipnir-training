@@ -4,47 +4,31 @@
 "ok": true
 },
 {
-"id": "chat-counting-small-02-codes_adj",
+"id": "chat-counting-small-02-codes_simple",
 "ok": true
 },
 {
-"id": "chat-counting-small-03-codes_adj",
+"id": "chat-counting-small-03-codes_simple",
 "ok": true
 },
 {
-"id": "chat-counting-small-04-seating",
+"id": "chat-counting-small-04-routes",
 "ok": true
 },
 {
-"id": "chat-counting-small-05-routes2",
+"id": "chat-counting-small-05-codes_adj",
 "ok": true
 },
 {
-"id": "chat-counting-small-06-codes_combo",
+"id": "chat-counting-small-06-codes_vowel",
 "ok": true
 },
 {
-"id": "chat-counting-small-07-handout",
+"id": "chat-counting-small-07-codes_vowel",
 "ok": true
 },
 {
-"id": "chat-counting-small-08-routes",
-"ok": true
-},
-{
-"id": "chat-counting-small-09-seating",
-"ok": true
-},
-{
-"id": "chat-counting-small-10-codes_combo",
-"ok": true
-},
-{
-"id": "chat-counting-small-11-codes_adj",
-"ok": true
-},
-{
-"id": "chat-counting-small-12-seating",
+"id": "chat-counting-small-08-seating2",
 "ok": true
 }
 ]

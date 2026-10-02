@@ -22,9 +22,9 @@ TOPICS = ["Budget review", "Hiring plan", "Roadmap check", "Customer feedback", 
           "Product demo", "Metrics dashboard", "Policy changes"]
 
 
-@family("chat-write-agenda", category="chat", lang="text", kind="greenfield", n=12, summary="build a timed agenda that exactly fills a meeting window: minimum minutes per topic, a break, ordering rules and a cap per item; checked arithmetically")
+@family("chat-write-agenda", category="chat", lang="text", kind="greenfield", n=8, summary="build a timed agenda that exactly fills a meeting window: minimum minutes per topic, a break, ordering rules and a cap per item; checked arithmetically")
 def gen_agenda(rng, n):
-    plan = [3, 3, 4, 4, 4, 5, 5, 3, 4, 5, 3, 4]
+    plan = [3, 3, 3, 4, 4, 4, 5, 3]
     for i in range(n):
         d = plan[i % len(plan)]
         for _attempt in range(200):
@@ -197,14 +197,14 @@ STORES = ["Eastside", "Harbour", "Old Town", "Riverside", "Northgate"]
 PEOPLE_T = C.FIRST[:20]
 
 
-@family("chat-write-table", category="chat", lang="text", kind="greenfield", n=12, summary="turn pasted raw lines into a markdown table with computed columns, a sort order and a total row; every cell is recomputed by the checker")
+@family("chat-write-table", category="chat", lang="text", kind="greenfield", n=8, summary="turn pasted raw lines into a markdown table with computed columns, a sort order and a total row; every cell is recomputed by the checker")
 def gen_table_write(rng, n):
-    plan = [2, 2, 3, 3, 3, 4, 4, 4, 2, 3, 4, 3]
+    plan = [2, 2, 2, 3, 3, 4, 4, 5]
     for i in range(n):
         d = plan[i % len(plan)]
         kind = ["sales", "hours", "scores"][i % 3]
         if kind == "sales":
-            nrows = {2: 8, 3: 12, 4: 18}[d]
+            nrows = {2: 8, 3: 12, 4: 18, 5: 24}[d]
             stores = rng.sample(STORES, rng.randint(3, 4))
             lines = []
             agg = {s: [0, 0] for s in stores}
@@ -227,7 +227,7 @@ def gen_table_write(rng, n):
             spec = ("Make a markdown table with exactly these columns in this order: Store | Units | Revenue. One row per store, sorted by Revenue from highest to lowest. Revenue is units times unit price, summed per store, written with two decimals and no currency symbol. "
                     "Finish with a row whose first cell is Total, with the sums of Units and Revenue.")
         elif kind == "hours":
-            nrows = {2: 8, 3: 12, 4: 18}[d]
+            nrows = {2: 8, 3: 12, 4: 18, 5: 24}[d]
             people = rng.sample(PEOPLE_T, rng.randint(3, 4))
             lines = []
             agg = {p: 0 for p in people}
@@ -252,7 +252,7 @@ def gen_table_write(rng, n):
             spec = (f"Make a markdown table with the columns Person | Hours | Overtime. One row per person, sorted by Hours from most to fewest. Hours is the sum of that person's shifts; {ot_txt}. "
                     "Write every number with exactly one decimal place. Finish with a Total row (Total in the first cell).")
         else:
-            nrows = {2: 8, 3: 12, 4: 18}[d]
+            nrows = {2: 8, 3: 12, 4: 18, 5: 24}[d]
             names = rng.sample(PEOPLE_T, nrows)
             scores = [rng.randint(35, 99) for _ in names]
             bands = [("A", 85, 100), ("B", 70, 84), ("C", 55, 69), ("D", 0, 54)]
@@ -314,9 +314,9 @@ def extra(text):
 # chat-write-json
 
 
-@family("chat-write-json", category="chat", lang="text", kind="greenfield", n=10, summary="extract structured data from a messy typed note into result.json with exact normalisation rules (ISO dates, cents, digits-only phones, sorted lists)")
+@family("chat-write-json", category="chat", lang="text", kind="greenfield", n=8, summary="extract structured data from a messy typed note into result.json with exact normalisation rules (ISO dates, cents, digits-only phones, sorted lists)")
 def gen_json_write(rng, n):
-    plan = [3, 3, 4, 4, 4, 5, 5, 3, 4, 5]
+    plan = [3, 3, 3, 4, 4, 4, 5, 3]
     sup = ["Brightline Print", "Northwind Pallets", "Copperfield Packaging", "Tidewater Labels", "Ashgrove Paper"]
     contacts = ["Ines Marchetti", "Tobias Lindqvist", "Amara Okafor", "Pavel Nowak", "Salma Haddad"]
     items = ["A4 flyers", "roll labels", "cardboard sleeves", "box dividers", "gift tags", "tote bags"]
@@ -387,9 +387,9 @@ def extra(text):
 # chat-write-redact
 
 
-@family("chat-write-redact", category="chat", lang="text", kind="greenfield", n=10, summary="redact personal data from a support transcript with exact placeholder rules; everything else must stay character for character")
+@family("chat-write-redact", category="chat", lang="text", kind="greenfield", n=8, summary="redact personal data from a support transcript with exact placeholder rules; everything else must stay character for character")
 def gen_redact(rng, n):
-    plan = [2, 2, 3, 3, 3, 4, 4, 4, 5, 3]
+    plan = [2, 2, 2, 3, 3, 4, 4, 5]
     for i in range(n):
         d = plan[i % len(plan)]
         k = {2: 6, 3: 8, 4: 10, 5: 12}[d]
@@ -401,20 +401,53 @@ def gen_redact(rng, n):
         cust, agent, third = people
         c_email, c_phone, c_acct, c_pc = email(cust), phone(), acct(), pcode()
         a_email = email(agent)
-        src_lines = [
-            f"Agent: Hello, you are through to support, my name is {agent.split()[0]}.",
-            f"Customer: Hi, this is {cust}. I can't log in to my account {c_acct}.",
-            f"Agent: Thanks {cust.split()[0]}. Can you confirm the email address on the account?",
-            f"Customer: It's {c_email}, and you can ring me on {c_phone} if easier.",
-            f"Agent: I have reset the password and sent a link. If it doesn't arrive, write to {a_email} directly.",
-            f"Customer: Great. My sister {third} also uses it, she lives at {c_pc}.",
-            "Agent: Noted. Is there anything else I can help with today?",
-            "Customer: No, that's all, thanks for the quick help.",
-            f"Agent: You're welcome. Have a good day, {cust.split()[0]}.",
-            f"Customer: Bye. (Please note the invoice was sent to {c_pc} by mistake.)",
-            f"Agent: I have updated that, the address on {c_acct} now matches.",
-            "Customer: Perfect, goodbye.",
-        ][:k]
+        tmpl = i % 3
+        if tmpl == 0:
+            src_lines = [
+                f"Agent: Hello, you are through to support, my name is {agent.split()[0]}.",
+                f"Customer: Hi, this is {cust}. I can't log in to my account {c_acct}.",
+                f"Agent: Thanks {cust.split()[0]}. Can you confirm the email address on the account?",
+                f"Customer: It's {c_email}, and you can ring me on {c_phone} if easier.",
+                f"Agent: I have reset the password and sent a link. If it doesn't arrive, write to {a_email} directly.",
+                f"Customer: Great. My sister {third} also uses it, she lives at {c_pc}.",
+                "Agent: Noted. Is there anything else I can help with today?",
+                "Customer: No, that's all, thanks for the quick help.",
+                f"Agent: You're welcome. Have a good day, {cust.split()[0]}.",
+                f"Customer: Bye. (Please note the invoice was sent to {c_pc} by mistake.)",
+                f"Agent: I have updated that, the address on {c_acct} now matches.",
+                "Customer: Perfect, goodbye.",
+            ]
+        elif tmpl == 1:
+            src_lines = [
+                f"Agent: Deliveries desk, {agent.split()[0]} speaking. How can I help?",
+                f"Customer: Hello, {cust} here. My parcel to {c_pc} still hasn't arrived and it was due on Monday.",
+                "Agent: I'm sorry about that. Could I take the account number, please?",
+                f"Customer: Sure, it's {c_acct}.",
+                f"Agent: Thank you {cust.split()[0]}. I'll email the tracking details to {c_email} straight away.",
+                f"Customer: Please do. If the courier calls, use {c_phone}, not the landline.",
+                f"Agent: Understood. Could {third} sign for it if you're out?",
+                f"Customer: Yes, {third} is next door, at {c_pc} as well.",
+                "Agent: Lovely, I'll add that note. Anything else today?",
+                "Customer: No, thanks for checking.",
+                f"Agent: You're welcome. If you need me again write to {a_email}.",
+                "Customer: Will do, bye.",
+            ]
+        else:
+            src_lines = [
+                f"Agent: Billing, this is {agent.split()[0]}.",
+                f"Customer: Hi, I'm {cust}. I was charged twice on account {c_acct}.",
+                f"Agent: I can see that, {cust.split()[0]}. Which email should the refund confirmation go to?",
+                f"Customer: {c_email}. And my mobile is {c_phone} if the bank needs it.",
+                "Agent: Thanks. The duplicate will be refunded within five working days.",
+                f"Customer: Great. My business partner {third} pays the same bill, so please copy {a_email}? Sorry, that's yours, ignore that.",
+                f"Agent: No problem. Our billing address on file is {c_pc}, is that still right?",
+                f"Customer: Yes, {c_pc}.",
+                "Agent: Perfect. Is there anything else?",
+                "Customer: No, that's everything.",
+                f"Agent: Then I'll close the ticket for {c_acct}. Have a good evening.",
+                "Customer: You too.",
+            ]
+        src_lines = src_lines[:k]
         src = "\n".join(src_lines)
         repl_order = []
         rules_txt = ["every email address becomes [EMAIL]", "every phone number becomes [PHONE]", "every account number (AC- followed by six digits) becomes [ACCT]", f"every full name from this list becomes [NAME]: {', '.join(people)}"]
@@ -450,7 +483,7 @@ def extra(text):
         exec(code, ns)
         assert not ns["extra"](out)
         assert ns["extra"](src)
-        intro = rng.choice(["I have to share this support chat with a contractor, so the personal details must go first.", "Please redact the transcript in transcript.txt before it goes into our training deck.",
+        intro = rng.choice(["I have to share the support chat in transcript.txt with a contractor, so the personal details must go first.", "Please redact the transcript in transcript.txt before it goes into our training deck.",
                             "GDPR clean-up: the chat in transcript.txt needs the personal data removed before I can circulate it."])
         spec = ("Rules: " + "; ".join(rules_txt) + ". First names on their own (for example 'Thanks Ines') are left alone. Change nothing else: same wording, same punctuation, same line breaks. The file should contain only the redacted transcript.")
         prompt = C.chat(rng, intro, rng.choice(SAVE), None, C.register_for(rng), spec=spec)
@@ -470,9 +503,9 @@ def _next_wd(m: date, wd: int) -> date:
     return x
 
 
-@family("chat-write-actions", category="chat", lang="text", kind="greenfield", n=10, summary="turn a meeting transcript into action items with owners and absolute due dates; decoy statements are not actions and relative dates must be resolved by stated rules")
+@family("chat-write-actions", category="chat", lang="text", kind="greenfield", n=8, summary="turn a meeting transcript into action items with owners and absolute due dates; decoy statements are not actions and relative dates must be resolved by stated rules")
 def gen_actions(rng, n):
-    plan = [3, 3, 4, 4, 4, 5, 5, 3, 4, 5]
+    plan = [3, 3, 3, 4, 4, 4, 5, 3]
     people = C.pick_names(rng, 5)
     for i in range(n):
         d = plan[i % len(plan)]
@@ -523,7 +556,7 @@ def extra(text):
         ns = {}
         exec(code, ns)
         assert not ns["extra"](gold), ns["extra"](gold)
-        intro = rng.choice(["Here's the transcript of today's committee meeting (it took place on " + f"{m.day} {C.MONTHS[m.month - 1]} {m.year}" + "). I need the action items out of it.",
+        intro = rng.choice(["Here's the transcript (transcript.txt) of today's committee meeting, which took place on " + f"{m.day} {C.MONTHS[m.month - 1]} {m.year}" + ". I need the action items out of it.",
                             f"Meeting notes attached as transcript.txt, meeting date {m.day} {C.MONTHS[m.month - 1]} {m.year}. Can you pull out who has to do what by when?"])
         spec = ("Only real commitments count as actions: something a named person says they will do. Past events, vague ideas and general remarks are not actions. Date rules: 'by <weekday>' means the first such weekday strictly after the meeting date; "
                 "'in N days' counts from the meeting date; 'by the end of the month' means the last day of the meeting's month. Write one line per action in exactly this form: `- [ ] Owner: task (due YYYY-MM-DD)`, where Owner is the speaker's name and the task keeps the key noun from what they said.")
@@ -541,9 +574,9 @@ FOOD = [("oat bars", 60, 240, 150, "carb"), ("trail mix", 100, 520, 280, "carb")
         ("tuna pouch", 80, 120, 230, "protein"), ("apple chips", 30, 110, 200, "fruit")]
 
 
-@family("chat-write-packlist", category="chat", lang="text", kind="greenfield", n=10, summary="choose items with quantities from a table so that weight, calories, cost, category and repeat limits all hold; the checker recomputes the totals")
+@family("chat-write-packlist", category="chat", lang="text", kind="greenfield", n=8, summary="choose items with quantities from a table so that weight, calories, cost, category and repeat limits all hold; the checker recomputes the totals")
 def gen_pack(rng, n):
-    plan = [3, 3, 4, 4, 4, 5, 5, 3, 4, 5]
+    plan = [3, 3, 3, 4, 4, 4, 5, 3]
     for i in range(n):
         d = plan[i % len(plan)]
         for _attempt in range(100):
@@ -643,9 +676,9 @@ def extra(text):
 SITES = ["Fort Museum", "Glasshouse Gardens", "Old Mill", "Lighthouse", "Clock Tower", "Market Hall", "Abbey Ruins", "Observatory"]
 
 
-@family("chat-write-itinerary", category="chat", lang="text", kind="greenfield", n=8, summary="schedule visits to sites with opening windows, fixed visit lengths, travel times and a lunch slot; the checker validates every constraint")
+@family("chat-write-itinerary", category="chat", lang="text", kind="greenfield", n=6, summary="schedule visits to sites with opening windows, fixed visit lengths, travel times and a lunch slot; the checker validates every constraint")
 def gen_itin(rng, n):
-    plan = [4, 4, 5, 5, 4, 5, 4, 5]
+    plan = [4, 4, 5, 4, 5, 4]
     for i in range(n):
         d = plan[i % len(plan)]
         for _attempt in range(300):
@@ -771,9 +804,9 @@ def extra(text):
 # chat-write-release-notes
 
 
-@family("chat-write-release-notes", category="chat", lang="text", kind="greenfield", n=10, summary="group a commit log into release notes: sections by type, internal types excluded, issue numbers kept, fixed title line")
+@family("chat-write-release-notes", category="chat", lang="text", kind="greenfield", n=8, summary="group a commit log into release notes: sections by type, internal types excluded, issue numbers kept, fixed title line")
 def gen_notes(rng, n):
-    plan = [3, 3, 3, 4, 4, 4, 3, 4, 4, 3]
+    plan = [3, 3, 3, 3, 4, 4, 4, 3]
     msgs = {"feat": ["add CSV export to reports", "support dark mode in the editor", "allow bulk delete of drafts", "add weekly digest emails", "let admins pin announcements"],
             "fix": ["stop duplicate invoices on retry", "handle empty search terms", "correct timezone in reminders", "prevent crash on missing avatar", "fix off-by-one in page counts"],
             "perf": ["cache the product list", "batch database writes in imports", "lazy-load images in the gallery"], "refactor": ["split the billing module", "simplify the settings loader"],
@@ -843,7 +876,7 @@ def extra(text):
         ns = {}
         exec(code, ns)
         assert not ns["extra"](gold), (ns["extra"](gold), gold)
-        intro = rng.choice(["Release day. Here's the commit log since the last tag (conventional-commit style), and I need user-facing release notes.", "can you turn this git log into release notes? changelog.txt has the log"])
+        intro = rng.choice(["Release day. changelog.txt has the commit log since the last tag (conventional-commit style), and I need user-facing release notes.", "can you turn this git log into release notes? changelog.txt has the log"])
         spec = (f"The notes start with the line `## {ver} ({C.iso(rd)})`. Then sections in this order, each as `### Added` (feat), `### Fixed` (fix) and `### Changed` (perf and refactor); leave out a section that would be empty. "
                 "Every entry is a bullet (`- `) with the commit message starting with a capital letter and the issue number kept at the end as (#123). chore and docs commits are internal and must not appear at all. Within a section, order entries by issue number, lowest first.")
         rules = [{"t": "min_chars", "n": 20}]
@@ -862,9 +895,9 @@ def _add_months(d: date, k: int) -> date:
     return C.month_add(d, k)
 
 
-@family("chat-write-support-reply", category="chat", lang="text", kind="greenfield", n=10, summary="reply to a customer using a policy file: compute the refund deadline, refund amount and warranty end, answer numbered questions, promise nothing the policy does not")
+@family("chat-write-support-reply", category="chat", lang="text", kind="greenfield", n=8, summary="reply to a customer using a policy file: compute the refund deadline, refund amount and warranty end, answer numbered questions, promise nothing the policy does not")
 def gen_support(rng, n):
-    plan = [3, 3, 4, 4, 4, 5, 5, 3, 4, 5]
+    plan = [3, 3, 3, 4, 4, 4, 5, 3]
     for i in range(n):
         d = plan[i % len(plan)]
         for _attempt in range(100):
@@ -907,7 +940,7 @@ def gen_support(rng, n):
             if d >= 4:
                 rules.append({"t": "include", "any": [F.money_re(ship)], "label": "states the delivery charge that is not refunded"})
             K.assert_passes(rules, gold, what=f"support {i}")
-            intro = rng.choice(["A customer emailed us (email.txt) and our policy is in policy.md. I need a reply that answers all three questions correctly.", "Draft a reply to the customer's email using our policy, please. Both files are in the folder.",
+            intro = rng.choice(["A customer emailed us (email.txt) and our policy is in policy.md. I need a reply that answers all three questions correctly.", "Draft a reply to the customer's email (email.txt) using our policy (policy.md), please.",
                                 "Customer service backlog: can you answer the email in email.txt based on policy.md?"])
             spec = ("Answer the three questions in order, as numbered lines starting `1.`, `2.` and `3.` Give concrete dates and amounts, not formulas. Keep it under " + str(120 if d <= 4 else 90) + " words. "
                     "Stick to what the policy says: do not promise anything it does not offer" + (", and say that the original delivery charge is not refunded." if d >= 4 else "."))

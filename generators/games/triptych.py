@@ -653,3 +653,180 @@ def gen_fix(rng, n):
         ctx = {"files": ["game.go"], "verify": _scen.VERIFY[LANG]}
         yield _kit.bug_task(game=GAME, lang=LANG, base_files=base, tests=tests, hidden=hidden, bug=bug, ctx=ctx, rng=rng, used=used, k=k,
                             tags=["tiles", "rng"], extra_notes={"rules": r})
+
+
+# ----------------------------------------------------------------------------------------------------- bot tournament
+
+BOT_EXTRA = tabs(dd(r'''
+
+    // Clone returns an independent copy of the game (the generator state included).
+    func (g *Game) Clone() *Game {
+        c := *g
+        return &c
+    }
+
+    // Cell returns the value of the tile at (row, col): 0 for an empty cell or a wall.
+    func (g *Game) Cell(row, col int) int { return g.cells[row][col] }
+
+    // EmptyCount returns the number of empty cells (walls do not count).
+    func (g *Game) EmptyCount() int {
+        n := 0
+        for r := 0; r < N; r++ {
+            for c := 0; c < N; c++ {
+                if !g.wall[r][c] && g.cells[r][c] == 0 {
+                    n++
+                }
+            }
+        }
+        return n
+    }
+'''))
+
+BOT_STUB = tabs(dd('''
+    package triptych
+
+    // Choose returns the move to play now: one of g.LegalMoves(). It is only called while the game is not over.
+    func Choose(g *Game) string {
+        return g.LegalMoves()[0]
+    }
+'''))
+
+BOT_GOLD = tabs(dd('''
+    package triptych
+
+    import "sort"
+
+    // Choose plays the move with the best immediate result: first the score gained, then the number of empty cells left.
+    func Choose(g *Game) string {
+        moves := append([]string(nil), g.LegalMoves()...)
+        sort.Strings(moves)
+        best, bestKey := moves[0], -1
+        for _, m := range moves {
+            c := g.Clone()
+            before := c.Score()
+            c.Apply(m)
+            key := (c.Score()-before)*100 + c.EmptyCount()
+            if key > bestKey {
+                best, bestKey = m, key
+            }
+        }
+        return best
+    }
+'''))
+
+BOT_ARENA = tabs(dd('''
+    // Command arena plays games with triptych.Choose and prints the average score: go run ./cmd/arena [games]
+    package main
+
+    import (
+        "fmt"
+        "os"
+        "strconv"
+
+        "example.com/triptych"
+    )
+
+    const maxMoves = 2000
+
+    func play(seed uint32) int {
+        g := triptych.NewGame(seed)
+        for i := 0; i < maxMoves && !g.Over(); i++ {
+            if _, err := g.Apply(triptych.Choose(g)); err != nil {
+                break // an illegal move ends the game: the score so far counts
+            }
+        }
+        return g.Score()
+    }
+
+    func main() {
+        games := 12
+        if len(os.Args) > 1 {
+            games, _ = strconv.Atoi(os.Args[1])
+        }
+        total := 0
+        for s := 1; s <= games; s++ {
+            total += play(uint32(s))
+        }
+        fmt.Printf("average score %.1f over %d games (seeds 1..%d)\\n", float64(total)/float64(games), games, games)
+    }
+'''))
+
+BOT_SCORE = tabs(dd('''
+    package main
+
+    import (
+        "encoding/json"
+        "fmt"
+
+        "example.com/triptych"
+    )
+
+    const maxMoves = 2000
+    const floor, goal = @@FLOOR@@, @@GOAL@@
+
+    func play(seed uint32) int {
+        g := triptych.NewGame(seed)
+        for i := 0; i < maxMoves && !g.Over(); i++ {
+            if _, err := g.Apply(triptych.Choose(g)); err != nil {
+                break
+            }
+        }
+        return g.Score()
+    }
+
+    func main() {
+        total := 0
+        const games = 30
+        for s := 0; s < games; s++ {
+            total += play(uint32(9000 + 37*s))
+        }
+        avg := float64(total) / games
+        score := (avg - floor) / (goal - floor)
+        if score < 0 {
+            score = 0
+        }
+        if score > 1 {
+            score = 1
+        }
+        fmt.Printf("average score %.1f over %d games (full score from %.0f)\\n", avg, games, goal)
+        out, _ := json.Marshal(map[string]float64{"score": float64(int(score*10000)) / 10000})
+        fmt.Println(string(out))
+    }
+'''))
+
+TRIPTYCH_BOT_VARIANTS = [dict(idx=0, floor=45, goal=85, d=2), dict(idx=1, floor=500, goal=1300, d=3), dict(idx=2, floor=90, goal=160, d=3), dict(idx=3, floor=500, goal=1300, d=3)]
+
+
+def bot_readme(r: dict, v: dict) -> str:
+    return readme(r).replace("## Tests\n", dd(f'''
+        ## Your task: a player
+
+        `bot.go` must define `Choose(g *Game) string`, called before every move while the game is not over; it returns the move to play (one of `g.LegalMoves()`). For search the engine also has three helpers (the engine file is
+        given, do not edit it): `g.Clone()` is an independent copy of the game *including the generator state*, `g.Cell(row, col)` the tile value (0 for empty cells and walls) and `g.EmptyCount()` the number of empty cells.
+
+        `go run ./cmd/arena [games]` plays your `Choose` on seeds 1.. and prints the average score. The check plays 30 other games (a game ends when no move is legal, after 2000 moves, or when `Choose` returns an illegal move; the score reached
+        so far counts) and the score is `clamp((average - {v["floor"]}) / ({v["goal"]} - {v["floor"]}), 0, 1)`: 1.0 needs an average of at least {v["goal"]}.
+
+        ## Tests
+    '''), 1).replace("`go test ./...` replays", "`go test ./...` (scenario files only; the tournament is `go run ./cmd/arena`) replays")
+
+
+@family("games-triptych-bot", category="games", lang="go", kind="greenfield", n=4,
+        summary="write a Triptych player (go) scored by its average over seeded games (json-score)")
+def gen_bot(rng, n):
+    for i, v in enumerate(TRIPTYCH_BOT_VARIANTS[:n]):
+        r = _variants(7)[v["idx"]]
+        sol = project(r)
+        eng = {"game.go": sol["game.go"] + "\n" + BOT_EXTRA.replace("\n\n", "\n\n", 1), "go.mod": sol["go.mod"]}
+        files = {**eng, "cmd/arena/main.go": BOT_ARENA, "bot.go": BOT_STUB, "README.md": bot_readme(r, v)}
+        hidden = {"cmd/score/main.go": BOT_SCORE.replace("@@FLOOR@@", repr(float(v["floor"]))).replace("@@GOAL@@", repr(float(v["goal"])))}
+        s0, s1, out = _kit.check_scores(start=files, hidden=hidden, solution={"bot.go": BOT_GOLD}, verify="go run ./cmd/score", name=f"triptych-bot-{i}", timeout_s=240)
+        voices = [
+            "Write a Triptych player in `bot.go`: `Choose` picks the next move. README.md has the game's rules, the three search helpers the engine offers and how the average score over a batch of seeded games becomes your grade.",
+            "The Triptych bot in `bot.go` just takes the first legal move and loses quickly. Make it play well; `go run ./cmd/arena` gives the average over a few games and README.md explains the grading.",
+            "I'd like a decent Triptych bot. It only needs to be better than 'first legal move', but the grade rises with the average score over a hidden batch of games (details in README.md). Implement `Choose` in `bot.go`.",
+            "Implement `Choose(g *Game) string` for Triptych in `bot.go`. You may clone the game to look ahead (the generator is cloned with it). Scoring is described in README.md; the full grade needs a good average.",
+        ]
+        yield Task(slug=f"{i + 1:02d}-n{r['N']}m{r['MERGE']}" + ("-walls" if r["WALLS"] else "") + ("-edge" if r["EDGE"] else ""), prompt=voices[i % len(voices)], difficulty=v["d"], start=files, hidden=hidden,
+                   solution={"bot.go": BOT_GOLD}, verify="go run ./cmd/score", pass_mode="json-score", protected=["game.go", "cmd/arena/main.go"], timeout_s=240,
+                   tags=["bot", "tiles", "tournament"], notes={"rules": r, "gold": out.strip().splitlines()[-2], "stub_score": s0})

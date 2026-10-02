@@ -973,7 +973,7 @@ LIB = Lib(
     files={"README.md": README1, "include/slotmap.h": F2, "src/slotmap.c": F3},
     visible_tests={"tests/test_main.c": V4, "tests/harness.h": _lang3.C_HARNESS},
     hidden_tests={"tests/test_main.c": H5},
-    mutate=["src/slotmap.c"], difficulty=4, tags=["hash-table", "open-addressing", "data-structure"],
+    mutate=["src/slotmap.c"], difficulty=3, tags=["hash-table", "open-addressing", "data-structure"],
     verify=_lang3.C_VERIFY,
 )
 

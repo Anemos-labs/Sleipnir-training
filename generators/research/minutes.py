@@ -210,7 +210,7 @@ def _pick_date(rng, meetings, params):
     return meetings[0] + dt.timedelta(days=rng.randint(0, (meetings[-1] - meetings[0]).days + 20))
 
 
-@family("research-committee-rules", category="research", lang="text", kind="lookup", n=24, mode="answer",
+@family("research-committee-rules", category="research", lang="text", kind="lookup", n=20, mode="answer",
         summary="temporal questions over committee minutes: which rule value applied on a date, when it took effect")
 def gen_rules(rng, n):
     made = 0
@@ -273,7 +273,7 @@ def gen_rules(rng, n):
                          tags=["minutes", "temporal"], notes={"theme": org.theme, "meetings": nm, "param": prm.name, "kind": kind})
 
 
-@family("research-committee-ledger", category="research", lang="text", kind="greenfield", n=16,
+@family("research-committee-ledger", category="research", lang="text", kind="greenfield", n=12,
         summary="rebuild the change history of a rule from committee minutes into out.csv or answer.json")
 def gen_ledger(rng, n):
     made = 0

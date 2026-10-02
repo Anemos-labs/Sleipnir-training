@@ -903,6 +903,8 @@ AIRLANE_HIDDEN_GEOM = dd('''
             self.assertEqual(orientation([(0, 0), (1, 1), (2, 2)]), "degenerate")
             self.assertEqual(orientation([(0, 0), (5, 0)]), "degenerate")
             self.assertEqual(orientation(L), "ccw")
+            self.assertEqual(orientation([(0, 0), (1, 0), (0, 1)]), "ccw")
+            self.assertEqual(orientation([(0, 0), (0, 1), (1, 0)]), "cw")
 
         def test_on_segment(self):
             a, b = (0, 0), (4, 2)
@@ -968,6 +970,47 @@ AIRLANE_HIDDEN_GEOM = dd('''
             for poly in ([], [(0, 0)], [(0, 0), (1, 1)]):
                 with self.assertRaises(ValueError):
                     contains(poly, (0, 0))
+
+
+    DIAMOND = [(2, 0), (4, 2), (2, 4), (0, 2)]
+
+
+    def l_state(x, y):
+        """'in', 'edge' or 'out' for the L polygon, from its description as a union of two rectangles"""
+        edges = (
+            (y == 0 and 0 <= x <= 4) or (x == 4 and 0 <= y <= 2) or (y == 2 and 2 <= x <= 4)
+            or (x == 2 and 2 <= y <= 4) or (y == 4 and 0 <= x <= 2) or (x == 0 and 0 <= y <= 4)
+        )
+        if edges:
+            return "edge"
+        if (0 < x < 4 and 0 < y < 2) or (0 < x < 2 and 0 < y < 4):
+            return "in"
+        return "out"
+
+
+    def diamond_state(x, y):
+        d = abs(x - 2) + abs(y - 2)
+        return "in" if d < 2 else "edge" if d == 2 else "out"
+
+
+    class ContainsExhaustive(unittest.TestCase):
+        def check(self, poly, state):
+            for x in range(-2, 7):
+                for y in range(-2, 7):
+                    want = state(x, y)
+                    self.assertEqual(contains(poly, (x, y)), want != "out", (x, y))
+                    self.assertEqual(contains(poly, (x, y), boundary=False), want == "in", (x, y))
+                    self.assertEqual(contains(poly[::-1], (x, y), boundary=False), want == "in", (x, y))
+
+        def test_l_shape(self):
+            self.check(L, l_state)
+
+        def test_diamond(self):
+            self.check(DIAMOND, diamond_state)
+
+        def test_rotated_start_vertex(self):
+            self.check(L[2:] + L[:2], l_state)
+            self.check(DIAMOND[1:] + DIAMOND[:1], diamond_state)
 
 
     class Centroid(unittest.TestCase):
@@ -1048,6 +1091,29 @@ AIRLANE_HIDDEN_GEOM = dd('''
             self.assertEqual(clip_segment((0, 6), (20, 6), (5, 5, 5, 8)), ((5, 6), (5, 6)))
             self.assertEqual(clip_segment((0, 6), (20, 6), (5, 6, 15, 6)), ((5, 6), (15, 6)))
 
+        def test_against_interval_arithmetic(self):
+            def oracle(a, b, rect):
+                (x0, y0), (x1, y1) = a, b
+                lo, hi = F(0), F(1)
+                for start, delta, mn, mx in ((x0, x1 - x0, rect[0], rect[2]), (y0, y1 - y0, rect[1], rect[3])):
+                    if delta == 0:
+                        if not mn <= start <= mx:
+                            return None
+                    else:
+                        ta, tb = F(mn - start, delta), F(mx - start, delta)
+                        lo, hi = max(lo, min(ta, tb)), min(hi, max(ta, tb))
+                if lo > hi:
+                    return None
+                return (x0 + lo * (x1 - x0), y0 + lo * (y1 - y0)), (x0 + hi * (x1 - x0), y0 + hi * (y1 - y0))
+
+            coords = (-3, 0, 2, 5, 10, 13)
+            for rect in ((0, 0, 10, 10), (2, 3, 7, 8), (-1, -2, 4, 6)):
+                for ax in coords:
+                    for ay in coords:
+                        for bx in coords:
+                            for by in coords:
+                                self.assertEqual(clip_segment((ax, ay), (bx, by), rect), oracle((ax, ay), (bx, by), rect), ((ax, ay), (bx, by), rect))
+
         def test_bad_rect(self):
             with self.assertRaises(ValueError):
                 clip_segment((0, 0), (1, 1), (5, 0, 4, 10))
@@ -1096,6 +1162,43 @@ AIRLANE_HIDDEN_FENCE = dd('''
             self.assertFalse(segments_intersect((0, 0), (4, 0), (5, 1), (9, 9)))
             self.assertFalse(segments_intersect((0, 0), (4, 0), (2, 1), (2, 5)))
             self.assertFalse(segments_intersect((0, 0), (4, 4), (0, 2), (1, 2)))
+
+
+    class IntersectExhaustive(unittest.TestCase):
+        def test_against_parametric_solution(self):
+            def oracle(a, b, c, d):
+                r = (b[0] - a[0], b[1] - a[1])
+                s = (d[0] - c[0], d[1] - c[1])
+                qp = (c[0] - a[0], c[1] - a[1])
+                denom = r[0] * s[1] - r[1] * s[0]
+                if denom != 0:
+                    t = F(qp[0] * s[1] - qp[1] * s[0], denom)
+                    u = F(qp[0] * r[1] - qp[1] * r[0], denom)
+                    return 0 <= t <= 1 and 0 <= u <= 1
+                if qp[0] * r[1] - qp[1] * r[0] != 0:
+                    return False
+                axis = 0 if r[0] != 0 else 1
+                lo1, hi1 = sorted((a[axis], b[axis]))
+                lo2, hi2 = sorted((c[axis], d[axis]))
+                return max(lo1, lo2) <= min(hi1, hi2)
+
+            pts = [(x, y) for x in range(4) for y in range(4)]
+            for a in pts:
+                for b in pts:
+                    if a == b:
+                        continue
+                    for c in pts:
+                        for d in pts:
+                            if c == d:
+                                continue
+                            self.assertEqual(segments_intersect(a, b, c, d), oracle(a, b, c, d), (a, b, c, d))
+
+        def test_degenerate_segments(self):
+            self.assertTrue(segments_intersect((1, 1), (1, 1), (0, 0), (2, 2)))
+            self.assertFalse(segments_intersect((1, 2), (1, 2), (0, 0), (2, 2)))
+            self.assertTrue(segments_intersect((0, 0), (2, 2), (1, 1), (1, 1)))
+            self.assertTrue(segments_intersect((3, 3), (3, 3), (3, 3), (3, 3)))
+            self.assertFalse(segments_intersect((3, 3), (3, 3), (3, 4), (3, 4)))
 
 
     class Legs(unittest.TestCase):
@@ -1204,5 +1307,585 @@ AIRLANE = Lib(
     probe_import="from airlane.geom import area2, orientation, contains, centroid, clip_segment\nfrom airlane.fence import segments_intersect, leg_violations, leg_hits, crop_route\n",
 )
 
-LIBS = [GUILDUNITS, AIRLANE]
+# ======================================================================================================================
+# chordbook: note names, intervals and chord symbols for a lead-sheet tool (multi-module)
+# ======================================================================================================================
+
+CHORDBOOK_README = dd('''
+    # chordbook
+
+    Note arithmetic and chord symbols for a lead-sheet editor. Pitches use scientific pitch notation where `C4` is
+    middle C and has MIDI number 60 (`C-1` is 0).
+
+    ## `chordbook.notes`
+
+    * `parse_note(text) -> (letter, accidental, octave)`: `text` is a letter `A`-`G` (upper case), an optional
+      accidental (`#` sharp = +1, `b` flat = -1, `x` double sharp = +2, `bb` double flat = -2) and an optional octave
+      (an integer, may be negative); `octave` is `None` when absent. Anything else (`"H4"`, `"c4"`, `"C##4"`, `""`)
+      is a `ValueError`.
+    * `pitch_class(text) -> int`: 0 to 11 for `C` to `B`, counting accidentals, modulo 12 (`B#` is 0, `Cb` is 11).
+    * `midi(text) -> int`: `12 * (octave + 1) + pitch value + accidental` (so `B#3` is 60 and `Cb4` is 59);
+      `ValueError` if the note has no octave.
+    * `name_of(number, prefer="sharp") -> str`: the note name with octave for a MIDI number: sharp spelling
+      `C C# D D# E F F# G G# A A# B` or, with `prefer="flat"`, `C Db D Eb E F Gb G Ab A Bb B`; the octave is
+      `number // 12 - 1`. Any other `prefer` is a `ValueError`.
+    * `transpose(text, semitones, prefer=None) -> str`: shift a note up (or down when negative). With an octave the
+      result is `name_of(midi(text) + semitones, ...)`; without one only the pitch class moves and the result has no
+      octave. The spelling is `prefer` when given, otherwise flat when the note's accidental is `b` or `bb` and sharp
+      in every other case.
+
+    ## `chordbook.intervals`
+
+    * `interval_name(semitones) -> str`: for an absolute size 0..12 the names `P1 m2 M2 m3 M3 P4 TT P5 m6 M6 m7 M7
+      P8`; above 12 the name of the remainder (`s % 12`, but 12 instead of 0) followed by `+` and the number of whole
+      octaves added, `(s - 1) // 12`: 14 is `M2+1`, 19 is `P5+1`, 24 is `P8+1`, 25 is `m2+2`. A negative size gets a
+      leading `-`.
+    * `interval(a, b) -> (semitones, name)`: from note `a` to note `b`, both with octaves (`ValueError` otherwise):
+      `midi(b) - midi(a)` and its name.
+    * `class_interval(a, b) -> (semitones, name)`: the ascending distance between the *pitch classes*, `(pc(b) -
+      pc(a)) % 12` (octaves are ignored; the same pitch class is 0, `P1`).
+
+    ## `chordbook.chords`
+
+    `QUALITIES` maps a quality suffix to its semitone offsets above the root, in this order: `""` (0 4 7), `m` (0 3
+    7), `dim` (0 3 6), `aug` (0 4 8), `7` (0 4 7 10), `maj7` (0 4 7 11), `m7` (0 3 7 10), `m7b5` (0 3 6 10), `dim7`
+    (0 3 6 9), `sus2` (0 2 7), `sus4` (0 5 7), `6` (0 4 7 9), `m6` (0 3 7 9) and `9` (0 4 7 10 14).
+
+    * `parse_chord(symbol) -> (root, quality, bass)`: `root` is a letter with an optional `#` or `b` (a `b` right
+      after the letter is always an accidental), then the quality suffix, then optionally `/` and a bass note (a
+      letter with an optional `#` or `b`); `bass` is `None` without a slash. `ValueError` for an unknown quality, a
+      bad root or bass.
+    * `chord_notes(symbol, octave=4) -> list[str]`: the chord tones as note names with octave, lowest first: the root
+      in `octave` and every other tone above it by its offset, all spelled with the sharp table, or with the flat
+      table when the root's accidental is `b`. A slash chord starts with its bass note written as in the symbol, in
+      `octave - 1`.
+    * `identify(notes) -> str | None`: the symbol for a list of note names (with or without octaves, lowest first).
+      Take the distinct pitch classes in order of first appearance and try each as the root (in that order); for a
+      root try the qualities in `QUALITIES` order; the first quality whose offsets (modulo 12) form exactly the set of
+      pitch classes wins. The root is spelled from the flat table if any given note has a flat accidental and from
+      the sharp table otherwise; when the root is not the first note the symbol gets `/` and the first note's name
+      (spelled the same way). `None` when nothing matches; `ValueError` for an empty list.
+    * `transpose_chord(symbol, semitones) -> str`: transpose the root (and the bass), keep the quality. Names come from
+      the flat table when the root or the bass of the symbol has a `b`, otherwise from the sharp table.
+''')
+
+CHORDBOOK_NOTES = dd('''
+    """Note names and numbers."""
+    import re
+
+    PC = {"C": 0, "D": 2, "E": 4, "F": 5, "G": 7, "A": 9, "B": 11}
+    ACC = {"": 0, "#": 1, "b": -1, "x": 2, "bb": -2}
+    SHARP = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
+    FLAT = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"]
+    _NOTE = re.compile(r"^([A-G])(#|bb|b|x)?(-?\\d+)?$")
+
+
+    def parse_note(text):
+        m = _NOTE.match(text)
+        if not m:
+            raise ValueError(f"not a note: {text!r}")
+        octave = int(m.group(3)) if m.group(3) is not None else None
+        return m.group(1), ACC[m.group(2) or ""], octave
+
+
+    def pitch_class(text):
+        letter, acc, _ = parse_note(text)
+        return (PC[letter] + acc) % 12
+
+
+    def midi(text):
+        letter, acc, octave = parse_note(text)
+        if octave is None:
+            raise ValueError(f"note {text!r} has no octave")
+        return 12 * (octave + 1) + PC[letter] + acc
+
+
+    def table(prefer):
+        if prefer == "sharp":
+            return SHARP
+        if prefer == "flat":
+            return FLAT
+        raise ValueError(f"unknown spelling {prefer!r}")
+
+
+    def name_of(number, prefer="sharp"):
+        return f"{table(prefer)[number % 12]}{number // 12 - 1}"
+
+
+    def transpose(text, semitones, prefer=None):
+        letter, acc, octave = parse_note(text)
+        if prefer is None:
+            prefer = "flat" if acc < 0 else "sharp"
+        if octave is None:
+            return table(prefer)[(pitch_class(text) + semitones) % 12]
+        return name_of(midi(text) + semitones, prefer)
+''')
+
+CHORDBOOK_INTERVALS = dd('''
+    """Intervals between notes."""
+    from .notes import midi, pitch_class
+
+    NAMES = ["P1", "m2", "M2", "m3", "M3", "P4", "TT", "P5", "m6", "M6", "m7", "M7", "P8"]
+
+
+    def interval_name(semitones):
+        size = abs(semitones)
+        if size <= 12:
+            name = NAMES[size]
+        else:
+            name = f"{NAMES[size % 12 or 12]}+{(size - 1) // 12}"
+        return ("-" if semitones < 0 else "") + name
+
+
+    def interval(a, b):
+        semis = midi(b) - midi(a)
+        return semis, interval_name(semis)
+
+
+    def class_interval(a, b):
+        semis = (pitch_class(b) - pitch_class(a)) % 12
+        return semis, interval_name(semis)
+''')
+
+CHORDBOOK_CHORDS = dd('''
+    """Chord symbols."""
+    import re
+
+    from .notes import FLAT, SHARP, midi, name_of, parse_note, pitch_class
+
+    QUALITIES = {
+        "": [0, 4, 7], "m": [0, 3, 7], "dim": [0, 3, 6], "aug": [0, 4, 8], "7": [0, 4, 7, 10],
+        "maj7": [0, 4, 7, 11], "m7": [0, 3, 7, 10], "m7b5": [0, 3, 6, 10], "dim7": [0, 3, 6, 9],
+        "sus2": [0, 2, 7], "sus4": [0, 5, 7], "6": [0, 4, 7, 9], "m6": [0, 3, 7, 9], "9": [0, 4, 7, 10, 14],
+    }
+    _CHORD = re.compile(r"^([A-G][#b]?)([^/]*)(?:/([A-G][#b]?))?$")
+
+
+    def parse_chord(symbol):
+        m = _CHORD.match(symbol)
+        if not m or m.group(2) not in QUALITIES:
+            raise ValueError(f"not a chord symbol: {symbol!r}")
+        return m.group(1), m.group(2), m.group(3)
+
+
+    def chord_notes(symbol, octave=4):
+        root, quality, bass = parse_chord(symbol)
+        prefer = "flat" if root.endswith("b") else "sharp"
+        base = midi(f"{root}{octave}")
+        notes = [name_of(base + step, prefer) for step in QUALITIES[quality]]
+        if bass is not None:
+            notes.insert(0, f"{bass}{octave - 1}")
+        return notes
+
+
+    def identify(notes):
+        if not notes:
+            raise ValueError("no notes")
+        pcs = [pitch_class(n) for n in notes]
+        names = FLAT if any(parse_note(n)[1] < 0 for n in notes) else SHARP
+        present = set(pcs)
+        for root in dict.fromkeys(pcs):
+            relative = {(p - root) % 12 for p in present}
+            for quality, steps in QUALITIES.items():
+                if relative == {s % 12 for s in steps}:
+                    symbol = names[root] + quality
+                    if root != pcs[0]:
+                        symbol += "/" + names[pcs[0]]
+                    return symbol
+        return None
+
+
+    def transpose_chord(symbol, semitones):
+        root, quality, bass = parse_chord(symbol)
+        names = FLAT if root.endswith("b") or (bass or "").endswith("b") else SHARP
+        out = names[(pitch_class(root) + semitones) % 12] + quality
+        if bass is not None:
+            out += "/" + names[(pitch_class(bass) + semitones) % 12]
+        return out
+''')
+
+CHORDBOOK_VISIBLE = dd('''
+    import unittest
+
+    from chordbook.chords import chord_notes, identify
+    from chordbook.intervals import interval
+    from chordbook.notes import midi
+
+
+    class BasicTests(unittest.TestCase):
+        def test_midi(self):
+            self.assertEqual(midi("C4"), 60)
+
+        def test_interval(self):
+            self.assertEqual(interval("C4", "E4"), (4, "M3"))
+
+        def test_chords(self):
+            self.assertEqual(chord_notes("C"), ["C4", "E4", "G4"])
+            self.assertEqual(identify(["C4", "E4", "G4"]), "C")
+
+
+    if __name__ == "__main__":
+        unittest.main()
+''')
+
+CHORDBOOK_HIDDEN_NOTES = dd('''
+    import unittest
+
+    from chordbook.notes import midi, name_of, parse_note, pitch_class, transpose
+
+
+    class Parse(unittest.TestCase):
+        def test_valid(self):
+            table = {
+                "C4": ("C", 0, 4), "C#4": ("C", 1, 4), "Bb3": ("B", -1, 3), "Fx": ("F", 2, None), "Dbb2": ("D", -2, 2),
+                "E": ("E", 0, None), "C-1": ("C", 0, -1), "Ab": ("A", -1, None), "G10": ("G", 0, 10), "Bbb": ("B", -2, None),
+                "Gx-2": ("G", 2, -2),
+            }
+            for text, want in table.items():
+                self.assertEqual(parse_note(text), want, text)
+
+        def test_invalid(self):
+            for text in ("H4", "c4", "C##4", "", "4", "C#b4", "Cbbb", "C4#", "C 4", "Cb#", "cb4", "X", "C--1", "C+4", "C4.5", " C4"):
+                with self.assertRaises(ValueError, msg=text):
+                    parse_note(text)
+
+
+    class Numbers(unittest.TestCase):
+        def test_pitch_class(self):
+            table = {"C": 0, "D": 2, "E": 4, "F": 5, "G": 7, "A": 9, "B": 11, "C#": 1, "Db": 1, "B#": 0, "Cb": 11, "Fx": 7,
+                     "Dbb": 0, "E#": 5, "Fb": 4, "Gbb": 5, "Ax": 11, "C4": 0, "Bb7": 10}
+            for text, want in table.items():
+                self.assertEqual(pitch_class(text), want, text)
+
+        def test_midi(self):
+            table = {"C4": 60, "A4": 69, "C-1": 0, "B#3": 60, "Cb4": 59, "C#4": 61, "G9": 127, "B3": 59, "Dbb4": 60, "Fx2": 43}
+            for text, want in table.items():
+                self.assertEqual(midi(text), want, text)
+
+        def test_midi_needs_octave(self):
+            with self.assertRaises(ValueError):
+                midi("C")
+            with self.assertRaises(ValueError):
+                midi("Bb")
+
+        def test_name_of(self):
+            table = {60: "C4", 61: "C#4", 70: "A#4", 69: "A4", 0: "C-1", 71: "B4", 72: "C5", 127: "G9", 59: "B3", 11: "B-1"}
+            for number, want in table.items():
+                self.assertEqual(name_of(number), want, number)
+            self.assertEqual(name_of(61, "flat"), "Db4")
+            self.assertEqual(name_of(70, "flat"), "Bb4")
+            self.assertEqual(name_of(60, "flat"), "C4")
+            self.assertEqual(name_of(63, prefer="sharp"), "D#4")
+            for prefer in ("sharps", "", None, "Flat"):
+                with self.assertRaises(ValueError):
+                    name_of(60, prefer)
+
+        def test_name_of_midi_round_trip(self):
+            for n in range(0, 128):
+                self.assertEqual(midi(name_of(n)), n)
+                self.assertEqual(midi(name_of(n, "flat")), n)
+
+
+    class Transpose(unittest.TestCase):
+        def test_with_octave(self):
+            self.assertEqual(transpose("C4", 7), "G4")
+            self.assertEqual(transpose("C4", -1), "B3")
+            self.assertEqual(transpose("C4", 12), "C5")
+            self.assertEqual(transpose("C4", 0), "C4")
+            self.assertEqual(transpose("C4", 1), "C#4")
+            self.assertEqual(transpose("F#3", 1), "G3")
+            self.assertEqual(transpose("F#3", 2), "G#3")
+            self.assertEqual(transpose("A4", -33), "C2")
+
+        def test_flat_input_gets_flat_names(self):
+            self.assertEqual(transpose("Bb3", 2), "C4")
+            self.assertEqual(transpose("Bb3", 5), "Eb4")
+            self.assertEqual(transpose("Eb4", 1), "E4")
+            self.assertEqual(transpose("Db4", 3), "E4")
+            self.assertEqual(transpose("Ab4", 2), "Bb4")
+            self.assertEqual(transpose("Dbb4", 1), "Db4")
+
+        def test_prefer(self):
+            self.assertEqual(transpose("C4", 1, prefer="flat"), "Db4")
+            self.assertEqual(transpose("Bb3", 3, prefer="sharp"), "C#4")
+            self.assertEqual(transpose("F#3", 3, prefer="flat"), "A3")
+            self.assertEqual(transpose("C4", 3, "flat"), "Eb4")
+            with self.assertRaises(ValueError):
+                transpose("C4", 1, prefer="blue")
+
+        def test_without_octave(self):
+            self.assertEqual(transpose("A", 3), "C")
+            self.assertEqual(transpose("Bb", 1), "B")
+            self.assertEqual(transpose("C", -1), "B")
+            self.assertEqual(transpose("C", 13), "C#")
+            self.assertEqual(transpose("C", 25), "C#")
+            self.assertEqual(transpose("C", 1, prefer="flat"), "Db")
+            self.assertEqual(transpose("Eb", 2), "F")
+            self.assertEqual(transpose("G", -24), "G")
+            self.assertEqual(transpose("F#", 7), "C#")
+
+        def test_errors(self):
+            with self.assertRaises(ValueError):
+                transpose("H4", 1)
+
+
+    if __name__ == "__main__":
+        unittest.main()
+''')
+
+CHORDBOOK_HIDDEN_INTERVALS = dd('''
+    import unittest
+
+    from chordbook.intervals import class_interval, interval, interval_name
+
+
+    class Names(unittest.TestCase):
+        def test_simple(self):
+            want = ["P1", "m2", "M2", "m3", "M3", "P4", "TT", "P5", "m6", "M6", "m7", "M7", "P8"]
+            self.assertEqual([interval_name(i) for i in range(13)], want)
+
+        def test_compound(self):
+            table = {13: "m2+1", 14: "M2+1", 19: "P5+1", 23: "M7+1", 24: "P8+1", 25: "m2+2", 26: "M2+2", 36: "P8+2", 37: "m2+3", 48: "P8+3"}
+            for n, want in table.items():
+                self.assertEqual(interval_name(n), want, n)
+
+        def test_negative(self):
+            table = {-4: "-M3", -1: "-m2", -12: "-P8", -13: "-m2+1", -24: "-P8+1", 0: "P1", -7: "-P5"}
+            for n, want in table.items():
+                self.assertEqual(interval_name(n), want, n)
+
+
+    class Between(unittest.TestCase):
+        def test_interval(self):
+            self.assertEqual(interval("C4", "E4"), (4, "M3"))
+            self.assertEqual(interval("E4", "C4"), (-4, "-M3"))
+            self.assertEqual(interval("C4", "C5"), (12, "P8"))
+            self.assertEqual(interval("C4", "D5"), (14, "M2+1"))
+            self.assertEqual(interval("C4", "C4"), (0, "P1"))
+            self.assertEqual(interval("Bb3", "D4"), (4, "M3"))
+            self.assertEqual(interval("C4", "G4"), (7, "P5"))
+            self.assertEqual(interval("G4", "C4"), (-7, "-P5"))
+            self.assertEqual(interval("C3", "C5"), (24, "P8+1"))
+            self.assertEqual(interval("F#4", "C5"), (6, "TT"))
+            self.assertEqual(interval("B3", "C4"), (1, "m2"))
+            self.assertEqual(interval("E#4", "F4"), (0, "P1"))
+
+        def test_needs_octaves(self):
+            for a, b in (("C", "E4"), ("C4", "E"), ("C", "E")):
+                with self.assertRaises(ValueError):
+                    interval(a, b)
+
+        def test_class_interval(self):
+            self.assertEqual(class_interval("C", "E"), (4, "M3"))
+            self.assertEqual(class_interval("E", "C"), (8, "m6"))
+            self.assertEqual(class_interval("C", "C"), (0, "P1"))
+            self.assertEqual(class_interval("G", "F"), (10, "m7"))
+            self.assertEqual(class_interval("C4", "C5"), (0, "P1"))
+            self.assertEqual(class_interval("B", "C"), (1, "m2"))
+            self.assertEqual(class_interval("Bb", "A"), (11, "M7"))
+            self.assertEqual(class_interval("C#", "Db"), (0, "P1"))
+            self.assertEqual(class_interval("A5", "C2"), (3, "m3"))
+            self.assertEqual(class_interval("F#", "C"), (6, "TT"))
+
+
+    if __name__ == "__main__":
+        unittest.main()
+''')
+
+CHORDBOOK_HIDDEN_CHORDS = dd('''
+    import unittest
+
+    from chordbook.chords import QUALITIES, chord_notes, identify, parse_chord, transpose_chord
+
+
+    class Qualities(unittest.TestCase):
+        def test_table(self):
+            self.assertEqual(list(QUALITIES), ["", "m", "dim", "aug", "7", "maj7", "m7", "m7b5", "dim7", "sus2", "sus4", "6", "m6", "9"])
+            self.assertEqual(QUALITIES[""], [0, 4, 7])
+            self.assertEqual(QUALITIES["m7b5"], [0, 3, 6, 10])
+            self.assertEqual(QUALITIES["9"], [0, 4, 7, 10, 14])
+
+
+    class Parse(unittest.TestCase):
+        def test_valid(self):
+            table = {
+                "Cmaj7": ("C", "maj7", None), "Bb7": ("Bb", "7", None), "F#m7b5": ("F#", "m7b5", None), "Dsus4": ("D", "sus4", None),
+                "E": ("E", "", None), "Am": ("A", "m", None), "C/E": ("C", "", "E"), "Bbm/Db": ("Bb", "m", "Db"),
+                "G7/F": ("G", "7", "F"), "Cb": ("Cb", "", None), "Bbm7b5": ("Bb", "m7b5", None), "Bm7b5": ("B", "m7b5", None),
+                "Gdim7/F#": ("G", "dim7", "F#"), "A9": ("A", "9", None), "Ebm6": ("Eb", "m6", None), "B": ("B", "", None),
+            }
+            for text, want in table.items():
+                self.assertEqual(parse_chord(text), want, text)
+
+        def test_invalid(self):
+            for text in ("Cfoo", "H", "", "c", "C/", "C/H", "C/E/G", "Cmaj", "C#x", "Cmaj7/", "m7", "C7b9", "Bbb", "/E"):
+                with self.assertRaises(ValueError, msg=text):
+                    parse_chord(text)
+
+
+    class Notes(unittest.TestCase):
+        def test_triads(self):
+            self.assertEqual(chord_notes("C"), ["C4", "E4", "G4"])
+            self.assertEqual(chord_notes("Cm"), ["C4", "D#4", "G4"])
+            self.assertEqual(chord_notes("D"), ["D4", "F#4", "A4"])
+            self.assertEqual(chord_notes("Ebm"), ["Eb4", "Gb4", "Bb4"])
+            self.assertEqual(chord_notes("Eb"), ["Eb4", "G4", "Bb4"])
+            self.assertEqual(chord_notes("Bdim"), ["B4", "D5", "F5"])
+            self.assertEqual(chord_notes("Caug"), ["C4", "E4", "G#4"])
+
+        def test_extended(self):
+            self.assertEqual(chord_notes("G7"), ["G4", "B4", "D5", "F5"])
+            self.assertEqual(chord_notes("F#m7b5"), ["F#4", "A4", "C5", "E5"])
+            self.assertEqual(chord_notes("Bb9"), ["Bb4", "D5", "F5", "Ab5", "C6"])
+            self.assertEqual(chord_notes("Cmaj7"), ["C4", "E4", "G4", "B4"])
+            self.assertEqual(chord_notes("Asus2"), ["A4", "B4", "E5"])
+            self.assertEqual(chord_notes("Asus4"), ["A4", "D5", "E5"])
+            self.assertEqual(chord_notes("C6"), ["C4", "E4", "G4", "A4"])
+            self.assertEqual(chord_notes("Cm6"), ["C4", "D#4", "G4", "A4"])
+            self.assertEqual(chord_notes("Cdim7"), ["C4", "D#4", "F#4", "A4"])
+            self.assertEqual(chord_notes("Dbmaj7"), ["Db4", "F4", "Ab4", "C5"])
+
+        def test_octave(self):
+            self.assertEqual(chord_notes("C", octave=3), ["C3", "E3", "G3"])
+            self.assertEqual(chord_notes("A", 2), ["A2", "C#3", "E3"])
+            self.assertEqual(chord_notes("B", 5), ["B5", "D#6", "F#6"])
+            self.assertEqual(chord_notes("Bb", 0), ["Bb0", "D1", "F1"])
+
+        def test_slash_chords(self):
+            self.assertEqual(chord_notes("C/E"), ["E3", "C4", "E4", "G4"])
+            self.assertEqual(chord_notes("Bb/D"), ["D3", "Bb4", "D5", "F5"])
+            self.assertEqual(chord_notes("C/Eb"), ["Eb3", "C4", "E4", "G4"])
+            self.assertEqual(chord_notes("Am/G", 3), ["G2", "A3", "C4", "E4"])
+
+        def test_errors(self):
+            with self.assertRaises(ValueError):
+                chord_notes("Cfoo")
+
+
+    class Identify(unittest.TestCase):
+        def test_triads_and_sevenths(self):
+            table = [
+                (["C4", "E4", "G4"], "C"), (["A3", "C4", "E4"], "Am"), (["C4", "Eb4", "G4"], "Cm"), (["G3", "B3", "D4", "F4"], "G7"),
+                (["C4", "E4", "G4", "B4"], "Cmaj7"), (["A3", "C4", "E4", "G4"], "Am7"), (["B3", "D4", "F4"], "Bdim"),
+                (["C4", "E4", "G#4"], "Caug"), (["B3", "D4", "F4", "A4"], "Bm7b5"), (["C4", "D4", "G4"], "Csus2"),
+                (["C4", "F4", "G4"], "Csus4"), (["C4", "E4", "G4", "A4"], "C6"), (["D4", "F4", "A4", "B4"], "Dm6"),
+            ]
+            for notes, want in table:
+                self.assertEqual(identify(notes), want, notes)
+
+        def test_spelling(self):
+            self.assertEqual(identify(["Eb4", "G4", "Bb4"]), "Eb")
+            self.assertEqual(identify(["F#3", "A3", "C#4"]), "F#m")
+            self.assertEqual(identify(["Bb3", "D4", "F4", "Ab4"]), "Bb7")
+            self.assertEqual(identify(["C#4", "E#4", "G#4"]), "C#")
+            self.assertEqual(identify(["C4", "Eb4", "Gb4"]), "Cdim")
+            self.assertEqual(identify(["Db4", "F4", "Ab4"]), "Db")
+            self.assertEqual(identify(["D4", "F#4", "A4"]), "D")
+
+        def test_inversions_become_slash_chords(self):
+            self.assertEqual(identify(["E4", "G4", "C5"]), "C/E")
+            self.assertEqual(identify(["G3", "C4", "E4"]), "C/G")
+            self.assertEqual(identify(["Bb3", "D4", "G4"]), "Gm/Bb")
+            self.assertEqual(identify(["D3", "F#3", "A3", "C4"]), "D7")
+            self.assertEqual(identify(["F3", "A3", "C4", "D4"]), "F6")
+            self.assertEqual(identify(["D3", "F3", "A3", "C4"]), "Dm7")
+
+        def test_roots_are_tried_in_order_of_appearance(self):
+            self.assertEqual(identify(["C4", "E4", "G4", "A4"]), "C6")
+            self.assertEqual(identify(["A3", "C4", "E4", "G4"]), "Am7")
+            self.assertEqual(identify(["C4", "D4", "G4"]), "Csus2")
+            self.assertEqual(identify(["G3", "C4", "D4"]), "Gsus4")
+            self.assertEqual(identify(["E4", "G#4", "C5"]), "Eaug")
+            self.assertEqual(identify(["C4", "Eb4", "Gb4", "A4"]), "Cdim7")
+            self.assertEqual(identify(["Eb4", "Gb4", "A4", "C5"]), "Ebdim7")
+
+        def test_octaves_and_duplicates_do_not_matter(self):
+            self.assertEqual(identify(["C", "E", "G"]), "C")
+            self.assertEqual(identify(["C4", "C5", "E5", "G5", "G3"]), "C")
+            self.assertEqual(identify(["G2", "G3", "B3", "D4", "F4", "B4"]), "G7")
+            self.assertEqual(identify(["C3", "E5", "G2"]), "C")
+
+        def test_ninth(self):
+            self.assertEqual(identify(["C4", "E4", "G4", "Bb4", "D5"]), "C9")
+
+        def test_no_match(self):
+            self.assertIsNone(identify(["C4", "D4"]))
+            self.assertIsNone(identify(["C4"]))
+            self.assertIsNone(identify(["C4", "C#4", "D4"]))
+            self.assertIsNone(identify(["C4", "E4", "G4", "A#4", "D5", "F5"]))
+
+        def test_empty(self):
+            with self.assertRaises(ValueError):
+                identify([])
+
+
+    class TransposeChord(unittest.TestCase):
+        def test_roots(self):
+            table = [
+                ("C", 2, "D"), ("Cmaj7", 7, "Gmaj7"), ("Bb7", 2, "C7"), ("Bb", 1, "B"), ("F#m", 1, "Gm"), ("Am", -2, "Gm"),
+                ("C", 1, "C#"), ("Eb", 1, "E"), ("C", 12, "C"), ("C", -13, "B"), ("F#m7b5", -1, "Fm7b5"), ("Ab", 3, "B"),
+                ("G7", 5, "C7"), ("D", 3, "F"), ("E", 6, "A#"), ("Bbm", 5, "Ebm"), ("Db", 4, "F"), ("A", 3, "C"),
+            ]
+            for symbol, n, want in table:
+                self.assertEqual(transpose_chord(symbol, n), want, (symbol, n))
+
+        def test_sharp_and_flat_tables(self):
+            self.assertEqual(transpose_chord("C", 3), "D#")
+            self.assertEqual(transpose_chord("Eb", 3), "Gb")
+            self.assertEqual(transpose_chord("Bb7", 1), "B7")
+            self.assertEqual(transpose_chord("Bb7", 4), "D7")
+            self.assertEqual(transpose_chord("Bb7", 8), "Gb7")
+            self.assertEqual(transpose_chord("F#", 3), "A")
+            self.assertEqual(transpose_chord("F#", 4), "A#")
+
+        def test_slash_chords(self):
+            self.assertEqual(transpose_chord("Cm/Eb", 2), "Dm/F")
+            self.assertEqual(transpose_chord("C/E", 1), "C#/F")
+            self.assertEqual(transpose_chord("C/Bb", 1), "Db/B")
+            self.assertEqual(transpose_chord("C/E", 4), "E/G#")
+            self.assertEqual(transpose_chord("G/B", -2), "F/A")
+            self.assertEqual(transpose_chord("Eb/G", 2), "F/A")
+            self.assertEqual(transpose_chord("D/F#", 1), "D#/G")
+
+        def test_errors(self):
+            with self.assertRaises(ValueError):
+                transpose_chord("Cfoo", 2)
+
+
+    if __name__ == "__main__":
+        unittest.main()
+''')
+
+CHORDBOOK = Lib(
+    name="chordbook", lang="python", title="the chordbook note and chord package",
+    blurb="The lead-sheet editor uses chordbook to transpose chord symbols, list chord tones and name a chord from the notes a player holds.",
+    files={
+        "chordbook/__init__.py": "", "chordbook/notes.py": CHORDBOOK_NOTES, "chordbook/intervals.py": CHORDBOOK_INTERVALS,
+        "chordbook/chords.py": CHORDBOOK_CHORDS, "README.md": CHORDBOOK_README, ".gitignore": GITIGNORE,
+    },
+    visible_tests={"tests/test_basic.py": CHORDBOOK_VISIBLE},
+    hidden_tests={
+        "tests/test_notes.py": CHORDBOOK_HIDDEN_NOTES, "tests/test_intervals.py": CHORDBOOK_HIDDEN_INTERVALS,
+        "tests/test_chords.py": CHORDBOOK_HIDDEN_CHORDS,
+    },
+    mutate=["chordbook/notes.py", "chordbook/intervals.py", "chordbook/chords.py"],
+    difficulty=3, tags=["music", "chords", "multi-module"],
+    probes=[
+        "midi('B#3')", "midi('Cb4')", "pitch_class('Fb')", "name_of(70)", "name_of(61, 'flat')",
+        "transpose('Bb3', 5)", "transpose('F#3', 3, prefer='flat')", "transpose('Bb', 1)", "transpose('C', -1)",
+        "interval('C4', 'D5')", "interval('E4', 'C4')", "interval_name(24)", "interval_name(-13)", "class_interval('E', 'C')",
+        "parse_chord('Bbm7b5')", "parse_chord('Bm7b5')",
+        "chord_notes('F#m7b5')", "chord_notes('Bb9')", "chord_notes('C/E')", "chord_notes('Ebm', 3)",
+        "identify(['E4', 'G4', 'C5'])", "identify(['Eb4', 'G4', 'Bb4'])", "identify(['A3', 'C4', 'E4', 'G4'])", "identify(['C4', 'D4', 'G4'])",
+        "identify(['E4', 'G#4', 'C5'])",
+        "transpose_chord('Cm/Eb', 2)", "transpose_chord('Bb7', 8)", "transpose_chord('C/E', 1)", "transpose_chord('F#m7b5', -1)",
+    ],
+    probe_import=(
+        "from chordbook.notes import midi, pitch_class, name_of, transpose\n"
+        "from chordbook.intervals import interval, interval_name, class_interval\n"
+        "from chordbook.chords import parse_chord, chord_notes, identify, transpose_chord\n"
+    ),
+)
+
+LIBS = [GUILDUNITS, AIRLANE, CHORDBOOK]
 register_libs3(LIBS, n=10)

@@ -600,9 +600,6 @@ TX_HIDDEN = dd('''
             for meters, cents in table.items():
                 self.assertEqual(distance_charge(meters), cents, meters)
 
-        def test_negative_distance_is_free(self):
-            self.assertEqual(distance_charge(-10), 0)
-
         def test_rounding_half_up(self):
             table = {1: 0, 2: 0, 3: 1, 50: 10, 150: 29, 49: 9, 51: 10}
             for meters, cents in table.items():

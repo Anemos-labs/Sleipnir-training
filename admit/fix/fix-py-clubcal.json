@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-clubcal-01-arith",
+"ok": true
+},
+{
+"id": "fix-py-clubcal-02-const",
+"ok": true
+},
+{
+"id": "fix-py-clubcal-03-swap",
+"ok": true
+},
+{
+"id": "fix-py-clubcal-04-cmp",
+"ok": true
+},
+{
+"id": "fix-py-clubcal-05-delete",
+"ok": true
+},
+{
+"id": "fix-py-clubcal-06-arith",
+"ok": true
+},
+{
+"id": "fix-py-clubcal-07-const",
+"ok": true
+},
+{
+"id": "fix-py-clubcal-08-delete",
+"ok": true
+},
+{
+"id": "fix-py-clubcal-09-arith",
+"ok": true
+},
+{
+"id": "fix-py-clubcal-10-const",
+"ok": true
+}
+]

@@ -67,10 +67,10 @@ def _make_log(rng, N, inject):
     return recs
 
 
-@family("chat-log-read", category="chat", lang="text", kind="lookup", n=16, mode="answer",
+@family("chat-log-read", category="chat", lang="text", kind="lookup", n=8, mode="answer",
         summary="answer questions from pasted or attached request logs (kv, JSON lines, access-log style): counts, windows, medians, outages, rate spikes")
 def gen_log(rng, n):
-    plan = [1, 2, 2, 3, 3, 3, 4, 4, 4, 5, 2, 3, 4, 5, 3, 4]
+    plan = [1, 2, 2, 3, 3, 3, 4, 5]
     for i in range(n):
         d = plan[i % len(plan)]
         for _attempt in range(300):
@@ -226,10 +226,10 @@ SKUS = ["TEA-100", "TEA-250", "MUG-BLU", "MUG-RED", "FILT-01", "KETL-2L", "SPN-W
 STATUSES = ["shipped", "shipped", "shipped", "pending", "cancelled"]
 
 
-@family("chat-json-read", category="chat", lang="text", kind="lookup", n=12, mode="answer",
+@family("chat-json-read", category="chat", lang="text", kind="lookup", n=8, mode="answer",
         summary="answer from a pasted or attached JSON export of orders: revenue with per-line discounts, cancelled orders, distinct SKUs, best customer")
 def gen_json(rng, n):
-    plan = [1, 2, 2, 3, 3, 3, 4, 4, 5, 2, 3, 4]
+    plan = [1, 2, 2, 3, 3, 3, 4, 5]
     for i in range(n):
         d = plan[i % len(plan)]
         for _attempt in range(300):
@@ -365,10 +365,10 @@ def _tbl_text(name, cols, rows):
     return f"{name}\n" + C.table(body, head)
 
 
-@family("chat-sql-reading", category="chat", lang="text", kind="lookup", n=14, mode="answer",
+@family("chat-sql-reading", category="chat", lang="text", kind="lookup", n=8, mode="answer",
         summary="what does this SQL return on these pasted tables (NULL traps, LEFT JOIN filters, many-to-many joins, COUNT(col), HAVING); sqlite is the oracle")
 def gen_sql(rng, n):
-    plan = [2, 3, 3, 3, 4, 4, 4, 5, 2, 3, 4, 5, 3, 4]
+    plan = [2, 2, 2, 3, 3, 4, 4, 5]
     for i in range(n):
         d = plan[i % len(plan)]
         for _attempt in range(300):
@@ -486,10 +486,10 @@ def _val(rng, key):
     return rng.choice(CFG[key.split("_x")[0].rstrip("_0123456789") if key not in CFG else key] if (key in CFG or key.split("_x")[0] in CFG) else CFG_VALS)
 
 
-@family("chat-diff-apply", category="chat", lang="text", kind="lookup", n=12, mode="answer",
+@family("chat-diff-apply", category="chat", lang="text", kind="lookup", n=8, mode="answer",
         summary="apply a pasted unified diff in your head: how long is the file now, on which line is X, how many lines mention Y")
 def gen_diff(rng, n):
-    plan = [2, 2, 3, 3, 3, 4, 4, 5, 2, 3, 4, 5]
+    plan = [2, 2, 2, 3, 3, 4, 4, 5]
     for i in range(n):
         d = plan[i % len(plan)]
         for _attempt in range(300):

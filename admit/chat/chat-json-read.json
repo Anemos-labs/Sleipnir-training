@@ -12,7 +12,7 @@
 "ok": true
 },
 {
-"id": "chat-json-read-04-distinct_sku",
+"id": "chat-json-read-04-revenue",
 "ok": true
 },
 {
@@ -20,31 +20,15 @@
 "ok": true
 },
 {
-"id": "chat-json-read-06-distinct_sku",
+"id": "chat-json-read-06-revenue",
 "ok": true
 },
 {
-"id": "chat-json-read-07-revenue_month",
+"id": "chat-json-read-07-best_customer",
 "ok": true
 },
 {
-"id": "chat-json-read-08-revenue_month",
-"ok": true
-},
-{
-"id": "chat-json-read-09-two_part",
-"ok": true
-},
-{
-"id": "chat-json-read-10-cancel_count",
-"ok": true
-},
-{
-"id": "chat-json-read-11-revenue",
-"ok": true
-},
-{
-"id": "chat-json-read-12-best_customer",
+"id": "chat-json-read-08-two_part",
 "ok": true
 }
 ]

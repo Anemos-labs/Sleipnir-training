@@ -1,0 +1,50 @@
+[
+{
+"id": "testing-regress-py-01-ferryfare-const",
+"ok": true
+},
+{
+"id": "testing-regress-py-02-ferryfare-swap",
+"ok": true
+},
+{
+"id": "testing-regress-py-03-ferryfare-const",
+"ok": true
+},
+{
+"id": "testing-regress-py-04-labelcodes-delete",
+"ok": true
+},
+{
+"id": "testing-regress-py-05-labelcodes-const",
+"ok": true
+},
+{
+"id": "testing-regress-py-06-labelcodes-arith",
+"ok": true
+},
+{
+"id": "testing-regress-py-07-ferryfare-cmp",
+"ok": true
+},
+{
+"id": "testing-regress-py-08-ferryfare-const",
+"ok": true
+},
+{
+"id": "testing-regress-py-09-ferryfare-cmp",
+"ok": true
+},
+{
+"id": "testing-regress-py-10-labelcodes-const",
+"ok": true
+},
+{
+"id": "testing-regress-py-11-labelcodes-delete",
+"ok": true
+},
+{
+"id": "testing-regress-py-12-labelcodes-cmp",
+"ok": true
+}
+]

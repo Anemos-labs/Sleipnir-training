@@ -1,0 +1,50 @@
+[
+{
+"id": "fix-hand-escaping-01-terms-are-regexes",
+"ok": true
+},
+{
+"id": "fix-hand-escaping-02-quotes-not-escaped-in-attributes",
+"ok": true
+},
+{
+"id": "fix-hand-escaping-03-markup-escaped-after-wrapping",
+"ok": true
+},
+{
+"id": "fix-hand-escaping-04-scheme-check-is-naive",
+"ok": true
+},
+{
+"id": "fix-hand-escaping-05-terms-in-given-order",
+"ok": true
+},
+{
+"id": "fix-hand-escaping-06-matching-inside-escaped-text",
+"ok": true
+},
+{
+"id": "fix-hand-escaping-07-shell-empty-argument-vanishes",
+"ok": true
+},
+{
+"id": "fix-hand-escaping-08-csv-multiline-fields-unquoted",
+"ok": true
+},
+{
+"id": "fix-hand-escaping-09-sql-quotes-not-doubled",
+"ok": true
+},
+{
+"id": "fix-hand-escaping-10-shell-single-quote-unescaped",
+"ok": true
+},
+{
+"id": "fix-hand-escaping-11-shell-uses-double-quotes",
+"ok": true
+},
+{
+"id": "fix-hand-escaping-12-csv-quotes-not-doubled",
+"ok": true
+}
+]

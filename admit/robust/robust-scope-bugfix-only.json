@@ -1,0 +1,42 @@
+[
+{
+"id": "robust-scope-bugfix-only-01-ferryfare-fare",
+"ok": true
+},
+{
+"id": "robust-scope-bugfix-only-02-quorum-tally",
+"ok": true
+},
+{
+"id": "robust-scope-bugfix-only-03-tidal-segment_window",
+"ok": true
+},
+{
+"id": "robust-scope-bugfix-only-04-lockers-assign",
+"ok": true
+},
+{
+"id": "robust-scope-bugfix-only-05-sowcal-next_opening",
+"ok": true
+},
+{
+"id": "robust-scope-bugfix-only-06-holdqueue-effective",
+"ok": true
+},
+{
+"id": "robust-scope-bugfix-only-07-rentshare-split",
+"ok": true
+},
+{
+"id": "robust-scope-bugfix-only-08-chapters-parse_stamp",
+"ok": true
+},
+{
+"id": "robust-scope-bugfix-only-09-meterbill-daily_estimate",
+"ok": true
+},
+{
+"id": "robust-scope-bugfix-only-10-stampduty-duty",
+"ok": true
+}
+]

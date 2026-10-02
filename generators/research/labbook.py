@@ -100,7 +100,7 @@ def fmt(x: Decimal) -> str:
     return f"{x:.2f}"
 
 
-@family("research-lab-notebook", category="research", lang="text", kind="lookup", n=14, mode="answer",
+@family("research-lab-notebook", category="research", lang="text", kind="lookup", n=12, mode="answer",
         summary="corrected assay values from raw notebook readings, dilutions and dated instrument calibrations: one sample, the maximum, a limit count, plot totals")
 def gen(rng, n):
     made = 0

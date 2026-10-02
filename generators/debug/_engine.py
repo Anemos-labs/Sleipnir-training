@@ -38,14 +38,21 @@ def kind_of(bad) -> str:
     return bad.kind or KIND_OF_CAT[bad.cat]
 
 
+KIND_ALIASES = {
+    "rounding": ["api-misuse", "logic-error"], "null-handling": ["missing-validation", "error-handling"], "type-confusion": ["missing-validation", "api-misuse"],
+    "off-by-one": ["logic-error"], "missing-validation": ["null-handling"], "ordering": ["logic-error"], "state-mutation": ["logic-error", "api-misuse"],
+    "stale-cache": ["logic-error", "state-mutation"], "api-misuse": ["logic-error"], "error-handling": ["null-handling"],
+    "logic-error": ["off-by-one", "null-handling"], "performance": ["logic-error"], "data-corruption": ["logic-error", "encoding", "rounding"],
+}
+
+
+def accepted(kind: str) -> list[str]:
+    """The kinds an answer may name for a defect of this kind (classification is fuzzy: near neighbours count)."""
+    return sorted({kind, *KIND_ALIASES.get(kind, [])})
+
+
 def accepted_kinds(bad) -> list[str]:
-    k = kind_of(bad)
-    out = {k}
-    if k == "off-by-one":
-        out.add("logic-error")
-    if bad.cat == "validation":
-        out.add("missing-validation")
-    return sorted(out)
+    return accepted(kind_of(bad))
 
 
 # ---- running python modules -----------------------------------------------------------------------------------------
@@ -160,7 +167,7 @@ def trace_prompt(rng, mod: Module, crash: bool, out: str, good: str, extra_schem
     return rng.choice(voices)
 
 
-def trace_family(mods: list[Module], rng: random.Random, n: int, tag: str = ""):
+def trace_family(mods: list[Module], rng: random.Random, n: int, tag: str = "", fix_too: bool = False):
     """Diagnosis tasks from python slot modules: pick an observable defect, run the scenario, hand over the log."""
     pools = {m.name: observable_bads(m) for m in mods}
     used: dict[str, set] = {m.name: set() for m in mods}
@@ -208,11 +215,21 @@ def trace_family(mods: list[Module], rng: random.Random, n: int, tag: str = ""):
         gold = {"root_cause_file": mod.path, "function": slot.func, "kind": accepted_kinds(bad)[0],
                 "evidence_lines": [f"{mod.path}:{spans[slot_name][0]}"], "fix_summary": bad.why}
         prompt = trace_prompt(rng, mod, crash, out, good)
+        solution = {"diagnosis.json": json.dumps(gold, indent=1) + "\n"}
+        protected = sorted(files)
+        if fix_too:
+            prompt += rng.choice([" After diagnosing it, repair the code as well: `python3 scenario.py` must then print the correct output (the module's docstrings describe the intended behaviour). Touch only what is needed.",
+                                  " Then fix the defect in the source so that the scenario runs and prints what it should; the diagnosis and the repaired behaviour are both checked."])
+            good_head = render(mod.template, slot_texts(mod, {k: v for k, v in choice.items() if k != slot_name}), mod.lang)[0]
+            solution[mod.path] = good_head
+            protected = [p for p in protected if p != mod.path]
+            spec["run"] = {"cmd": f"PYTHONHASHSEED=0 python3 -u {mod.scenario_path} 2>&1", "expect": good.strip(), "timeout": 60}
+            d = min(5, d + 1)
         i += 1
         yield Task(
             slug=f"{i:02d}-{mod.name.split('-', 1)[-1]}-{slot_name}-{'crash' if crash else 'wrong'}",
             prompt=prompt, difficulty=d, kind="fix", lang="python", start=files, hidden=hidden_diag(spec),
-            solution={"diagnosis.json": json.dumps(gold, indent=1) + "\n"}, verify=VERIFY, pass_mode="json-score",
-            protected=sorted(files), timeout_s=60, tags=["diagnosis", "trace" if crash else "wrong-output", *([tag] if tag else [])],
+            solution=solution, verify=VERIFY, pass_mode="json-score",
+            protected=protected, timeout_s=90 if fix_too else 60, tags=["diagnosis", "trace" if crash else "wrong-output", *(["fix-too"] if fix_too else []), *([tag] if tag else [])],
             notes={"module": mod.name, "slot": slot_name, "bad": bad.why, "crash": crash, "deceptive": bool(deceptive), "decoys": sorted(k for k in choice if k != slot_name)},
         )

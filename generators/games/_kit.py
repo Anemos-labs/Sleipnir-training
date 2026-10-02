@@ -80,30 +80,34 @@ def combine(*bugs: Bug, title: str = "", difficulty: int = 4) -> Bug:
         rules.update(b.rules)
     intro = {2: "Two separate problems.", 3: "Three separate problems.", 4: "Four separate problems."}[len(bugs)]
     return Bug(id="+".join(b.id for b in bugs), title=title or " / ".join(b.title.rstrip(".") for b in bugs), symptom=f"{intro} {sym}",
-               edits=[e for b in bugs for e in b.edits], path=bugs[0].path, difficulty=difficulty, rules=rules)
+               edits=[e for b in bugs for e in b.edits], path=bugs[0].path, difficulty=min(5, max(difficulty, 2 + len(bugs))), rules=rules)
 
 
-def _shift(text: str, k: int) -> str:
-    """Re-indent the continuation lines (not the first line) of a multi-line edit by k spaces."""
+def _shift(text: str, k: int, unit: str = " ") -> str:
+    """Re-indent the continuation lines (not the first line) of a multi-line edit by k units (spaces or tabs)."""
     lines = text.split("\n")
     out = [lines[0]]
     for ln in lines[1:]:
         if not ln.strip():
             out.append(ln)
         elif k >= 0:
-            out.append(" " * k + ln)
+            out.append(unit * k + ln)
         else:
-            lead = len(ln) - len(ln.lstrip(" "))
+            lead = len(ln) - len(ln.lstrip(unit))
             out.append(ln[min(lead, -k):])
     return "\n".join(out)
+
+
+_SHIFTS = [(0, " "), (-4, " "), (-8, " "), (4, " "), (8, " "), (-12, " "), (12, " "), (-16, " "), (16, " "),
+           (-1, "\t"), (1, "\t"), (-2, "\t"), (2, "\t"), (-3, "\t"), (3, "\t"), (-4, "\t"), (4, "\t")]
 
 
 def apply_bug(src: str, bug: Bug) -> str:
     """Apply the edits; an edit written for a different indentation depth is re-indented until it matches exactly once."""
     out = src
     for old, new in bug.edits:
-        for k in (0, -4, -8, 4, 8, -12, 12, -16, 16):
-            o, n = _shift(old, k), _shift(new, k)
+        for k, unit in _SHIFTS:
+            o, n = _shift(old, k, unit), _shift(new, k, unit)
             if out.count(o) == 1:
                 out = out.replace(o, n)
                 break
@@ -144,8 +148,9 @@ def fix_prompt(style: str, bug: Bug, game: str, ctx: dict, vis: tuple | None, rn
                 f"There are more scenarios than the visible ones. {tail}").strip()
     if style == "ticket":
         extra = ("\n\n" + bug.detail.strip()) if bug.detail else ""
+        cover = ("the example scenarios already show a mismatch, and there are more checks than those" if vis else "they don't cover this yet")
         return (f"**{bug.title}**\n\n{sym}{extra}\n\nThe expected behaviour is whatever {readme} says. The engine lives in {src}; "
-                f"`{verify}` runs the scenario checks (they don't cover this yet). {tail}").strip()
+                f"`{verify}` runs the scenario checks ({cover}). {tail}").strip()
     if style == "chat":
         return f"{sym} Can you find out why in the {game} engine and fix it? {tail}".strip()
     if style == "review":
@@ -190,10 +195,12 @@ def bug_task(*, game: str, lang: str, base_files: dict[str, str], tests: dict[st
     vis = visible_failure(v.out) if not v.ok else None
     style = pick_style(rng, vis, used)
     prompt = fix_prompt(style, bug, game, ctx, vis, rng)
+    # a failing visible scenario names the exact discrepancy: a small bug that is shown that way is trivial
+    difficulty = 1 if (vis and bug.difficulty == 2) else bug.difficulty
     return Task(
         slug=f"{slug_prefix}{k + 1:02d}-{bug.id}",
         prompt=prompt,
-        difficulty=bug.difficulty,
+        difficulty=difficulty,
         start=merged(files, tests),
         hidden=dict(hidden),
         solution={path: base_files[path]},

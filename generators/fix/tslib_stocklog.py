@@ -561,7 +561,7 @@ LIB = Lib(
            "src/events.ts": EVENTS, "src/ledger.ts": LEDGER, "README.md": README, ".gitignore": "node_modules/\nbuild/\n"},
     visible_tests={"test/basic.test.ts": VISIBLE},
     hidden_tests={"test/full.test.ts": HIDDEN},
-    mutate=["src/ledger.ts", "src/events.ts"], difficulty=4, tags=["inventory", "ledger", "state"],
+    mutate=["src/ledger.ts", "src/events.ts"], difficulty=3, tags=["inventory", "ledger", "state"],
     verify=TS_VERIFY,
 )
 

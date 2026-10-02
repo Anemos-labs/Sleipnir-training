@@ -75,9 +75,39 @@ def _cmp_car(rng):
 CMPS = [_cmp_phone, _cmp_jobs, _cmp_flat, _cmp_gym, _cmp_coffee, _cmp_car]
 
 
-@family("chat-rubric-compare", category="chat", lang="text", kind="advice", n=12, mode="rubric", summary="choose between two options described with numbers: the correct totals are in the checks; the rubric grades the recommendation, the deciding factor and honesty about what is unknown")
+def _cmp_train(rng):
+    single, days, weeks = rng.choice([(6.4, 3, 46), (7.2, 4, 46), (5.8, 5, 44)])
+    season = rng.choice([1300, 1450, 1600, 1750])
+    pay = round(single * days * weeks, 2)
+    text = (f"I commute by train {days} days a week for about {weeks} weeks a year. A day return costs ${single:.2f}, or I could buy an annual season ticket for ${season:,}. "
+            f"I might work from home one more day a week next year, but nothing is decided.")
+    return text, [f"{pay:,.2f}", f"{season:,}"], f"paying per trip comes to ${pay:,.2f} a year against ${season:,} for the season ticket", "the planned extra day at home changes the per-trip total"
+
+
+def _cmp_storage(rng):
+    cloud, drive, yrs = rng.choice([(9, 120, 3), (12, 150, 4), (6, 90, 3)])
+    tc, td = cloud * 12 * yrs, drive + rng.choice([0, 20, 30]) * 0
+    text = (f"Backup choices for my photos: cloud storage at ${cloud} a month, or an external drive for ${drive} that I'd replace after {yrs} years. I'd compare them over {yrs} years. "
+            f"I do tend to forget to plug the drive in.")
+    return text, [f"{tc:,}", f"{td:,}"], f"the cloud costs ${tc:,} over {yrs} years and the drive ${td:,}", "the forgetting-to-back-up risk and the drive's failure risk"
+
+
+def _cmp_repair(rng):
+    rep, new, extra = rng.choice([(180, 650, 15), (240, 720, 25), (120, 480, 10)])
+    yrs = rng.choice([2, 3])
+    tr = rep + extra * 12 * yrs
+    tn = new
+    text = (f"My laptop needs a ${rep} repair, or I could replace it with a ${new} one. The old machine would need about ${extra} a month in battery packs and small repairs, and I'd look at the next {yrs} years. "
+            f"The old one is noticeably slower.")
+    return text, [f"{tr:,}", f"{tn:,}"], f"repairing costs about ${tr:,} over {yrs} years and replacing ${tn:,}", "the speed difference and the resale value of the old laptop"
+
+
+CMPS += [_cmp_train, _cmp_storage, _cmp_repair]
+
+
+@family("chat-rubric-compare", category="chat", lang="text", kind="advice", n=9, mode="rubric", summary="choose between two options described with numbers: the correct totals are in the checks; the rubric grades the recommendation, the deciding factor and honesty about what is unknown")
 def gen_compare(rng, n):
-    plan = [2, 2, 3, 3, 3, 3, 4, 4, 4, 2, 3, 5]
+    plan = [2, 2, 3, 3, 3, 4, 4, 5, 2]
     for i in range(n):
         d = plan[i % len(plan)]
         fn = CMPS[i % len(CMPS)]
@@ -104,12 +134,13 @@ SKILLS = [
     ("public speaking", "I freeze when more than four people are listening", "give a five-minute talk to my team without notes", "two supportive colleagues"),
     ("bread baking", "I've only made one flat, dense loaf", "bake a decent loaf from a starter on a weekday routine", "an oven and a kitchen scale"),
     ("touch typing", "I use two fingers and look at the keys", "type 45 words per minute without looking", "ten minutes a day at a keyboard"),
+    ("basic guitar chords", "I own a guitar and can't play anything", "play a simple three-chord song cleanly at a steady tempo", "a tuner app and a few chord charts"),
 ]
 
 
-@family("chat-rubric-study-plan", category="chat", lang="text", kind="advice", n=10, mode="rubric", summary="a week-by-week learning plan with a fixed number of weeks and hours per week; checks count the week headings, the rubric grades realism, milestones and review")
+@family("chat-rubric-study-plan", category="chat", lang="text", kind="advice", n=9, mode="rubric", summary="a week-by-week learning plan with a fixed number of weeks and hours per week; checks count the week headings, the rubric grades realism, milestones and review")
 def gen_plan(rng, n):
-    plan = [2, 2, 3, 3, 3, 4, 4, 3, 4, 5]
+    plan = [2, 2, 3, 3, 3, 4, 4, 5, 2]
     for i in range(n):
         d = plan[i % len(plan)]
         skill, level, goal, resource = SKILLS[i % len(SKILLS)]
@@ -151,9 +182,9 @@ SYMPTOMS = [
 ]
 
 
-@family("chat-rubric-debug-approach", category="chat", lang="text", kind="advice", n=10, mode="rubric", summary="a vague production symptom with one telling detail: how would you go about finding the cause? graded on the first measurement, narrowing strategy and not jumping to a root cause")
+@family("chat-rubric-debug-approach", category="chat", lang="text", kind="advice", n=9, mode="rubric", summary="a vague production symptom with one telling detail: how would you go about finding the cause? graded on the first measurement, narrowing strategy and not jumping to a root cause")
 def gen_debug(rng, n):
-    plan = [2, 3, 3, 3, 4, 4, 4, 3, 4, 5]
+    plan = [2, 2, 3, 3, 3, 4, 4, 5, 2]
     for i in range(n):
         d = plan[i % len(plan)]
         sym, kws, label = SYMPTOMS[i % len(SYMPTOMS)]

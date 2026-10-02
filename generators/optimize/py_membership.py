@@ -43,8 +43,8 @@ SHAPES = {
     return [item for item in $a if item in $b]
 ''', fast='''def $f($a, $b):
     """$doc"""
-    wanted = set($b)
-    return [item for item in $a if item in wanted]
+    lookup = set($b)
+    return [item for item in $a if item in lookup]
 ''', oracle='''def oracle(a, b):
     s = set(b)
     return [x for x in a if x in s]
@@ -65,8 +65,8 @@ SHAPES = {
     return out
 ''', fast='''def $f($a, $b):
     """$doc"""
-    blocked = set($b)
-    return [item for item in $a if item not in blocked]
+    blocked_set = set($b)
+    return [item for item in $a if item not in blocked_set]
 ''', oracle='''def oracle(a, b):
     s = set(b)
     return [x for x in a if x not in s]

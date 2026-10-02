@@ -1,0 +1,34 @@
+[
+{
+"id": "security-xss-01-comment-widget",
+"ok": true
+},
+{
+"id": "security-xss-02-link-scheme",
+"ok": true
+},
+{
+"id": "security-xss-03-form-values",
+"ok": true
+},
+{
+"id": "security-xss-04-inline-config",
+"ok": true
+},
+{
+"id": "security-xss-05-markup-lite",
+"ok": true
+},
+{
+"id": "security-xss-06-autoescape",
+"ok": true
+},
+{
+"id": "security-xss-07-error-page",
+"ok": true
+},
+{
+"id": "security-xss-08-profile-card",
+"ok": true
+}
+]

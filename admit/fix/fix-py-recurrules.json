@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-recurrules-01-cmp",
+"ok": true
+},
+{
+"id": "fix-py-recurrules-02-delete",
+"ok": true
+},
+{
+"id": "fix-py-recurrules-03-negate",
+"ok": true
+},
+{
+"id": "fix-py-recurrules-04-arith",
+"ok": true
+},
+{
+"id": "fix-py-recurrules-05-const",
+"ok": true
+},
+{
+"id": "fix-py-recurrules-06-cmp",
+"ok": true
+},
+{
+"id": "fix-py-recurrules-07-delete",
+"ok": true
+},
+{
+"id": "fix-py-recurrules-08-const",
+"ok": true
+},
+{
+"id": "fix-py-recurrules-09-cmp",
+"ok": true
+},
+{
+"id": "fix-py-recurrules-10-delete",
+"ok": true
+}
+]

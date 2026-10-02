@@ -1,0 +1,54 @@
+[
+{
+"id": "fix-hand-bash-quoting-01-mv-with-unquoted-variables",
+"ok": true
+},
+{
+"id": "fix-hand-bash-quoting-02-extension-less-files-get-their-own-folder",
+"ok": true
+},
+{
+"id": "fix-hand-bash-quoting-03-loop-over-ls-output",
+"ok": true
+},
+{
+"id": "fix-hand-bash-quoting-04-existing-files-are-overwritten",
+"ok": true
+},
+{
+"id": "fix-hand-bash-quoting-05-counter-lost-in-a-pipeline",
+"ok": true
+},
+{
+"id": "fix-hand-bash-quoting-06-mkdir-failure-ignored",
+"ok": true
+},
+{
+"id": "fix-hand-bash-quoting-07-count-lines-by-newlines",
+"ok": true
+},
+{
+"id": "fix-hand-bash-quoting-08-patch-number-read-as-octal",
+"ok": true
+},
+{
+"id": "fix-hand-bash-quoting-09-versions-compared-as-text",
+"ok": true
+},
+{
+"id": "fix-hand-bash-quoting-10-message-used-as-a-printf-format",
+"ok": true
+},
+{
+"id": "fix-hand-bash-quoting-11-read-without-ifs-and-r",
+"ok": true
+},
+{
+"id": "fix-hand-bash-quoting-12-unterminated-last-line-dropped",
+"ok": true
+},
+{
+"id": "fix-hand-bash-quoting-13-exit-status-taken-after-the-if",
+"ok": true
+}
+]

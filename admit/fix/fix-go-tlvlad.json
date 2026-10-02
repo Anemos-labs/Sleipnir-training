@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-go-tlvlad-01-const",
+"ok": true
+},
+{
+"id": "fix-go-tlvlad-02-swap",
+"ok": true
+},
+{
+"id": "fix-go-tlvlad-03-negate",
+"ok": true
+},
+{
+"id": "fix-go-tlvlad-04-delete",
+"ok": true
+},
+{
+"id": "fix-go-tlvlad-05-cmp",
+"ok": true
+},
+{
+"id": "fix-go-tlvlad-06-const",
+"ok": true
+},
+{
+"id": "fix-go-tlvlad-07-negate",
+"ok": true
+},
+{
+"id": "fix-go-tlvlad-08-delete",
+"ok": true
+}
+]

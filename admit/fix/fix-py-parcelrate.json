@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-parcelrate-01-delete",
+"ok": true
+},
+{
+"id": "fix-py-parcelrate-02-cmp",
+"ok": true
+},
+{
+"id": "fix-py-parcelrate-03-arith",
+"ok": true
+},
+{
+"id": "fix-py-parcelrate-04-negate",
+"ok": true
+},
+{
+"id": "fix-py-parcelrate-05-const",
+"ok": true
+},
+{
+"id": "fix-py-parcelrate-06-swap",
+"ok": true
+},
+{
+"id": "fix-py-parcelrate-07-delete",
+"ok": true
+},
+{
+"id": "fix-py-parcelrate-08-arith",
+"ok": true
+},
+{
+"id": "fix-py-parcelrate-09-negate",
+"ok": true
+},
+{
+"id": "fix-py-parcelrate-10-const",
+"ok": true
+}
+]

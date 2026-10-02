@@ -8,7 +8,7 @@
 "ok": true
 },
 {
-"id": "chat-write-sms-03-late-150",
+"id": "chat-write-sms-03-late-145",
 "ok": true
 },
 {
@@ -20,31 +20,15 @@
 "ok": true
 },
 {
-"id": "chat-write-sms-06-meet-95",
+"id": "chat-write-sms-06-pickup-100",
 "ok": true
 },
 {
-"id": "chat-write-sms-07-keys-100",
+"id": "chat-write-sms-07-rsvp-70",
 "ok": true
 },
 {
-"id": "chat-write-sms-08-late-115",
-"ok": true
-},
-{
-"id": "chat-write-sms-09-cancel-110",
-"ok": true
-},
-{
-"id": "chat-write-sms-10-bring-140",
-"ok": true
-},
-{
-"id": "chat-write-sms-11-meet-90",
-"ok": true
-},
-{
-"id": "chat-write-sms-12-keys-105",
+"id": "chat-write-sms-08-moved-85",
 "ok": true
 }
 ]

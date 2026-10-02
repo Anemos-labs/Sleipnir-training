@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-shiplog-01-delete",
+"ok": true
+},
+{
+"id": "fix-py-shiplog-02-arith",
+"ok": true
+},
+{
+"id": "fix-py-shiplog-03-const",
+"ok": true
+},
+{
+"id": "fix-py-shiplog-04-swap",
+"ok": true
+},
+{
+"id": "fix-py-shiplog-05-cmp",
+"ok": true
+},
+{
+"id": "fix-py-shiplog-06-negate",
+"ok": true
+},
+{
+"id": "fix-py-shiplog-07-delete",
+"ok": true
+},
+{
+"id": "fix-py-shiplog-08-arith",
+"ok": true
+},
+{
+"id": "fix-py-shiplog-09-const",
+"ok": true
+},
+{
+"id": "fix-py-shiplog-10-cmp",
+"ok": true
+}
+]

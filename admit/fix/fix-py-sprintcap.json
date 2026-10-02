@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-sprintcap-01-negate",
+"ok": true
+},
+{
+"id": "fix-py-sprintcap-02-const",
+"ok": true
+},
+{
+"id": "fix-py-sprintcap-03-arith",
+"ok": true
+},
+{
+"id": "fix-py-sprintcap-04-cmp",
+"ok": true
+},
+{
+"id": "fix-py-sprintcap-05-delete",
+"ok": true
+},
+{
+"id": "fix-py-sprintcap-06-negate",
+"ok": true
+},
+{
+"id": "fix-py-sprintcap-07-const",
+"ok": true
+},
+{
+"id": "fix-py-sprintcap-08-arith",
+"ok": true
+},
+{
+"id": "fix-py-sprintcap-09-cmp",
+"ok": true
+},
+{
+"id": "fix-py-sprintcap-10-delete",
+"ok": true
+}
+]

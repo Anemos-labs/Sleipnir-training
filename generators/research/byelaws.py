@@ -312,7 +312,7 @@ def _pick_day(rng, orders, made0):
     return made0 + dt.timedelta(days=rng.randint(10, (end - made0).days + 30))
 
 
-@family("research-byelaw-lookup", category="research", lang="text", kind="lookup", n=22, mode="answer",
+@family("research-byelaw-lookup", category="research", lang="text", kind="lookup", n=18, mode="answer",
         summary="what a byelaw figure was on a date after substitutions, repeals, insertions, corrections and a revoked order")
 def gen_lookup(rng, n):
     made = 0
@@ -390,7 +390,7 @@ def gen_lookup(rng, n):
                          notes={"scenario": kind, "orders": n_orders, "question": qk, "revoked": [o.no for o in orders if o.revoked]})
 
 
-@family("research-byelaw-consolidate", category="research", lang="text", kind="greenfield", n=14,
+@family("research-byelaw-consolidate", category="research", lang="text", kind="greenfield", n=12,
         summary="write the consolidated figures of an amended byelaw as of a date (answer.json)")
 def gen_consolidate(rng, n):
     made = 0

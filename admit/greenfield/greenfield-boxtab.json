@@ -1,0 +1,50 @@
+[
+{
+"id": "greenfield-boxtab-01-bash-dots-pipe",
+"ok": true
+},
+{
+"id": "greenfield-boxtab-02-python-tilde-comma",
+"ok": true
+},
+{
+"id": "greenfield-boxtab-03-c-dots-pipe",
+"ok": true
+},
+{
+"id": "greenfield-boxtab-04-go-stars-tab",
+"ok": true
+},
+{
+"id": "greenfield-boxtab-05-bash-stars-semi",
+"ok": true
+},
+{
+"id": "greenfield-boxtab-06-c-thin-comma",
+"ok": true
+},
+{
+"id": "greenfield-boxtab-07-go-tilde-semi",
+"ok": true
+},
+{
+"id": "greenfield-boxtab-08-bash-dots-tab",
+"ok": true
+},
+{
+"id": "greenfield-boxtab-09-python-tilde-semi",
+"ok": true
+},
+{
+"id": "greenfield-boxtab-10-c-dots-semi",
+"ok": true
+},
+{
+"id": "greenfield-boxtab-11-go-thin-semi",
+"ok": true
+},
+{
+"id": "greenfield-boxtab-12-bash-ascii-tab",
+"ok": true
+}
+]

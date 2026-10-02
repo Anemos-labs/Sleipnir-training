@@ -80,7 +80,8 @@ def gen_logs(rng, n):
             a = anomalies[k - 1]
             ph = [f"Across all the rotated gateway logs, what is the request id of the {W.ordinal(k)} anomalous request in chronological order? README.md defines anomalous.",
                   f"Count anomalous requests (as defined in the README) from the very beginning of the oldest log onwards. Which request id is number {k}?",
-                  f"Which request was the {W.ordinal(k)} anomaly overall, oldest first? I need its id."]
+                  f"Which request was the {W.ordinal(k)} anomaly overall, oldest first? I need its id.",
+                  f"Our on-call wants the id of the {W.ordinal(k)} anomalous request since the oldest rotated log began (rules in the README)."]
             prompt, contains, gold = rng.choice(ph), [a["req"]], f"Request {a['req']} was anomaly number {k}."
             diff = 2 + (k >= 7) + (nfiles >= 5) + (tier == "hard")
         elif qk == "count_file":
@@ -91,7 +92,8 @@ def gen_logs(rng, n):
             cnt = sum(1 for r in chunk if r["status"] >= 500 or r["lat"] > thr)
             ins, c = W.numfmt(rng, cnt, ("Count", "Total", "Answer"))
             ph = [f"How many anomalous requests (per the README) are in `logs/{name}`?{ins}",
-                  f"In {name} alone, count the anomalous requests as the README defines them.{ins}"]
+                  f"In {name} alone, count the anomalous requests as the README defines them.{ins}",
+                  f"How many anomalies are there in the file {name}? Use the README's definition.{ins}"]
             prompt, contains, gold = rng.choice(ph), [c], f"{cnt} in {name}. {c}"
             diff = 1 + (tier != "easy") + (win is not None and win <= 12000)
         else:
@@ -102,7 +104,8 @@ def gen_logs(rng, n):
             if len(top) > 1 and top[0][1] == top[1][1]:
                 continue
             ph = ["Which route has the most anomalous requests over all the logs? Give the route path.",
-                  "Looking at every log file, which route do the anomalies (README definition) concentrate on? Reply with the path."]
+                  "Looking at every log file, which route do the anomalies (README definition) concentrate on? Reply with the path.",
+                  "Which endpoint is responsible for the most anomalous requests overall? The path, please."]
             prompt, contains, gold = rng.choice(ph), [top[0][0]], f"{top[0][0]} has the most anomalies ({top[0][1]})."
             diff = 3 + (nfiles >= 6) + (tier == "hard")
             if top[0][0] in prompt:
@@ -190,7 +193,8 @@ def gen_balance(rng, n):
             a = rng.choice(accs)
             v = cents(bal[a])
             ph = [f"What is the final balance of account {a} after every ledger batch has been applied? Credits, two decimals (a minus sign if negative).",
-                  f"Work out where {a} ends up: opening balance plus everything in the ledger batches (reversals included). Two decimals."]
+                  f"Work out where {a} ends up: opening balance plus everything in the ledger batches (reversals included). Two decimals.",
+                  f"Treasury asks: what does {a} hold after the last ledger batch? Credits, two decimals."]
             prompt, contains, gold = rng.choice(ph), [v], f"{a} ends at {v} credits."
             diff = 2 + (nbatches >= 26) + (tier == "hard")
         elif qk == "asof":
@@ -234,7 +238,7 @@ def gen_orders(rng, n):
         racks = rng.sample("ABCDEFGH", rng.choice([4, 5, 6]))
         shelves = [f"{r}{row}-{slot:02d}" for r in racks for row in (1, 2, 3) for slot in range(1, 5)]
         ncr = rng.randint(14, 22)
-        crates = [f"C-{x:04d}" for x in rng.sample(range(1, 9999), ncr + 10)]
+        crates = [f"C-{x:04d}" for x in rng.sample(range(1, 9999), ncr + 40)]
         state = {}
         free = set(shelves)
         for c in crates[:ncr]:
@@ -266,7 +270,7 @@ def gen_orders(rng, n):
                     a, b = rng.sample(sorted(tmp), 2)
                     lines.append(f"SWAP {a} (on {tmp[a]}) with {b} (on {tmp[b]})")
                     tmp[a], tmp[b] = tmp[b], tmp[a]
-                elif r < 0.85 and tmp:
+                elif r < 0.85 and len(tmp) > 9:
                     c = rng.choice(sorted(tmp))
                     lines.append(f"SCRAP {c} from {tmp[c]} (damaged)")
                     tfree.add(tmp[c])
@@ -301,7 +305,8 @@ def gen_orders(rng, n):
             c = rng.choice(cands)
             v = state[c]
             ph = [f"Where is crate {c} after all the move orders? Give the shelf code.",
-                  f"Which shelf holds {c} at the end of the order stream (cancelled orders ignored)?"]
+                  f"Which shelf holds {c} at the end of the order stream (cancelled orders ignored)?",
+                  f"A picker is looking for {c}. Where is it after all the orders have been carried out?"]
             prompt, contains, gold = rng.choice(ph), [v], f"{c} is on shelf {v}."
             diff = 1 + (nord >= 24) + (nord >= 46) + (c in initial and initial[c] != state[c])
         elif qk == "rack_count":
@@ -428,7 +433,8 @@ def gen_chat(rng, n):
         t = rng.choice(list(truth.values()))
         qk = rng.choice(["final", "final", "first", "day"])
         if qk == "final":
-            ph = [f"What did the team finally decide about {t['topic']}?", f"Going by the chat logs, what is the final decision on {t['topic']}?"]
+            ph = [f"What did the team finally decide about {t['topic']}?", f"Going by the chat logs, what is the final decision on {t['topic']}?",
+                  f"I wasn't in the chat. What ended up being decided for {t['topic']}?", f"What's the outcome for {t['topic']}, after any back-and-forth?"]
             prompt, contains, gold = rng.choice(ph), [t["final"].replace("the ", "")], f"The final decision on {t['topic']}: {t['final']}."
             diff = 1 + (nfiles >= 18) + (nfiles >= 32) + (len(topics) >= 3)
         elif qk == "first":

@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-zonetab-01-logic",
+"ok": true
+},
+{
+"id": "fix-py-zonetab-02-negate",
+"ok": true
+},
+{
+"id": "fix-py-zonetab-03-arith",
+"ok": true
+},
+{
+"id": "fix-py-zonetab-04-const",
+"ok": true
+},
+{
+"id": "fix-py-zonetab-05-delete",
+"ok": true
+},
+{
+"id": "fix-py-zonetab-06-cmp",
+"ok": true
+},
+{
+"id": "fix-py-zonetab-07-negate",
+"ok": true
+},
+{
+"id": "fix-py-zonetab-08-arith",
+"ok": true
+},
+{
+"id": "fix-py-zonetab-09-const",
+"ok": true
+},
+{
+"id": "fix-py-zonetab-10-delete",
+"ok": true
+}
+]

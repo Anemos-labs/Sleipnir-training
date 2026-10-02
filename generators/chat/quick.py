@@ -448,7 +448,7 @@ def gen_qformat(rng, n):
 # chat-write-oneliner: the smallest constrained-writing fixture
 
 
-@family("chat-write-oneliner", category="chat", lang="text", kind="greenfield", n=12, summary="a one- or two-sentence message with a word cap and two facts (the easy end of the constrained-writing set)")
+@family("chat-write-oneliner", category="chat", lang="text", kind="greenfield", n=10, summary="a one- or two-sentence message with a word cap and two facts (the easy end of the constrained-writing set)")
 def gen_oneliner(rng, n):
     kinds = [
         ("a text to {name} saying I'll be {k} minutes late", "I'll be {k} minutes late", ["{k}"], ["the number {k}"]),

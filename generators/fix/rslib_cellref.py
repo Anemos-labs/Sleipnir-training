@@ -632,6 +632,12 @@ HIDDEN = dd('''
     }
 
     #[test]
+    fn formula_literal_ending_in_an_escaped_quote() {
+        assert_eq!(shift_formula("=\\"a\\"\\"\\"&A1", 1, 0), "=\\"a\\"\\"\\"&A2");
+        assert_eq!(shift_formula("=\\"\\"\\"\\"&A1&\\"\\"", 1, 0), "=\\"\\"\\"\\"&A2&\\"\\"");
+    }
+
+    #[test]
     fn formula_out_of_range() {
         assert_eq!(shift_formula("=A1+A2", -1, 0), "=#REF!+A1");
         assert_eq!(shift_formula("=SUM(A1:B2)", -1, 0), "=SUM(#REF!:B1)");

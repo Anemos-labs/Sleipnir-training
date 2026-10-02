@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-cuetime-01-arith",
+"ok": true
+},
+{
+"id": "fix-py-cuetime-02-logic",
+"ok": true
+},
+{
+"id": "fix-py-cuetime-03-negate",
+"ok": true
+},
+{
+"id": "fix-py-cuetime-04-delete",
+"ok": true
+},
+{
+"id": "fix-py-cuetime-05-const",
+"ok": true
+},
+{
+"id": "fix-py-cuetime-06-swap",
+"ok": true
+},
+{
+"id": "fix-py-cuetime-07-cmp",
+"ok": true
+},
+{
+"id": "fix-py-cuetime-08-arith",
+"ok": true
+},
+{
+"id": "fix-py-cuetime-09-logic",
+"ok": true
+},
+{
+"id": "fix-py-cuetime-10-negate",
+"ok": true
+}
+]

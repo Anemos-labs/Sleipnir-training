@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-tipsplit-01-delete",
+"ok": true
+},
+{
+"id": "fix-py-tipsplit-02-negate",
+"ok": true
+},
+{
+"id": "fix-py-tipsplit-03-arith",
+"ok": true
+},
+{
+"id": "fix-py-tipsplit-04-const",
+"ok": true
+},
+{
+"id": "fix-py-tipsplit-05-delete",
+"ok": true
+},
+{
+"id": "fix-py-tipsplit-06-negate",
+"ok": true
+},
+{
+"id": "fix-py-tipsplit-07-arith",
+"ok": true
+},
+{
+"id": "fix-py-tipsplit-08-const",
+"ok": true
+},
+{
+"id": "fix-py-tipsplit-09-delete",
+"ok": true
+},
+{
+"id": "fix-py-tipsplit-10-negate",
+"ok": true
+}
+]

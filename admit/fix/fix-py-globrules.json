@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-globrules-01-const",
+"ok": true
+},
+{
+"id": "fix-py-globrules-02-swap",
+"ok": true
+},
+{
+"id": "fix-py-globrules-03-arith",
+"ok": true
+},
+{
+"id": "fix-py-globrules-04-negate",
+"ok": true
+},
+{
+"id": "fix-py-globrules-05-logic",
+"ok": true
+},
+{
+"id": "fix-py-globrules-06-cmp",
+"ok": true
+},
+{
+"id": "fix-py-globrules-07-delete",
+"ok": true
+},
+{
+"id": "fix-py-globrules-08-const",
+"ok": true
+},
+{
+"id": "fix-py-globrules-09-arith",
+"ok": true
+},
+{
+"id": "fix-py-globrules-10-negate",
+"ok": true
+}
+]

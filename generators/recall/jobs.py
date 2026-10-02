@@ -121,8 +121,10 @@ def _constraint(rng, org):
              must=[rf"\A\[batch: {re.escape(tag)}\]"], must_not=[], prefix="", note=tag),
         dict(key="signature", text=f"One rule for everything you put in `out/`: each file must end with the line `-- reviewed by {sig}` (as its last line).",
              must=[rf"-- reviewed by {re.escape(sig)}\s*\Z"], must_not=[], prefix="", note=sig),
-        dict(key="forbid", text="Rule for anything you put in `out/`: never use the word \"delivery\" or \"delivered\" in it (say \"received\" instead).",
-             must=[], must_not=[r"(?i)deliver"], prefix="", note="deliver"),
+        dict(key="date", text="Date rule: in every file you put in `out/`, write dates as DD.MM.YYYY (day, month, year with dots), never in any other format.",
+             must=[], must_not=[r"\d{4}-\d\d-\d\d"], prefix="", note="dmy", fmt_date=lambda d: f"{d.day:02d}.{d.month:02d}.{d.year}"),
+        dict(key="thousands", text="Number rule: in every file you put in `out/`, write numbers of 1000 or more with a space as the thousands separator (like 12 345), no commas.",
+             must=[], must_not=[r"\d,\d{3}"], prefix="", note="sp", fmt_total=lambda t: f"{t:,}".replace(",", " ")),
         dict(key="width", text="Formatting rule: no line in any file you put in `out/` may be longer than 40 characters.",
              must=[], must_not=[r"^.{41,}$"], prefix="", note="40"),
         dict(key="prefix", text="Naming rule: every file name in `out/` must start with `q3_` (so `out/q3_<site>.txt`).",
@@ -171,6 +173,8 @@ def gen_pc(rng, n):
                 tie = True
         if tie:
             continue
+        if con["key"] == "thousands" and any(stats[s]["total"] < 1000 for s in sites):
+            continue
         files["README.md"] = "# Receiving logs\n\nOne file per day in `logs/`. Each line: time | site | received N units | driver.\n"
         ex = con["prefix"]
         outfiles = []
@@ -180,7 +184,9 @@ def gen_pc(rng, n):
             path = f"out/{ex}{slug}.txt"
             tot, (q, d) = stats[s]["total"], stats[s]["best"]
             label_t, label_b = "Total units", "Biggest receipt"
-            body = [f"{label_t}: {tot}", f"{label_b}: {W.d_iso(d)} ({q} units)"]
+            fmt_total = con.get("fmt_total", str)
+            fmt_date = con.get("fmt_date", W.d_iso)
+            body = [f"{label_t}: {fmt_total(tot)}", f"{label_b}: {fmt_date(d)} ({q} units)"]
             if con["key"] == "upper":
                 body = [x.upper() for x in body]
             if con["key"] == "tag":
@@ -191,14 +197,16 @@ def gen_pc(rng, n):
             sol[path] = text
             lab_t = r"(?i)total units:\s*" if con["key"] == "upper" else r"Total units:\s*"
             lab_b = r"(?i)biggest receipt:\s*" if con["key"] == "upper" else r"Biggest receipt:\s*"
-            outfiles.append(dict(path=path, must=[lab_t + str(tot) + r"\b", lab_b + W.d_iso(d)] + con["must"], must_not=con["must_not"]))
+            outfiles.append(dict(path=path, must=[lab_t + re.escape(fmt_total(tot)) + r"(?![\d ])", lab_b + re.escape(fmt_date(d))] + con["must"], must_not=con["must_not"]))
         spec = {"kind": "files", "files": outfiles}
         site_list = ", ".join(sites)
+        dph = "<date>" if con["key"] == "date" else "<YYYY-MM-DD>"
+        dph2 = "DATE" if con["key"] == "date" else "YYYY-MM-DD"
         job = rng.choice([
-            f"Then the job: the receiving logs in `logs/` cover our sites ({site_list}). For each site write `out/<name>.txt` (name = the site name in lowercase with dashes) containing two lines: `Total units: <sum of all units received at that site>` and `Biggest receipt: <YYYY-MM-DD> (<units> units)` for the day of its single largest receipt line.",
-            f"The job: go through every file in `logs/` and, for each of our sites ({site_list}), write one file `out/<site slug>.txt` (lowercase, words joined by dashes) with `Total units: N` on the first content line and `Biggest receipt: YYYY-MM-DD (M units)` on the next, for that site's largest single receipt."])
+            f"Then the job: the receiving logs in `logs/` cover our sites ({site_list}). For each site write `out/<name>.txt` (name = the site name in lowercase with dashes) containing two lines: `Total units: <sum of all units received at that site>` and `Biggest receipt: {dph} (<units> units)` for the day of its single largest receipt line.",
+            f"The job: go through every file in `logs/` and, for each of our sites ({site_list}), write one file `out/<site slug>.txt` (lowercase, words joined by dashes) with `Total units: N` on the first content line and `Biggest receipt: {dph2} (M units)` on the next, for that site's largest single receipt."])
         prompt = con["text"] + " " + job
-        d = 2 + (tier == "mid") + 2 * (tier == "hard") + (con["key"] in ("width", "upper", "signature")) - (tier == "easy")
+        d = 2 + (tier == "mid") + 2 * (tier == "hard") + (con["key"] in ("width", "upper", "signature", "date", "thousands")) - (tier == "easy")
         made += 1
         yield W.file_task(slug=f"{made:02d}-{con['key']}", prompt=W.voice(rng, org, prompt, closers=False, sentence=True), difficulty=min(5, d), start=files, spec=spec, solution=sol,
                           scored=True, context_window=None if tier == "easy" else win, tags=["memory", "constraint"], notes={"constraint": con["key"], "logs": nrep})

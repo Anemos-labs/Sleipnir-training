@@ -303,13 +303,13 @@ def _base_a() -> Base:
            '        GROUP BY m.id\n        HAVING owed > 0 OR open_loans > 0\n        ORDER BY owed DESC, m.name\n')
     ov = ("        WHERE l.returned_date IS NULL AND l.due_date < ?\n", "        WHERE l.due_date < ?\n")
     bugs = [
-        Bug("loan-counts-inner-join", 2, {r: [("        LEFT JOIN loans l ON l.member_id = m.id AND (? IS NULL OR l.out_date >= ?)\n", "        JOIN loans l ON l.member_id = m.id AND (? IS NULL OR l.out_date >= ?)\n")]}, P["inner-join"]),
-        Bug("loan-counts-count-star", 2, {r: [("        SELECT m.name, COUNT(l.id) AS n\n", "        SELECT m.name, COUNT(*) AS n\n")]}, P["count-star"]),
+        Bug("loan-counts-inner-join", 1, {r: [("        LEFT JOIN loans l ON l.member_id = m.id AND (? IS NULL OR l.out_date >= ?)\n", "        JOIN loans l ON l.member_id = m.id AND (? IS NULL OR l.out_date >= ?)\n")]}, P["inner-join"]),
+        Bug("loan-counts-count-star", 1, {r: [("        SELECT m.name, COUNT(l.id) AS n\n", "        SELECT m.name, COUNT(*) AS n\n")]}, P["count-star"]),
         Bug("since-filter-in-where", 3, {r: [("        LEFT JOIN loans l ON l.member_id = m.id AND (? IS NULL OR l.out_date >= ?)\n        GROUP BY m.id\n",
                                                "        LEFT JOIN loans l ON l.member_id = m.id\n        WHERE (? IS NULL OR l.out_date >= ?)\n        GROUP BY m.id\n")]}, P["where-filter"]),
         Bug("never-borrowed-not-in", 3, {r: [("        WHERE NOT EXISTS (SELECT 1 FROM loans l WHERE l.member_id = m.id)\n", "        WHERE m.id NOT IN (SELECT member_id FROM loans)\n")]}, P["not-in"]),
         Bug("overdue-includes-returned", 3, {r: [ov]}, P["overdue-returned"]),
-        Bug("range-end-excluded", 2, {r: [('    sql = "SELECT id FROM loans WHERE out_date BETWEEN ? AND ? ORDER BY out_date, id"\n',
+        Bug("range-end-excluded", 1, {r: [('    sql = "SELECT id FROM loans WHERE out_date BETWEEN ? AND ? ORDER BY out_date, id"\n',
                                            '    sql = "SELECT id FROM loans WHERE out_date >= ? AND out_date < ? ORDER BY out_date, id"\n')]}, P["between"]),
         Bug("fines-join-fan-out", 4, {r: [fan]}, P["fan-out"]),
         Bug("fan-out-and-returned-overdue", 5, {r: [fan, ov]}, P["fan-out-and-overdue"]),
@@ -601,9 +601,9 @@ def _base_b() -> Base:
         Bug("all-statuses-take-a-seat", 2, {q: [("(SELECT COUNT(*) FROM enrollments e WHERE e.course_id = c.id AND e.status = 'enrolled')", "(SELECT COUNT(*) FROM enrollments e WHERE e.course_id = c.id)")]}, P["dropped"]),
         Bug("overbooked-goes-negative", 2, {q: [("        SELECT MAX(0, c.capacity - (SELECT COUNT(*) FROM enrollments e WHERE e.course_id = c.id AND e.status = 'enrolled'))\n",
                                                  "        SELECT c.capacity - (SELECT COUNT(*) FROM enrollments e WHERE e.course_id = c.id AND e.status = 'enrolled')\n")]}, P["negative"]),
-        Bug("waitlist-ties-unordered", 3, {q: [("        ORDER BY e.ts, s.id\n", "        ORDER BY e.ts\n")]}, P["waitlist-ties"]),
-        Bug("division-ignores-status", 3, {q: [("        WHERE e.status = 'enrolled' AND e.course_id IN ({marks})\n", "        WHERE e.course_id IN ({marks})\n")]}, P["division-status"]),
-        Bug("fill-ratio-integer-division", 3, {q: [("        ORDER BY enrolled * 1.0 / c.capacity DESC, c.title\n", "        ORDER BY enrolled / c.capacity DESC, c.title\n")]}, P["ratio"]),
+        Bug("waitlist-ties-unordered", 2, {q: [("        ORDER BY e.ts, s.id\n", "        ORDER BY e.ts\n")]}, P["waitlist-ties"]),
+        Bug("division-ignores-status", 2, {q: [("        WHERE e.status = 'enrolled' AND e.course_id IN ({marks})\n", "        WHERE e.course_id IN ({marks})\n")]}, P["division-status"]),
+        Bug("fill-ratio-integer-division", 2, {q: [("        ORDER BY enrolled * 1.0 / c.capacity DESC, c.title\n", "        ORDER BY enrolled / c.capacity DESC, c.title\n")]}, P["ratio"]),
         Bug("average-skips-idle-students", 3, {q: [("            LEFT JOIN enrollments e ON e.student_id = s.id AND e.status = 'enrolled'\n", "            JOIN enrollments e ON e.student_id = s.id AND e.status = 'enrolled'\n")]}, P["average-zero"]),
     ]
     return Base("enroll", "python", good, B_VISIBLE, _b_hidden(), bugs)

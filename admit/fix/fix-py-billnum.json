@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-billnum-01-swap",
+"ok": true
+},
+{
+"id": "fix-py-billnum-02-delete",
+"ok": true
+},
+{
+"id": "fix-py-billnum-03-negate",
+"ok": true
+},
+{
+"id": "fix-py-billnum-04-cmp",
+"ok": true
+},
+{
+"id": "fix-py-billnum-05-arith",
+"ok": true
+},
+{
+"id": "fix-py-billnum-06-const",
+"ok": true
+},
+{
+"id": "fix-py-billnum-07-delete",
+"ok": true
+},
+{
+"id": "fix-py-billnum-08-cmp",
+"ok": true
+},
+{
+"id": "fix-py-billnum-09-arith",
+"ok": true
+},
+{
+"id": "fix-py-billnum-10-const",
+"ok": true
+}
+]

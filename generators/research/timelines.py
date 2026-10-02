@@ -132,7 +132,7 @@ def gen(rng, n):
                           solution={"timeline.json": sol}, scored=True, tags=["timeline", "temporal"], notes={"events": k})
 
 
-@family("research-timeline-gaps", category="research", lang="text", kind="lookup", n=14, mode="answer",
+@family("research-timeline-gaps", category="research", lang="text", kind="lookup", n=12, mode="answer",
         summary="day counts between two milestones of a rollout whose dates are given relatively or as slipped plans")
 def gen_gaps(rng, n):
     made = 0

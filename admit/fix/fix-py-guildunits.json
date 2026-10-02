@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-guildunits-01-negate",
+"ok": true
+},
+{
+"id": "fix-py-guildunits-02-logic",
+"ok": true
+},
+{
+"id": "fix-py-guildunits-03-delete",
+"ok": true
+},
+{
+"id": "fix-py-guildunits-04-const",
+"ok": true
+},
+{
+"id": "fix-py-guildunits-05-arith",
+"ok": true
+},
+{
+"id": "fix-py-guildunits-06-cmp",
+"ok": true
+},
+{
+"id": "fix-py-guildunits-07-delete",
+"ok": true
+},
+{
+"id": "fix-py-guildunits-08-const",
+"ok": true
+},
+{
+"id": "fix-py-guildunits-09-arith",
+"ok": true
+},
+{
+"id": "fix-py-guildunits-10-cmp",
+"ok": true
+}
+]

@@ -1,0 +1,46 @@
+[
+{
+"id": "shell-ini-tools-01-ini-get-value",
+"ok": true
+},
+{
+"id": "shell-ini-tools-02-ini-set-value",
+"ok": true
+},
+{
+"id": "shell-ini-tools-03-ini-delete-key",
+"ok": true
+},
+{
+"id": "shell-ini-tools-04-ini-section-names",
+"ok": true
+},
+{
+"id": "shell-ini-tools-05-ini-section-to-env",
+"ok": true
+},
+{
+"id": "shell-ini-tools-06-ini-merge-two-files",
+"ok": true
+},
+{
+"id": "shell-ini-tools-07-ini-lint",
+"ok": true
+},
+{
+"id": "shell-ini-tools-08-ini-semantic-diff",
+"ok": true
+},
+{
+"id": "shell-ini-tools-09-ini-expand-references",
+"ok": true
+},
+{
+"id": "shell-ini-tools-10-ini-typed-values",
+"ok": true
+},
+{
+"id": "shell-ini-tools-11-fix-ini-lookup",
+"ok": true
+}
+]

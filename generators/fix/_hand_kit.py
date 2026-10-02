@@ -99,18 +99,35 @@ class Ctx:
         lang = self.bug.lang or self.base.lang
         name = name or {"python": "_probe.py", "javascript": "_probe.js", "ruby": "_probe.rb", "bash": "_probe.sh"}.get(lang, "_probe.txt")
         cmd = cmd or {"python": "python3 _probe.py", "javascript": "node _probe.js", "ruby": "ruby -Ilib _probe.rb", "bash": "bash _probe.sh"}[lang]
-        return run(merged(self.bad_tree, {name: script}), cmd, timeout=40).out.strip()
+        return steady(run(merged(self.bad_tree, {name: script}), cmd, timeout=40).out).strip()
 
 
 # `node --test test/` does not work on node 22 (a directory argument is run as a module); use a glob.
 KIT_VERIFY = {"javascript": "node --test test/*.test.js"}
+
+_TIMING = [
+    (re.compile(r"\((\d+(?:\.\d+)?)(?:ms|s)\)"), "(0.00s)"),
+    (re.compile(r"(\t)\d+\.\d+s\b"), r"\g<1>0.00s"),
+    (re.compile(r"\b(finished in|Finished in|Ran \d+ tests? in) \d+(?:\.\d+)?(?:ms|s)\b"), r"\1 0.001s"),
+    (re.compile(r"duration_ms:? \d+(?:\.\d+)?"), "duration_ms 0"),
+    (re.compile(r"--seed \d+"), "--seed 1"),
+    (re.compile(r"\d+(?:\.\d+)? runs/s, \d+(?:\.\d+)? assertions/s"), "0 runs/s, 0 assertions/s"),
+]
+
+
+def steady(out: str) -> str:
+    """Remove timings and seeds from a tool's output so a prompt that quotes it is the same on every build."""
+    for rx, rep in _TIMING:
+        out = rx.sub(rep, out)
+    return out
+
 
 def _visible_out(self, tail: int = 25) -> str:
     """Output of the verify command on the buggy tree with only the visible tests (what a CI run would show)."""
     lang = self.bug.lang or self.base.lang
     verify = self.base.verify or KIT_VERIFY.get(lang) or langs.VERIFY[lang]
     r = run(merged(self.bad_tree, self.base.visible, self.bug.reported), verify, timeout=60)
-    lines = [ln.rstrip() for ln in r.out.strip().splitlines()]
+    lines = [ln.rstrip() for ln in steady(r.out).strip().splitlines()]
     return "\n".join(lines[-tail:])
 
 
@@ -186,6 +203,49 @@ def tasks_from(bases: list[Base], picks: list[tuple[int, int]] | None = None, ch
     if problems:
         raise RuntimeError("\n---\n".join(problems))
     return out
+
+
+def panic_excerpt(out: str) -> str:
+    """The `thread ... panicked at` line of a rust test run (thread id removed, so builds stay deterministic) and the message after it."""
+    lines = out.splitlines()
+    for i, ln in enumerate(lines):
+        if ln.startswith("thread "):
+            first = re.sub(r" \(\d+\)", "", ln)
+            return "\n".join([first] + lines[i + 1:i + 2])
+    return "\n".join(lines[-3:])
+
+
+def java_str(s: str) -> str:
+    """A java string literal body with every non-ASCII character as a \\uXXXX escape (javac may run with an ASCII default encoding)."""
+    out = []
+    for ch in s:
+        o = ord(ch)
+        if o > 126:
+            if o > 0xFFFF:
+                o -= 0x10000
+                out.append("\\u%04X\\u%04X" % (0xD800 + (o >> 10), 0xDC00 + (o & 0x3FF)))
+            else:
+                out.append("\\u%04X" % o)
+        elif ch == '"' or ch == "\\":
+            out.append("\\" + ch)
+        elif ch == "\n":
+            out.append("\\n")
+        else:
+            out.append(ch)
+    return "".join(out)
+
+
+def tabify(text: str) -> str:
+    """Source written with 4-space indentation, as go source with tabs (so go files look gofmt-ed)."""
+    out = []
+    for ln in text.split("\n"):
+        n = len(ln) - len(ln.lstrip(" "))
+        out.append("\t" * (n // 4) + " " * (n % 4) + ln[n:])
+    return "\n".join(out)
+
+
+def tab_pairs(pairs: list[tuple[str, str]]) -> list[tuple[str, str]]:
+    return [(tabify(a), tabify(b)) for a, b in pairs]
 
 
 def mix(items: list, picks: list[int]) -> list:

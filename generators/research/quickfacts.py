@@ -128,7 +128,7 @@ def gen(rng, n):
     made = 0
     while made < n:
         org = W.make_org(rng, None, n_people=8, n_sites=6)
-        tier = rng.choice(["tiny", "small", "small", "medium"])
+        tier = rng.choice(["tiny", "tiny", "small", "small", "medium"])
         nd = {"tiny": rng.randint(4, 6), "small": rng.randint(8, 12), "medium": rng.randint(14, 20)}[tier]
         base = W.base_date(rng)
         used: set = set()

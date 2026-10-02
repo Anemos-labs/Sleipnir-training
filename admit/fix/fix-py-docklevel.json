@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-docklevel-01-logic",
+"ok": true
+},
+{
+"id": "fix-py-docklevel-02-arith",
+"ok": true
+},
+{
+"id": "fix-py-docklevel-03-cmp",
+"ok": true
+},
+{
+"id": "fix-py-docklevel-04-delete",
+"ok": true
+},
+{
+"id": "fix-py-docklevel-05-const",
+"ok": true
+},
+{
+"id": "fix-py-docklevel-06-negate",
+"ok": true
+},
+{
+"id": "fix-py-docklevel-07-swap",
+"ok": true
+},
+{
+"id": "fix-py-docklevel-08-arith",
+"ok": true
+},
+{
+"id": "fix-py-docklevel-09-cmp",
+"ok": true
+},
+{
+"id": "fix-py-docklevel-10-delete",
+"ok": true
+}
+]

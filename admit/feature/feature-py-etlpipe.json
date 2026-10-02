@@ -1,0 +1,66 @@
+[
+{
+"id": "feature-py-etlpipe-01-drop-empty",
+"ok": true
+},
+{
+"id": "feature-py-etlpipe-02-require",
+"ok": true
+},
+{
+"id": "feature-py-etlpipe-03-from-spec",
+"ok": true
+},
+{
+"id": "feature-py-etlpipe-04-metrics-batches",
+"ok": true
+},
+{
+"id": "feature-py-etlpipe-05-batches",
+"ok": true
+},
+{
+"id": "feature-py-etlpipe-06-dedupe",
+"ok": true
+},
+{
+"id": "feature-py-etlpipe-07-dead-letter",
+"ok": true
+},
+{
+"id": "feature-py-etlpipe-08-sort-from-spec",
+"ok": true
+},
+{
+"id": "feature-py-etlpipe-09-metrics",
+"ok": true
+},
+{
+"id": "feature-py-etlpipe-10-sort",
+"ok": true
+},
+{
+"id": "feature-py-etlpipe-11-dedupe",
+"ok": true
+},
+{
+"id": "feature-py-etlpipe-12-drop-empty-require-dead-letter",
+"ok": true
+},
+{
+"id": "feature-py-etlpipe-13-require",
+"ok": true
+},
+{
+"id": "feature-py-etlpipe-14-batches",
+"ok": true
+},
+{
+"id": "feature-py-etlpipe-15-drop-empty",
+"ok": true
+},
+{
+"id": "feature-py-etlpipe-16-require-from-spec-batches",
+"ok": true
+}
+]

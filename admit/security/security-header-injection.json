@@ -1,0 +1,22 @@
+[
+{
+"id": "security-header-injection-01-redirect-crlf",
+"ok": true
+},
+{
+"id": "security-header-injection-02-cookie-attributes",
+"ok": true
+},
+{
+"id": "security-header-injection-03-download-filename",
+"ok": true
+},
+{
+"id": "security-header-injection-04-reset-link-host",
+"ok": true
+},
+{
+"id": "security-header-injection-05-mail-headers",
+"ok": true
+}
+]

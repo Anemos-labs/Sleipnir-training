@@ -1,0 +1,50 @@
+[
+{
+"id": "shell-makefile-authoring-01-basic-incremental-build",
+"ok": true
+},
+{
+"id": "shell-makefile-authoring-02-phony-targets-and-default",
+"ok": true
+},
+{
+"id": "shell-makefile-authoring-03-generated-header-dependencies",
+"ok": true
+},
+{
+"id": "shell-makefile-authoring-04-mirror-tree-output-dirs",
+"ok": true
+},
+{
+"id": "shell-makefile-authoring-05-mode-variable-override",
+"ok": true
+},
+{
+"id": "shell-makefile-authoring-06-rebuild-when-mode-changes",
+"ok": true
+},
+{
+"id": "shell-makefile-authoring-07-grouped-outputs-run-once",
+"ok": true
+},
+{
+"id": "shell-makefile-authoring-08-keep-intermediate-files",
+"ok": true
+},
+{
+"id": "shell-makefile-authoring-09-test-target-keeps-going",
+"ok": true
+},
+{
+"id": "shell-makefile-authoring-10-install-with-destdir",
+"ok": true
+},
+{
+"id": "shell-makefile-authoring-11-recursive-modules",
+"ok": true
+},
+{
+"id": "shell-makefile-authoring-12-sources-in-several-directories",
+"ok": true
+}
+]

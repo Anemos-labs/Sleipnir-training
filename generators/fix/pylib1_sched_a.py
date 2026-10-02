@@ -729,15 +729,14 @@ TIDEDOCK = Lib(
     hidden_tests={"tests/test_full.py": TD_HIDDEN},
     mutate=["tidedock/tide.py", "tidedock/plan.py"], difficulty=4, tags=["tides", "scheduling", "windows"],
     probes=[
-        "height_at(TABLE, 361)", "height_at(TABLE, 1081)", "height_at(TABLE, 1441)", "windows(TABLE, 300, 0, 1440)",
-        "windows(TABLE, 500, 0, 1440)", "windows(TABLE, 0, -10, 20)", "windows(TABLE, 0, 0, 1500)", "needed_tide(500, 250)",
-        "schedule([Ship('Gannet', 500, 100, 120), Ship('Wren', 200, 0, 60), Ship('Heron', 500, 150, 300)], TABLE, 250, 1440)",
-        "schedule([Ship('Plover', 560, 0, 247)], TABLE, 250, 1440)", "schedule([Ship('Plover', 560, 0, 248)], TABLE, 250, 1440)",
-        "schedule([Ship('Plover', 560, 0, 247)], TABLE, 250, 480)",
-        "schedule([Ship('Mid', 300, 50, 30), Ship('Zeal', 400, 50, 30), Ship('Alba', 400, 50, 30)], TABLE, 250, 1440)[0]",
+        "height_at([(0, 100), (360, 500), (720, 80), (1080, 520), (1440, 90)], 361)", "height_at([(0, 100), (360, 500), (720, 80), (1080, 520), (1440, 90)], 1081)", "height_at([(0, 100), (360, 500), (720, 80), (1080, 520), (1440, 90)], 1441)", "windows([(0, 100), (360, 500), (720, 80), (1080, 520), (1440, 90)], 300, 0, 1440)",
+        "windows([(0, 100), (360, 500), (720, 80), (1080, 520), (1440, 90)], 500, 0, 1440)", "windows([(0, 100), (360, 500), (720, 80), (1080, 520), (1440, 90)], 0, -10, 20)", "windows([(0, 100), (360, 500), (720, 80), (1080, 520), (1440, 90)], 0, 0, 1500)", "needed_tide(500, 250)",
+        "schedule([Ship('Gannet', 500, 100, 120), Ship('Wren', 200, 0, 60), Ship('Heron', 500, 150, 300)], [(0, 100), (360, 500), (720, 80), (1080, 520), (1440, 90)], 250, 1440)",
+        "schedule([Ship('Plover', 560, 0, 247)], [(0, 100), (360, 500), (720, 80), (1080, 520), (1440, 90)], 250, 1440)", "schedule([Ship('Plover', 560, 0, 248)], [(0, 100), (360, 500), (720, 80), (1080, 520), (1440, 90)], 250, 1440)",
+        "schedule([Ship('Plover', 560, 0, 247)], [(0, 100), (360, 500), (720, 80), (1080, 520), (1440, 90)], 250, 480)",
+        "schedule([Ship('Mid', 300, 50, 30), Ship('Zeal', 400, 50, 30), Ship('Alba', 400, 50, 30)], [(0, 100), (360, 500), (720, 80), (1080, 520), (1440, 90)], 250, 1440)[0]",
     ],
-    probe_import=("from tidedock.tide import *\nfrom tidedock.plan import *\n"
-                  "TABLE = [(0, 100), (360, 500), (720, 80), (1080, 520), (1440, 90)]"),
+    probe_import="from tidedock.tide import *\nfrom tidedock.plan import *",
 )
 
 # ======================================================================================================================

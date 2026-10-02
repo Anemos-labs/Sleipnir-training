@@ -344,8 +344,8 @@ def _base_a() -> Base:
         Bug("sink-error-treated-as-rejection", 3, {b: [(
             "            try:\n                validate(rec)\n            except ValidationError as exc:\n                report[\"rejected\"].append((index, str(exc)))\n                continue\n            call_with_retry(lambda: sink.insert(rec), attempts, SinkError)\n            report[\"inserted\"] += 1\n",
             "            try:\n                validate(rec)\n                call_with_retry(lambda: sink.insert(rec), attempts, SinkError)\n            except Exception as exc:\n                report[\"rejected\"].append((index, str(exc)))\n                continue\n            report[\"inserted\"] += 1\n")]}, P["swallowed"]),
-        Bug("abort-without-rollback", 3, {b: [no_rb]}, P["no-rollback"]),
-        Bug("cause-dropped", 2, {b: [('", report) from exc', '", report)')]}, P["lost-cause"]),
+        Bug("abort-without-rollback", 2, {b: [no_rb]}, P["no-rollback"]),
+        Bug("cause-dropped", 1, {b: [('", report) from exc', '", report)')]}, P["lost-cause"]),
         Bug("retry-returns-none", 3, {r: [retry_bug]}, P["retry-silent"]),
         Bug("missing-field-keyerror", 3, {v: [("    for field in REQUIRED:\n        if field not in rec:\n            raise ValidationError(f\"missing field: {field}\")\n    qty = rec[\"qty\"]\n",
                                                "    rec[\"id\"], rec[\"name\"]\n    qty = rec[\"qty\"]\n")]}, P["keyerror"]),
@@ -813,7 +813,7 @@ def _base_b() -> Base:
     nounwrap = ("\nfunc (e *IncludeError) Unwrap() error { return e.Err }\n", "")
     diamond = ("\tactive[path] = true\n\tdefer delete(active, path)\n", "\tactive[path] = true\n")
     bugs = [
-        Bug("missing-file-not-wrapped", 2, {ld: [('return fmt.Errorf("load %s: %w", path, ErrNoConfig)', 'return fmt.Errorf("load %s: %v", path, ErrNoConfig)')]},
+        Bug("missing-file-not-wrapped", 1, {ld: [('return fmt.Errorf("load %s: %w", path, ErrNoConfig)', 'return fmt.Errorf("load %s: %v", path, ErrNoConfig)')]},
             P["verb-not-w"], reported=rep),
         Bug("include-error-names-wrong-file", 2, {ld: [("return &IncludeError{File: includer, Err: fmt.Errorf(\"include %s: %w\", path, err)}",
                                                       "return &IncludeError{File: path, Err: fmt.Errorf(\"include %s: %w\", path, err)}")]}, P["wrong-file"]),

@@ -105,3 +105,65 @@ def finish(t: Task, wrong: list[dict] | tuple = ()) -> Task:
         if res.ok:
             raise RuntimeError(f"{t.slug}: validator accepted wrong variant #{i}")
     return t
+
+
+# ----------------------------------------------------------------------------------------------------------------
+# policy-driven repair families: model -> defect injection -> emitted configuration
+
+import copy
+import json
+import random
+
+STYLES = ("list", "para", "terse")
+
+
+def fix_prompt(rng: random.Random, target: str, subject: str, texts: list[str], doc: str, vague: bool, vague_variants: list[str], tail: str = "") -> str:
+    """Compose a bug-report style prompt. ``target`` is the file(s) to fix, ``doc`` the rules document."""
+    if vague:
+        return rng.choice(vague_variants)
+    pol = f"`{doc}` lists the rules that the configuration is checked against"
+    style = rng.choice(STYLES)
+    if style == "list":
+        return f"The {subject} (`{target}`) has problems:\n" + "\n".join(f"- {t}" for t in texts) + f"\n\nPlease fix them. {pol}.{tail}"
+    if style == "para":
+        return f"Reports about `{target}`: " + "; ".join(texts) + f". Can you sort it out? {pol}.{tail}"
+    return f"{target}: " + "; ".join(texts) + f". Please fix it ({pol[0].lower() + pol[1:]}).{tail}"
+
+
+def fix_tasks(rng: random.Random, n: int, *, prefix: str, plan: list, build, render, defects: dict, docs, hidden, check: str, prompt, wrong, tags: list,
+              lang: str = "text") -> list[Task]:
+    """Generic repair-task factory.
+
+    plan      list of dicts ``{"keys": [defect, ...], "vague": bool, "d": difficulty or None}``
+    build     (rng, i) -> (model, ctx)
+    render    (model, ctx) -> {path: text}
+    defects   key -> (fn(model, ctx, rng) -> info dict, [phrasings with {placeholders} filled from info])
+    docs      (model, ctx) -> extra start files (rules document, README)
+    hidden    (model, ctx) -> extra hidden files (rules.json ...)
+    prompt    (rng, ctx, texts, vague) -> prompt text
+    wrong     (model, ctx) -> list of {path: text} (plausible bad "fixes" the validator must reject)
+    """
+    out = []
+    for i, item in enumerate(plan[:n]):
+        keys = item["keys"]
+        model, ctx = build(rng, i)
+        good = render(model, ctx)
+        bad_model = copy.deepcopy(model)
+        applied, post = [], []
+        for k in keys:
+            info = defects[k][0](bad_model, ctx, rng) or {}
+            if "_post" in info:
+                post.append(info.pop("_post"))
+            applied.append((k, info))
+        bad = render(bad_model, ctx)
+        for p in post:
+            bad = p(bad)
+        texts = [rng.choice(defects[k][1]).format(**{"a": "", "b": "", "c": "", **info}) for k, info in applied]
+        d = item.get("d") or {1: 2, 2: 3, 3: 4, 4: 4, 5: 5}[min(len(keys), 5)]
+        start = dict(bad)
+        start.update(docs(model, ctx))
+        t = devops_task(f"{i + 1:02d}-" + "-".join(keys[:2]), d, prompt(rng, ctx, texts, item.get("vague", False)), start, good, check, hidden(model, ctx), lang=lang,
+                        kind="fix", tags=tags, notes={"defects": keys})
+        ws = [{**good, **w} for w in wrong(model, ctx)]
+        out.append(finish(t, wrong=[{k: v for k, v in w.items() if good.get(k) != v or True} for w in ws]))
+    return out

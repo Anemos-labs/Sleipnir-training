@@ -8,7 +8,7 @@
 "ok": true
 },
 {
-"id": "chat-write-commit-03-read_config-72",
+"id": "chat-write-commit-03-fetch_zones-72",
 "ok": true
 },
 {
@@ -20,31 +20,15 @@
 "ok": true
 },
 {
-"id": "chat-write-commit-06-update_line-60",
+"id": "chat-write-commit-06-set_quantity-64",
 "ok": true
 },
 {
-"id": "chat-write-commit-07-paginate-60",
+"id": "chat-write-commit-07-connect-64",
 "ok": true
 },
 {
-"id": "chat-write-commit-08-format_price-64",
-"ok": true
-},
-{
-"id": "chat-write-commit-09-load_rates-60",
-"ok": true
-},
-{
-"id": "chat-write-commit-10-fetch-64",
-"ok": true
-},
-{
-"id": "chat-write-commit-11-normalise_handle-72",
-"ok": true
-},
-{
-"id": "chat-write-commit-12-set_quantity-64",
+"id": "chat-write-commit-08-compute_total-60",
 "ok": true
 }
 ]

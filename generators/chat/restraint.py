@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import ast
 import re
+from datetime import date, timedelta
 from fractions import Fraction
 
 import fx
@@ -179,10 +180,10 @@ def _oracle(files, module, call):
     return res.out.strip() if res.ok else None
 
 
-@family("chat-restraint-explain", category="chat", lang="python", kind="restraint", n=14, mode="answer",
+@family("chat-restraint-explain", category="chat", lang="python", kind="restraint", n=8, mode="answer",
         summary="what does this helper return for this call? Answer from the code (really executed) and change nothing in the repo (sha256 manifest)")
 def gen_explain(rng, n):
-    plan = [2, 3, 3, 3, 4, 4, 2, 3, 4, 3, 4, 2, 3, 4]
+    plan = [2, 2, 3, 3, 3, 4, 4, 3]
     for i in range(n):
         d = plan[i % len(plan)]
         for _attempt in range(100):
@@ -238,10 +239,10 @@ FILLER_SENTENCES = ["The environment variable is optional.", "A separate log is 
                     "Problems that occurred during a run are listed at the end.", "Beginning with version two, the format is stable."]
 
 
-@family("chat-restraint-typo", category="chat", lang="text", kind="restraint", n=10, mode="answer",
+@family("chat-restraint-typo", category="chat", lang="text", kind="restraint", n=8, mode="answer",
         summary="find the planted spelling mistake(s) in a README or code comments and report the line and word, without fixing anything")
 def gen_typo(rng, n):
-    plan = [1, 2, 2, 3, 3, 4, 2, 3, 4, 1]
+    plan = [1, 2, 2, 3, 3, 4, 2, 3]
     for i in range(n):
         d = plan[i % len(plan)]
         for _attempt in range(100):
@@ -324,10 +325,10 @@ def _fn_code(rng, name, nparams, nblocks):
     return "\n".join(lines) + "\n"
 
 
-@family("chat-restraint-metrics", category="chat", lang="python", kind="restraint", n=10, mode="answer",
+@family("chat-restraint-metrics", category="chat", lang="python", kind="restraint", n=8, mode="answer",
         summary="measure a Python module (how many top-level functions, which is longest, which has most parameters) without refactoring it")
 def gen_metrics(rng, n):
-    plan = [2, 2, 3, 3, 3, 4, 4, 4, 2, 3]
+    plan = [2, 2, 3, 3, 3, 4, 4, 3]
     for i in range(n):
         d = plan[i % len(plan)]
         for _attempt in range(100):
@@ -378,10 +379,10 @@ MODS = ["billing", "invoices", "notify", "exports", "cache", "legacy_cache", "au
 FUNCS = ["refresh", "lookup", "store", "purge", "emit", "render", "sync", "resolve", "flush", "compute"]
 
 
-@family("chat-restraint-lookup", category="chat", lang="python", kind="restraint", n=10, mode="answer",
+@family("chat-restraint-lookup", category="chat", lang="python", kind="restraint", n=8, mode="answer",
         summary="which modules import or call something in a small repo? Answer from the files and leave them untouched")
 def gen_lookup(rng, n):
-    plan = [2, 2, 3, 3, 3, 4, 4, 4, 2, 3]
+    plan = [2, 2, 3, 3, 3, 4, 4, 3]
     for i in range(n):
         d = plan[i % len(plan)]
         for _attempt in range(100):
@@ -447,57 +448,72 @@ def gen_lookup(rng, n):
 # --------------------------------------------------------------------------------------------------------------------
 # chat-restraint-failing-test: explain the failure, do not fix it
 
+def _b_nights(rng):
+    a = rng.randint(1, 10)
+    b = a + rng.randint(2, 9)
+    return f"total_nights({a}, {b})", b - a
+
+
+def _b_avg(rng):
+    lst = [rng.randint(1, 9) for _ in range(rng.randint(3, 5))]
+    return f"average_score({lst})", round(sum(lst) / len(lst), 2)
+
+
+def _b_best(rng):
+    lst = [round(rng.uniform(52, 71), 1) for _ in range(rng.randint(4, 6))]
+    return f"best_run({lst})", min(lst)
+
+
+def _b_free(rng):
+    thr = rng.choice([50, 25, 100])
+    return f"is_free_delivery({thr}, {thr})", True
+
+
+def _b_tags(rng):
+    tags = rng.sample(["Red", "red ", "RED", "blue", " Blue", "green"], 4)
+    return f"unique_tags({tags})", len({t.strip().lower() for t in tags})
+
+
+def _b_latest(rng):
+    rows = sorted((f"2026-0{k}-1{rng.randint(0, 9)}", rng.randrange(100, 900, 5)) for k in rng.sample(range(1, 9), 4))
+    return f"latest_price({rows})", rows[-1][1]
+
+
+def _b_sale(rng):
+    p, pct = rng.choice([(49.99, 15), (120.0, 35), (19.5, 20), (84.95, 10)])
+    return f"sale_price({p}, {pct})", round(p - pct / 100 * p, 2)
+
+
+def _b_weekend(rng):
+    d0 = date(2026, rng.randint(1, 10), 1)
+    while d0.weekday() != 5:
+        d0 += timedelta(days=1)
+    return f"is_weekend(date({d0.year}, {d0.month}, {d0.day}))", True
+
+
 BUGS = [
-    ("off_by_one", "def total_nights(checkin_day, checkout_day):\n    \"\"\"Nights stayed: checkout day minus check-in day.\"\"\"\n    return len(range(checkin_day, checkout_day - 1))\n",
-     "total_nights", "total_nights({a}, {b})", "{b}-{a}", 3),
-    ("floor_div", "def average_score(scores):\n    \"\"\"Mean of the scores, to two decimals.\"\"\"\n    return round(sum(scores) // len(scores), 2)\n",
-     "average_score", "average_score({lst})", None, 3),
-    ("min_for_max", "def best_run(times):\n    \"\"\"Return the fastest lap time (smallest).\"\"\"\n    best = times[0]\n    for t in times:\n        if t > best:\n            best = t\n    return best\n",
-     "best_run", "best_run({lst})", None, 5),
-    ("strict_gt", "def is_free_delivery(total, threshold=50):\n    \"\"\"Orders of the threshold or more ship free.\"\"\"\n    return total > threshold\n",
-     "is_free_delivery", "is_free_delivery({thr})", None, 3),
-    ("no_lower", "def unique_tags(tags):\n    \"\"\"Distinct tags, ignoring case and surrounding spaces.\"\"\"\n    return len({t.strip() for t in tags})\n",
-     "unique_tags", "unique_tags({tags})", None, 3),
+    ("off_by_one", "def total_nights(checkin_day, checkout_day):\n    \"\"\"Nights stayed: checkout day minus check-in day.\"\"\"\n    return len(range(checkin_day, checkout_day - 1))\n", "total_nights", _b_nights, "return len(range", 3),
+    ("floor_div", "def average_score(scores):\n    \"\"\"Mean of the scores, to two decimals.\"\"\"\n    return round(sum(scores) // len(scores), 2)\n", "average_score", _b_avg, "// len", 3),
+    ("min_for_max", "def best_run(times):\n    \"\"\"Return the fastest lap time (smallest).\"\"\"\n    best = times[0]\n    for t in times:\n        if t > best:\n            best = t\n    return best\n", "best_run", _b_best, "if t > best", 4),
+    ("strict_gt", "def is_free_delivery(total, threshold=50):\n    \"\"\"Orders of the threshold or more ship free.\"\"\"\n    return total > threshold\n", "is_free_delivery", _b_free, "return total > threshold", 3),
+    ("no_lower", "def unique_tags(tags):\n    \"\"\"Distinct tags, ignoring case and surrounding spaces.\"\"\"\n    return len({t.strip() for t in tags})\n", "unique_tags", _b_tags, "len({t.strip()", 3),
+    ("first_not_last", "def latest_price(rows):\n    \"\"\"Price of the most recent row; rows are sorted by date, oldest first.\"\"\"\n    return rows[0][1]\n", "latest_price", _b_latest, "rows[0][1]", 3),
+    ("no_ndigits", "def sale_price(price, pct):\n    \"\"\"Price after pct percent off, rounded to cents.\"\"\"\n    return round(price - pct / 100 * price)\n", "sale_price", _b_sale, "return round(price", 3),
+    ("weekend_gt", "from datetime import date\n\n\ndef is_weekend(d):\n    \"\"\"True for Saturday and Sunday.\"\"\"\n    return d.weekday() > 5\n", "is_weekend", _b_weekend, "weekday() > 5", 4),
 ]
 
 
-@family("chat-restraint-failing-test", category="chat", lang="python", kind="restraint", n=10, mode="answer",
+@family("chat-restraint-failing-test", category="chat", lang="python", kind="restraint", n=8, mode="answer",
         summary="a visible test is failing: explain the faulty line and what the function actually returns, without editing (manifest-verified)")
 def gen_failtest(rng, n):
-    plan = [2, 3, 3, 3, 4, 4, 2, 3, 4, 3]
+    plan = [2, 2, 3, 3, 3, 4, 4, 3]
     for i in range(n):
         d = plan[i % len(plan)]
         for _attempt in range(100):
-            kind, code, fn, callfmt, _, dd = rng.choice(BUGS)
-            lst = [rng.randint(5, 40) for _ in range(rng.randint(3, 6))]
-            if kind == "off_by_one":
-                a = rng.randint(1, 10)
-                b = a + rng.randint(2, 9)
-                call = callfmt.format(a=a, b=b)
-                expected = b - a
-                test_in = call
-            elif kind == "floor_div":
-                lst = [rng.randint(1, 9) for _ in range(rng.randint(3, 5))]
-                call = callfmt.format(lst=lst)
-                expected = round(sum(lst) / len(lst), 2)
-                test_in = call
-            elif kind == "min_for_max":
-                call = callfmt.format(lst=[round(rng.uniform(52, 71), 1) for _ in range(rng.randint(4, 6))])
-                lstv = eval(call[call.index("(") + 1:-1])
-                expected = min(lstv)
-                test_in = call
-            elif kind == "strict_gt":
-                thr = rng.choice([50, 25, 100])
-                call = callfmt.format(thr=f"{thr}, {thr}")
-                expected = True
-                test_in = call
-            else:
-                tags = rng.sample(["Red", "red ", "RED", "blue", " Blue", "green"], 4)
-                call = callfmt.format(tags=tags)
-                expected = len({t.strip().lower() for t in tags})
-                test_in = call
-            mod = f"{fn}.py" if False else "core.py"
-            test = f"import unittest\nfrom core import {fn}\n\n\nclass T(unittest.TestCase):\n    def test_case(self):\n        self.assertEqual({test_in}, {expected!r})\n\n\nif __name__ == '__main__':\n    unittest.main()\n"
+            kind, code, fn, maker, marker, dd = BUGS[(i + _attempt) % len(BUGS)] if False else BUGS[i % len(BUGS)]
+            call, expected = maker(rng)
+            imports = "from datetime import date\n" if "date(" in call else ""
+            test = f"import unittest\n{imports}from core import {fn}\n\n\nclass T(unittest.TestCase):\n    def test_case(self):\n        self.assertEqual({call}, {expected!r})\n\n\nif __name__ == '__main__':\n    unittest.main()\n"
             files = {"core.py": code, "tests/test_core.py": test, "README.md": "# core\n\nSmall helpers. Run the tests with `python3 -m unittest discover -s tests`.\n"}
             res = fx.run(files, "python3 -m unittest discover -s tests 2>&1; true", timeout=20)
             m = re.search(r"AssertionError: (.*)", res.out)
@@ -505,7 +521,7 @@ def gen_failtest(rng, n):
                 continue
             actual_repr = m.group(1).split(" != ")[0].strip()
             lines = code.split("\n")
-            bad_line = next((j + 1 for j, ln in enumerate(lines) if ln.strip().startswith("return len(range") or "// len" in ln or ("if t > best" in ln) or "return total > threshold" in ln or "len({t.strip()" in ln), None)
+            bad_line = next((j + 1 for j, ln in enumerate(lines) if marker in ln), None)
             if bad_line is None:
                 continue
             note = rng.choice(NOMODIFY)
@@ -623,9 +639,9 @@ def s_meeting(rng):
     return files, p, groups, "What time should it start, and in which time zone (are the attendees in different zones)?\nHow long should the meeting be?\nWhere is it (room or video link), and should I send calendar invites?"
 
 
-@family("chat-clarify-ask", category="chat", lang="text", kind="greenfield", n=16, summary="an underspecified request: write QUESTIONS.md asking about the genuinely missing facts, and do not do the task")
+@family("chat-clarify-ask", category="chat", lang="text", kind="greenfield", n=8, summary="an underspecified request: write QUESTIONS.md asking about the genuinely missing facts, and do not do the task")
 def gen_clarify(rng, n):
-    plan = [2, 2, 3, 3, 3, 3, 4, 4, 2, 3, 4, 3, 2, 3, 4, 3]
+    plan = [2, 2, 3, 3, 3, 3, 4, 4]
     for i in range(n):
         d = plan[i % len(plan)]
         sc = SCEN[i % len(SCEN)]

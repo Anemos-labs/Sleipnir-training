@@ -170,7 +170,7 @@ def render(rng, names, comps):
     return files
 
 
-@family("research-compat-matrix", category="research", lang="text", kind="lookup", n=16, mode="answer",
+@family("research-compat-matrix", category="research", lang="text", kind="lookup", n=12, mode="answer",
         summary="newest installable release of a component given installed versions of the others, with two-way requirements and yanked releases")
 def gen(rng, n):
     made = 0

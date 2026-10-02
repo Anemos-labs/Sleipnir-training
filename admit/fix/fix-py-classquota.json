@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-classquota-01-swap",
+"ok": true
+},
+{
+"id": "fix-py-classquota-02-negate",
+"ok": true
+},
+{
+"id": "fix-py-classquota-03-cmp",
+"ok": true
+},
+{
+"id": "fix-py-classquota-04-arith",
+"ok": true
+},
+{
+"id": "fix-py-classquota-05-logic",
+"ok": true
+},
+{
+"id": "fix-py-classquota-06-const",
+"ok": true
+},
+{
+"id": "fix-py-classquota-07-delete",
+"ok": true
+},
+{
+"id": "fix-py-classquota-08-negate",
+"ok": true
+},
+{
+"id": "fix-py-classquota-09-arith",
+"ok": true
+},
+{
+"id": "fix-py-classquota-10-const",
+"ok": true
+}
+]

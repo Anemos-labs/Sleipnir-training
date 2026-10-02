@@ -94,10 +94,10 @@ INTROS_PANTRY = [
 ]
 
 
-@family("chat-recipe-scale", category="chat", lang="text", kind="lookup", n=12, mode="answer",
+@family("chat-recipe-scale", category="chat", lang="text", kind="lookup", n=8, mode="answer",
         summary="scale an invented recipe, convert spoons to millilitres, find what a half-empty cupboard allows, plan pack purchases")
 def gen(rng, n):
-    plan = [1, 2, 2, 3, 3, 3, 4, 4, 5, 2, 3, 4]
+    plan = [1, 2, 2, 3, 3, 3, 4, 5]
     for i in range(n):
         d = plan[i % len(plan)]
         for _attempt in range(400):

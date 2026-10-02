@@ -70,6 +70,16 @@ def check_field(name, rule, val):
             raise ValueError(f"{name}: expected a non-empty string")
         v = norm_text(val)
         return any(norm_text(a) in v for a in rule["accept"]) and not any(norm_text(b) in v for b in rule.get("reject", []))
+    if t == "number":
+        if not isinstance(val, (str, int)) or isinstance(val, bool):
+            raise ValueError(f"{name}: expected a string or integer")
+        m = re.search(r"\d+", str(val))
+        return bool(m) and int(m.group(0)) in {int(a) for a in rule["accept"]}
+    if t == "string_all":
+        if not isinstance(val, str) or not val.strip():
+            raise ValueError(f"{name}: expected a non-empty string")
+        v = norm_text(val)
+        return all(norm_text(a) in v for a in rule["accept"])
     if t == "evidence":
         if not isinstance(val, list) or not 1 <= len(val) <= 10 or not all(isinstance(x, str) for x in val):
             raise ValueError(f"{name}: expected a list of 1-10 strings like 'path:line' or 'path:first-last'")

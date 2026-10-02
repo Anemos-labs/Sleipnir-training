@@ -615,7 +615,7 @@ LIB = Lib(
     files={"package.json": PACKAGE_JSON % "initiative", "src/tracker.js": TRACKER, "README.md": README, ".gitignore": "node_modules/\n"},
     visible_tests={"test/basic.test.js": VISIBLE},
     hidden_tests={"test/full.test.js": HIDDEN},
-    mutate=["src/tracker.js"], difficulty=4, tags=["games", "turn-order", "state"],
+    mutate=["src/tracker.js"], difficulty=3, tags=["games", "turn-order", "state"],
     verify=JS_VERIFY,
 )
 

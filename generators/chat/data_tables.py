@@ -53,10 +53,10 @@ def _mk_table(rng, dom, N, d):
     return rows
 
 
-@family("chat-table-read", category="chat", lang="text", kind="lookup", n=16, mode="answer",
+@family("chat-table-read", category="chat", lang="text", kind="lookup", n=8, mode="answer",
         summary="questions about a pasted or attached table: increases, rates per 100, weighted averages, conditional sums, k-th largest, compound filters")
 def gen_table(rng, n):
-    plan = [1, 2, 2, 3, 3, 3, 4, 4, 5, 2, 3, 4, 3, 4, 5, 2]
+    plan = [1, 2, 2, 3, 3, 3, 4, 5]
     for i in range(n):
         d = plan[i % len(plan)]
         for _attempt in range(200):
@@ -192,10 +192,10 @@ def _col_range(c, r1, r2):
     return f"{c}{r1}:{c}{r2}"
 
 
-@family("chat-sheet-formula", category="chat", lang="text", kind="lookup", n=14, mode="answer",
+@family("chat-sheet-formula", category="chat", lang="text", kind="lookup", n=8, mode="answer",
         summary="what does this spreadsheet formula evaluate to on a pasted grid (blanks, text cells, COUNTIF/SUMIF/INDEX-MATCH traps)")
 def gen_sheet(rng, n):
-    plan = [1, 2, 2, 3, 3, 3, 4, 4, 5, 2, 3, 4, 5, 3]
+    plan = [1, 2, 2, 3, 3, 3, 4, 5]
     for i in range(n):
         d = plan[i % len(plan)]
         for _attempt in range(200):
@@ -321,10 +321,10 @@ FN = ["Amelie", "Bastian", "Cosima", "Dagny", "Elio", "Farida", "Gunnar", "Heste
 LN = ["Abernathy", "Brandt", "Castellane", "Dvorak", "Esterhazy", "Fontaine", "Grimaldi", "Halvorsen", "Ibarra", "Jankowski", "Kellerman", "Lacroix", "Montague", "Nygaard", "Ostrander", "Pellegrini", "Quist", "Rasmussen", "Sorensen", "Thackeray"]
 
 
-@family("chat-text-transform", category="chat", lang="text", kind="lookup", n=12, mode="answer",
+@family("chat-text-transform", category="chat", lang="text", kind="lookup", n=8, mode="answer",
         summary="clean, reformat, sort and dedupe a pasted messy list; ask for a count and the n-th result in the new format")
 def gen_text(rng, n):
-    plan = [2, 2, 3, 3, 3, 4, 4, 5, 2, 3, 4, 5]
+    plan = [2, 2, 2, 3, 3, 4, 4, 5]
     for i in range(n):
         d = plan[i % len(plan)]
         for _attempt in range(200):

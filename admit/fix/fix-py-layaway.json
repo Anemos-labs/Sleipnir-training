@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-layaway-01-const",
+"ok": true
+},
+{
+"id": "fix-py-layaway-02-delete",
+"ok": true
+},
+{
+"id": "fix-py-layaway-03-cmp",
+"ok": true
+},
+{
+"id": "fix-py-layaway-04-negate",
+"ok": true
+},
+{
+"id": "fix-py-layaway-05-arith",
+"ok": true
+},
+{
+"id": "fix-py-layaway-06-const",
+"ok": true
+},
+{
+"id": "fix-py-layaway-07-delete",
+"ok": true
+},
+{
+"id": "fix-py-layaway-08-cmp",
+"ok": true
+},
+{
+"id": "fix-py-layaway-09-arith",
+"ok": true
+},
+{
+"id": "fix-py-layaway-10-const",
+"ok": true
+}
+]

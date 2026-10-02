@@ -345,7 +345,8 @@ def _test_failed(lang: str, out: str) -> bool:
     return True
 
 
-def mutation_tasks(lib, rng: random.Random, n: int, max_candidates: int = 34) -> list[Task]:
+def mutation_tasks(lib, rng: random.Random, n: int, max_candidates: int = 0) -> list[Task]:
+    max_candidates = max_candidates or {"javascript": 34, "typescript": 28, "java": 26}.get(lib.lang, 28)
     check_probes(lib)
     base_tree = merged(lib.files, lib.visible_tests, lib.hidden_tests)
     vis_tree = merged(lib.files, lib.visible_tests)
@@ -371,7 +372,7 @@ def mutation_tasks(lib, rng: random.Random, n: int, max_candidates: int = 34) ->
     per_line: dict[tuple, int] = {}
     tried = 0
     for m in cands:
-        if len(good) >= n * 2 or tried >= max_candidates:
+        if len(good) >= n + 4 or tried >= max_candidates:
             break
         if per_op.get(m.op, 0) >= max(2, n // 2 + 1) or per_line.get((m.path, m.line), 0) >= 1 or skip_mutant(m):
             continue

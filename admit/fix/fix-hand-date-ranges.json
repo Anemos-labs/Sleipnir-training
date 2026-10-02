@@ -1,0 +1,50 @@
+[
+{
+"id": "fix-hand-date-ranges-01-overlap-counts-touching-stays",
+"ok": true
+},
+{
+"id": "fix-hand-date-ranges-02-business-days-include-the-end-date",
+"ok": true
+},
+{
+"id": "fix-hand-date-ranges-03-day-not-clamped-to-the-month",
+"ok": true
+},
+{
+"id": "fix-hand-date-ranges-04-renewals-chained-from-the-previous-one",
+"ok": true
+},
+{
+"id": "fix-hand-date-ranges-05-iso-week-with-the-calendar-year",
+"ok": true
+},
+{
+"id": "fix-hand-date-ranges-06-every-holiday-is-subtracted",
+"ok": true
+},
+{
+"id": "fix-hand-date-ranges-07-leap-day-birthday-built-with-replace",
+"ok": true
+},
+{
+"id": "fix-hand-date-ranges-08-quarter-from-month-over-three",
+"ok": true
+},
+{
+"id": "fix-hand-date-ranges-09-days-in-ignores-leap-years",
+"ok": true
+},
+{
+"id": "fix-hand-date-ranges-10-add-months-overflows-into-the-next-month",
+"ok": true
+},
+{
+"id": "fix-hand-date-ranges-11-days-between-truncates-24-hour-blocks",
+"ok": true
+},
+{
+"id": "fix-hand-date-ranges-12-week-start-goes-forward-on-sundays",
+"ok": true
+}
+]

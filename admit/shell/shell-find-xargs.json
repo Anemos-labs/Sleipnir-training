@@ -1,0 +1,46 @@
+[
+{
+"id": "shell-find-xargs-01-files-bigger-than",
+"ok": true
+},
+{
+"id": "shell-find-xargs-02-files-older-than-days",
+"ok": true
+},
+{
+"id": "shell-find-xargs-03-count-files-per-extension",
+"ok": true
+},
+{
+"id": "shell-find-xargs-04-grep-text-files-pruned",
+"ok": true
+},
+{
+"id": "shell-find-xargs-05-make-scripts-executable",
+"ok": true
+},
+{
+"id": "shell-find-xargs-06-list-empty-directories",
+"ok": true
+},
+{
+"id": "shell-find-xargs-07-size-per-top-level-directory",
+"ok": true
+},
+{
+"id": "shell-find-xargs-08-delete-files-from-list",
+"ok": true
+},
+{
+"id": "shell-find-xargs-09-newest-file-per-subdirectory",
+"ok": true
+},
+{
+"id": "shell-find-xargs-10-symlink-audit",
+"ok": true
+},
+{
+"id": "shell-find-xargs-11-fix-delete-tmp-files",
+"ok": true
+}
+]

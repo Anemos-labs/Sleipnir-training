@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-dosegap-01-cmp",
+"ok": true
+},
+{
+"id": "fix-py-dosegap-02-const",
+"ok": true
+},
+{
+"id": "fix-py-dosegap-03-delete",
+"ok": true
+},
+{
+"id": "fix-py-dosegap-04-swap",
+"ok": true
+},
+{
+"id": "fix-py-dosegap-05-negate",
+"ok": true
+},
+{
+"id": "fix-py-dosegap-06-cmp",
+"ok": true
+},
+{
+"id": "fix-py-dosegap-07-const",
+"ok": true
+},
+{
+"id": "fix-py-dosegap-08-delete",
+"ok": true
+},
+{
+"id": "fix-py-dosegap-09-negate",
+"ok": true
+},
+{
+"id": "fix-py-dosegap-10-const",
+"ok": true
+}
+]

@@ -1,10 +1,10 @@
 [
 {
-"id": "recall-prompt-constraint-01-forbid",
+"id": "recall-prompt-constraint-01-width",
 "ok": true
 },
 {
-"id": "recall-prompt-constraint-02-prefix",
+"id": "recall-prompt-constraint-02-upper",
 "ok": true
 },
 {
@@ -12,71 +12,71 @@
 "ok": true
 },
 {
-"id": "recall-prompt-constraint-04-width",
+"id": "recall-prompt-constraint-04-tag",
 "ok": true
 },
 {
-"id": "recall-prompt-constraint-05-tag",
+"id": "recall-prompt-constraint-05-prefix",
 "ok": true
 },
 {
-"id": "recall-prompt-constraint-06-upper",
+"id": "recall-prompt-constraint-06-prefix",
 "ok": true
 },
 {
-"id": "recall-prompt-constraint-07-upper",
+"id": "recall-prompt-constraint-07-date",
 "ok": true
 },
 {
-"id": "recall-prompt-constraint-08-signature",
+"id": "recall-prompt-constraint-08-upper",
 "ok": true
 },
 {
-"id": "recall-prompt-constraint-09-tag",
+"id": "recall-prompt-constraint-09-prefix",
 "ok": true
 },
 {
-"id": "recall-prompt-constraint-10-tag",
+"id": "recall-prompt-constraint-10-thousands",
 "ok": true
 },
 {
-"id": "recall-prompt-constraint-11-signature",
+"id": "recall-prompt-constraint-11-date",
 "ok": true
 },
 {
-"id": "recall-prompt-constraint-12-signature",
+"id": "recall-prompt-constraint-12-date",
 "ok": true
 },
 {
-"id": "recall-prompt-constraint-13-prefix",
+"id": "recall-prompt-constraint-13-signature",
 "ok": true
 },
 {
-"id": "recall-prompt-constraint-14-signature",
+"id": "recall-prompt-constraint-14-date",
 "ok": true
 },
 {
-"id": "recall-prompt-constraint-15-forbid",
+"id": "recall-prompt-constraint-15-tag",
 "ok": true
 },
 {
-"id": "recall-prompt-constraint-16-prefix",
+"id": "recall-prompt-constraint-16-date",
 "ok": true
 },
 {
-"id": "recall-prompt-constraint-17-width",
+"id": "recall-prompt-constraint-17-date",
 "ok": true
 },
 {
-"id": "recall-prompt-constraint-18-forbid",
+"id": "recall-prompt-constraint-18-tag",
 "ok": true
 },
 {
-"id": "recall-prompt-constraint-19-signature",
+"id": "recall-prompt-constraint-19-upper",
 "ok": true
 },
 {
-"id": "recall-prompt-constraint-20-tag",
+"id": "recall-prompt-constraint-20-width",
 "ok": true
 }
 ]

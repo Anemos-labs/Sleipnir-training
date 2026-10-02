@@ -1,0 +1,42 @@
+[
+{
+"id": "debug-perf-profile-01-shopsearch-search",
+"ok": true
+},
+{
+"id": "debug-perf-profile-02-bakeryreports-totals",
+"ok": true
+},
+{
+"id": "debug-perf-profile-03-shopsearch-build",
+"ok": true
+},
+{
+"id": "debug-perf-profile-04-bakeryreports-load",
+"ok": true
+},
+{
+"id": "debug-perf-profile-05-logscan-summary",
+"ok": true
+},
+{
+"id": "debug-perf-profile-06-shopsearch-build",
+"ok": true
+},
+{
+"id": "debug-perf-profile-07-shopsearch-suggest",
+"ok": true
+},
+{
+"id": "debug-perf-profile-08-bakeryreports-latest",
+"ok": true
+},
+{
+"id": "debug-perf-profile-09-bakeryreports-items",
+"ok": true
+},
+{
+"id": "debug-perf-profile-10-logscan-scan",
+"ok": true
+}
+]

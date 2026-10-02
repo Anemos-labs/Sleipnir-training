@@ -6,10 +6,11 @@ silently passing.
 """
 from __future__ import annotations
 
+import random
 import re
 
-from fx import Family, Task, mutation_tasks, register
-from fx.lib import LANG_PREFIX
+from fx import Family, Task, merged, mutation_tasks, register, run
+from fx.lib import LANG_PREFIX, _sanitize_excerpt
 
 # The test binary is built with the address and undefined-behaviour sanitizers: an out-of-bounds access, a signed
 # overflow or a bad shift in a mutant becomes a crisp failure instead of silent garbage. Leak checking is off.
@@ -293,6 +294,7 @@ _PID = re.compile(r"^==\d+==.*$\n?", re.M)
 _NICE_VERIFY = {
     "c": "The test program (`src/*.c` and `tests/*.c` compiled with `gcc -fsanitize=address,undefined`, then run as `./build/tests`)",
     "cpp": "The test program (`src/*.cpp` and `tests/*.cpp` compiled with `g++ -std=c++17 -fsanitize=address,undefined`, then run as `./build/tests`)",
+    "php": "The PHP test script (run with `php` from the repository root)",
 }
 
 
@@ -308,6 +310,42 @@ def _scrub(task: Task, hidden: list[str], verify: str = "", lang: str = "") -> T
     return task.with_(prompt=p) if p != task.prompt else task
 
 
+_PLACEHOLDER = re.compile(r"\{[a-z_]+\}")
+
+
+def _voice(lib, task: Task, hidden: list[str], rng: random.Random) -> Task:
+    """Rewrite a prompt that quotes a failing run ('ci' / 'review' style) in one of several other voices."""
+    r = run(merged(task.start, task.hidden), task.verify, timeout=max(lib.timeout_s, 60))
+    ex = _sanitize_excerpt(r.out, hidden)
+    if not ex:
+        return task
+    lines = [ln.replace("`", "'") for ln in ex.splitlines() if ln.strip()]
+    sal = next((ln for ln in lines if re.search(r"got |want|expected|FAIL", ln)), lines[0]).strip()
+    sal = sal[:170]
+    body = "\n".join(lines[:10])
+    path = sorted(task.solution)[0]
+    t, blurb = lib.title, lib.blurb
+    voices = [
+        ("ticket", f"**Bug: wrong results from {t}**\n\n{blurb}\n\nThe nightly regression run now fails with this output (trimmed):\n\n```\n{body}\n```\n\n"
+                   f"`README.md` is the specification and it has not changed. Please find the cause in the code and fix it."),
+        ("chat", f"{t} broke somewhere between yesterday and today: `{sal}`. The README is still the spec. Can you find what changed in the code and fix it? The tests are off limits."),
+        ("pr", f"While reviewing a refactor I noticed that {t} no longer behaves as `README.md` says. The change is somewhere in `{path}`. The suite reports:\n\n    {sal}\n\n"
+               f"Please fix the implementation (not the tests) so that it matches the specification again."),
+        ("brief", f"Context: {blurb}\n\nProblem: since the last release some checks of {t} fail; the first one reads\n\n    {sal}\n\n"
+                  f"Scope: only the source files may change, the documented behaviour in `README.md` stays as it is, and the public API must not change. Keep the fix small and targeted."),
+        ("terse", f"{t}: `{sal}` - this used to pass and the README has not changed. Please fix the code, not the tests."),
+        ("handover", f"I'm handing over a half-finished investigation. {blurb} One of the checks fails with `{sal}`; I suspect `{path}` but did not get further. "
+                     f"The specification is `README.md`. Please finish the job and fix the defect."),
+    ]
+    name, text = voices[rng.randrange(len(voices))]
+    if _PLACEHOLDER.search(text):
+        name = "spec"
+        text = (f"{blurb} After a recent edit, {t} no longer behaves as `README.md` says in at least one case. The change touched `{path}`. "
+                f"Compare the code with the specification, find the discrepancy and fix it.")
+    tags = [name if x == task.notes.get("style") else x for x in task.tags]
+    return task.with_(prompt=text, tags=tags, notes={**task.notes, "style": name})
+
+
 def add(lib, n: int = 8, max_candidates: int | None = None) -> None:
     """Register ``fix-<c|cpp|php>-<name>`` for ``lib`` (like fx.register_libs, with a bigger candidate budget)."""
     budget = max_candidates or (70 if lib.lang == "php" else 90)
@@ -316,7 +354,12 @@ def add(lib, n: int = 8, max_candidates: int | None = None) -> None:
 
     def gen(rng, count, _lib=lib):
         hidden = sorted(_lib.hidden_tests)
-        return [_scrub(t, hidden, _lib.verify, _lib.lang) for t in mutation_tasks(_lib, rng, count, max_candidates=budget)]
+        out = []
+        for t in mutation_tasks(_lib, rng, count, max_candidates=budget):
+            if t.notes.get("style") in ("ci", "review"):
+                t = _voice(_lib, t, hidden, random.Random(f"{_lib.name}/{t.slug}"))
+            out.append(_scrub(t, hidden, _lib.verify, _lib.lang))
+        return out
 
     gen.__module__ = lib.__class__.__module__
     register(fam, gen)

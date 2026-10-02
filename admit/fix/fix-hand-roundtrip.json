@@ -1,0 +1,50 @@
+[
+{
+"id": "fix-hand-roundtrip-01-tuples-become-lists",
+"ok": true
+},
+{
+"id": "fix-hand-roundtrip-02-dict-keys-become-text",
+"ok": true
+},
+{
+"id": "fix-hand-roundtrip-03-decimals-go-through-float",
+"ok": true
+},
+{
+"id": "fix-hand-roundtrip-04-datetimes-lose-zone-and-microseconds",
+"ok": true
+},
+{
+"id": "fix-hand-roundtrip-05-non-finite-floats-unsupported",
+"ok": true
+},
+{
+"id": "fix-hand-roundtrip-06-user-dicts-can-forge-tags",
+"ok": true
+},
+{
+"id": "fix-hand-roundtrip-07-text-keys-and-float-decimals",
+"ok": true
+},
+{
+"id": "fix-hand-roundtrip-08-empty-slices-and-maps-omitted",
+"ok": true
+},
+{
+"id": "fix-hand-roundtrip-09-money-marshals-through-a-pointer",
+"ok": true
+},
+{
+"id": "fix-hand-roundtrip-10-join-time-forced-to-utc",
+"ok": true
+},
+{
+"id": "fix-hand-roundtrip-11-extra-numbers-are-floats",
+"ok": true
+},
+{
+"id": "fix-hand-roundtrip-12-unknown-fields-rejected",
+"ok": true
+}
+]

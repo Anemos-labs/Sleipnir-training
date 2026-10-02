@@ -1,0 +1,34 @@
+[
+{
+"id": "security-zip-slip-01-theme-upload",
+"ok": true
+},
+{
+"id": "security-zip-slip-02-tar-import",
+"ok": true
+},
+{
+"id": "security-zip-slip-03-bundle-format",
+"ok": true
+},
+{
+"id": "security-zip-slip-04-dotdot-filter",
+"ok": true
+},
+{
+"id": "security-zip-slip-05-zip-symlinks",
+"ok": true
+},
+{
+"id": "security-zip-slip-06-zip-bomb",
+"ok": true
+},
+{
+"id": "security-zip-slip-07-plugin-manifest",
+"ok": true
+},
+{
+"id": "security-zip-slip-08-nested-archives",
+"ok": true
+}
+]

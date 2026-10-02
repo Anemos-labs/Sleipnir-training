@@ -607,9 +607,8 @@ def _b_prompts():
         "even if it was completed, so work is repeated every time the lease length passes. `reap` should only touch claimed jobs."
     )
     p["boundary"] = (
-        "The lease is meant to be valid for `now < lease_until`; with `now == lease_until` the job counts as expired. Our "
-        "reaper skips jobs at exactly that instant and the worker's `complete` is still accepted, then the next tick re-queues the "
-        "job it just finished. Please bring `reap` in line with the README."
+        "A lease is valid while `now < lease_until` (README). At exactly `now == lease_until` the reaper still leaves the job "
+        "with its worker, so the job is picked up one tick late. `Board.reap` in `jobboard/board.py` should treat that instant as expired."
     )
     p["empty-claim"] = (
         "When the queue is empty, the first worker to ask gets `None` and from then on every other worker hangs (the harness says "
@@ -635,9 +634,9 @@ def _base_b() -> Base:
     owner_bug = ("        if job.state != \"claimed\" or job.owner != worker or now >= job.lease_until:\n", "        if job.state != \"claimed\" or now >= job.lease_until:\n")
     bugs = [
         Bug("claim-without-lock", 3, {bd: [claim_race]}, P["claim-race"]),
-        Bug("complete-ignores-owner", 3, {bd: [owner_bug]}, P["owner"]),
-        Bug("reap-requeues-done-jobs", 3, {bd: [("            if job.state == \"claimed\" and now >= job.lease_until:\n", "            if now >= job.lease_until:\n")]}, P["reap-done"]),
-        Bug("reap-boundary-exclusive", 2, {bd: [("            if job.state == \"claimed\" and now >= job.lease_until:\n", "            if job.state == \"claimed\" and now > job.lease_until:\n")]}, P["boundary"]),
+        Bug("complete-ignores-owner", 2, {bd: [owner_bug]}, P["owner"]),
+        Bug("reap-requeues-done-jobs", 2, {bd: [("            if job.state == \"claimed\" and now >= job.lease_until:\n", "            if now >= job.lease_until:\n")]}, P["reap-done"]),
+        Bug("reap-boundary-exclusive", 1, {bd: [("            if job.state == \"claimed\" and now >= job.lease_until:\n", "            if job.state == \"claimed\" and now > job.lease_until:\n")]}, P["boundary"]),
         Bug("empty-claim-keeps-lock", 3, {bd: [empty_leak]}, P["empty-claim"]),
         Bug("claim-race-and-stale-owner", 5, {bd: [claim_race, owner_bug]}, P["two"]),
     ]

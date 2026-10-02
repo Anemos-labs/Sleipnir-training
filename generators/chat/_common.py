@@ -44,10 +44,10 @@ _CONTRACT = {"don't": "dont", "can't": "cant", "it's": "its", "I'm": "im", "I've
              "didn't": "didnt", "won't": "wont", "that's": "thats", "I'll": "ill", "I'd": "id", "you're": "youre"}
 
 OPENERS = {
-    "terse": ["", "", "", "quick one:", "question:", "hey,"],
-    "chatty": ["Hi there!", "Hey!", "Hello :)", "Good morning!", "Hi,", "Hey, hope your day's going ok.", "Evening!", "Hiya,"],
+    "terse": ["", "", "", "quick one:", "question:", "hey,", "random question:", "ok,"],
+    "chatty": ["Hi there!", "Hey!", "Hello :)", "Good morning!", "Hi,", "Hey, hope your day's going ok.", "Evening!", "Hiya,", "Hello hello!", "Hi! Hope the week is treating you kindly."],
     "formal": ["Hello,", "Good afternoon,", "Hello, and thank you for your help.", "Dear assistant,", "Hello there,", "Greetings,"],
-    "hurried": ["hey", "ok so", "hi quick q", "yo", "hey sorry in a rush,", "ok", ""],
+    "hurried": ["hey", "ok so", "hi quick q", "yo", "hey sorry in a rush,", "ok", "", "pls help,", "ugh ok,"],
     "rambling": ["Hi!! Ok so,", "Hey, so this is going to sound silly but", "Hello, bear with me,", "Morning. So,", "Hi, long story short (it is not short):",
                  "Right, so"],
 }
@@ -164,6 +164,8 @@ def chat(rng, intro: str, ask: str = "", data: str | None = None, reg: str | Non
             if (w0 and w0.group(0) not in ("I", "I'm", "I've", "I'd", "I'll") and w0.group(0) not in FIRST and w0.group(0) not in LAST
                     and not (len(w0.group(0)) > 1 and w0.group(0).isupper()) and not re.match(r"[A-Z][a-z]*[A-Z]", ip)):
                 ip = ip[0].lower() + ip[1:]
+        if (ask or data is not None or spec) and ip and not ip.rstrip().endswith((".", "!", "?", ":", ")", '"', "`")):
+            ip = ip.rstrip() + "."
         body.append(ip)
     use_tangent = tangent if tangent is not None else (reg in ("chatty", "rambling") and rng.random() < 0.65)
     t = ""
@@ -291,6 +293,9 @@ def ordinal(n: int) -> str:
 def answer_task(slug: str, prompt: str, difficulty: int, contains: list[str], gold: str, *, start: dict | None = None,
                 fold: bool = False, tags=(), notes: dict | None = None, **kw) -> Task:
     """An answer-mode task. ``start`` defaults to a placeholder file (taskgen needs a non-empty start tree)."""
+    skip_tags = {"logic", "puzzle", "restraint", "permissions", "bits"}
+    if "thousands separators" not in prompt and not (skip_tags & set(tags)) and any(re.fullmatch(r"\d{4,}(\.\d+)?", c) for c in contains):
+        prompt = prompt.rstrip("\n") + "\n(Plain digits please, no thousands separators.)"
     return Task(
         slug=slug, prompt=prompt, difficulty=difficulty, start=start if start is not None else {".gitkeep": ""},
         answer={"contains": list(contains), "fold": fold}, gold_answer=gold, tags=list(tags), notes=notes or {}, **kw)

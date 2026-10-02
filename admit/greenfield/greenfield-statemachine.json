@@ -1,0 +1,50 @@
+[
+{
+"id": "greenfield-statemachine-01-ruby-desk-l2",
+"ok": true
+},
+{
+"id": "greenfield-statemachine-02-java-tide-clock-l2",
+"ok": true
+},
+{
+"id": "greenfield-statemachine-03-python-desk-l3",
+"ok": true
+},
+{
+"id": "greenfield-statemachine-04-javascript-controller-l3",
+"ok": true
+},
+{
+"id": "greenfield-statemachine-05-ruby-lamp-l3",
+"ok": true
+},
+{
+"id": "greenfield-statemachine-06-java-kettle-l4",
+"ok": true
+},
+{
+"id": "greenfield-statemachine-07-javascript-desk-l4",
+"ok": true
+},
+{
+"id": "greenfield-statemachine-08-python-lamp-l4",
+"ok": true
+},
+{
+"id": "greenfield-statemachine-09-ruby-desk-l3",
+"ok": true
+},
+{
+"id": "greenfield-statemachine-10-java-desk-l4",
+"ok": true
+},
+{
+"id": "greenfield-statemachine-11-javascript-controller-l2",
+"ok": true
+},
+{
+"id": "greenfield-statemachine-12-ruby-lamp-l4",
+"ok": true
+}
+]

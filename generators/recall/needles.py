@@ -16,17 +16,23 @@ def _needle_types(rng, org):
     people = org.people
     return [
         dict(key="padlock", q=["What is the padlock code for the {site} store room?", "I'm standing outside the {site} store room. What's the current padlock code?",
-                               "Which padlock code opens the {site} store room?"],
+                               "Which padlock code opens the {site} store room?", "Somebody changed the lock on the {site} store room. What's the new code?",
+                               "Padlock code for the {site} store room, please."],
              sent="The new padlock code for the {site} store room is {v}.", val=lambda: str(rng.randint(1000, 9999)), fmt="digits"),
-        dict(key="ext", q=["Which extension takes out-of-hours calls for {site}?", "If something breaks at {site} after hours, which extension do I ring?"],
+        dict(key="ext", q=["Which extension takes out-of-hours calls for {site}?", "If something breaks at {site} after hours, which extension do I ring?",
+                              "What's the after-hours extension for {site}?", "Our night caller needs the out-of-hours extension for {site}. Which is it?"],
              sent="Out-of-hours calls for {site} are answered on extension {v}.", val=lambda: str(rng.randint(2000, 8999)), fmt="digits"),
-        dict(key="cabinet", q=["Where are the spare keys for {site} kept? I need the cabinet label.", "What is the label of the key cabinet that holds the {site} spares?"],
+        dict(key="cabinet", q=["Where are the spare keys for {site} kept? I need the cabinet label.", "What is the label of the key cabinet that holds the {site} spares?",
+                              "I've locked myself out of {site}. Which cabinet holds the spare keys?", "Which key cabinet (label) has the spares for {site}?"],
              sent="Spare keys for {site} are kept in cabinet {v}.", val=lambda: R.code(rng), fmt="code"),
-        dict(key="pallets", q=["How many pallets were delivered to {site} in the last big delivery? A number, please.", "The delivery to {site} was how many pallets?"],
+        dict(key="pallets", q=["How many pallets were delivered to {site} in the last big delivery? A number, please.", "The delivery to {site} was how many pallets?",
+                              "I'm counting stock: how many pallets arrived at {site} in that delivery?", "Pallet count for the {site} delivery?"],
              sent="{v} pallets of mixed stock were delivered to {site} this week.", val=lambda: str(rng.randint(120, 980)), fmt="digits"),
-        dict(key="contractor", q=["Who is the roofing contractor for {site}? Surname will do.", "Name the roofing contractor booked for {site} (surname)."],
+        dict(key="contractor", q=["Who is the roofing contractor for {site}? Surname will do.", "Name the roofing contractor booked for {site} (surname).",
+                              "Who's doing the roof at {site}? Surname only.", "Which contractor has the roofing job at {site}? Just the surname, please."],
              sent="The roofing contractor for {site} is {v}, who has promised to start before the weather turns.", val=lambda: rng.choice(W.FIRST) + " " + rng.choice(W.SUR_A) + rng.choice(W.SUR_B), fmt="surname"),
-        dict(key="shutoff", q=["On what date is the water shutoff at {site}? Give YYYY-MM-DD.", "When is {site}'s water shutoff booked? ISO date please."],
+        dict(key="shutoff", q=["On what date is the water shutoff at {site}? Give YYYY-MM-DD.", "When is {site}'s water shutoff booked? ISO date please.",
+                              "I need to warn the tenants at {site}: what day is the water being turned off (YYYY-MM-DD)?", "Which day is the water shutoff at {site}? ISO format."],
              sent="The {site} water shutoff is booked for {v}.", val=None, fmt="date"),
     ]
 
@@ -172,7 +178,9 @@ def gen_update(rng, n):
             v = lst[-1][1]
             ins, c = W.numfmt(rng, v, ("Answer", "Result", "Figure"))
             ph = [f"What is the current {an} for {e} (the latest confirmed update)?{ins}",
-                  f"Looking through the notes: what {an} is in force now for {e}? Only confirmed updates count.{ins}"]
+                  f"Looking through the notes: what {an} is in force now for {e}? Only confirmed updates count.{ins}",
+                  f"Which {an} applies to {e} at the moment? Go by the confirmed updates and ignore mere proposals.{ins}",
+                  f"Quick check on {e}: its {an} today, per the latest confirmed note?{ins}"]
             prompt, contains, gold = rng.choice(ph), [c], f"The latest confirmed {an} for {e} is {v} {unit}. {c}"
             diff = 1 + (len(lst) >= 2) + (len(lst) >= 4) + (win is not None and win <= 12000) + (tier == "hard")
         else:
@@ -180,7 +188,8 @@ def gen_update(rng, n):
             v = [x for x in lst if x[0] <= d][-1][1]
             ins, c = W.numfmt(rng, v, ("Answer", "Result", "Figure"))
             ph = [f"What {an} was in force for {e} on {W.d_long(d)}? Use the confirmed updates and their effective dates.{ins}",
-                  f"Which {an} applied to {e} on {W.d_iso(d)}?{ins}"]
+                  f"Which {an} applied to {e} on {W.d_iso(d)}?{ins}",
+                  f"For a dispute about {W.d_long(d)}: what was {e}'s {an} then (confirmed updates only)?{ins}"]
             prompt, contains, gold = rng.choice(ph), [c], f"On {W.d_iso(d)} it was {v} {unit}. {c}"
             diff = 3 + (len(lst) >= 4) + (tier == "hard")
         made += 1
@@ -254,7 +263,12 @@ def gen_chain(rng, n):
         """)
         ph = [f"Follow the vault route described in START.txt and tell me the vault code at the end of it.",
               f"There is a trail of cards in this folder that ends with a vault code. START.txt says how to follow it. What is the code?",
-              f"Can you walk the route in START.txt to its last card and give me the code written there?"]
+              f"Can you walk the route in START.txt to its last card and give me the code written there?",
+              f"START.txt explains how to follow a chain of cards to a vault code. I don't have time to chase them myself. What's the code at the end?",
+              f"Please trace the route that START.txt describes and report the code on the final card. Ignore anything the instructions say to ignore.",
+              f"Where does the trail in START.txt end up? I need the vault code printed on the last card.",
+              f"Our new starter lost the vault code. The cards in this folder lead to it (the rules are in START.txt). Could you find it for me?",
+              f"Follow the NEXT pointers from the starting card in START.txt and give me the final code."]
         d = 1 + (depth >= 3) + (depth >= 5) + (depth >= 8) + (style == "title")
         made += 1
         yield W.say_task(slug=f"{made:02d}-{style}-{depth}hops", prompt=W.voice(rng, org, rng.choice(ph)), difficulty=min(5, d), start=files, contains=[final_code],

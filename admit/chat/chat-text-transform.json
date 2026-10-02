@@ -8,19 +8,19 @@
 "ok": true
 },
 {
-"id": "chat-text-transform-03-dates",
+"id": "chat-text-transform-03-names",
 "ok": true
 },
 {
-"id": "chat-text-transform-04-phones",
+"id": "chat-text-transform-04-dates",
 "ok": true
 },
 {
-"id": "chat-text-transform-05-dates",
+"id": "chat-text-transform-05-names_sort",
 "ok": true
 },
 {
-"id": "chat-text-transform-06-phones_dedupe",
+"id": "chat-text-transform-06-names_sort2",
 "ok": true
 },
 {
@@ -29,22 +29,6 @@
 },
 {
 "id": "chat-text-transform-08-contacts",
-"ok": true
-},
-{
-"id": "chat-text-transform-09-dates",
-"ok": true
-},
-{
-"id": "chat-text-transform-10-phones",
-"ok": true
-},
-{
-"id": "chat-text-transform-11-phones_dedupe",
-"ok": true
-},
-{
-"id": "chat-text-transform-12-contacts",
 "ok": true
 }
 ]

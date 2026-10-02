@@ -342,10 +342,10 @@ def run_js(code):
     return r
 
 
-@family("chat-code-output", category="chat", lang="mixed", kind="lookup", n=24, mode="answer",
+@family("chat-code-output", category="chat", lang="mixed", kind="lookup", n=12, mode="answer",
         summary="what does this short Python or JavaScript snippet print? (output produced by really running it; several traps per snippet at higher levels)")
 def gen_code(rng, n):
-    plan = [1, 1, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 5, 5, 1, 2, 3, 3, 4, 2, 3, 4, 5, 2]
+    plan = [1, 1, 2, 2, 3, 3, 3, 4, 4, 5, 2, 3]
     for i in range(n):
         d = plan[i % len(plan)]
         for _attempt in range(100):

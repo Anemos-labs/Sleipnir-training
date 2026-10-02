@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-cupdraw-01-const",
+"ok": true
+},
+{
+"id": "fix-py-cupdraw-02-delete",
+"ok": true
+},
+{
+"id": "fix-py-cupdraw-03-negate",
+"ok": true
+},
+{
+"id": "fix-py-cupdraw-04-arith",
+"ok": true
+},
+{
+"id": "fix-py-cupdraw-05-cmp",
+"ok": true
+},
+{
+"id": "fix-py-cupdraw-06-const",
+"ok": true
+},
+{
+"id": "fix-py-cupdraw-07-delete",
+"ok": true
+},
+{
+"id": "fix-py-cupdraw-08-negate",
+"ok": true
+},
+{
+"id": "fix-py-cupdraw-09-cmp",
+"ok": true
+},
+{
+"id": "fix-py-cupdraw-10-const",
+"ok": true
+}
+]

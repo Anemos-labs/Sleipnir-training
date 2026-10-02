@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-chordbook-01-cmp",
+"ok": true
+},
+{
+"id": "fix-py-chordbook-02-arith",
+"ok": true
+},
+{
+"id": "fix-py-chordbook-03-const",
+"ok": true
+},
+{
+"id": "fix-py-chordbook-04-delete",
+"ok": true
+},
+{
+"id": "fix-py-chordbook-05-negate",
+"ok": true
+},
+{
+"id": "fix-py-chordbook-06-cmp",
+"ok": true
+},
+{
+"id": "fix-py-chordbook-07-arith",
+"ok": true
+},
+{
+"id": "fix-py-chordbook-08-const",
+"ok": true
+},
+{
+"id": "fix-py-chordbook-09-delete",
+"ok": true
+},
+{
+"id": "fix-py-chordbook-10-negate",
+"ok": true
+}
+]

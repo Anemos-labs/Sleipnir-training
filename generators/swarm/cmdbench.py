@@ -570,10 +570,10 @@ def load_run(src):
     return ns["run"]
 
 
-@family("swarm-registry-merge", category="swarm", lang="python", kind="feature", n=12,
+@family("swarm-registry-merge", category="swarm", lang="python", kind="feature", n=14,
         summary="k new CLI commands that must each be implemented and registered in three shared files (registry, docs table, changelog)")
 def registry_merge(rng, n):
-    counts = [3, 4, 4, 5, 3, 5, 6, 4, 6, 5, 3, 7]
+    counts = [3, 4, 4, 5, 3, 5, 6, 4, 6, 5, 3, 7, 2, 2]
     tools = [("toolbench", "Toolbench", "small text filters for the lab's report pipeline"), ("scrivener", "Scrivener", "plain-text cleanup commands for a print shop"),
              ("quillbox", "Quillbox", "command line helpers for a poetry-journal's editors"), ("inkwell", "Inkwell", "text utilities for a small newsroom")]
     for i in range(n):
@@ -675,7 +675,7 @@ def registry_merge(rng, n):
             f"Implement the new commands described in SPECS.md and wire each one up completely (registry line, docs row, changelog bullet). "
             f"Existing entries must stay exactly as they are.",
         ]
-        d = 3 if k <= 3 else 4 if k <= 5 else 5
+        d = 2 if k <= 2 else 3 if k <= 3 else 4 if k <= 5 else 5
         yield Task(
             slug=f"{i + 1:02d}-k{k}-{new_names[0]}",
             prompt=voices[i % len(voices)], difficulty=d,

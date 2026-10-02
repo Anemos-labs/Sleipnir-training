@@ -62,6 +62,7 @@ class Module:
     scenario_path: str = "scenario.py"
     blurb: str = ""  # one sentence about the project, for prompts
     difficulty: int = 2  # how hard the file is to read
+    meta: dict = field(default_factory=dict)  # free-form extras of a task family (e.g. {"stages": {slot: dump file}})
 
     def changed(self) -> list:
         """Slots that belong to the change under review (all of them for a new file)."""

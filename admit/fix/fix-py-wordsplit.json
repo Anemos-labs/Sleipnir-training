@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-wordsplit-01-logic",
+"ok": true
+},
+{
+"id": "fix-py-wordsplit-02-arith",
+"ok": true
+},
+{
+"id": "fix-py-wordsplit-03-swap",
+"ok": true
+},
+{
+"id": "fix-py-wordsplit-04-cmp",
+"ok": true
+},
+{
+"id": "fix-py-wordsplit-05-negate",
+"ok": true
+},
+{
+"id": "fix-py-wordsplit-06-const",
+"ok": true
+},
+{
+"id": "fix-py-wordsplit-07-delete",
+"ok": true
+},
+{
+"id": "fix-py-wordsplit-08-logic",
+"ok": true
+},
+{
+"id": "fix-py-wordsplit-09-arith",
+"ok": true
+},
+{
+"id": "fix-py-wordsplit-10-swap",
+"ok": true
+}
+]

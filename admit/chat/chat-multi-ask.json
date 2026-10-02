@@ -8,7 +8,7 @@
 "ok": true
 },
 {
-"id": "chat-multi-ask-03-3q-inline",
+"id": "chat-multi-ask-03-3q-numbered",
 "ok": true
 },
 {
@@ -16,27 +16,19 @@
 "ok": true
 },
 {
-"id": "chat-multi-ask-05-4q-inline",
+"id": "chat-multi-ask-05-4q-numbered",
 "ok": true
 },
 {
-"id": "chat-multi-ask-06-4q-inline",
+"id": "chat-multi-ask-06-4q-numbered",
 "ok": true
 },
 {
-"id": "chat-multi-ask-07-5q-numbered",
+"id": "chat-multi-ask-07-5q-inline",
 "ok": true
 },
 {
-"id": "chat-multi-ask-08-5q-inline",
-"ok": true
-},
-{
-"id": "chat-multi-ask-09-3q-numbered",
-"ok": true
-},
-{
-"id": "chat-multi-ask-10-4q-inline",
+"id": "chat-multi-ask-08-3q-inline",
 "ok": true
 }
 ]

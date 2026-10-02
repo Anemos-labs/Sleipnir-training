@@ -38,5 +38,13 @@
 {
 "id": "swarm-data-shards-10-k7-cents",
 "ok": true
+},
+{
+"id": "swarm-data-shards-11-k2-cents",
+"ok": true
+},
+{
+"id": "swarm-data-shards-12-k2-currency",
+"ok": true
 }
 ]

@@ -48,10 +48,10 @@ PIPES = [
 ]
 
 
-@family("chat-shell-pipeline", category="chat", lang="bash", kind="lookup", n=14, mode="answer",
+@family("chat-shell-pipeline", category="chat", lang="bash", kind="lookup", n=8, mode="answer",
         summary="what does this shell pipeline print for the attached file? (computed by running it with LC_ALL=C)")
 def gen_pipe(rng, n):
-    plan = [1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 1, 3]
+    plan = [1, 2, 2, 3, 3, 3, 4, 5]
     for i in range(n):
         d = plan[i % len(plan)]
         for _attempt in range(100):
@@ -78,10 +78,10 @@ def gen_pipe(rng, n):
                                 f"Can you tell me what this pipeline prints for {fname} (it's in the working directory)? It's from a runbook and I don't want surprises.",
                                 f"explain-by-example please: {fname} is attached, here is the command. what comes out?"])
             ask = rng.choice(["What is the exact output? If it prints several lines, give them all in order.", "What does it print? Exact output please, all lines.",
-                              "Give me the output, every line. (Locale is C so sorting is plain byte order.)"])
+                              "Give me the output, every line."])
             if "uniq -c" in tmpl:
                 ask += " (Don't worry about the leading spaces that uniq -c adds.)"
-            prompt = C.chat(rng, intro, ask, f"```sh\n{tmpl}\n```", C.register_for(rng))
+            prompt = C.chat(rng, intro, ask, f"```sh\nexport LC_ALL=C\n{tmpl}\n```", C.register_for(rng))
             keep = C.unseen(prompt, contains, False, min_keep=len(contains))
             if keep is None:
                 continue
@@ -101,10 +101,10 @@ PHRASES = ["order #4821 shipped to Ghent", "order #77 cancelled", "order #12345 
            "return of order #4821", "order # shipped to Nowhere", "order #4821 shipped to ghent"]
 
 
-@family("chat-regex-match", category="chat", lang="text", kind="lookup", n=14, mode="answer",
+@family("chat-regex-match", category="chat", lang="text", kind="lookup", n=8, mode="answer",
         summary="which lines does this regex match, what does re.sub produce, what does a lazy or greedy group capture (python re is the oracle)")
 def gen_regex(rng, n):
-    plan = [2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 2, 3, 4, 5]
+    plan = [2, 2, 2, 3, 3, 4, 4, 5]
     for i in range(n):
         d = plan[i % len(plan)]
         for _attempt in range(100):
@@ -132,7 +132,7 @@ def gen_regex(rng, n):
                 ask = "What exactly does `re.sub(pattern, repl, text)` return?"
                 contains = [out]
                 gold = out
-                data = f"text = {text!r}\npattern = r{pat!r}\nrepl = r{repl!r}"
+                data = f"text = {text!r}\npattern = r'{pat}'\nrepl = r'{repl}'"
                 mid = ""
             elif kind == "greedy":
                 s = rng.choice(["<b>alpha</b> and <b>beta</b> and <i>gamma</i>", "[1,2][3,4,5][6]", "name='ann' role='dev' team='ops'", "start-a-end ... start-b-end ... start-c-end"])
@@ -142,7 +142,7 @@ def gen_regex(rng, n):
                 ask = "With `m = re.search(pattern, s)`: how many characters long is `m.group(1)`, how many is `m.group(0)`, and what is `m.end()`?"
                 contains = [str(len(m.group(1))), str(len(m.group(0))), str(m.end())]
                 gold = f"len(group(1)) = {len(m.group(1))}; len(group(0)) = {len(m.group(0))}; end = {m.end()} (group(1) = {m.group(1)!r})"
-                data = f"s = {s!r}\npattern = r{pat!r}"
+                data = f"s = {s!r}\npattern = r'{pat}'"
                 mid = ""
             elif kind in ("findall", "findall_nested"):
                 s = rng.choice(["a1b22c333d4444", "tel 020-7946-0958, alt 0161-496-0000", "v1.2.3 v10.20.30 v4.5", "x=10;y=-3;z=7;w=-12"])
@@ -153,7 +153,7 @@ def gen_regex(rng, n):
                 ask = "How many items does `re.findall(pattern, s)` return, and what is the sum of all the captured numbers if I convert every captured piece with int()?"
                 contains = [str(len(res_)), str(sum(flat))]
                 gold = f"{len(res_)} items ({res_}); sum {sum(flat)}"
-                data = f"s = {s!r}\npattern = r{pat!r}"
+                data = f"s = {s!r}\npattern = r'{pat}'"
                 mid = ""
             else:  # sub_backref
                 s = rng.choice(["the the cat sat on on the mat", "paid paid twice and then then thrice", "go go go now now"])
@@ -163,7 +163,7 @@ def gen_regex(rng, n):
                 cnt = re.subn(pat, r"\1", s)[1]
                 contains = [out, str(cnt)]
                 gold = f"{out!r}; {cnt} substitutions"
-                data = f"s = {s!r}\npattern = r{pat!r}"
+                data = f"s = {s!r}\npattern = r'{pat}'"
                 mid = ""
             intro = rng.choice(["I keep misjudging what my regexes will do, so I'd rather ask before shipping this.", "regex sanity check for a log-scrubbing script, python 3.11",
                                 "Our linter regex is behaving oddly and I want to understand it by hand first."])
@@ -181,10 +181,10 @@ def gen_regex(rng, n):
 # chat-subnet-math
 
 
-@family("chat-subnet-math", category="chat", lang="text", kind="lookup", n=14, mode="answer",
+@family("chat-subnet-math", category="chat", lang="text", kind="lookup", n=8, mode="answer",
         summary="IPv4 subnet arithmetic: network/broadcast, usable hosts, same-subnet checks, sizing, splitting, summarising (ipaddress is the oracle)")
 def gen_subnet(rng, n):
-    plan = [1, 2, 2, 3, 3, 3, 4, 4, 5, 2, 3, 4, 5, 3]
+    plan = [1, 2, 2, 3, 3, 3, 4, 5]
     for i in range(n):
         d = plan[i % len(plan)]
         for _attempt in range(100):
@@ -289,10 +289,10 @@ def gen_subnet(rng, n):
 # chat-file-modes
 
 
-@family("chat-file-modes", category="chat", lang="bash", kind="lookup", n=12, mode="answer",
+@family("chat-file-modes", category="chat", lang="bash", kind="lookup", n=8, mode="answer",
         summary="what permissions does ls show after this umask / chmod sequence (run for real with chmod and stat)")
 def gen_modes(rng, n):
-    plan = [2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 3, 4]
+    plan = [2, 2, 2, 3, 3, 4, 4, 5]
     for i in range(n):
         d = plan[i % len(plan)]
         for _attempt in range(100):
@@ -347,10 +347,10 @@ DEVICES = [("pump controller", ["RUN", "FAULT", "LOW_LEVEL", "OVERTEMP", "MANUAL
            ("beehive monitor", ["WEIGHT_OK", "TEMP_HIGH", "HUMID_HIGH", "LID", "BATT_LOW", "TX", "SWARM", "CAL"])]
 
 
-@family("chat-bitflags", category="chat", lang="text", kind="lookup", n=12, mode="answer",
+@family("chat-bitflags", category="chat", lang="text", kind="lookup", n=8, mode="answer",
         summary="decode and edit a status byte of an invented device: which flags are set, what is the byte after set/clear/toggle operations")
 def gen_bits(rng, n):
-    plan = [1, 2, 2, 3, 3, 4, 4, 5, 2, 3, 4, 5]
+    plan = [1, 2, 2, 3, 3, 3, 4, 5]
     for i in range(n):
         d = plan[i % len(plan)]
         for _attempt in range(100):
@@ -448,10 +448,10 @@ def _sat(v, rule):
     return True
 
 
-@family("chat-version-range", category="chat", lang="text", kind="lookup", n=12, mode="answer",
+@family("chat-version-range", category="chat", lang="text", kind="lookup", n=8, mode="answer",
         summary="which published versions (in an attached list) satisfy a constraint written in a defined mini-syntax: caret, tilde, comparisons, exclusions")
 def gen_vrange(rng, n):
-    plan = [2, 2, 3, 3, 3, 4, 4, 5, 2, 3, 4, 5]
+    plan = [2, 2, 2, 3, 3, 4, 4, 5]
     for i in range(n):
         d = plan[i % len(plan)]
         for _attempt in range(100):

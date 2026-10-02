@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-shiftroster-01-swap",
+"ok": true
+},
+{
+"id": "fix-py-shiftroster-02-const",
+"ok": true
+},
+{
+"id": "fix-py-shiftroster-03-negate",
+"ok": true
+},
+{
+"id": "fix-py-shiftroster-04-arith",
+"ok": true
+},
+{
+"id": "fix-py-shiftroster-05-cmp",
+"ok": true
+},
+{
+"id": "fix-py-shiftroster-06-delete",
+"ok": true
+},
+{
+"id": "fix-py-shiftroster-07-const",
+"ok": true
+},
+{
+"id": "fix-py-shiftroster-08-arith",
+"ok": true
+},
+{
+"id": "fix-py-shiftroster-09-cmp",
+"ok": true
+},
+{
+"id": "fix-py-shiftroster-10-delete",
+"ok": true
+}
+]

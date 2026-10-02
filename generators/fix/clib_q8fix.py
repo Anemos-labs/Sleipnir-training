@@ -519,7 +519,7 @@ LIB = Lib(
     files={"README.md": README1, "include/q8fix.h": F2, "src/q8fix.c": F3},
     visible_tests={"tests/test_main.c": V4, "tests/harness.h": _lang3.C_HARNESS},
     hidden_tests={"tests/test_main.c": H5},
-    mutate=["src/q8fix.c"], difficulty=3, tags=["fixed-point", "saturation", "rounding"],
+    mutate=["src/q8fix.c"], difficulty=2, tags=["fixed-point", "saturation", "rounding"],
     verify=_lang3.C_VERIFY,
 )
 

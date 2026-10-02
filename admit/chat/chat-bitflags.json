@@ -8,11 +8,11 @@
 "ok": true
 },
 {
-"id": "chat-bitflags-03-beehive-d2",
+"id": "chat-bitflags-03-pump-d2",
 "ok": true
 },
 {
-"id": "chat-bitflags-04-pump-d3",
+"id": "chat-bitflags-04-greenhouse-d3",
 "ok": true
 },
 {
@@ -20,31 +20,15 @@
 "ok": true
 },
 {
-"id": "chat-bitflags-06-beehive-d4",
+"id": "chat-bitflags-06-pump-d3",
 "ok": true
 },
 {
-"id": "chat-bitflags-07-garage-d4",
+"id": "chat-bitflags-07-beehive-d4",
 "ok": true
 },
 {
 "id": "chat-bitflags-08-greenhouse-d5",
-"ok": true
-},
-{
-"id": "chat-bitflags-09-beehive-d2",
-"ok": true
-},
-{
-"id": "chat-bitflags-10-garage-d3",
-"ok": true
-},
-{
-"id": "chat-bitflags-11-greenhouse-d4",
-"ok": true
-},
-{
-"id": "chat-bitflags-12-greenhouse-d5",
 "ok": true
 }
 ]

@@ -3,6 +3,7 @@ Build, fix and replay-log tasks; a python model cross-checks the reference engin
 from __future__ import annotations
 
 import json
+import textwrap
 from collections import deque
 
 from fx import Task, dd, family
@@ -767,3 +768,509 @@ def gen_fix(rng, n):
         ctx = {"files": ["src/lib.rs"], "verify": _scen.VERIFY[LANG]}
         yield _kit.bug_task(game=GAME, lang=LANG, base_files=base, tests=tests, hidden=hidden, bug=bug, ctx=ctx, rng=rng, used=used, k=k,
                             tags=["breakout", "physics"], timeout_s=300, extra_notes={"rules": r})
+
+
+# ----------------------------------------------------------------------------------------------------- bot tournament
+
+BOT_STUB = dd(r'''
+    use crate::Game;
+
+    /// The command to play now: "L", "R" or "S" (it is only called while the game is running).
+    pub fn choose(game: &Game) -> &'static str {
+        let _ = game;
+        "S"
+    }
+''')
+
+BOT_GOLD = dd(r'''
+    use crate::{Game, H, W};
+
+    /// Where will the ball come down? Let a clone play on until the ball is falling (the paddle stays put), then follow
+    /// the falling diagonal with its wall bounces (bricks are above, so they can be ignored) and move the paddle there.
+    pub fn choose(game: &Game) -> &'static str {
+        let legal = game.legal_moves();
+        let (px, pw) = game.paddle();
+        let mut sim = game.clone();
+        for _ in 0..80 {
+            if sim.ball().3 > 0 || sim.step("S").is_err() {
+                break;
+            }
+        }
+        let (bx, by, vx, vy) = sim.ball();
+        let mut x = bx;
+        let mut dx = vx;
+        if vy > 0 {
+            for _ in 0..=((H as i32) - 2 - by) {
+                let nx = x + dx;
+                if nx < 0 || nx >= W as i32 {
+                    dx = -dx;
+                } else {
+                    x = nx;
+                }
+            }
+        }
+        let target = x - (pw as i32) / 2;
+        if (px as i32) < target && legal.iter().any(|m| m == "R") {
+            "R"
+        } else if (px as i32) > target && legal.iter().any(|m| m == "L") {
+            "L"
+        } else {
+            "S"
+        }
+    }
+''')
+
+BOT_EXTRA = dd(r'''
+
+        /// The ball as (x, y, vx, vy).
+        pub fn ball(&self) -> (i32, i32, i32, i32) {
+            (self.bx, self.by, self.vx, self.vy)
+        }
+
+        /// The paddle as (left column, width).
+        pub fn paddle(&self) -> (usize, usize) {
+            (self.px, self.pw)
+        }
+
+        /// Number of bricks that still have hit points (1, 2, 3 or X).
+        pub fn bricks_left(&self) -> usize {
+            self.remaining()
+        }
+''')
+
+ARENA_RS = dd(r'''
+    // Local arena: plays `cinder::bot::choose` on the sample levels and prints the fraction of bricks cleared.
+    use cinder::{bot, Game};
+
+    const LEVELS: [&str; @@N@@] = [
+    @@LEVELS@@
+    ];
+
+    fn main() {
+        let mut sum = 0.0;
+        for (i, level) in LEVELS.iter().enumerate() {
+            let mut g = Game::new(level);
+            let total = g.bricks_left() as f64;
+            for _ in 0..2500 {
+                if g.status() != "playing" {
+                    break;
+                }
+                let cmd = bot::choose(&g);
+                if g.step(cmd).is_err() {
+                    break; // an illegal command ends the game
+                }
+            }
+            let cleared = (total - g.bricks_left() as f64) / total;
+            println!("level {}: cleared {:.0}% ({}, score {})", i + 1, cleared * 100.0, g.status(), g.score());
+            sum += cleared;
+        }
+        println!("average cleared {:.3}", sum / LEVELS.len() as f64);
+    }
+''')
+
+SCORE_RS = dd(r'''
+    use cinder::{bot, Game};
+
+    const LEVELS: [&str; @@N@@] = [
+    @@LEVELS@@
+    ];
+    const FLOOR: f64 = @@FLOOR@@;
+    const GOAL: f64 = @@GOAL@@;
+
+    fn main() {
+        let mut sum = 0.0;
+        for level in LEVELS.iter() {
+            let mut g = Game::new(level);
+            let total = g.bricks_left() as f64;
+            for _ in 0..2500 {
+                if g.status() != "playing" {
+                    break;
+                }
+                let cmd = bot::choose(&g);
+                if g.step(cmd).is_err() {
+                    break;
+                }
+            }
+            sum += (total - g.bricks_left() as f64) / total;
+        }
+        let avg = sum / LEVELS.len() as f64;
+        let score = ((avg - FLOOR) / (GOAL - FLOOR)).max(0.0).min(1.0);
+        println!("average cleared {:.3} over {} levels (full score from {:.2})", avg, LEVELS.len(), GOAL);
+        println!("{{\"score\": {:.4}}}", score);
+    }
+''')
+
+CINDER_BOT_VARIANTS = [
+    dict(rules={}, floor=0.3, goal=0.6, d=3),
+    dict(rules=dict(H=14, LIVES=4, STEP=3, ALT=False), floor=0.2, goal=0.8, d=3),
+    dict(rules=dict(W=13, PW=5, SHRINK=0, STEP=5), floor=0.3, goal=0.48, d=3),
+    dict(rules=dict(W=9, H=10, PW=4, SHRINK=0, STEP=6, ENGLISH=False), floor=0.35, goal=0.72, d=4),
+]
+
+
+def _rust_levels(levels: list[str]) -> str:
+    return ",\n".join('    "' + lv.replace("\n", "\\n") + '"' for lv in levels) + ","
+
+
+def bot_readme(r: dict, v: dict) -> str:
+    return readme(r).replace("## Tests\n", dd(f'''
+        ## Your task: a paddle controller
+
+        `src/bot.rs` must define `pub fn choose(game: &Game) -> &'static str`, called before every tick while the game is running; it returns `"L"`, `"R"` or `"S"` (a command that is not legal ends the game). Besides the API above the engine has
+        read-only helpers (the engine, `src/lib.rs`, is given and must not be edited): `game.clone()` (an independent copy: step the copy to look ahead), `game.ball() -> (x, y, vx, vy)`, `game.paddle() -> (left column, width)` and
+        `game.bricks_left()` (bricks that still have hit points).
+
+        `cargo run --offline --quiet --bin arena` plays your controller on a few sample levels and prints the fraction of bricks cleared. The check plays 8 other levels, at most 2500 ticks each (a level ends when the game is won or lost), and
+        takes the average fraction of the bricks cleared (`1 - bricks left / bricks at the start`). The score is `clamp((average - {v["floor"]}) / ({v["goal"]} - {v["floor"]}), 0, 1)`; 1.0 needs an average of at least {v["goal"]}.
+
+        ## Tests
+    '''), 1)
+
+
+@family("games-cinder-bot", category="games", lang="rust", kind="greenfield", n=4,
+        summary="write a Cinder paddle controller (rust) scored by the bricks it clears on hidden levels (json-score)")
+def gen_bot(rng, n):
+    for i, v in enumerate(CINDER_BOT_VARIANTS[:n]):
+        r = {**DEFAULT, **v["rules"]}
+        sol = project(r)
+        lib = sol["src/lib.rs"].replace("/// One game of Cinder.\npub struct Game {", "/// One game of Cinder.\n#[derive(Clone)]\npub struct Game {", 1)
+        assert "#[derive(Clone)]\npub struct Game" in lib
+        lib = lib.replace("use std::collections::VecDeque;\n", "use std::collections::VecDeque;\n\npub mod bot;\n", 1)
+        marker = "    pub fn score(&self) -> u32 {"
+        assert lib.count(marker) == 1
+        lib = lib.replace(marker, textwrap.indent(BOT_EXTRA.strip("\n"), "    ") + "\n\n" + marker, 1)
+        samples = [make_level(rng, r, rows=rng.choice([3, 4]), steel=(k % 2 == 1), boom=(k != 0)) for k in range(3)]
+        graded = [make_level(rng, r, rows=rng.choice([3, 4, 5]), steel=(k % 2 == 1), boom=(k != 0)) for k in range(8)]
+        files = {"src/lib.rs": lib, "src/bot.rs": BOT_STUB, "Cargo.toml": sol["Cargo.toml"], ".gitignore": sol[".gitignore"], "README.md": bot_readme(r, v),
+                 "src/bin/arena.rs": ARENA_RS.replace("@@N@@", str(len(samples))).replace("@@LEVELS@@", _rust_levels(samples))}
+        hidden = {"src/bin/score.rs": SCORE_RS.replace("@@N@@", str(len(graded))).replace("@@LEVELS@@", _rust_levels(graded)).replace("@@FLOOR@@", repr(float(v["floor"]))).replace("@@GOAL@@", repr(float(v["goal"])))}
+        s0, s1, out = _kit.check_scores(start=files, hidden=hidden, solution={"src/bot.rs": BOT_GOLD}, verify="cargo run --offline --quiet --bin score", name=f"cinder-bot-{i}", timeout_s=300)
+        voices = [
+            "Write a paddle controller for Cinder in `src/bot.rs`: `choose` returns `L`, `R` or `S` each tick. README.md describes the game, the extra read-only helpers and how the share of bricks cleared on hidden levels is graded; `cargo run --offline --bin arena` shows how you do on samples.",
+            "The Cinder bot just stays put, which clears a lot less than it could. Make `choose` in `src/bot.rs` actually return the ball: a clone of the game lets you simulate ahead. The grading is in README.md.",
+            "I need a Cinder autoplayer. Mind the physics (README.md has the exact rules, including the ball speed-ups) because the naive 'follow the ball' idea performs badly. Implement `choose` in `src/bot.rs`.",
+            "Implement the controller in `src/bot.rs` for this Cinder court. The score is the average fraction of bricks cleared over eight levels you don't see (details in README.md); `cargo run --offline --quiet --bin arena` plays three samples.",
+        ]
+        yield Task(slug=f"{i + 1:02d}-{r['W']}x{r['H']}-pw{r['PW']}", prompt=voices[i % len(voices)], difficulty=v["d"], start=files, hidden=hidden, solution={"src/bot.rs": BOT_GOLD},
+                   verify="cargo run --offline --quiet --bin score", pass_mode="json-score", protected=["src/lib.rs", "src/bin/arena.rs"], timeout_s=300,
+                   tags=["bot", "physics", "tournament"], notes={"rules": r, "gold": out.strip().splitlines()[-2], "stub_score": s0})
+
+
+# ----------------------------------------------------------------------------------------------------- feature: command log and replay
+
+REPLAY_EDITS = [
+    ("    state: State,\n}", "    state: State,\n    level: String,\n    hist: Vec<u8>,\n}"),
+    ("state: State::Playing,\n            };", "state: State::Playing,\n                level: level.to_string(),\n                hist: Vec::new(),\n            };"),
+    ("let mut ev: Vec<String> = Vec::new();\n            match cmd {", "self.hist.push(cmd.as_bytes()[0]);\n            let mut ev: Vec<String> = Vec::new();\n            match cmd {"),
+]
+
+LOG_PLAIN = '''
+    /// The accepted commands so far, one character each.
+    pub fn log(&self) -> String {
+        String::from_utf8(self.hist.clone()).unwrap()
+    }
+
+    /// A game on `level` after playing `log` (see README.md).
+    pub fn replay(level: &str, log: &str) -> Result<Game, String> {
+        let mut g = Game::new(level);
+        for (i, c) in log.chars().enumerate() {
+            g.step(&c.to_string()).map_err(|_| format!("bad command at tick {}", i))?;
+        }
+        Ok(g)
+    }
+'''
+
+LOG_RLE = '''
+    /// The accepted commands so far, run-length encoded.
+    pub fn log(&self) -> String {
+        let mut out = String::new();
+        let mut i = 0;
+        while i < self.hist.len() {
+            let c = self.hist[i];
+            let mut j = i;
+            while j < self.hist.len() && self.hist[j] == c {
+                j += 1;
+            }
+            out.push(c as char);
+            if j - i > 1 {
+                out.push_str(&(j - i).to_string());
+            }
+            i = j;
+        }
+        out
+    }
+
+    /// A game on `level` after playing the run-length encoded `log` (see README.md).
+    pub fn replay(level: &str, log: &str) -> Result<Game, String> {
+        let bytes = log.as_bytes();
+        let mut cmds: Vec<u8> = Vec::new();
+        let mut i = 0;
+        while i < bytes.len() {
+            let c = bytes[i];
+            if c != b'L' && c != b'R' && c != b'S' {
+                return Err(format!("bad log at {}", i));
+            }
+            i += 1;
+            let start = i;
+            while i < bytes.len() && bytes[i].is_ascii_digit() {
+                i += 1;
+            }
+            let mut n = 1usize;
+            if i > start {
+                let digits = &log[start..i];
+                if digits.starts_with('0') || digits.len() > 4 {
+                    return Err(format!("bad log at {}", start));
+                }
+                n = digits.parse().unwrap();
+                if n < 2 {
+                    return Err(format!("bad log at {}", start));
+                }
+            }
+            for _ in 0..n {
+                cmds.push(c);
+            }
+        }
+        let mut g = Game::new(level);
+        for (k, c) in cmds.iter().enumerate() {
+            g.step(&(*c as char).to_string()).map_err(|_| format!("illegal command at tick {}", k))?;
+        }
+        Ok(g)
+    }
+'''
+
+LOG_FOOTER = '''
+    /// The accepted commands so far followed by `|score:lives`.
+    pub fn log(&self) -> String {
+        format!("{}|{}:{}", String::from_utf8(self.hist.clone()).unwrap(), self.score, self.lives)
+    }
+
+    /// A game on `level` after playing `log` (see README.md).
+    pub fn replay(level: &str, log: &str) -> Result<Game, String> {
+        let (cmds, footer) = log.split_once('|').ok_or_else(|| "bad log".to_string())?;
+        let (score, lives) = footer.split_once(':').ok_or_else(|| "bad log".to_string())?;
+        let digits = |s: &str| !s.is_empty() && s.bytes().all(|b| b.is_ascii_digit());
+        if !digits(score) || !digits(lives) {
+            return Err("bad log".to_string());
+        }
+        let mut g = Game::new(level);
+        for (i, c) in cmds.chars().enumerate() {
+            g.step(&c.to_string()).map_err(|_| format!("bad command at tick {}", i))?;
+        }
+        if g.score.to_string() != score || g.lives.to_string() != lives {
+            return Err("state mismatch".to_string());
+        }
+        Ok(g)
+    }
+'''
+
+LOG_REWIND = LOG_PLAIN + '''
+    /// Takes back the last `ticks` ticks.
+    pub fn rewind(&mut self, ticks: usize) -> Result<(), String> {
+        if ticks > self.hist.len() {
+            return Err("cannot rewind past the start".to_string());
+        }
+        let keep = self.hist.len() - ticks;
+        let log: String = self.hist[..keep].iter().map(|&b| b as char).collect();
+        let level = self.level.clone();
+        *self = Game::replay(&level, &log)?;
+        Ok(())
+    }
+'''
+
+
+def rle(moves: list[str]) -> str:
+    out, i = "", 0
+    while i < len(moves):
+        j = i
+        while j < len(moves) and moves[j] == moves[i]:
+            j += 1
+        out += moves[i] + (str(j - i) if j - i > 1 else "")
+        i = j
+    return out
+
+
+def replay_adapter(variant: str) -> dict[str, str]:
+    arms = {
+        "plain": ("log", "replay"), "rle": ("log", "replay"), "footer": ("log", "replay"), "rewind": ("log", "replay", "rewind"),
+    }[variant]
+    text = dd(r'''
+        // Maps scenario commands onto the engine API (the scenario runner is tests/scenarios.rs).
+        use cinder::Game;
+
+        pub struct Adapter {
+            game: Option<Game>,
+            level: String,
+        }
+
+        impl Adapter {
+            pub fn new() -> Adapter {
+                Adapter { game: None, level: String::new() }
+            }
+
+            pub fn run(&mut self, verb: &str, args: &str) -> String {
+                match verb {
+                    // new <level rows joined by |>
+                    "new" => {
+                        self.level = args.replace('|', "\n");
+                        self.game = Some(Game::new(&self.level));
+                        "ok".to_string()
+                    }
+                    // do <command>: the event text, or "illegal"
+                    "do" => match self.game.as_mut().unwrap().step(args) {
+                        Ok(ev) => ev,
+                        Err(_) => "illegal".to_string(),
+                    },
+                    // sorted legal commands joined by "," ("-" when there are none)
+                    "legal" => {
+                        let mut m = self.game.as_ref().unwrap().legal_moves();
+                        m.sort();
+                        if m.is_empty() {
+                            "-".to_string()
+                        } else {
+                            m.join(",")
+                        }
+                    }
+                    "render" => self.game.as_ref().unwrap().render(),
+                    // "<score> <status>"
+                    "status" => {
+                        let g = self.game.as_ref().unwrap();
+                        format!("{} {}", g.score(), g.status())
+                    }
+                    // log: the command log of the game so far
+                    "log" => self.game.as_ref().unwrap().log(),
+                    // replay <log>: replace the game by the replayed one on the same level: "ok" or "error: <message>"
+                    "replay" => match Game::replay(&self.level, args) {
+                        Ok(g) => {
+                            self.game = Some(g);
+                            "ok".to_string()
+                        }
+                        Err(e) => format!("error: {}", e),
+                    },
+                    // reload: replay the current log into a new game: "same" or "different"
+                    "reload" => {
+                        let before = self.game.as_ref().unwrap().render();
+                        let log = self.game.as_ref().unwrap().log();
+                        match Game::replay(&self.level, &log) {
+                            Ok(g) => {
+                                let same = g.render() == before && g.log() == log;
+                                self.game = Some(g);
+                                if same { "same".to_string() } else { "different".to_string() }
+                            }
+                            Err(e) => format!("error: {}", e),
+                        }
+                    }
+@@REWIND@@                    _ => panic!("unknown verb {}", verb),
+                }
+            }
+        }
+    ''')
+    rewind = '''                    // rewind <n>: take back the last n ticks: "ok" or "error: <message>"
+                    "rewind" => match self.game.as_mut().unwrap().rewind(args.parse().unwrap()) {
+                        Ok(()) => "ok".to_string(),
+                        Err(e) => format!("error: {}", e),
+                    },
+'''
+    return {"tests/adapter/mod.rs": text.replace("@@REWIND@@", rewind if variant == "rewind" else "")}
+
+
+def _log_for(variant: str, moves: list[str], r: dict, level: str) -> str:
+    if variant == "rle":
+        return rle(moves)
+    if variant == "footer":
+        m = Model(level, r)
+        for x in moves:
+            m.step(x)
+        return "".join(moves) + f"|{m.score}:{m.lives}"
+    return "".join(moves)
+
+
+def replay_scripts(rng, variant: str, r: dict) -> dict[str, str]:
+    parts = []
+    for i in range(4):
+        lv = make_level(rng, r, rows=rng.choice([3, 4]), steel=(i % 2 == 1), boom=True)
+        row = lv.replace("\n", "|")
+        mv = tracking_moves(rng, lv, r, 140 + 60 * i, noise=[2, 10, 4, 25][i])
+        lines = [f"# scenario log and replay {i + 1}", f"> new {row}"] + [f"> do {m}" for m in mv[: len(mv) // 2]] + ["> log", "> reload", "> render"] + [f"> do {m}" for m in mv[len(mv) // 2:]] + ["> log", "> reload", "> status", "> render"]
+        parts.append("\n".join(lines))
+        full = _log_for(variant, mv, r, lv)
+        lines = [f"# scenario replay a stored game {i + 1}", f"> new {row}", f"> replay {full}", "> render", "> log", "> status", "> legal"]
+        if variant == "rewind":
+            lines = [f"# scenario rewind {i + 1}", f"> new {row}"] + [f"> do {m}" for m in mv[:90]] + ["> rewind 0", "> log", "> rewind 7", "> render", "> log", "> do S", "> log", "> rewind 30", "> render", "> rewind 100000", "> rewind 59", "> render", "> rewind 1", "> log", "> status"]
+        parts.append("\n".join(lines))
+    lv = make_level(rng, r, rows=3, steel=False, boom=True)
+    row = lv.replace("\n", "|")
+    mv = tracking_moves(rng, lv, r, 60, noise=3)
+    good = _log_for(variant, mv, r, lv)
+    bad: list[str] = ["", "X", "L R", "l", "LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL"]
+    if variant == "plain":
+        bad += [good + "X", good[:20] + "Q" + good[20:], "S" * 40]
+    elif variant == "rle":
+        bad += [good + "X", "L1", "L0", "L01", "S2R", "R" + "9" * 5, "L2S3R10X", "2L", "LL" + "9999", "S0R", "R3" + "L"]
+    elif variant == "footer":
+        bad += [good + "X", good.split("|")[0], good.replace("|", ":"), good.split("|")[0] + "|1:2", good.split("|")[0] + "|x:y", good.split("|")[0] + "|", good + "|1:1", "LLL|0:" + str(r["LIVES"]), good.split("|")[0][:-1] + "|" + good.split("|")[1]]
+    else:
+        bad += [good + "X", "S" * 40]
+    cases = [f"# scenario bad logs\n> new {row}"]
+    for b in [good] + bad:
+        cases += [f"> replay {b}", "> render"]
+    parts.append("\n".join(cases))
+    return {"hidden_replay": "\n".join(parts) + "\n"}
+
+
+REPLAY_VARIANTS = [
+    dict(key="plain", d=3, ask="Add a command log and a replay to the Cinder engine: `Game::log()` gives every accepted command as one character, `Game::replay(level, log)` rebuilds a game from a level and a log. README.md has the exact format and the error texts.",
+         text=LOG_PLAIN),
+    dict(key="rle", d=4, ask="Cinder games should be storable as short strings, so the log is run-length encoded. Implement `Game::log()` and `Game::replay(level, log)` as specified in the new README.md section, including what counts as a malformed log and the exact error texts.",
+         text=LOG_RLE),
+    dict(key="footer", d=4, ask="Store Cinder games as `<commands>|<score>:<lives>` so that a replay can check itself. Add `Game::log()` and `Game::replay(level, log)` following the new README.md section; every failure has its own exact message.",
+         text=LOG_FOOTER),
+    dict(key="rewind", d=4, ask="Add an undo-by-ticks to Cinder: `Game::rewind(n)` takes back the last n ticks (by replaying the log from the start). It needs a command log and `Game::replay(level, log)`; all of it is specified in the new README.md section.",
+         text=LOG_REWIND),
+]
+
+
+def replay_readme(key: str) -> str:
+    base = ("`Game::log()` returns the *command log*: the accepted commands of this game so far (`L`, `R`, `S`, in order; rejected commands are not logged) and `Game::replay(level, log)` returns a new game on `level` after playing the commands of `log` one tick at a time "
+            "(`level` is the same kind of text that `Game::new` takes). The scenario adapter has the commands `log`, `replay <log>` (on the level of the last `new`) and `reload`.\n\n")
+    if key == "plain":
+        return ("## Feature to add: command log and replay\n\n" + base + "The log is the commands as characters with nothing between them (`LLSR`); a fresh game has the empty log. `replay` plays each character as a command: the first one that the engine does not accept (any other character, or "
+                "a command that is illegal at that moment, e.g. any command after the game is over) makes it return `Err(\"bad command at tick <i>\")` with `i` the 0-based position of that character. `replay(level, \"\")` is a fresh game; "
+                "the replayed game's `log()` equals the log it was built from.\n")
+    if key == "rle":
+        return ("## Feature to add: run-length encoded command log\n\n" + base + "The log is run-length encoded: every maximal run of the same command is written as the command letter, followed by the run length in decimal if it is 2 or more "
+                "(`L3SR2`: three `L`, one `S`, two `R`). A fresh game has the empty log. `replay` accepts exactly these strings: a letter `L`, `R` or `S`, optionally followed by a count of 2 to 9999 written without leading zeros or sign; "
+                "adjacent runs of the same letter are fine (`L2L3` means five `L`). Anything else returns `Err(\"bad log at <i>\")` where `i` is the 0-based byte index of the offending character (a letter that is not `L`, `R` or `S`; "
+                "or the *first digit* of a bad count: `0`, `1`, a count starting with 0, or more than 4 digits). The whole text is checked this way first; only then are the commands played, and the first command that is illegal "
+                "when it is played returns `Err(\"illegal command at tick <i>\")` with `i` the 0-based index of that command in the expanded sequence.\n")
+    if key == "footer":
+        return ("## Feature to add: self-checking command log\n\n" + base + "The log is the commands as characters, then `|`, then the score and the lives left, separated by `:`: for example `LLSR|30:3`. `replay` checks the text in this order and returns `Err` with exactly the given message: "
+                "no `|` or a footer that is not `<digits>:<digits>` (both numbers non-empty, digits only; only the first `|` splits the text): `bad log`; a command that is not accepted when it is played: `bad command at tick <i>` (0-based); "
+                "finally, if the replayed game's score or lives differ from the footer: `state mismatch`.\n")
+    return ("## Feature to add: rewind\n\n" + base + "The log is the commands as characters with nothing between them (`LLSR`); `replay` returns `Err(\"bad command at tick <i>\")` (`i` the 0-based position) for the first command that is not accepted. "
+            "`Game::rewind(&mut self, ticks: usize) -> Result<(), String>` takes back the last `ticks` accepted ticks: afterwards the game is exactly what a replay of the log without those last commands would give (the log is shorter by `ticks`, "
+            "the ball, the paddle, bricks, lives and score are as they were then). `rewind(0)` changes nothing. If `ticks` is more than the number of ticks played the result is `Err(\"cannot rewind past the start\")` and nothing changes.\n")
+
+
+@family("games-cinder-replay", category="games", lang="rust", kind="feature", n=4,
+        summary="add a command log with replay (plain, run-length encoded, self-checking) or rewind-by-replay to the Cinder engine")
+def gen_replay(rng, n):
+    for i, v in enumerate(REPLAY_VARIANTS[:n]):
+        key = v["key"]
+        r = {**DEFAULT, **(dict(SHRINK=1) if key == "rewind" else {})}
+        base = project(r)
+        src = _kit.apply_bug(base["src/lib.rs"], Bug("replay", "", "", REPLAY_EDITS))
+        assert src.rstrip().endswith("}")
+        body = src.rstrip("\n")
+        body = body[: body.rindex("}")] + v["text"].lstrip("\n").replace("\n    ", "\n    ") .join(["", ""]) if False else body
+        lib = body[: body.rindex("}")].rstrip("\n") + "\n" + v["text"].rstrip("\n") + "\n}\n"
+        adapter = replay_adapter(key)
+        sol = {"src/lib.rs": lib, "Cargo.toml": base["Cargo.toml"], ".gitignore": base[".gitignore"]}
+        hid_scripts = {**scripts(rng, r), **replay_scripts(rng, key, r)}
+        hidden = _kit.data_files(LANG, hid_scripts, sol, adapter)
+        lv = make_level(rng, r, rows=3, steel=True, boom=True)
+        ex = (f"# scenario log\n> new {lv.replace(chr(10), '|')}\n> do S\n> do R\n> do R\n> do S\n> log\n> reload\n> render\n> replay " + _log_for(key, ["S", "R", "R", "S", "L"], r, lv) + "\n> render\n> replay Q\n")
+        vis = _kit.data_files(LANG, {"examples": example_script(rng, r), "feature": ex}, sol, adapter)
+        start = {"README.md": readme(r).replace("## Tests\n", replay_readme(key) + "\n## Tests\n"), "src/lib.rs": base["src/lib.rs"], "Cargo.toml": base["Cargo.toml"], ".gitignore": base[".gitignore"],
+                 **_scen.check_files(LANG, adapter), **vis}
+        yield Task(slug=f"{i + 1:02d}-{key}", prompt=v["ask"] + (" Keep the existing behaviour exactly as it is." if i % 2 else ""), difficulty=v["d"], start=start, hidden=hidden, solution={"src/lib.rs": lib},
+                   verify=_scen.VERIFY[LANG], timeout_s=300, tags=["breakout", "replay", "feature"], notes={"feature": key, "rules": r})

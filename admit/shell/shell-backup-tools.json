@@ -1,0 +1,42 @@
+[
+{
+"id": "shell-backup-tools-01-tar-snapshot",
+"ok": true
+},
+{
+"id": "shell-backup-tools-02-selective-restore",
+"ok": true
+},
+{
+"id": "shell-backup-tools-03-rsync-like-mirror",
+"ok": true
+},
+{
+"id": "shell-backup-tools-04-rotate-snapshot-dirs",
+"ok": true
+},
+{
+"id": "shell-backup-tools-05-hardlinked-snapshots",
+"ok": true
+},
+{
+"id": "shell-backup-tools-06-verify-archive-against-directory",
+"ok": true
+},
+{
+"id": "shell-backup-tools-07-snapshot-with-exclusions",
+"ok": true
+},
+{
+"id": "shell-backup-tools-08-newest-backup-archive",
+"ok": true
+},
+{
+"id": "shell-backup-tools-09-fix-backup-script",
+"ok": true
+},
+{
+"id": "shell-backup-tools-10-prune-old-archives",
+"ok": true
+}
+]

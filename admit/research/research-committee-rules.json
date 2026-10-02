@@ -1,26 +1,26 @@
 [
 {
-"id": "research-committee-rules-01-value-on",
+"id": "research-committee-rules-01-initial",
 "ok": true
 },
 {
-"id": "research-committee-rules-02-n-changes",
+"id": "research-committee-rules-02-initial",
 "ok": true
 },
 {
-"id": "research-committee-rules-03-value-on",
+"id": "research-committee-rules-03-n-changes",
 "ok": true
 },
 {
-"id": "research-committee-rules-04-n-changes",
+"id": "research-committee-rules-04-value-on",
 "ok": true
 },
 {
-"id": "research-committee-rules-05-value-on",
+"id": "research-committee-rules-05-initial",
 "ok": true
 },
 {
-"id": "research-committee-rules-06-n-changes",
+"id": "research-committee-rules-06-eff-of-current",
 "ok": true
 },
 {
@@ -28,7 +28,7 @@
 "ok": true
 },
 {
-"id": "research-committee-rules-08-n-changes",
+"id": "research-committee-rules-08-last-meeting",
 "ok": true
 },
 {
@@ -36,7 +36,7 @@
 "ok": true
 },
 {
-"id": "research-committee-rules-10-eff-of-current",
+"id": "research-committee-rules-10-n-changes",
 "ok": true
 },
 {
@@ -44,11 +44,11 @@
 "ok": true
 },
 {
-"id": "research-committee-rules-12-value-on",
+"id": "research-committee-rules-12-last-meeting",
 "ok": true
 },
 {
-"id": "research-committee-rules-13-value-on",
+"id": "research-committee-rules-13-last-meeting",
 "ok": true
 },
 {
@@ -60,39 +60,23 @@
 "ok": true
 },
 {
-"id": "research-committee-rules-16-eff-of-current",
+"id": "research-committee-rules-16-initial",
 "ok": true
 },
 {
-"id": "research-committee-rules-17-value-on",
+"id": "research-committee-rules-17-eff-of-current",
 "ok": true
 },
 {
-"id": "research-committee-rules-18-n-changes",
+"id": "research-committee-rules-18-initial",
 "ok": true
 },
 {
-"id": "research-committee-rules-19-value-on",
+"id": "research-committee-rules-19-last-meeting",
 "ok": true
 },
 {
-"id": "research-committee-rules-20-value-on",
-"ok": true
-},
-{
-"id": "research-committee-rules-21-value-on",
-"ok": true
-},
-{
-"id": "research-committee-rules-22-eff-of-current",
-"ok": true
-},
-{
-"id": "research-committee-rules-23-eff-of-current",
-"ok": true
-},
-{
-"id": "research-committee-rules-24-eff-of-current",
+"id": "research-committee-rules-20-eff-of-current",
 "ok": true
 }
 ]

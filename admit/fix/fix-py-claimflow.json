@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-claimflow-01-cmp",
+"ok": true
+},
+{
+"id": "fix-py-claimflow-02-negate",
+"ok": true
+},
+{
+"id": "fix-py-claimflow-03-const",
+"ok": true
+},
+{
+"id": "fix-py-claimflow-04-arith",
+"ok": true
+},
+{
+"id": "fix-py-claimflow-05-delete",
+"ok": true
+},
+{
+"id": "fix-py-claimflow-06-cmp",
+"ok": true
+},
+{
+"id": "fix-py-claimflow-07-negate",
+"ok": true
+},
+{
+"id": "fix-py-claimflow-08-const",
+"ok": true
+},
+{
+"id": "fix-py-claimflow-09-delete",
+"ok": true
+},
+{
+"id": "fix-py-claimflow-10-cmp",
+"ok": true
+}
+]

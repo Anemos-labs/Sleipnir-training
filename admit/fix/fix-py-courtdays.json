@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-courtdays-01-const",
+"ok": true
+},
+{
+"id": "fix-py-courtdays-02-cmp",
+"ok": true
+},
+{
+"id": "fix-py-courtdays-03-negate",
+"ok": true
+},
+{
+"id": "fix-py-courtdays-04-arith",
+"ok": true
+},
+{
+"id": "fix-py-courtdays-05-delete",
+"ok": true
+},
+{
+"id": "fix-py-courtdays-06-swap",
+"ok": true
+},
+{
+"id": "fix-py-courtdays-07-const",
+"ok": true
+},
+{
+"id": "fix-py-courtdays-08-cmp",
+"ok": true
+},
+{
+"id": "fix-py-courtdays-09-negate",
+"ok": true
+},
+{
+"id": "fix-py-courtdays-10-delete",
+"ok": true
+}
+]

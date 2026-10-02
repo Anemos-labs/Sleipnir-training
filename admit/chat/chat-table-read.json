@@ -4,63 +4,31 @@
 "ok": true
 },
 {
-"id": "chat-table-read-02-trays-nth",
+"id": "chat-table-read-02-bikes-growth",
 "ok": true
 },
 {
-"id": "chat-table-read-03-vans-growth",
+"id": "chat-table-read-03-vans-cond_sum",
 "ok": true
 },
 {
-"id": "chat-table-read-04-calls-growth",
+"id": "chat-table-read-04-solar-growth",
 "ok": true
 },
 {
-"id": "chat-table-read-05-vans-growth",
+"id": "chat-table-read-05-bikes-wavg",
 "ok": true
 },
 {
-"id": "chat-table-read-06-bikes-ratio",
+"id": "chat-table-read-06-calls-growth",
 "ok": true
 },
 {
-"id": "chat-table-read-07-vans-count2",
+"id": "chat-table-read-07-bikes-wavg",
 "ok": true
 },
 {
-"id": "chat-table-read-08-library-ratio2",
-"ok": true
-},
-{
-"id": "chat-table-read-09-calls-combo",
-"ok": true
-},
-{
-"id": "chat-table-read-10-vans-nth",
-"ok": true
-},
-{
-"id": "chat-table-read-11-calls-ratio",
-"ok": true
-},
-{
-"id": "chat-table-read-12-calls-wavg",
-"ok": true
-},
-{
-"id": "chat-table-read-13-bikes-ratio",
-"ok": true
-},
-{
-"id": "chat-table-read-14-library-wavg",
-"ok": true
-},
-{
-"id": "chat-table-read-15-trays-combo",
-"ok": true
-},
-{
-"id": "chat-table-read-16-solar-cond_sum",
+"id": "chat-table-read-08-solar-combo",
 "ok": true
 }
 ]

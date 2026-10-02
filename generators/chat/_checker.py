@@ -247,7 +247,7 @@ IGNORE_DIRS = {".git", ".check", "__pycache__", ".pytest_cache", ".mypy_cache", 
 def _scan():
     seen = {}
     for root, dirs, files in os.walk("."):
-        dirs[:] = [d for d in dirs if d not in IGNORE_DIRS]
+        dirs[:] = [d for d in dirs if d not in IGNORE_DIRS and not d.startswith(".")]
         for f in files:
             if f.endswith(".pyc"):
                 continue

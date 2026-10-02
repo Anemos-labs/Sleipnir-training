@@ -559,11 +559,11 @@ if __name__ == "__main__":
 '''
 
 
-@family("swarm-migration-split", category="swarm", lang="python", kind="refactor", n=14,
+@family("swarm-migration-split", category="swarm", lang="python", kind="refactor", n=16,
         summary="a mechanical API migration spread over k service directories (one worker each); behaviour must stay the same")
 def migration_split(rng, n):
-    order = ["money", "dates", "logging", "net", "money", "logging", "dates", "net", "money", "dates", "logging", "net", "money", "logging"]
-    ks = [3, 3, 4, 4, 5, 5, 3, 6, 6, 4, 7, 5, 8, 4]
+    order = ["money", "dates", "logging", "net", "money", "logging", "dates", "net", "money", "dates", "logging", "net", "money", "logging", "dates", "net"]
+    ks = [3, 3, 4, 4, 5, 5, 3, 6, 6, 4, 7, 5, 8, 4, 2, 2]
     styles = ["from", "alias", "module"]
     for i in range(n):
         mig = MIGS[order[i % len(order)]]
@@ -667,7 +667,7 @@ def migration_split(rng, n):
         for p in list(solution):
             if p.endswith("__init__.py") and p in start and start[p] == solution[p]:
                 del solution[p]
-        d = 3 if k <= 3 else 4 if k <= 6 else 5
+        d = 2 if k <= 2 else 3 if k <= 3 else 4 if k <= 6 else 5
         voices = [
             f"We're deleting the legacy/ package after this release and {len(svcs)} service directories still depend on it ({oxford(svcs)}). "
             f"MIGRATION.md explains the {mig.name} change. Please move every caller over; behaviour must stay exactly the same.",

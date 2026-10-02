@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-punchclock-01-arith",
+"ok": true
+},
+{
+"id": "fix-py-punchclock-02-const",
+"ok": true
+},
+{
+"id": "fix-py-punchclock-03-delete",
+"ok": true
+},
+{
+"id": "fix-py-punchclock-04-swap",
+"ok": true
+},
+{
+"id": "fix-py-punchclock-05-negate",
+"ok": true
+},
+{
+"id": "fix-py-punchclock-06-cmp",
+"ok": true
+},
+{
+"id": "fix-py-punchclock-07-arith",
+"ok": true
+},
+{
+"id": "fix-py-punchclock-08-const",
+"ok": true
+},
+{
+"id": "fix-py-punchclock-09-delete",
+"ok": true
+},
+{
+"id": "fix-py-punchclock-10-negate",
+"ok": true
+}
+]

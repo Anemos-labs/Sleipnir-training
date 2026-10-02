@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-dosetimes-01-const",
+"ok": true
+},
+{
+"id": "fix-py-dosetimes-02-arith",
+"ok": true
+},
+{
+"id": "fix-py-dosetimes-03-swap",
+"ok": true
+},
+{
+"id": "fix-py-dosetimes-04-delete",
+"ok": true
+},
+{
+"id": "fix-py-dosetimes-05-negate",
+"ok": true
+},
+{
+"id": "fix-py-dosetimes-06-logic",
+"ok": true
+},
+{
+"id": "fix-py-dosetimes-07-const",
+"ok": true
+},
+{
+"id": "fix-py-dosetimes-08-arith",
+"ok": true
+},
+{
+"id": "fix-py-dosetimes-09-delete",
+"ok": true
+},
+{
+"id": "fix-py-dosetimes-10-negate",
+"ok": true
+}
+]

@@ -28,8 +28,8 @@ RC_README = dd('''
     * `find_slot(bookings, room, people, duration, earliest, latest_end, owner, step=15)`: the earliest start that is
       a multiple of `step` (counted from midnight of day 0), at least `earliest`, such that the new booking would stay
       inside one day, end at or before `latest_end` and clash with none of `bookings`. Candidates that would cross
-      midnight are skipped (the search continues at the next midnight). `None` when nothing fits. A room that is too
-      small for `people` is a `ValueError`.
+      midnight are skipped (the search continues at the next midnight). `None` when nothing fits. An unknown room, a room
+      that is too small for `people` and a `duration` below 1 are a `ValueError`.
     * `suggest_room(bookings, people, start, end, owner)`: the free room with the smallest capacity that holds
       `people` (ties by name), or `None`. An invalid time range is a `ValueError`.
     * `busy_minutes(bookings, room, lo, hi)`: the minutes of `[lo, hi)` in which the room is booked; overlapping
@@ -1180,7 +1180,7 @@ CRONISH = Lib(
            ".gitignore": GITIGNORE},
     visible_tests={"tests/test_basic.py": CN_VISIBLE},
     hidden_tests={"tests/test_full.py": CN_HIDDEN},
-    mutate=["cronish/parse.py", "cronish/fire.py"], difficulty=4, tags=["scheduler", "parsing", "calendar"],
+    mutate=["cronish/parse.py", "cronish/fire.py"], difficulty=3, tags=["scheduler", "parsing", "calendar"],
     probes=[
         "parse('at 17:00 and 09:30').minutes", "parse('every 30m between 09:00-10:30').minutes", "parse('every 5h between 22:00-24:00').minutes",
         "parse('at 09:30 on Sun, sat')", "parse('at 09:30 on day 31')", "parse('every 15m between 10:00-10:00')", "parse('at 24:00')",
@@ -1422,13 +1422,12 @@ CLASSQUOTA = Lib(
     probes=[
         "effective_status('cancelled', datetime(2025, 3, 10, 6, 0), datetime(2025, 3, 10, 18, 0))",
         "effective_status('cancelled', datetime(2025, 3, 10, 6, 1), datetime(2025, 3, 10, 18, 0))",
-        "counts_toward_quota('late_cancel')", "can_book(HISTORY, date(2025, 3, 9), quota=3)", "can_book(HISTORY, date(2025, 3, 10), quota=3)",
-        "can_book(HISTORY, date(2025, 3, 6))", "can_book([(date(2025, 3, 3), 'cancelled')], date(2025, 3, 4), quota=1)",
-        "next_available(HISTORY, date(2025, 3, 6), quota=3)", "next_available(HISTORY, date(2025, 3, 6), quota=3, horizon=3)",
-        "remaining_quota(HISTORY, date(2025, 3, 3))", "remaining_quota(HISTORY, date(2025, 3, 3), quota=2)",
+        "counts_toward_quota('late_cancel')", "can_book([(date(2025, 3, 3), 'attended'), (date(2025, 3, 4), 'booked'), (date(2025, 3, 5), 'no_show')], date(2025, 3, 9), quota=3)", "can_book([(date(2025, 3, 3), 'attended'), (date(2025, 3, 4), 'booked'), (date(2025, 3, 5), 'no_show')], date(2025, 3, 10), quota=3)",
+        "can_book([(date(2025, 3, 3), 'attended'), (date(2025, 3, 4), 'booked'), (date(2025, 3, 5), 'no_show')], date(2025, 3, 6))", "can_book([(date(2025, 3, 3), 'cancelled')], date(2025, 3, 4), quota=1)",
+        "next_available([(date(2025, 3, 3), 'attended'), (date(2025, 3, 4), 'booked'), (date(2025, 3, 5), 'no_show')], date(2025, 3, 6), quota=3)", "next_available([(date(2025, 3, 3), 'attended'), (date(2025, 3, 4), 'booked'), (date(2025, 3, 5), 'no_show')], date(2025, 3, 6), quota=3, horizon=3)",
+        "remaining_quota([(date(2025, 3, 3), 'attended'), (date(2025, 3, 4), 'booked'), (date(2025, 3, 5), 'no_show')], date(2025, 3, 3))", "remaining_quota([(date(2025, 3, 3), 'attended'), (date(2025, 3, 4), 'booked'), (date(2025, 3, 5), 'no_show')], date(2025, 3, 3), quota=2)",
     ],
-    probe_import=("from datetime import date, datetime\nfrom classquota.quota import *\n"
-                  "HISTORY = [(date(2025, 3, 3), 'attended'), (date(2025, 3, 4), 'booked'), (date(2025, 3, 5), 'no_show')]"),
+    probe_import="from datetime import date, datetime\nfrom classquota.quota import *",
 )
 
 register_libs([ROOMCLASH, DOSETIMES, COURTDAYS, CRONISH, CLASSQUOTA], n=10)

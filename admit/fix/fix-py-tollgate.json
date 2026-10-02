@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-tollgate-01-negate",
+"ok": true
+},
+{
+"id": "fix-py-tollgate-02-delete",
+"ok": true
+},
+{
+"id": "fix-py-tollgate-03-swap",
+"ok": true
+},
+{
+"id": "fix-py-tollgate-04-arith",
+"ok": true
+},
+{
+"id": "fix-py-tollgate-05-const",
+"ok": true
+},
+{
+"id": "fix-py-tollgate-06-cmp",
+"ok": true
+},
+{
+"id": "fix-py-tollgate-07-negate",
+"ok": true
+},
+{
+"id": "fix-py-tollgate-08-delete",
+"ok": true
+},
+{
+"id": "fix-py-tollgate-09-swap",
+"ok": true
+},
+{
+"id": "fix-py-tollgate-10-arith",
+"ok": true
+}
+]

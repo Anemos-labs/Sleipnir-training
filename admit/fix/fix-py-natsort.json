@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-natsort-01-arith",
+"ok": true
+},
+{
+"id": "fix-py-natsort-02-const",
+"ok": true
+},
+{
+"id": "fix-py-natsort-03-cmp",
+"ok": true
+},
+{
+"id": "fix-py-natsort-04-swap",
+"ok": true
+},
+{
+"id": "fix-py-natsort-05-negate",
+"ok": true
+},
+{
+"id": "fix-py-natsort-06-delete",
+"ok": true
+},
+{
+"id": "fix-py-natsort-07-const",
+"ok": true
+},
+{
+"id": "fix-py-natsort-08-swap",
+"ok": true
+},
+{
+"id": "fix-py-natsort-09-negate",
+"ok": true
+},
+{
+"id": "fix-py-natsort-10-delete",
+"ok": true
+}
+]

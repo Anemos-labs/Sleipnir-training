@@ -1,0 +1,46 @@
+[
+{
+"id": "fix-hand-java-equality-01-customer-names-compared-by-reference",
+"ok": true
+},
+{
+"id": "fix-hand-java-equality-02-equals-overloaded-not-overridden",
+"ok": true
+},
+{
+"id": "fix-hand-java-equality-03-equals-without-hashcode",
+"ok": true
+},
+{
+"id": "fix-hand-java-equality-04-compareto-looks-at-the-row-only",
+"ok": true
+},
+{
+"id": "fix-hand-java-equality-05-waitlist-removes-by-position",
+"ok": true
+},
+{
+"id": "fix-hand-java-equality-06-boxed-counts-compared-by-reference",
+"ok": true
+},
+{
+"id": "fix-hand-java-equality-07-divide-without-a-scale",
+"ok": true
+},
+{
+"id": "fix-hand-java-equality-08-format-without-a-rounding-mode",
+"ok": true
+},
+{
+"id": "fix-hand-java-equality-09-doubles-through-the-binary-constructor",
+"ok": true
+},
+{
+"id": "fix-hand-java-equality-10-equals-compares-the-scale-too",
+"ok": true
+},
+{
+"id": "fix-hand-java-equality-11-hash-code-depends-on-the-scale",
+"ok": true
+}
+]

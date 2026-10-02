@@ -217,7 +217,7 @@ def sc_base(gate=True) -> dict:
 
 
 def sc_marker() -> dict:
-    return {"name": "same code, shifted lines and file hash", "expect": "pass", "marker": True}
+    return {"name": "same code, shifted lines and file hash", "expect": "pass", "gate": True, "marker": True}
 
 
 # ---- task builders --------------------------------------------------------------------------------------------------

@@ -59,7 +59,8 @@ ROLE_SETS = [
 
 
 def team(rng: random.Random, agents: int, roles: list[str] | None = None) -> dict:
-    return {"mode": "swarm", "agents": agents, "roles": list(roles) if roles else list(rng.choice(ROLE_SETS))}
+    pool = list(roles) if roles else list(rng.choice(ROLE_SETS))
+    return {"mode": "swarm", "agents": agents, "roles": pool[: max(2, agents)]}
 
 
 WORDS = ["amber", "birch", "cobalt", "dune", "ember", "fjord", "garnet", "harbor", "indigo", "juniper", "kelp", "lumen", "marble",

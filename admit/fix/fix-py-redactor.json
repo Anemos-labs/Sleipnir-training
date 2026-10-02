@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-redactor-01-negate",
+"ok": true
+},
+{
+"id": "fix-py-redactor-02-delete",
+"ok": true
+},
+{
+"id": "fix-py-redactor-03-cmp",
+"ok": true
+},
+{
+"id": "fix-py-redactor-04-swap",
+"ok": true
+},
+{
+"id": "fix-py-redactor-05-const",
+"ok": true
+},
+{
+"id": "fix-py-redactor-06-logic",
+"ok": true
+},
+{
+"id": "fix-py-redactor-07-arith",
+"ok": true
+},
+{
+"id": "fix-py-redactor-08-negate",
+"ok": true
+},
+{
+"id": "fix-py-redactor-09-delete",
+"ok": true
+},
+{
+"id": "fix-py-redactor-10-cmp",
+"ok": true
+}
+]

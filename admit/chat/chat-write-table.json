@@ -4,6 +4,14 @@
 "ok": true
 },
 {
+"id": "chat-write-table-02-hours-d2",
+"ok": true
+},
+{
+"id": "chat-write-table-03-scores-d2",
+"ok": true
+},
+{
 "id": "chat-write-table-04-sales-d3",
 "ok": true
 },
@@ -20,23 +28,7 @@
 "ok": true
 },
 {
-"id": "chat-write-table-08-hours-d4",
-"ok": true
-},
-{
-"id": "chat-write-table-09-scores-d2",
-"ok": true
-},
-{
-"id": "chat-write-table-10-sales-d3",
-"ok": true
-},
-{
-"id": "chat-write-table-11-hours-d4",
-"ok": true
-},
-{
-"id": "chat-write-table-12-scores-d3",
+"id": "chat-write-table-08-hours-d5",
 "ok": true
 }
 ]

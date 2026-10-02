@@ -95,6 +95,13 @@ def probe(key, pre, expr):
     return lines[-1] if c == 0 and lines else "crashed"
 
 
+def node_unit(path):
+    """Run a hidden node:test file; fail with its output when it does not pass."""
+    code, out = run(["node", "--test", path])
+    if code != 0:
+        fail("behaviour check %s failed:\n%s" % (path, out))
+
+
 def text_files():
     for p in tree():
         try:

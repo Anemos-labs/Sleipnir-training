@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-rs-bitstream-01-delete",
+"ok": true
+},
+{
+"id": "fix-rs-bitstream-02-cmp",
+"ok": true
+},
+{
+"id": "fix-rs-bitstream-03-const",
+"ok": true
+},
+{
+"id": "fix-rs-bitstream-04-swap",
+"ok": true
+},
+{
+"id": "fix-rs-bitstream-05-negate",
+"ok": true
+},
+{
+"id": "fix-rs-bitstream-06-arith",
+"ok": true
+},
+{
+"id": "fix-rs-bitstream-07-delete",
+"ok": true
+},
+{
+"id": "fix-rs-bitstream-08-cmp",
+"ok": true
+}
+]
