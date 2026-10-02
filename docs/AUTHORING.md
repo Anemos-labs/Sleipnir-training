@@ -118,7 +118,7 @@ One correct, specified library becomes many fix tasks: see `generators/fix/py_pr
 real logic (branches, boundaries, arithmetic), visible tests (a few, pass), hidden tests (thorough, pass on the correct
 implementation and kill most mutants: boundaries, negatives, empties, ordering, rounding, error cases), and optional
 `probes` (python: expressions whose repr differs when the bug is present; they power the "a user reports" prompts).
-`register_libs([...], n=10)` registers `fix-<lang>-<name>`. The builder keeps only mutants that compile, are caught
+`register_libs([...], n=10)` registers `fix-<lang prefix>-<name>` (py, go, js, ts, rs, java, c, cpp, php). The builder keeps only mutants that compile, are caught
 by the hidden suite, and do not hang. Aim for libraries where the hidden suite kills >= 20 mutants.
 `Lib.blurb` must be a complete sentence naming its subject ("The invoicing service uses these helpers to ...").
 

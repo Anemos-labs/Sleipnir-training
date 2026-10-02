@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-proration-01-cmp",
+"ok": true
+},
+{
+"id": "fix-py-proration-02-arith",
+"ok": true
+},
+{
+"id": "fix-py-proration-03-negate",
+"ok": true
+},
+{
+"id": "fix-py-proration-04-delete",
+"ok": true
+},
+{
+"id": "fix-py-proration-05-swap",
+"ok": true
+},
+{
+"id": "fix-py-proration-06-const",
+"ok": true
+},
+{
+"id": "fix-py-proration-07-cmp",
+"ok": true
+},
+{
+"id": "fix-py-proration-08-arith",
+"ok": true
+},
+{
+"id": "fix-py-proration-09-delete",
+"ok": true
+},
+{
+"id": "fix-py-proration-10-const",
+"ok": true
+}
+]

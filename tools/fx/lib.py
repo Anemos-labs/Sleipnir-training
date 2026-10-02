@@ -27,13 +27,16 @@ BUILD = {
     "go": "go build ./...",
     "rust": "cargo build --offline --quiet",
     "java": "rm -rf build && mkdir -p build && javac -d build $(find . -name '*.java' ! -path './test/*' ! -path './tests/*')",
-    "c": "mkdir -p build && gcc -std=c11 -fsyntax-only -Wall $(find src -name '*.c')",
-    "cpp": "mkdir -p build && g++ -std=c++17 -fsyntax-only -Wall $(find src -name '*.cpp')",
+    "c": "mkdir -p build && gcc -std=c11 -fsyntax-only -Wall -Iinclude -Isrc $(find src -name '*.c')",
+    "cpp": "mkdir -p build && g++ -std=c++17 -fsyntax-only -Wall -Iinclude -Isrc $(find src -name '*.cpp')",
     "typescript": "rm -rf build && tsc -p .",
     "javascript": "for f in $(find src lib -name '*.js' 2>/dev/null); do node --check $f || exit 1; done",
     "php": "for f in $(find src -name '*.php'); do php -l $f >/dev/null || exit 1; done",
     "python": "python3 -m compileall -q .",
 }
+
+
+LANG_PREFIX = {"python": "py", "javascript": "js", "typescript": "ts", "rust": "rs", "ruby": "rb"}
 
 
 @dataclass
@@ -277,7 +280,7 @@ def mutation_tasks(lib: Lib, rng: random.Random, n: int, max_candidates: int | N
 def register_libs(libs: list[Lib], n: int = 8, category: str = "fix") -> None:
     """Register one family per library: ``fix-<lang>-<name>``."""
     for lib in libs:
-        fam = Family(name=f"fix-{lib.lang[:4]}-{lib.name}", category=category, lang=lib.lang, kind="fix", n=n,
+        fam = Family(name=f"fix-{LANG_PREFIX.get(lib.lang, lib.lang)}-{lib.name}", category=category, lang=lib.lang, kind="fix", n=n,
                      summary=f"injected bugs in {lib.title} ({lib.lang})")
 
         def gen(rng, count, _lib=lib):

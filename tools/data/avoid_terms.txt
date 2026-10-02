@@ -1,0 +1,60 @@
+# Subjects docs/AVOID.md excludes (regular expressions, case-insensitive). A hit is a WARNING for human review.
+\bfizz ?buzz\b
+\btwo[- ]sum\b
+\bpalindrom
+\banagram
+\bfibonacci\b
+\bsieve of eratosthenes\b
+\broman numeral
+\bpig[- ]latin\b
+\brot-?13\b
+\bcaesar cipher\b
+\batbash\b
+\brail[- ]fence\b
+\bluhn\b
+\bisbn\b
+\bleap year\b
+\bword[- ]?count\b
+\bbowling\b
+\bpascal'?s triangle\b
+\bspiral matrix\b
+\bcollatz\b
+\bperfect numbers?\b
+\bpangram\b
+\bisogram\b
+\bnucleotide\b
+\brna transcription\b
+\bprotein translation\b
+\bhamming distance\b
+\bscrabble\b
+\bqueen attack\b
+\brobot simulator\b
+\bminesweeper\b
+\bgame of life\b
+\bzebra puzzle\b
+\bn-queens\b
+\bsudoku\b
+\bknapsack\b
+\blru cache\b
+\btrie\b
+\bunion[- ]find\b
+\bdijkstra\b
+\brun[- ]length encod
+\bmatching brackets\b
+\bbalanced (brackets|parentheses)\b
+\bbank account\b
+\btic[- ]tac[- ]toe\b
+\bhumaneval\b
+\bmbpp\b
+\bswe-bench\b
+\bleetcode\b
+\bexercism\b
+\btower of hanoi\b
+\bprime factors?\b
+\bjsonpath\b
+\btoken bucket\b
+\brate limiter\b
+\bslugify\b
+\bevent emitter\b
+\brpn\b
+\bbitset\b
