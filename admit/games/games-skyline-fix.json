@@ -1,0 +1,66 @@
+[
+{
+"id": "games-skyline-fix-01-rotation-direction",
+"ok": true
+},
+{
+"id": "games-skyline-fix-02-spawn-column",
+"ok": true
+},
+{
+"id": "games-skyline-fix-03-bottom-row",
+"ok": true
+},
+{
+"id": "games-skyline-fix-04-chain-counter",
+"ok": true
+},
+{
+"id": "games-skyline-fix-05-drop-distance",
+"ok": true
+},
+{
+"id": "games-skyline-fix-06-kick-order",
+"ok": true
+},
+{
+"id": "games-skyline-fix-07-gravity-up",
+"ok": true
+},
+{
+"id": "games-skyline-fix-08-rng-shift",
+"ok": true
+},
+{
+"id": "games-skyline-fix-09-extra-draw",
+"ok": true
+},
+{
+"id": "games-skyline-fix-10-rotate-into-wall",
+"ok": true
+},
+{
+"id": "games-skyline-fix-11-soft-drop-lock",
+"ok": true
+},
+{
+"id": "games-skyline-fix-12-lines-count",
+"ok": true
+},
+{
+"id": "games-skyline-fix-13-game-over-spawn",
+"ok": true
+},
+{
+"id": "games-skyline-fix-14-lines-count-soft-drop-lock",
+"ok": true
+},
+{
+"id": "games-skyline-fix-15-bottom-row-chain-counter",
+"ok": true
+},
+{
+"id": "games-skyline-fix-16-spawn-column-rotation-direction-rng-shift",
+"ok": true
+}
+]

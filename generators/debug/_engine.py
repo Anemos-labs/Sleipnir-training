@@ -184,6 +184,8 @@ def trace_family(mods: list[Module], rng: random.Random, n: int, tag: str = "", 
         used[mod.name].add((slot_name, bi))
         slot = mod.slot(slot_name)
         bad = slot.bad[bi]
+        if not any(w.lower() in bad.why.lower() for w in list(bad.kw) + [last_name(slot.func)]):
+            raise RuntimeError(f"{mod.name}.{slot_name}: the explanation of defect {bi} contains none of its keywords, the reference diagnosis would fail")
         choice: dict = {slot_name: ("bad", bi)}
         decoy_slots = [s for s in mod.slots if s.name != slot_name and (s.nit or s.trap)]
         rng.shuffle(decoy_slots)

@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-trimmid-01-delete",
+"ok": true
+},
+{
+"id": "fix-py-trimmid-02-const",
+"ok": true
+},
+{
+"id": "fix-py-trimmid-03-swap",
+"ok": true
+},
+{
+"id": "fix-py-trimmid-04-cmp",
+"ok": true
+},
+{
+"id": "fix-py-trimmid-05-arith",
+"ok": true
+},
+{
+"id": "fix-py-trimmid-06-negate",
+"ok": true
+},
+{
+"id": "fix-py-trimmid-07-delete",
+"ok": true
+},
+{
+"id": "fix-py-trimmid-08-const",
+"ok": true
+},
+{
+"id": "fix-py-trimmid-09-cmp",
+"ok": true
+},
+{
+"id": "fix-py-trimmid-10-arith",
+"ok": true
+}
+]

@@ -1,0 +1,58 @@
+[
+{
+"id": "games-forge-fix-01-cap-ore",
+"ok": true
+},
+{
+"id": "games-forge-fix-02-cost-formula",
+"ok": true
+},
+{
+"id": "games-forge-fix-03-smelter-runs",
+"ok": true
+},
+{
+"id": "games-forge-fix-04-price-multiplier",
+"ok": true
+},
+{
+"id": "games-forge-fix-05-buy-boundary",
+"ok": true
+},
+{
+"id": "games-forge-fix-06-phase-order",
+"ok": true
+},
+{
+"id": "games-forge-fix-07-tick-count",
+"ok": true
+},
+{
+"id": "games-forge-fix-08-grammar-zero",
+"ok": true
+},
+{
+"id": "games-forge-fix-09-tick-limit",
+"ok": true
+},
+{
+"id": "games-forge-fix-10-mine-cap",
+"ok": true
+},
+{
+"id": "games-forge-fix-11-reply-level",
+"ok": true
+},
+{
+"id": "games-forge-fix-12-sell-keeps",
+"ok": true
+},
+{
+"id": "games-forge-fix-13-ingot-cap",
+"ok": true
+},
+{
+"id": "games-forge-fix-14-cost-formula-price-multiplier",
+"ok": true
+}
+]

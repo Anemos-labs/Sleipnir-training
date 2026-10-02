@@ -301,6 +301,7 @@ _NICE_VERIFY = {
 def _scrub(task: Task, hidden: list[str], verify: str = "", lang: str = "") -> Task:
     """Make a prompt independent of process ids and free of the hidden test paths; shorten the long verify command."""
     p = _PID.sub("", task.prompt)
+    p = p.replace(" (0xADDR)", "")
     if verify and lang in _NICE_VERIFY and f"`{verify}`" in p:
         p = p.replace(f"`{verify}`", _NICE_VERIFY[lang])
     for h in hidden:
@@ -325,15 +326,16 @@ def _voice(lib, task: Task, hidden: list[str], rng: random.Random) -> Task:
     body = "\n".join(lines[:10])
     path = sorted(task.solution)[0]
     t, blurb = lib.title, lib.blurb
+    T = t[:1].upper() + t[1:]
     voices = [
         ("ticket", f"**Bug: wrong results from {t}**\n\n{blurb}\n\nThe nightly regression run now fails with this output (trimmed):\n\n```\n{body}\n```\n\n"
                    f"`README.md` is the specification and it has not changed. Please find the cause in the code and fix it."),
-        ("chat", f"{t} broke somewhere between yesterday and today: `{sal}`. The README is still the spec. Can you find what changed in the code and fix it? The tests are off limits."),
+        ("chat", f"{T} broke somewhere between yesterday and today: `{sal}`. The README is still the spec. Can you find what changed in the code and fix it? The tests are off limits."),
         ("pr", f"While reviewing a refactor I noticed that {t} no longer behaves as `README.md` says. The change is somewhere in `{path}`. The suite reports:\n\n    {sal}\n\n"
                f"Please fix the implementation (not the tests) so that it matches the specification again."),
         ("brief", f"Context: {blurb}\n\nProblem: since the last release some checks of {t} fail; the first one reads\n\n    {sal}\n\n"
                   f"Scope: only the source files may change, the documented behaviour in `README.md` stays as it is, and the public API must not change. Keep the fix small and targeted."),
-        ("terse", f"{t}: `{sal}` - this used to pass and the README has not changed. Please fix the code, not the tests."),
+        ("terse", f"{T}: `{sal}` - this used to pass and the README has not changed. Please fix the code, not the tests."),
         ("handover", f"I'm handing over a half-finished investigation. {blurb} One of the checks fails with `{sal}`; I suspect `{path}` but did not get further. "
                      f"The specification is `README.md`. Please finish the job and fix the defect."),
     ]

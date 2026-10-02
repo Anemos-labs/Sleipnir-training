@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-idcodec-01-delete",
+"ok": true
+},
+{
+"id": "fix-py-idcodec-02-arith",
+"ok": true
+},
+{
+"id": "fix-py-idcodec-03-negate",
+"ok": true
+},
+{
+"id": "fix-py-idcodec-04-const",
+"ok": true
+},
+{
+"id": "fix-py-idcodec-05-cmp",
+"ok": true
+},
+{
+"id": "fix-py-idcodec-06-swap",
+"ok": true
+},
+{
+"id": "fix-py-idcodec-07-delete",
+"ok": true
+},
+{
+"id": "fix-py-idcodec-08-arith",
+"ok": true
+},
+{
+"id": "fix-py-idcodec-09-negate",
+"ok": true
+},
+{
+"id": "fix-py-idcodec-10-const",
+"ok": true
+}
+]

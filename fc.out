@@ -1,0 +1,17 @@
+ok   fix-py-cuetime: 10 tasks (1s)
+ok   fix-py-fixedrec: 10 tasks (2s)
+ok   fix-py-globrules: 10 tasks (2s)
+ok   fix-py-headcase: 10 tasks (1s)
+ok   fix-py-icsfold: 10 tasks (0s)
+ok   fix-py-idcodec: 10 tasks (0s)
+ok   fix-py-lineends: 10 tasks (1s)
+ok   fix-py-logfold: 10 tasks (1s)
+ok   fix-py-namefmt: 10 tasks (1s)
+ok   fix-py-natsort: 10 tasks (0s)
+ok   fix-py-redactor: 10 tasks (0s)
+ok   fix-py-tabstops: 10 tasks (1s)
+ok   fix-py-threeway: 10 tasks (2s)
+ok   fix-py-trimmid: 10 tasks (0s)
+14 families built, 0 failed, 140 tasks written
+admit: 140 ok, 0 failed of 140 tasks
+DONE

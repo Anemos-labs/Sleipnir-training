@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-rs-tapfare-01-cmp",
+"ok": true
+},
+{
+"id": "fix-rs-tapfare-02-arith",
+"ok": true
+},
+{
+"id": "fix-rs-tapfare-03-logic",
+"ok": true
+},
+{
+"id": "fix-rs-tapfare-04-delete",
+"ok": true
+},
+{
+"id": "fix-rs-tapfare-05-swap",
+"ok": true
+},
+{
+"id": "fix-rs-tapfare-06-const",
+"ok": true
+},
+{
+"id": "fix-rs-tapfare-07-cmp",
+"ok": true
+},
+{
+"id": "fix-rs-tapfare-08-arith",
+"ok": true
+}
+]

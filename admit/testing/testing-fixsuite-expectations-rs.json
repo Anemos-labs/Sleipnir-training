@@ -1,0 +1,26 @@
+[
+{
+"id": "testing-fixsuite-expectations-rs-01-vanlog-2wrong",
+"ok": true
+},
+{
+"id": "testing-fixsuite-expectations-rs-02-vanlog-2wrong",
+"ok": true
+},
+{
+"id": "testing-fixsuite-expectations-rs-03-vanlog-4wrong",
+"ok": true
+},
+{
+"id": "testing-fixsuite-expectations-rs-04-railfare-2wrong",
+"ok": true
+},
+{
+"id": "testing-fixsuite-expectations-rs-05-railfare-3wrong",
+"ok": true
+},
+{
+"id": "testing-fixsuite-expectations-rs-06-railfare-2wrong",
+"ok": true
+}
+]

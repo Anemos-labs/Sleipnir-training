@@ -1,0 +1,18 @@
+[
+{
+"id": "security-sessions-01-cookie-flags",
+"ok": true
+},
+{
+"id": "security-sessions-02-logout-keeps-session",
+"ok": true
+},
+{
+"id": "security-sessions-03-session-fixation",
+"ok": true
+},
+{
+"id": "security-sessions-04-session-timeouts",
+"ok": true
+}
+]

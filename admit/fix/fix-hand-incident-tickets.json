@@ -1,0 +1,86 @@
+[
+{
+"id": "fix-hand-incident-tickets-01-precedence-and-booleans",
+"ok": true
+},
+{
+"id": "fix-hand-incident-tickets-02-settings-rollout",
+"ok": true
+},
+{
+"id": "fix-hand-incident-tickets-03-importer-night-run",
+"ok": true
+},
+{
+"id": "fix-hand-incident-tickets-04-importer-incident",
+"ok": true
+},
+{
+"id": "fix-hand-incident-tickets-05-confload-error-handling",
+"ok": true
+},
+{
+"id": "fix-hand-incident-tickets-06-confload-release-blockers",
+"ok": true
+},
+{
+"id": "fix-hand-incident-tickets-07-fare-statement-cents",
+"ok": true
+},
+{
+"id": "fix-hand-incident-tickets-08-pager-and-api-links",
+"ok": true
+},
+{
+"id": "fix-hand-incident-tickets-09-listing-filters-and-caps",
+"ok": true
+},
+{
+"id": "fix-hand-incident-tickets-10-feed-limit-and-ties",
+"ok": true
+},
+{
+"id": "fix-hand-incident-tickets-11-party-and-undo",
+"ok": true
+},
+{
+"id": "fix-hand-incident-tickets-12-price-cache-tickets",
+"ok": true
+},
+{
+"id": "fix-hand-incident-tickets-13-reminders-around-clock-changes",
+"ok": true
+},
+{
+"id": "fix-hand-incident-tickets-14-reminder-calendar-review",
+"ok": true
+},
+{
+"id": "fix-hand-incident-tickets-15-roster-pay-run",
+"ok": true
+},
+{
+"id": "fix-hand-incident-tickets-16-handle-abuse-tickets",
+"ok": true
+},
+{
+"id": "fix-hand-incident-tickets-17-handle-directory-review",
+"ok": true
+},
+{
+"id": "fix-hand-incident-tickets-18-notes-sort-and-fold",
+"ok": true
+},
+{
+"id": "fix-hand-incident-tickets-19-notes-search-review",
+"ok": true
+},
+{
+"id": "fix-hand-incident-tickets-20-seat-bookkeeping",
+"ok": true
+},
+{
+"id": "fix-hand-incident-tickets-21-locker-statements",
+"ok": true
+}
+]

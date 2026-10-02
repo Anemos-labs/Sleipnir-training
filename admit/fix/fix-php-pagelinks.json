@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-php-pagelinks-01-const",
+"ok": true
+},
+{
+"id": "fix-php-pagelinks-02-arith",
+"ok": true
+},
+{
+"id": "fix-php-pagelinks-03-cmp",
+"ok": true
+},
+{
+"id": "fix-php-pagelinks-04-negate",
+"ok": true
+},
+{
+"id": "fix-php-pagelinks-05-swap",
+"ok": true
+},
+{
+"id": "fix-php-pagelinks-06-delete",
+"ok": true
+},
+{
+"id": "fix-php-pagelinks-07-const",
+"ok": true
+},
+{
+"id": "fix-php-pagelinks-08-arith",
+"ok": true
+}
+]

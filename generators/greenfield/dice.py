@@ -1561,7 +1561,7 @@ def make_cases(rng, p, ns):
 
 
 def prompt(rng, p, api, lang):
-    where = api.where(lang)
+    where = api.short(lang)
     fn = api.name(lang)
     ln = K.LANG_NAME[lang]
     feats = ["plain dice sums"] + (["keep/drop and exploding dice"] if p["mods"] else []) + (["rerolls and success counting"] if p["adv"] else [])

@@ -5,7 +5,8 @@ from fx import dd, langs
 
 from ._engine import TLib
 
-WHERE_RS = ("Put your tests in `tests/` as integration tests (for example `tests/fuel_tests.rs`, using the crate by its name); only the standard library "
+def where_rs(crate: str) -> str:
+    return (f"Put your tests in `tests/` as integration tests (for example `tests/{crate}_tests.rs`, using the crate `{crate}` by its name); only the standard library "
             "and `cargo test --offline` are available. Do not rely on private items.")
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -344,7 +345,7 @@ def fuel(rng) -> TLib:
     return TLib(
         name="rs-vanlog", lang="rust", title="the van fleet fuel-log library", blurb="The fleet manager's tool parses fuel logs and reports consumption per tank.",
         files=files, stub={"tests/smoke.rs": FUEL_STUB}, gold={"tests/fuel_gold.rs": FUEL_TEST}, mutate=["src/fuel.rs"], cmd="cargo test --offline --quiet",
-        where=WHERE_RS, difficulty=4, wrong_edits=wrong, timeout=90, focus="the order of the parse checks, calendar edge cases, which fills belong to a segment, rounding, and the error indexes",
+        where=where_rs("vanlog"), difficulty=4, wrong_edits=wrong, timeout=90, focus="the order of the parse checks, calendar edge cases, which fills belong to a segment, rounding, and the error indexes",
     )
 
 
@@ -568,5 +569,5 @@ def railfare(rng) -> TLib:
     return TLib(
         name="rs-railfare", lang="rust", title="the Dunmore Valley fare rules", blurb="The ticket machines price single tickets and day passes with the `railfare` crate.",
         files={**files}, stub={"tests/smoke.rs": RAIL_STUB}, gold={"tests/rail_gold.rs": RAIL_TEST}, mutate=["src/lib.rs"], cmd="cargo test --offline --quiet",
-        where=WHERE_RS, difficulty=3, wrong_edits=wrong, timeout=90, focus="the order of the discounts, rounding down vs up, the peak boundaries, the minimum fare and the day-pass cap",
+        where=where_rs("railfare"), difficulty=3, wrong_edits=wrong, timeout=90, focus="the order of the discounts, rounding down vs up, the peak boundaries, the minimum fare and the day-pass cap",
     )

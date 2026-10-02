@@ -1,0 +1,22 @@
+[
+{
+"id": "security-deserialization-01-session-pickle",
+"ok": true
+},
+{
+"id": "security-deserialization-02-queue-jobs",
+"ok": true
+},
+{
+"id": "security-deserialization-03-cache-pickle",
+"ok": true
+},
+{
+"id": "security-deserialization-04-json-class-hook",
+"ok": true
+},
+{
+"id": "security-deserialization-05-restricted-unpickler",
+"ok": true
+}
+]

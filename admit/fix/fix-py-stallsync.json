@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-stallsync-01-const",
+"ok": true
+},
+{
+"id": "fix-py-stallsync-02-swap",
+"ok": true
+},
+{
+"id": "fix-py-stallsync-03-delete",
+"ok": true
+},
+{
+"id": "fix-py-stallsync-04-negate",
+"ok": true
+},
+{
+"id": "fix-py-stallsync-05-logic",
+"ok": true
+},
+{
+"id": "fix-py-stallsync-06-const",
+"ok": true
+},
+{
+"id": "fix-py-stallsync-07-swap",
+"ok": true
+},
+{
+"id": "fix-py-stallsync-08-delete",
+"ok": true
+},
+{
+"id": "fix-py-stallsync-09-negate",
+"ok": true
+},
+{
+"id": "fix-py-stallsync-10-const",
+"ok": true
+}
+]

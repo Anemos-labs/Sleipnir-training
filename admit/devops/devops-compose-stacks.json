@@ -1,0 +1,66 @@
+[
+{
+"id": "devops-compose-stacks-01-latest",
+"ok": true
+},
+{
+"id": "devops-compose-stacks-02-version",
+"ok": true
+},
+{
+"id": "devops-compose-stacks-03-tab",
+"ok": true
+},
+{
+"id": "devops-compose-stacks-04-vol-restart",
+"ok": true
+},
+{
+"id": "devops-compose-stacks-05-sexa",
+"ok": true
+},
+{
+"id": "devops-compose-stacks-06-dep-short-no-health",
+"ok": true
+},
+{
+"id": "devops-compose-stacks-07-clash-db-public",
+"ok": true
+},
+{
+"id": "devops-compose-stacks-08-inline-secret-mem",
+"ok": true
+},
+{
+"id": "devops-compose-stacks-09-restart-no-dep-typo",
+"ok": true
+},
+{
+"id": "devops-compose-stacks-10-net-latest",
+"ok": true
+},
+{
+"id": "devops-compose-stacks-11-sexa-dep-short",
+"ok": true
+},
+{
+"id": "devops-compose-stacks-12-dep-typo-db-public",
+"ok": true
+},
+{
+"id": "devops-compose-stacks-13-sexa-clash",
+"ok": true
+},
+{
+"id": "devops-compose-stacks-14-inline-secret",
+"ok": true
+},
+{
+"id": "devops-compose-stacks-15-restart-no",
+"ok": true
+},
+{
+"id": "devops-compose-stacks-16-db-public-net",
+"ok": true
+}
+]

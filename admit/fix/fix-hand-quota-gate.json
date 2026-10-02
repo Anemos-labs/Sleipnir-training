@@ -1,0 +1,50 @@
+[
+{
+"id": "fix-hand-quota-gate-01-cost-is-not-part-of-the-check",
+"ok": true
+},
+{
+"id": "fix-hand-quota-gate-02-reset-is-one-second-early",
+"ok": true
+},
+{
+"id": "fix-hand-quota-gate-03-unknown-plan-is-a-server-error",
+"ok": true
+},
+{
+"id": "fix-hand-quota-gate-04-day-offset-has-the-wrong-sign",
+"ok": true
+},
+{
+"id": "fix-hand-quota-gate-05-refused-requests-are-counted",
+"ok": true
+},
+{
+"id": "fix-hand-quota-gate-06-nil-override-falls-back-to-the-plan",
+"ok": true
+},
+{
+"id": "fix-hand-quota-gate-07-retry-after-includes-windows-that-allowed",
+"ok": true
+},
+{
+"id": "fix-hand-quota-gate-08-plan-name-in-the-counter-key",
+"ok": true
+},
+{
+"id": "fix-hand-quota-gate-09-headers-describe-the-loosest-window",
+"ok": true
+},
+{
+"id": "fix-hand-quota-gate-10-unlimited-override-and-header-window",
+"ok": true
+},
+{
+"id": "fix-hand-quota-gate-11-refusal-burns-quota-and-waits-too-long",
+"ok": true
+},
+{
+"id": "fix-hand-quota-gate-12-onboarding-incident",
+"ok": true
+}
+]

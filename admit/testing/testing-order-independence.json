@@ -1,0 +1,70 @@
+[
+{
+"id": "testing-order-independence-01-pluginhub-3leaks",
+"ok": true
+},
+{
+"id": "testing-order-independence-02-cartkit-3leaks",
+"ok": true
+},
+{
+"id": "testing-order-independence-03-notestore-2leaks",
+"ok": true
+},
+{
+"id": "testing-order-independence-04-pluginhub-1leaks",
+"ok": true
+},
+{
+"id": "testing-order-independence-05-cartkit-1leaks",
+"ok": true
+},
+{
+"id": "testing-order-independence-06-notestore-1leaks",
+"ok": true
+},
+{
+"id": "testing-order-independence-07-pluginhub-1leaks",
+"ok": true
+},
+{
+"id": "testing-order-independence-08-cartkit-1leaks",
+"ok": true
+},
+{
+"id": "testing-order-independence-09-notestore-1leaks",
+"ok": true
+},
+{
+"id": "testing-order-independence-10-pluginhub-1leaks",
+"ok": true
+},
+{
+"id": "testing-order-independence-11-cartkit-1leaks",
+"ok": true
+},
+{
+"id": "testing-order-independence-12-pluginhub-2leaks",
+"ok": true
+},
+{
+"id": "testing-order-independence-13-cartkit-2leaks",
+"ok": true
+},
+{
+"id": "testing-order-independence-14-pluginhub-2leaks",
+"ok": true
+},
+{
+"id": "testing-order-independence-15-cartkit-2leaks",
+"ok": true
+},
+{
+"id": "testing-order-independence-16-pluginhub-2leaks",
+"ok": true
+},
+{
+"id": "testing-order-independence-17-cartkit-2leaks",
+"ok": true
+}
+]

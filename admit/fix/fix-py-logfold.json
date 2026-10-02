@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-logfold-01-cmp",
+"ok": true
+},
+{
+"id": "fix-py-logfold-02-arith",
+"ok": true
+},
+{
+"id": "fix-py-logfold-03-const",
+"ok": true
+},
+{
+"id": "fix-py-logfold-04-negate",
+"ok": true
+},
+{
+"id": "fix-py-logfold-05-delete",
+"ok": true
+},
+{
+"id": "fix-py-logfold-06-swap",
+"ok": true
+},
+{
+"id": "fix-py-logfold-07-cmp",
+"ok": true
+},
+{
+"id": "fix-py-logfold-08-const",
+"ok": true
+},
+{
+"id": "fix-py-logfold-09-negate",
+"ok": true
+},
+{
+"id": "fix-py-logfold-10-delete",
+"ok": true
+}
+]

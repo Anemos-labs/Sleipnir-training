@@ -1,0 +1,74 @@
+[
+{
+"id": "feature-rs-kvmem-01-get-many",
+"ok": true
+},
+{
+"id": "feature-rs-kvmem-02-cas",
+"ok": true
+},
+{
+"id": "feature-rs-kvmem-03-dump",
+"ok": true
+},
+{
+"id": "feature-rs-kvmem-04-ttl-txn",
+"ok": true
+},
+{
+"id": "feature-rs-kvmem-05-capacity",
+"ok": true
+},
+{
+"id": "feature-rs-kvmem-06-ttl",
+"ok": true
+},
+{
+"id": "feature-rs-kvmem-07-prefix",
+"ok": true
+},
+{
+"id": "feature-rs-kvmem-08-ttl-watch",
+"ok": true
+},
+{
+"id": "feature-rs-kvmem-09-incr",
+"ok": true
+},
+{
+"id": "feature-rs-kvmem-10-incr",
+"ok": true
+},
+{
+"id": "feature-rs-kvmem-11-capacity",
+"ok": true
+},
+{
+"id": "feature-rs-kvmem-12-prefix-cas-ttl",
+"ok": true
+},
+{
+"id": "feature-rs-kvmem-13-get-many",
+"ok": true
+},
+{
+"id": "feature-rs-kvmem-14-dump",
+"ok": true
+},
+{
+"id": "feature-rs-kvmem-15-cas",
+"ok": true
+},
+{
+"id": "feature-rs-kvmem-16-ttl-watch",
+"ok": true
+},
+{
+"id": "feature-rs-kvmem-17-txn",
+"ok": true
+},
+{
+"id": "feature-rs-kvmem-18-ttl",
+"ok": true
+}
+]

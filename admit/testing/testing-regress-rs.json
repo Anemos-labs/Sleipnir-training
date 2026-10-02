@@ -1,0 +1,34 @@
+[
+{
+"id": "testing-regress-rs-01-vanlog-logic",
+"ok": true
+},
+{
+"id": "testing-regress-rs-02-vanlog-arith",
+"ok": true
+},
+{
+"id": "testing-regress-rs-03-railfare-delete",
+"ok": true
+},
+{
+"id": "testing-regress-rs-04-railfare-const",
+"ok": true
+},
+{
+"id": "testing-regress-rs-05-vanlog-negate",
+"ok": true
+},
+{
+"id": "testing-regress-rs-06-vanlog-logic",
+"ok": true
+},
+{
+"id": "testing-regress-rs-07-railfare-swap",
+"ok": true
+},
+{
+"id": "testing-regress-rs-08-railfare-negate",
+"ok": true
+}
+]

@@ -8,8 +8,8 @@ from __future__ import annotations
 VERIFY = {
     "python": "python3 -m unittest discover -s tests -v",
     "go": "go test -count=1 ./...",
-    "javascript": "node --test test/",
-    "typescript": "rm -rf build && tsc -p . && node --test build/test/",
+    "javascript": "node --test test/*.test.js",
+    "typescript": "rm -rf build && tsc -p . && node --test build/test/*.test.js",
     "rust": "cargo test --offline --quiet",
     "java": "rm -rf build && mkdir -p build && javac -d build $(find . -name '*.java') && java -cp build TestMain",
     "c": "mkdir -p build && gcc -std=c11 -O1 -Wall -Wextra -Iinclude -Isrc -o build/tests $(find src tests -name '*.c') && ./build/tests",

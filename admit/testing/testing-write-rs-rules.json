@@ -1,0 +1,45 @@
+[
+{
+"id": "testing-write-rs-rules-01-vanlog-5m",
+"ok": true
+},
+{
+"id": "testing-write-rs-rules-02-vanlog-9m",
+"ok": true
+},
+{
+"id": "testing-write-rs-rules-03-vanlog-7m",
+"ok": true
+},
+{
+"id": "testing-write-rs-rules-04-railfare-8m",
+"ok": true
+},
+{
+"id": "testing-write-rs-rules-05-railfare-5m",
+"ok": false,
+"reason": "verifier fails with the reference solution applied: exit status 0\n...es-05-railfare-5m\nverifier: v1-c08d7d6a562b (json-score)\ncommand: python3 _verify/check.py\nresult: pass=false score=0.857 runs=1 flaky=false\nwarning: network isolation unavailable: neither ip nor ifconfig is installed to bring up the loopback interface (tests that bind 127.0.0.1 would fail)\n\n===== verifier run 1/1: exit=0 pass=false score=0.857 duration=21563ms timed_out=false truncated=false \n[ok] real code, your tests: expected pass, got pass (5.6s)\n[ok] same code, shifted lines and file hash: expected pass, got pass (3.6s)"
+},
+{
+"id": "testing-write-rs-rules-06-railfare-5m",
+"ok": true
+},
+{
+"id": "testing-write-rs-rules-07-vanlog-12m",
+"ok": false,
+"reason": "verifier fails with the reference solution applied: exit status 0\n...false score=0.929 duration=45624ms timed_out=false truncated=false \n[ok] real code, your tests: expected pass, got pass (6.6s)\n[ok] same code, shifted lines and file hash: expected pass, got pass (3.9s)\n[FAIL] mutant 01: expected fail, got pass (0.6s)\n[ok] mutant 02: expected fail, got fail (3.3s)\n[ok] mutant 03: expected fail, got fail (3.0s)\n[ok] mutant 04: expected fail, got fail (2.7s)\n[ok] mutant 05: expected fail, got fail (2.8s)\n[ok] mutant 06: expected fail, got fail (3.6s)\n[ok] mutant 07: expected fail, got fail (3.2"
+},
+{
+"id": "testing-write-rs-rules-08-vanlog-5m",
+"ok": true
+},
+{
+"id": "testing-write-rs-rules-09-vanlog-4m",
+"ok": false,
+"reason": "verifier fails with the reference solution applied: exit status 0\ntask: testing-write-rs-rules-09-vanlog-4m\nverifier: v1-f3e6c42272f2 (json-score)\ncommand: python3 _verify/check.py\nresult: pass=false score=0.833 runs=1 flaky=false\nwarning: network isolation unavailable: neither ip nor ifconfig is installed to bring up the loopback interface (tests that bind 127.0.0.1 would fail)\n\n===== verifier run 1/1: exit=0 pass=false score=0.833 duration=20730ms timed_out=false truncated=false \n[ok] real code, your tests: expected pass, got pass (6.1s)\n[ok] same code, shifted lines and file hash: expected "
+},
+{
+"id": "testing-write-rs-rules-10-railfare-11m",
+"ok": true
+}
+]

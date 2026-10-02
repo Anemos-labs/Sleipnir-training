@@ -1,0 +1,34 @@
+[
+{
+"id": "greenfield-template-01-javascript-brackets-l1",
+"ok": true
+},
+{
+"id": "greenfield-template-02-ruby-braces-l1",
+"ok": true
+},
+{
+"id": "greenfield-template-03-go-parens-l2",
+"ok": true
+},
+{
+"id": "greenfield-template-04-java-angles-l2",
+"ok": true
+},
+{
+"id": "greenfield-template-05-ruby-braces-l3",
+"ok": true
+},
+{
+"id": "greenfield-template-06-javascript-brackets-l3",
+"ok": true
+},
+{
+"id": "greenfield-template-07-java-percent-l4",
+"ok": true
+},
+{
+"id": "greenfield-template-08-go-percent-l5",
+"ok": true
+}
+]

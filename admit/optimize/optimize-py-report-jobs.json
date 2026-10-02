@@ -1,0 +1,50 @@
+[
+{
+"id": "optimize-py-report-jobs-01-shopreports-queries-rates-blocked",
+"ok": true
+},
+{
+"id": "optimize-py-report-jobs-02-depotbilling-rates-blocked",
+"ok": true
+},
+{
+"id": "optimize-py-report-jobs-03-visitbilling-queries-blocked-lines",
+"ok": true
+},
+{
+"id": "optimize-py-report-jobs-04-metering-queries-rates-blocked-lines",
+"ok": true
+},
+{
+"id": "optimize-py-report-jobs-05-shopreports-queries-rates-blocked-lines",
+"ok": true
+},
+{
+"id": "optimize-py-report-jobs-06-depotbilling-rates-blocked-lines",
+"ok": true
+},
+{
+"id": "optimize-py-report-jobs-07-visitbilling-queries-rates-blocked",
+"ok": true
+},
+{
+"id": "optimize-py-report-jobs-08-metering-rates-lines",
+"ok": true
+},
+{
+"id": "optimize-py-report-jobs-09-shopreports-queries-rates-blocked-lines",
+"ok": true
+},
+{
+"id": "optimize-py-report-jobs-10-depotbilling-queries-rates-blocked-lines",
+"ok": true
+},
+{
+"id": "optimize-py-report-jobs-11-visitbilling-rates-blocked-lines",
+"ok": true
+},
+{
+"id": "optimize-py-report-jobs-12-metering-queries-rates-blocked-lines",
+"ok": true
+}
+]

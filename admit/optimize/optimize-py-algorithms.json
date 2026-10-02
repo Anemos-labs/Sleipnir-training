@@ -1,0 +1,82 @@
+[
+{
+"id": "optimize-py-algorithms-01-fewest_steps-steps_to_exit",
+"ok": true
+},
+{
+"id": "optimize-py-algorithms-02-connected_flags-joined_at_step",
+"ok": true
+},
+{
+"id": "optimize-py-algorithms-03-subset_sum_exists-payable_exactly",
+"ok": true
+},
+{
+"id": "optimize-py-algorithms-04-longest_span_with_sum-longest_exact_run",
+"ok": true
+},
+{
+"id": "optimize-py-algorithms-05-cheapest_cost-latency_map",
+"ok": true
+},
+{
+"id": "optimize-py-algorithms-06-prefix_counts-count_by_prefix",
+"ok": true
+},
+{
+"id": "optimize-py-algorithms-07-inversions-out_of_order_pairs",
+"ok": true
+},
+{
+"id": "optimize-py-algorithms-08-range_totals-window_totals",
+"ok": true
+},
+{
+"id": "optimize-py-algorithms-09-best_schedule-best_booking_value",
+"ok": true
+},
+{
+"id": "optimize-py-algorithms-10-longest_rising-longest_climb",
+"ok": true
+},
+{
+"id": "optimize-py-algorithms-11-peak_load-busiest_moment",
+"ok": true
+},
+{
+"id": "optimize-py-algorithms-12-coin_ways-ways_to_change",
+"ok": true
+},
+{
+"id": "optimize-py-algorithms-13-build_waves-release_stages",
+"ok": true
+},
+{
+"id": "optimize-py-algorithms-14-longest_unique_run-max_distinct_streak",
+"ok": true
+},
+{
+"id": "optimize-py-algorithms-15-shared_length-common_stretch",
+"ok": true
+},
+{
+"id": "optimize-py-algorithms-16-next_larger-next_higher",
+"ok": true
+},
+{
+"id": "optimize-py-algorithms-17-cheapest_cost-route_costs",
+"ok": true
+},
+{
+"id": "optimize-py-algorithms-18-inversions-count_disorder",
+"ok": true
+},
+{
+"id": "optimize-py-algorithms-19-longest_span_with_sum-steadiest_stretch",
+"ok": true
+},
+{
+"id": "optimize-py-algorithms-20-longest_rising-best_streak_of_records",
+"ok": true
+}
+]

@@ -49,12 +49,22 @@ def read(path):
         return fh.read()
 '''
 
+def _d4(text: str) -> str:
+    return "\n".join(line[4:] if line.startswith("    ") else line for line in text.split("\n"))
+
+
 def patched(text: str, *pairs: tuple[str, str]) -> str:
-    """The reference solution of a file: `text` with every (old, new) pair applied (each `old` must occur)."""
+    """The reference solution of a file: `text` with every (old, new) pair applied (each `old` must occur).
+
+    Pairs may be written with the indentation of the source file *inside the generator* (4 spaces deeper than the generated file):
+    when `old` is not found as written, it is tried with 4 spaces less indentation on every line (and `new` is shifted the same way)."""
     for old, new in pairs:
-        if old not in text:
+        if old in text:
+            text = text.replace(old, new)
+        elif _d4(old) in text:
+            text = text.replace(_d4(old), _d4(new))
+        else:
             raise ValueError(f"patch target not found: {old[:60]!r}")
-        text = text.replace(old, new)
     return text
 
 

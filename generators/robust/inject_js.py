@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from fx import Task, dd, family
 
+from generators.swarm import _jsmods  # noqa: F401  (registers the JavaScript bank)
 from generators.swarm._jsbank import JS_MODS, describe, symptoms
 
 from ._kit import VERIFY, manifest, pick, py, script

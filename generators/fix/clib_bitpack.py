@@ -44,7 +44,7 @@ README1 = dd(r'''
       alone) when `width` is outside `1..32` or fewer than `width` bits remain; otherwise 0.
     * `int br_get_signed(br_t *r, int width, int32_t *out)` reads a field and sign-extends it from `width` bits; same
       failure rules.
-    * `int br_get_lp(br_t *r, uint32_t *out)` reads a length-prefixed integer. It returns -1 and consumes nothing when the
+    * `int br_get_lp(br_t *r, uint32_t *out)` reads a length-prefixed integer. It returns -1, consumes nothing and leaves `*out` alone when the
       6-bit count is larger than 32 or the stream ends before the count or the payload does.
     * `size_t br_remaining(const br_t *r)` is the number of unread bits.
     * `int br_align(br_t *r)` skips to the next byte boundary; returns -1 (consuming nothing) when that boundary is past

@@ -394,7 +394,8 @@ QB_README = dd(r"""
       keeps the order of appearance.
     * `name[]=v`: always a list; appended to whatever list `name` already has (a scalar already stored is first
       turned into a one-element list).
-    * `name[sub]=v` (`sub` non-empty, no brackets inside; `name` is everything before the *last* bracket pair): the value
+    * `name[sub]=v` (the key must *end* with a bracket pair; `sub` is non-empty with no brackets inside; `name` is everything before that last pair and
+      must not be empty, so `a[b]x`, `[b]` and `a[` are plain keys): the value
       of `name` is a `dict` and `dict[sub] = v` (a repeated `sub` keeps the last value).
     * Mixing a dict-valued `name` with plain or `[]` use of the same `name` is a `ValueError`.
 
@@ -1170,7 +1171,7 @@ CL = Lib(
     files={"cfglayers.py": CL_SRC, "README.md": CL_README, ".gitignore": "__pycache__/\n*.pyc\n"},
     visible_tests={"tests/test_basic.py": CL_VISIBLE},
     hidden_tests={"tests/test_full.py": CL_HIDDEN},
-    mutate=["cfglayers.py"], difficulty=4, tags=["config", "merge"],
+    mutate=["cfglayers.py"], difficulty=3, tags=["config", "merge"],
     probes=[
         'merge({"x": [1, 2]}, {"x+": [3], "+x": [0]})',
         'merge({"x": [1, 2, 3, 2]}, {"x-": [2]})',

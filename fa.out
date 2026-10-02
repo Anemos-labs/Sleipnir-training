@@ -1,0 +1,13 @@
+ok   fix-py-cachelens: 10 tasks (2s)
+ok   fix-py-hexdump: 10 tasks (2s)
+ok   fix-py-humanfmt: 10 tasks (2s)
+ok   fix-py-identcase: 10 tasks (1s)
+ok   fix-py-linepatch: 10 tasks (1s)
+ok   fix-py-mountpath: 10 tasks (0s)
+ok   fix-py-negotiator: 10 tasks (1s)
+ok   fix-py-pagespec: 10 tasks (1s)
+ok   fix-py-relnotes: 10 tasks (2s)
+ok   fix-py-veldoria: 10 tasks (1s)
+10 families built, 0 failed, 100 tasks written
+admit: 100 ok, 0 failed of 100 tasks
+DONE

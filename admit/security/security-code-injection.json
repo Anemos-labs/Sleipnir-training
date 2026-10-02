@@ -1,0 +1,18 @@
+[
+{
+"id": "security-code-injection-01-getattr-dispatch",
+"ok": true
+},
+{
+"id": "security-code-injection-02-csv-formula",
+"ok": true
+},
+{
+"id": "security-code-injection-03-calculator-eval",
+"ok": true
+},
+{
+"id": "security-code-injection-04-format-template",
+"ok": true
+}
+]

@@ -1,0 +1,66 @@
+[
+{
+"id": "feature-java-vouchers-01-min-spend",
+"ok": true
+},
+{
+"id": "feature-java-vouchers-02-batch",
+"ok": true
+},
+{
+"id": "feature-java-vouchers-03-extend",
+"ok": true
+},
+{
+"id": "feature-java-vouchers-04-min-spend-audit",
+"ok": true
+},
+{
+"id": "feature-java-vouchers-05-transfer",
+"ok": true
+},
+{
+"id": "feature-java-vouchers-06-holder",
+"ok": true
+},
+{
+"id": "feature-java-vouchers-07-idempotent",
+"ok": true
+},
+{
+"id": "feature-java-vouchers-08-batch-audit",
+"ok": true
+},
+{
+"id": "feature-java-vouchers-09-holder",
+"ok": true
+},
+{
+"id": "feature-java-vouchers-10-idempotent",
+"ok": true
+},
+{
+"id": "feature-java-vouchers-11-batch",
+"ok": true
+},
+{
+"id": "feature-java-vouchers-12-holder-min-spend",
+"ok": true
+},
+{
+"id": "feature-java-vouchers-13-transfer",
+"ok": true
+},
+{
+"id": "feature-java-vouchers-14-extend",
+"ok": true
+},
+{
+"id": "feature-java-vouchers-15-audit",
+"ok": true
+},
+{
+"id": "feature-java-vouchers-16-batch-idempotent",
+"ok": true
+}
+]

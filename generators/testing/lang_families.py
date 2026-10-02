@@ -5,11 +5,13 @@ from . import _engine as E
 from . import _engine2 as E2
 from . import _gl_go1 as GL
 from . import _jl_js1 as JL
+from . import _jv_java1 as VL
 from . import _rl_rust1 as RL
 
 GOLIBS = [GL.meter, GL.bells]
 JSLIBS = [JL.recipe, JL.cronlite]
 RSLIBS = [RL.fuel, RL.railfare]
+JAVALIBS = [VL.gradebook, VL.booklet]
 
 
 # ---- write the missing tests ----------------------------------------------------------------------------------------
@@ -70,3 +72,23 @@ def gen_expect_js(rng, n):
         summary="a red cargo test suite whose expectations are wrong, not the code: repair the tests and keep them strong")
 def gen_expect_rs(rng, n):
     yield from E2.expect_family(RSLIBS, rng, n, per_instance=3)
+
+
+# ---- Java -----------------------------------------------------------------------------------------------------------
+
+@family("testing-write-java-rules", category="testing", lang="java", kind="feature", n=9,
+        summary="write plain-JDK tests for a gradebook and a booklet-imposition helper; scored by seeded bugs caught")
+def gen_write_java(rng, n):
+    yield from E.write_family(JAVALIBS, rng, n)
+
+
+@family("testing-regress-java", category="testing", lang="java", kind="fix", n=6,
+        summary="write the Java regression test for a reported bug: red on the buggy copy, green on the fixed one")
+def gen_regress_java(rng, n):
+    yield from E2.regress_family(JAVALIBS, rng, n, per_instance=2, fix_too_every=3)
+
+
+@family("testing-fixsuite-expectations-java", category="testing", lang="java", kind="fix", n=4,
+        summary="a red Java test suite whose expectations are wrong, not the code: repair the tests and keep them strong")
+def gen_expect_java(rng, n):
+    yield from E2.expect_family(JAVALIBS, rng, n, per_instance=2)

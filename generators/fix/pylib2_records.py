@@ -269,7 +269,7 @@ NS = Lib(
     files={"natsort.py": NS_SRC, "README.md": NS_README, ".gitignore": "__pycache__/\n*.pyc\n"},
     visible_tests={"tests/test_basic.py": NS_VISIBLE},
     hidden_tests={"tests/test_full.py": NS_HIDDEN},
-    mutate=["natsort.py"], difficulty=2, tags=["sorting", "text"],
+    mutate=["natsort.py"], difficulty=1, tags=["sorting", "text"],
     probes=[
         'natsorted(["img12", "img2", "img1", "Img10"])',
         'natsorted(["x007", "x7", "x07"])',

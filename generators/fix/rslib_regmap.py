@@ -395,6 +395,10 @@ HIDDEN = dd('''
         // a register without Rc fields reads back unchanged
         let plain = RegSpec::new(8, vec![field("A", 0, 4, Access::Rw, 0)]).unwrap();
         assert_eq!(plain.read(0xFA), (0x0A, 0xFA));
+        // a reserved bit 0 is hidden as well
+        let high = RegSpec::new(8, vec![field("A", 4, 4, Access::Rw, 0)]).unwrap();
+        assert_eq!(high.read(0xFF), (0xF0, 0xFF));
+        assert_eq!(high.read(0x01), (0x00, 0x01));
         // everything else about the stored value survives the clearing
         assert_eq!(u.read(0x0F00), (0x0F00, 0x0000));
         assert_eq!(u.read(0x1F00), (0x0F00, 0x1000));
@@ -484,7 +488,7 @@ LIB = Lib(
     files={"Cargo.toml": cargo("regmap"), "src/lib.rs": SRC, "README.md": README, ".gitignore": "target/\n", ".cargo/config.toml": CARGO_CONFIG},
     visible_tests={"tests/basic.rs": VISIBLE},
     hidden_tests={"tests/full.rs": HIDDEN},
-    mutate=["src/lib.rs"], difficulty=2, tags=["registers", "bitfields", "embedded"],
+    mutate=["src/lib.rs"], difficulty=1, tags=["registers", "bitfields", "embedded"],
 )
 
 register_libs([LIB], n=8)

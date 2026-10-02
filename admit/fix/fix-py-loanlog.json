@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-loanlog-01-cmp",
+"ok": true
+},
+{
+"id": "fix-py-loanlog-02-arith",
+"ok": true
+},
+{
+"id": "fix-py-loanlog-03-swap",
+"ok": true
+},
+{
+"id": "fix-py-loanlog-04-delete",
+"ok": true
+},
+{
+"id": "fix-py-loanlog-05-const",
+"ok": true
+},
+{
+"id": "fix-py-loanlog-06-negate",
+"ok": true
+},
+{
+"id": "fix-py-loanlog-07-cmp",
+"ok": true
+},
+{
+"id": "fix-py-loanlog-08-delete",
+"ok": true
+},
+{
+"id": "fix-py-loanlog-09-const",
+"ok": true
+},
+{
+"id": "fix-py-loanlog-10-negate",
+"ok": true
+}
+]

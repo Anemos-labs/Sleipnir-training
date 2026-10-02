@@ -1,0 +1,26 @@
+[
+{
+"id": "security-weak-random-01-reset-token",
+"ok": true
+},
+{
+"id": "security-weak-random-02-session-id",
+"ok": true
+},
+{
+"id": "security-weak-random-03-otp-code",
+"ok": true
+},
+{
+"id": "security-weak-random-04-password-generator",
+"ok": true
+},
+{
+"id": "security-weak-random-05-api-key",
+"ok": true
+},
+{
+"id": "security-weak-random-06-prize-draw",
+"ok": true
+}
+]

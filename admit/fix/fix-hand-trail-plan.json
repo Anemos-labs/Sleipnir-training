@@ -1,0 +1,70 @@
+[
+{
+"id": "fix-hand-trail-plan-01-elevations-lose-their-decimals",
+"ok": true
+},
+{
+"id": "fix-hand-trail-plan-02-duplicate-stops-are-case-sensitive",
+"ok": true
+},
+{
+"id": "fix-hand-trail-plan-03-byte-order-mark-breaks-line-one",
+"ok": true
+},
+{
+"id": "fix-hand-trail-plan-04-walking-time-rounded-to-nearest",
+"ok": true
+},
+{
+"id": "fix-hand-trail-plan-05-break-from-exactly-ninety-minutes",
+"ok": true
+},
+{
+"id": "fix-hand-trail-plan-06-steepness-uses-metres-per-kilometre",
+"ok": true
+},
+{
+"id": "fix-hand-trail-plan-07-dead-band-measured-per-step",
+"ok": true
+},
+{
+"id": "fix-hand-trail-plan-08-dead-band-edge-is-exclusive",
+"ok": true
+},
+{
+"id": "fix-hand-trail-plan-09-descent-never-moves-the-reference",
+"ok": true
+},
+{
+"id": "fix-hand-trail-plan-10-trackpoints-end-legs",
+"ok": true
+},
+{
+"id": "fix-hand-trail-plan-11-kilometres-from-rounded-legs",
+"ok": true
+},
+{
+"id": "fix-hand-trail-plan-12-kilometre-ties-go-to-even",
+"ok": true
+},
+{
+"id": "fix-hand-trail-plan-13-arrivals-do-not-wrap-at-midnight",
+"ok": true
+},
+{
+"id": "fix-hand-trail-plan-14-total-minutes-recomputed-from-totals",
+"ok": true
+},
+{
+"id": "fix-hand-trail-plan-15-leg-table-and-header-distance",
+"ok": true
+},
+{
+"id": "fix-hand-trail-plan-16-night-hike-timetable",
+"ok": true
+},
+{
+"id": "fix-hand-trail-plan-17-feasibility-review",
+"ok": true
+}
+]

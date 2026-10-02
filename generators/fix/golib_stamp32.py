@@ -597,7 +597,7 @@ LIB = Lib(
     files={"go.mod": langs.go_mod("stamp32"), "stamp32.go": SRC, "README.md": README},
     visible_tests={"stamp32_basic_test.go": VISIBLE},
     hidden_tests={"stamp32_full_test.go": HIDDEN},
-    mutate=["stamp32.go"], difficulty=2, tags=["time", "bitpacking", "calendar"],
+    mutate=["stamp32.go"], difficulty=1, tags=["time", "bitpacking", "calendar"],
 )
 
 register_libs([LIB], n=8)

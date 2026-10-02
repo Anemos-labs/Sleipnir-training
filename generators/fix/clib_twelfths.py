@@ -38,7 +38,7 @@ README1 = dd(r'''
       (they may be equal), or -1 (leaving both alone) when no minute qualifies or `t_b <= t_a`.
     * `int tw_safe(int depth_cm, int height_cm, int draft_cm, int margin_pct)`: 1 when the under-keel clearance
       `depth_cm + height_cm - draft_cm` is at least `ceil(draft_cm * margin_pct / 100)`, else 0. A `draft_cm <= 0` or a negative
-      `margin_pct` is always 0.
+      `margin_pct` is always 0. The computation is done in 64 bits, so extreme `int` arguments cannot overflow.
     * `int tw_fmt_hhmm(int minutes, char *buf, size_t cap)` writes `HH:MM` (24-hour clock) and a NUL. `minutes` wraps around the day:
       `1440` is `00:00` and `-30` is `23:30`. Returns 5, or -1 (writing nothing) when `cap < 6`.
     * `int tw_parse_hhmm(const char *s, size_t n, int *minutes)` reads exactly `HH:MM` from the first `n` characters of `s` (not

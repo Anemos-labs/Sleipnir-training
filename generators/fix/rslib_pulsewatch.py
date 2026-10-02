@@ -207,8 +207,9 @@ HIDDEN = dd('''
     #[test]
     fn config_validation() {
         let bad = [
+            Config { window: 1, min_samples: 1, ..CFG },
+            Config { window: 0, min_samples: 1, ..CFG },
             Config { window: 1, ..CFG },
-            Config { window: 0, ..CFG },
             Config { min_samples: 0, ..CFG },
             Config { min_samples: 6, ..CFG },
             Config { suspect_permille: 999, ..CFG },
@@ -432,7 +433,7 @@ LIB = Lib(
     files={"Cargo.toml": cargo("pulsewatch"), "src/lib.rs": SRC, "README.md": README, ".gitignore": "target/\n", ".cargo/config.toml": CARGO_CONFIG},
     visible_tests={"tests/basic.rs": VISIBLE},
     hidden_tests={"tests/full.rs": HIDDEN},
-    mutate=["src/lib.rs"], difficulty=3, tags=["monitoring", "failure-detector", "state"],
+    mutate=["src/lib.rs"], difficulty=2, tags=["monitoring", "failure-detector", "state"],
 )
 
 register_libs([LIB], n=8)

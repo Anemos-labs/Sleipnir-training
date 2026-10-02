@@ -1,0 +1,22 @@
+[
+{
+"id": "security-log-injection-01-forged-log-lines",
+"ok": true
+},
+{
+"id": "security-log-injection-02-password-in-log",
+"ok": true
+},
+{
+"id": "security-log-injection-03-json-log-forging",
+"ok": true
+},
+{
+"id": "security-log-injection-04-audit-key-value",
+"ok": true
+},
+{
+"id": "security-log-injection-05-log-flooding",
+"ok": true
+}
+]

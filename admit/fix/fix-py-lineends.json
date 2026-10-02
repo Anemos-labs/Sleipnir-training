@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-lineends-01-const",
+"ok": true
+},
+{
+"id": "fix-py-lineends-02-swap",
+"ok": true
+},
+{
+"id": "fix-py-lineends-03-negate",
+"ok": true
+},
+{
+"id": "fix-py-lineends-04-cmp",
+"ok": true
+},
+{
+"id": "fix-py-lineends-05-arith",
+"ok": true
+},
+{
+"id": "fix-py-lineends-06-delete",
+"ok": true
+},
+{
+"id": "fix-py-lineends-07-const",
+"ok": true
+},
+{
+"id": "fix-py-lineends-08-swap",
+"ok": true
+},
+{
+"id": "fix-py-lineends-09-negate",
+"ok": true
+},
+{
+"id": "fix-py-lineends-10-arith",
+"ok": true
+}
+]

@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-alsobought-01-delete",
+"ok": true
+},
+{
+"id": "fix-py-alsobought-02-logic",
+"ok": true
+},
+{
+"id": "fix-py-alsobought-03-cmp",
+"ok": true
+},
+{
+"id": "fix-py-alsobought-04-const",
+"ok": true
+},
+{
+"id": "fix-py-alsobought-05-negate",
+"ok": true
+},
+{
+"id": "fix-py-alsobought-06-arith",
+"ok": true
+},
+{
+"id": "fix-py-alsobought-07-delete",
+"ok": true
+},
+{
+"id": "fix-py-alsobought-08-cmp",
+"ok": true
+},
+{
+"id": "fix-py-alsobought-09-const",
+"ok": true
+},
+{
+"id": "fix-py-alsobought-10-negate",
+"ok": true
+}
+]

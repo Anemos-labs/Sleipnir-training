@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-threeway-01-cmp",
+"ok": true
+},
+{
+"id": "fix-py-threeway-02-delete",
+"ok": true
+},
+{
+"id": "fix-py-threeway-03-negate",
+"ok": true
+},
+{
+"id": "fix-py-threeway-04-swap",
+"ok": true
+},
+{
+"id": "fix-py-threeway-05-const",
+"ok": true
+},
+{
+"id": "fix-py-threeway-06-arith",
+"ok": true
+},
+{
+"id": "fix-py-threeway-07-cmp",
+"ok": true
+},
+{
+"id": "fix-py-threeway-08-delete",
+"ok": true
+},
+{
+"id": "fix-py-threeway-09-negate",
+"ok": true
+},
+{
+"id": "fix-py-threeway-10-const",
+"ok": true
+}
+]

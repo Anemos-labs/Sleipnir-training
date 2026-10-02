@@ -56,7 +56,8 @@ def list_files(root):
 
 
 def touch(path):
-    _CLOCK[0] += 2.0
+    # strictly newer than anything built so far (cargo and javac compare modification times)
+    _CLOCK[0] = max(_CLOCK[0] + 2.0, time.time() + 2.0)
     os.utime(path, (_CLOCK[0], _CLOCK[0]))
 
 
@@ -121,6 +122,7 @@ def main():
         for m in SPEC.get("mutants", []):
             scenarios.append({"name": "mutant " + m["id"], "expect": "fail", "sources": {m["path"]: mutate_text(ref[m["path"]], m)}})
         ok_count, total, gate_failed = 0, 0, False
+        base_files = set(list_files(w))
         for sc in scenarios:
             undo = []  # (kind, path, data)
 
@@ -174,6 +176,9 @@ def main():
                         touch(full)
                     elif os.path.exists(full):
                         os.remove(full)
+                for r in list_files(w):  # whatever the tests left behind (scratch files, databases) must not help the next scenario
+                    if r not in base_files:
+                        os.remove(os.path.join(w, r))
             passed = rc == 0 and not timed_out
             met = passed if sc["expect"] == "pass" else not passed
             total += 1

@@ -1,0 +1,58 @@
+[
+{
+"id": "games-hearth-fix-01-fire-order",
+"ok": true
+},
+{
+"id": "games-hearth-fix-02-target-first",
+"ok": true
+},
+{
+"id": "games-hearth-fix-03-splash-radius",
+"ok": true
+},
+{
+"id": "games-hearth-fix-04-overkill-targets",
+"ok": true
+},
+{
+"id": "games-hearth-fix-05-cooldown-order",
+"ok": true
+},
+{
+"id": "games-hearth-fix-06-ogre-leak",
+"ok": true
+},
+{
+"id": "games-hearth-fix-07-sell-refund",
+"ok": true
+},
+{
+"id": "games-hearth-fix-08-bat-overshoot",
+"ok": true
+},
+{
+"id": "games-hearth-fix-09-movement-before-death",
+"ok": true
+},
+{
+"id": "games-hearth-fix-10-pending-win",
+"ok": true
+},
+{
+"id": "games-hearth-fix-11-spawn-interval",
+"ok": true
+},
+{
+"id": "games-hearth-fix-12-build-on-path",
+"ok": true
+},
+{
+"id": "games-hearth-fix-13-lives-zero",
+"ok": true
+},
+{
+"id": "games-hearth-fix-14-slow-stays",
+"ok": true
+}
+]

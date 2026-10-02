@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-cpp-handlepool-01-arith",
+"ok": true
+},
+{
+"id": "fix-cpp-handlepool-02-swap",
+"ok": true
+},
+{
+"id": "fix-cpp-handlepool-03-const",
+"ok": true
+},
+{
+"id": "fix-cpp-handlepool-04-cmp",
+"ok": true
+},
+{
+"id": "fix-cpp-handlepool-05-delete",
+"ok": true
+},
+{
+"id": "fix-cpp-handlepool-06-negate",
+"ok": true
+},
+{
+"id": "fix-cpp-handlepool-07-arith",
+"ok": true
+},
+{
+"id": "fix-cpp-handlepool-08-swap",
+"ok": true
+}
+]

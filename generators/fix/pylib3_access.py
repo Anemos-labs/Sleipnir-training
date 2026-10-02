@@ -1201,7 +1201,7 @@ APPROVALFLOW = Lib(
         "tests/test_states.py": APPROVALFLOW_HIDDEN_STATES, "tests/test_engine.py": APPROVALFLOW_HIDDEN_ENGINE,
     },
     mutate=["approvalflow/states.py", "approvalflow/rules.py", "approvalflow/engine.py"],
-    difficulty=3, tags=["workflow", "state-machine", "multi-module"],
+    difficulty=2, tags=["workflow", "state-machine", "multi-module"],
     probes=[
         "[stages_for(n) for n in (500, 501, 5000, 5001, 20000, 20001)]",
         "next_state('submitted', 'send_back')", "is_final('expired')",
@@ -2203,7 +2203,7 @@ BASKETCUT = Lib(
     visible_tests={"tests/test_basic.py": BASKETCUT_VISIBLE},
     hidden_tests={"tests/test_promos.py": BASKETCUT_HIDDEN_PROMOS, "tests/test_checkout.py": BASKETCUT_HIDDEN_CHECKOUT},
     mutate=["basketcut/money.py", "basketcut/promos.py", "basketcut/checkout.py"],
-    difficulty=3, tags=["pricing", "promotions", "multi-module"],
+    difficulty=4, tags=["pricing", "promotions", "multi-module"],
     probes=[
         "pct_of(70, 15)", "pct_of(99, 100)", "fmt(-5)",
         f"price({_BC}, [Fixed('F5', 500), Percent('P10', 10), BuyGet('BG', 'A', 2, 1)]).applied",

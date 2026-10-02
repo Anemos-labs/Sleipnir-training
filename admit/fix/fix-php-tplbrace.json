@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-php-tplbrace-01-cmp",
+"ok": true
+},
+{
+"id": "fix-php-tplbrace-02-delete",
+"ok": true
+},
+{
+"id": "fix-php-tplbrace-03-negate",
+"ok": true
+},
+{
+"id": "fix-php-tplbrace-04-const",
+"ok": true
+},
+{
+"id": "fix-php-tplbrace-05-logic",
+"ok": true
+},
+{
+"id": "fix-php-tplbrace-06-cmp",
+"ok": true
+},
+{
+"id": "fix-php-tplbrace-07-delete",
+"ok": true
+},
+{
+"id": "fix-php-tplbrace-08-negate",
+"ok": true
+}
+]

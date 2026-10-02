@@ -149,7 +149,7 @@ def make_commits(rng, k, with_revert, breaking):
     kinds += [rng.choice(OTHERS) for _ in range(rng.randrange(1, 4))]
     rng.shuffle(kinds)
     kinds = kinds[:k] if len(kinds) > k else kinds
-    day = datetime.date(2026, 2, 1) + datetime.timedelta(days=rng.randrange(0, 20))
+    day = datetime.date(2026, 2, 3) + datetime.timedelta(days=rng.randrange(0, 20))
     commits = []
     for kind, desc in kinds:
         scope = rng.choice(SCOPES) if rng.random() < 0.7 else ""
@@ -202,7 +202,8 @@ def old_changelog(rng, version):
     text = "# Changelog\n\nAll notable changes to tidebook are documented here. The format is described in CONTRIBUTING.md.\n\n"
     links = []
     for j, v in enumerate(versions):
-        text += f"## [{v}] - 2026-0{1 + (len(versions) - j) % 3}-1{j}\n\n### Fixes\n- cli: tidy the help text (#{10 + j})\n\n"
+        when = datetime.date(2026, 1, 20) - datetime.timedelta(days=23 * j)
+        text += f"## [{v}] - {when.isoformat()}\n\n### Fixes\n- cli: tidy the help text (#{10 + j})\n\n"
         nxt = versions[j + 1] if j + 1 < len(versions) else None
         links.append(f"[{v}]: https://git.example/compare/v{nxt}...v{v}" if nxt else f"[{v}]: https://git.example/releases/tag/v{v}")
     return text + "\n".join(links) + "\n"

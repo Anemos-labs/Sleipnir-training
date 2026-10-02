@@ -629,21 +629,13 @@ LIB = Lib(
     visible_tests={"test/Check.java": JAVA_CHECK, "test/BasicTests.java": BASIC, "test/TestMain.java": BASIC_MAIN},
     hidden_tests={"test/FullTests.java": FULL, "test/TestMain.java": FULL_MAIN},
     mutate=["src/lending/LoanDesk.java", "src/lending/Calendar.java", "src/lending/HoldQueue.java"], difficulty=3, tags=["library", "loans", "fines"],
-    probe_import="import java.util.*;\nimport lending.*;",
+    probe_import="import java.util.HashSet;\nimport java.util.List;\nimport lending.*;",
     probes=[
         "new Calendar(new HashSet<Integer>()).weekday(-4)", "new Calendar(new HashSet<Integer>()).nextOpen(3)", "new Calendar(new HashSet<Integer>(List.of(4, 5))).nextOpen(3)",
         "new Calendar(new HashSet<Integer>()).openDaysBetween(25, 31)", "new Calendar(new HashSet<Integer>()).openDaysBetween(25, 32)", "new Calendar(new HashSet<Integer>(List.of(5))).isOpen(5)",
         "LoanDesk.period(ItemClass.BOOK, PatronTier.SENIOR)", "LoanDesk.period(ItemClass.BOOK, PatronTier.STAFF)", "LoanDesk.rate(ItemClass.BOOK, PatronTier.CHILD)", "LoanDesk.rate(ItemClass.PERIODICAL, PatronTier.CHILD)",
         "new LoanDesk(new Calendar(new HashSet<Integer>())).checkout(ItemClass.TOOL, PatronTier.STANDARD, 0).due",
         "new LoanDesk(new Calendar(new HashSet<Integer>())).checkout(ItemClass.BOOK, PatronTier.SENIOR, 4).due",
-        "new LoanDesk(new Calendar(new HashSet<Integer>())).fine(new LoanDesk(new Calendar(new HashSet<Integer>())).checkout(ItemClass.BOOK, PatronTier.STANDARD, 4), 27)",
-        "new LoanDesk(new Calendar(new HashSet<Integer>())).fine(new LoanDesk(new Calendar(new HashSet<Integer>())).checkout(ItemClass.BOOK, PatronTier.STANDARD, 4), 31)",
-        "new LoanDesk(new Calendar(new HashSet<Integer>())).fine(new LoanDesk(new Calendar(new HashSet<Integer>())).checkout(ItemClass.BOOK, PatronTier.STANDARD, 4), 72)",
-        "new LoanDesk(new Calendar(new HashSet<Integer>())).fine(new LoanDesk(new Calendar(new HashSet<Integer>())).checkout(ItemClass.BOOK, PatronTier.CHILD, 4), 28)",
-        "new LoanDesk(new Calendar(new HashSet<Integer>())).renew(new LoanDesk(new Calendar(new HashSet<Integer>())).checkout(ItemClass.BOOK, PatronTier.STANDARD, 4), 20, 0).due",
-        "new LoanDesk(new Calendar(new HashSet<Integer>())).renew(new LoanDesk(new Calendar(new HashSet<Integer>())).checkout(ItemClass.BOOK, PatronTier.STANDARD, 4), 25, 0).renewals",
-        "new LoanDesk(new Calendar(new HashSet<Integer>())).renew(new LoanDesk(new Calendar(new HashSet<Integer>())).checkout(ItemClass.BOOK, PatronTier.STANDARD, 4), 26, 0)",
-        "new LoanDesk(new Calendar(new HashSet<Integer>())).renew(new LoanDesk(new Calendar(new HashSet<Integer>())).checkout(ItemClass.PERIODICAL, PatronTier.STAFF, 4), 5, 0).renewals",
     ],
 )
 

@@ -1177,7 +1177,7 @@ def make_cases(rng, p, ns):
 
 def prompt(rng, p, api, lang, level):
     region, unit = p["region"]
-    where = api.where(lang)
+    where = api.short(lang)
     fn = api.name(lang)
     ln = K.LANG_NAME[lang]
     opts = [

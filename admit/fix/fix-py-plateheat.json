@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-plateheat-01-const",
+"ok": true
+},
+{
+"id": "fix-py-plateheat-02-delete",
+"ok": true
+},
+{
+"id": "fix-py-plateheat-03-arith",
+"ok": true
+},
+{
+"id": "fix-py-plateheat-04-cmp",
+"ok": true
+},
+{
+"id": "fix-py-plateheat-05-swap",
+"ok": true
+},
+{
+"id": "fix-py-plateheat-06-const",
+"ok": true
+},
+{
+"id": "fix-py-plateheat-07-delete",
+"ok": true
+},
+{
+"id": "fix-py-plateheat-08-arith",
+"ok": true
+},
+{
+"id": "fix-py-plateheat-09-cmp",
+"ok": true
+},
+{
+"id": "fix-py-plateheat-10-const",
+"ok": true
+}
+]

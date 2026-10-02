@@ -37,7 +37,7 @@ README1 = dd(r'''
       and that rounded total must not exceed `limit` either.
       A reservation of **zero bytes** (`count == 0` or `elem_size == 0`) consumes no space and does not count as a request for its
       alignment; it still returns the aligned offset (and fails when that offset lies beyond `limit`).
-    * A failed reservation makes the layout *failed*: it changes nothing else, but every later `sp_reserve` also returns -1.
+    * A failed reservation makes the layout *failed*: it does not write `*offset` and changes nothing else, but every later `sp_reserve` also returns -1.
     * `size_t sp_total(const sp_layout *l)`: the slab size so far: the end of the last array rounded up to the largest
       alignment requested; 0 for an empty layout and 0 for a failed one.
 ''')

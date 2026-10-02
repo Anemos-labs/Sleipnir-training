@@ -1869,7 +1869,7 @@ CHORDBOOK = Lib(
         "tests/test_chords.py": CHORDBOOK_HIDDEN_CHORDS,
     },
     mutate=["chordbook/notes.py", "chordbook/intervals.py", "chordbook/chords.py"],
-    difficulty=3, tags=["music", "chords", "multi-module"],
+    difficulty=2, tags=["music", "chords", "multi-module"],
     probes=[
         "midi('B#3')", "midi('Cb4')", "pitch_class('Fb')", "name_of(70)", "name_of(61, 'flat')",
         "transpose('Bb3', 5)", "transpose('F#3', 3, prefer='flat')", "transpose('Bb', 1)", "transpose('C', -1)",

@@ -507,7 +507,7 @@ LIB = Lib(
     files={"Cargo.toml": cargo("tapfare"), "src/lib.rs": SRC, "README.md": README, ".gitignore": "target/\n", ".cargo/config.toml": CARGO_CONFIG},
     visible_tests={"tests/basic.rs": VISIBLE},
     hidden_tests={"tests/full.rs": HIDDEN},
-    mutate=["src/lib.rs"], difficulty=4, tags=["fares", "transit", "pricing"],
+    mutate=["src/lib.rs"], difficulty=3, tags=["fares", "transit", "pricing"],
 )
 
 register_libs([LIB], n=8)

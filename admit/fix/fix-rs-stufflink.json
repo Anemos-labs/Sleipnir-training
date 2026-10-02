@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-rs-stufflink-01-swap",
+"ok": true
+},
+{
+"id": "fix-rs-stufflink-02-arith",
+"ok": true
+},
+{
+"id": "fix-rs-stufflink-03-negate",
+"ok": true
+},
+{
+"id": "fix-rs-stufflink-04-const",
+"ok": true
+},
+{
+"id": "fix-rs-stufflink-05-cmp",
+"ok": true
+},
+{
+"id": "fix-rs-stufflink-06-delete",
+"ok": true
+},
+{
+"id": "fix-rs-stufflink-07-swap",
+"ok": true
+},
+{
+"id": "fix-rs-stufflink-08-const",
+"ok": true
+}
+]

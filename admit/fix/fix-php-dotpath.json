@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-php-dotpath-01-cmp",
+"ok": true
+},
+{
+"id": "fix-php-dotpath-02-const",
+"ok": true
+},
+{
+"id": "fix-php-dotpath-03-negate",
+"ok": true
+},
+{
+"id": "fix-php-dotpath-04-delete",
+"ok": true
+},
+{
+"id": "fix-php-dotpath-05-logic",
+"ok": true
+},
+{
+"id": "fix-php-dotpath-06-cmp",
+"ok": true
+},
+{
+"id": "fix-php-dotpath-07-const",
+"ok": true
+},
+{
+"id": "fix-php-dotpath-08-negate",
+"ok": true
+}
+]

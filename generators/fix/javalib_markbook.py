@@ -494,7 +494,7 @@ LIB = Lib(
            "src/grades/Letters.java": LETTERS, "README.md": README, ".gitignore": "build/\n"},
     visible_tests={"test/Check.java": JAVA_CHECK, "test/BasicTests.java": BASIC, "test/TestMain.java": java_test_main("BasicTests")},
     hidden_tests={"test/FullTests.java": FULL, "test/TestMain.java": java_test_main("BasicTests", "FullTests")},
-    mutate=["src/grades/Gradebook.java", "src/grades/Letters.java", "src/grades/Score.java"], difficulty=3, tags=["education", "grades", "weights"],
+    mutate=["src/grades/Gradebook.java", "src/grades/Letters.java", "src/grades/Score.java"], difficulty=2, tags=["education", "grades", "weights"],
     probe_import="import java.util.*;\nimport grades.*;",
     probes=[
         "Letters.letter(9699)", "Letters.letter(9300)", "Letters.letter(8000)", "Letters.letter(6999)", "Letters.letter(6000)", "Letters.letter(5999)", "Letters.letter(10001)",

@@ -299,7 +299,7 @@ LIB = Lib(
     files={"package.json": PACKAGE_JSON % "pluralis", "src/rules.js": RULES, "src/format.js": FORMAT, "README.md": README, ".gitignore": "node_modules/\n"},
     visible_tests={"test/basic.test.js": VISIBLE},
     hidden_tests={"test/full.test.js": HIDDEN},
-    mutate=["src/rules.js", "src/format.js"], difficulty=2, tags=["i18n", "plural", "formatting"],
+    mutate=["src/rules.js", "src/format.js"], difficulty=1, tags=["i18n", "plural", "formatting"],
     verify=JS_VERIFY,
     probe_import="const { category, languages } = require('./src/rules');\nconst { plural, ordinal, formatCount } = require('./src/format');",
     probes=[

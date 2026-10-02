@@ -1,0 +1,50 @@
+[
+{
+"id": "games-coil-fix-01-tail-rule",
+"ok": true
+},
+{
+"id": "games-coil-fix-02-reverse-legal",
+"ok": true
+},
+{
+"id": "games-coil-fix-03-wrap-negative",
+"ok": true
+},
+{
+"id": "games-coil-fix-04-food-cells",
+"ok": true
+},
+{
+"id": "games-coil-fix-05-pepper-shrink",
+"ok": true
+},
+{
+"id": "games-coil-fix-06-bite-score",
+"ok": true
+},
+{
+"id": "games-coil-fix-07-rng-shift",
+"ok": true
+},
+{
+"id": "games-coil-fix-08-pepper-schedule",
+"ok": true
+},
+{
+"id": "games-coil-fix-09-bite-count",
+"ok": true
+},
+{
+"id": "games-coil-fix-10-render-pepper",
+"ok": true
+},
+{
+"id": "games-coil-fix-11-wall-crash",
+"ok": true
+},
+{
+"id": "games-coil-fix-12-reverse-legal-bite-score",
+"ok": true
+}
+]

@@ -550,7 +550,7 @@ LIB = Lib(
     files={"go.mod": langs.go_mod("hrwplace"), "hrwplace.go": SRC, "README.md": README},
     visible_tests={"hrwplace_basic_test.go": VISIBLE},
     hidden_tests={"hrwplace_full_test.go": HIDDEN},
-    mutate=["hrwplace.go"], difficulty=3, tags=["hashing", "placement", "distributed"],
+    mutate=["hrwplace.go"], difficulty=1, tags=["hashing", "placement", "distributed"],
 )
 
 register_libs([LIB], n=8)

@@ -19,12 +19,69 @@ def mutant_text(ref: str, edit: dict) -> str:
     return "\n".join(lines)
 
 
+def _tidy_tap(text: str) -> str:
+    """node --test (TAP) output reduced to the failing assertions: no timings, locations or stack frames."""
+    lines = text.split("\n")
+    out: list[str] = []
+    i, shown = 0, 0
+    while i < len(lines):
+        if not re.match(r"^not ok \d+ - ", lines[i]):
+            i += 1
+            continue
+        if shown >= 2:
+            break
+        shown += 1
+        out.append("not ok - nightly check")
+        i += 1
+        err: list[str] = []
+        exp = act = None
+        in_err = False
+        while i < len(lines) and not re.match(r"^(not )?ok \d+ - |^1\.\.\d+|^# ", lines[i]):
+            l = lines[i]
+            if re.match(r"^\s{2}error:", l):
+                in_err = True
+                rest = l.split("error:", 1)[1].strip()
+                rest = rest[2:].strip() if rest.startswith(("|-", "|+")) else rest.strip("|").strip()
+                if rest:
+                    err.append(rest)
+            elif in_err and re.match(r"^\s{4,}\S", l):
+                err.append(l.strip())
+            elif re.match(r"^\s{2}\w+:", l):
+                in_err = False
+                t = l.strip()
+                if t.startswith("expected:"):
+                    exp = t
+                elif t.startswith("actual:"):
+                    act = t
+            i += 1
+        if err:
+            out.append("  error: " + " / ".join(err))
+        if act and exp:
+            out += ["  " + act, "  " + exp]
+    return "\n".join(out)
+
+
+def _tidy_cargo(text: str) -> str:
+    lines = [l for l in text.split("\n") if not re.match(r"^\s+\d+: |^\s+at /|^stack backtrace:|^note: run with `RUST_BACKTRACE|^note: Some details are omitted|^    [a-z_0-9]+$", l)]
+    text = "\n".join(lines)
+    text = re.sub(r"thread '[^']*'( \(\d+\))? panicked", "thread 'main' panicked", text)
+    text = re.sub(r"^---- \S+ stdout ----", "---- check stdout ----", text, flags=re.M)
+    text = re.sub(r"^\S+ --- FAILED$", "check --- FAILED", text, flags=re.M)
+    return text
+
+
 def clean_excerpt(ex: str) -> str:
     """A CI excerpt as a person would paste it: no test names, no source lines of tracebacks, no braces that look like template holes."""
+    if re.search(r"^not ok \d+ - ", ex, re.M):
+        ex = _tidy_tap(ex) or ex
+    if "panicked at" in ex or re.search(r"^\S+ --- FAILED$", ex, re.M):
+        ex = _tidy_cargo(ex)
     lines = ex.split("\n")
     if any(l.startswith("Traceback") for l in lines):
         lines = [l for l in lines if not (re.match(r"^\s{4,}\S", l) and "File " not in l)]
+    lines = [l for l in lines if not l.startswith("Picked up JAVA_TOOL_OPTIONS")]
     text = "\n".join(lines)
+    text = re.sub(r"FAIL (\w+\.)?test\w*:", "FAIL check:", text)
     text = re.sub(r"(FAIL|ERROR): test_\w+ \([^)]*\)", r"\1: nightly check", text)
     text = re.sub(r"--- FAIL: \w+", "--- FAIL: nightly check", text)
     text = re.sub(r"(not ok \d+ - )\S.*", r"\1nightly check", text)
@@ -49,9 +106,23 @@ def _symptom(lib: TLib, cand: E.Cand, bug_files: dict) -> tuple[str, str, str]:
         return "probes", lines, _diff_line(e, g, b)[2:]
     ex = clean_excerpt(_sanitize_excerpt(cand.out, sorted(lib.gold)))
     if ex.strip():
-        sal = [ln for ln in ex.splitlines() if re.search(r"expected|got|want|!=|Error|panick|assert", ln)] or ex.splitlines()
-        return "excerpt", ex, _clip(sal[-1].strip())
+        return "excerpt", ex, _clip(_one_liner(ex))
     return "", "", ""
+
+
+def _one_liner(ex: str) -> str:
+    """The most telling single line of a cleaned CI excerpt."""
+    m_act, m_exp = re.search(r"^\s*actual: (.*)$", ex, re.M), re.search(r"^\s*expected: (.*)$", ex, re.M)
+    if m_act and m_exp:
+        return f"got {m_act.group(1)}, expected {m_exp.group(1)}"
+    m_l, m_r = re.search(r"^\s*left: (.*)$", ex, re.M), re.search(r"^\s*right: (.*)$", ex, re.M)
+    if m_l and m_r:
+        return f"left {m_l.group(1)}, right {m_r.group(1)}"
+    m_e = re.search(r"^\s*error: (.*)$", ex, re.M)
+    if m_e:
+        return m_e.group(1).strip()
+    sal = [ln for ln in ex.splitlines() if re.search(r"expected|got|want|!=|!==|Error|panick|assert", ln) and not re.match(r"^\s*[+-] (actual|expected)", ln)] or ex.splitlines()
+    return sal[-1].strip()
 
 
 def regress_prompt(rng: random.Random, lib: TLib, kind: str, text: str, one: str, fix_too: bool) -> str:
@@ -75,7 +146,7 @@ def regress_prompt(rng: random.Random, lib: TLib, kind: str, text: str, one: str
             f"**Bug report** for {t}\n\n{text}\n\n_Expected_ is what README.md says. {tail} {where}",
             f"bug in {t}: {one}. {tail} {where}",
             f"A user of {t} reports that {one}. {lib.blurb} {tail} {where}",
-            f"Postmortem action item: \"add a regression test for the {t} defect\". What happened: {one}. {tail} {where}",
+            f"Postmortem action item: \"add a regression test for the defect in {t}\". What happened: {one}. {tail} {where}",
         ]
     else:
         voices = [
@@ -200,8 +271,8 @@ def expect_prompt(rng: random.Random, lib: TLib, k: int, summary: str, frozen_no
         f"CI has been red since a new colleague's test suite for {t} landed. {lib.blurb} The output:\n\n```\n{summary}\n```\n\n{frozen_note} README.md is the specification. Repair the suite; do not just delete the failing tests, it still has to catch real regressions.",
         f"The tests for {t} fail and the author insists the module is buggy. I suspect the tests, not the module. {frozen_note} Check every failing expectation against README.md and fix whichever side is wrong. {where}",
         f"tests red. which side is wrong, tests or code? spec: README.md. {frozen_note} output:\n\n```\n{summary}\n```",
-        f"Release freeze: the library is not allowed to change. Yet its test suite fails ({k} failures reported in CI). Find out why, using README.md as the arbiter, and make the suite green *and* meaningful: it will also be run against deliberately broken copies of the module, and it must still reject them. {where}",
-        f"Could you look at why the {t} suite fails? {lib.blurb} CI says:\n\n```\n{summary}\n```\n\nI can't tell if the tests or the code are at fault. The README describes what should happen. {frozen_note}",
+        f"Release freeze: the library is not allowed to change. Yet its test suite fails ({k} {'failure' if k == 1 else 'failures'} reported in CI). Find out why, using README.md as the arbiter, and make the suite green *and* meaningful: it will also be run against deliberately broken copies of the module, and it must still reject them. {where}",
+        f"Could you look at why the suite of {t} fails? {lib.blurb} CI says:\n\n```\n{summary}\n```\n\nI can't tell if the tests or the code are at fault. The README describes what should happen. {frozen_note}",
     ]
     return rng.choice(voices)
 

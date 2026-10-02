@@ -418,7 +418,7 @@ RELAY = Module(
             Bad(_W_TARGET.replace('if host == "localhost" or host.endswith(".localhost"):', 'if host == "localhost":'), "security", "names under .localhost resolve to loopback but are not refused (only the exact name `localhost` is)", ("localhost", "endswith", "subdomain", "loopback")),
         ], note="adds `check_target()`: customers' endpoint URLs must be public https"),
         Slot("backoff", "retry_delay", _W_BACKOFF, [
-            Bad(_W_BACKOFF.replace("if attempts >= MAX_ATTEMPTS:", "if attempts > MAX_ATTEMPTS:"), "off-by-one", "one attempt too many: a sixth delivery is scheduled", (">", "MAX_ATTEMPTS", "attempts", "off by one")),
+            Bad(_W_BACKOFF.replace("if attempts >= MAX_ATTEMPTS:", "if attempts > MAX_ATTEMPTS:"), "off-by-one", "one attempt too many: a sixth delivery is scheduled", (">", "MAX_ATTEMPTS", "attempts", "attempt", "delivery", "off by one")),
             Bad(_W_BACKOFF.replace("BASE_DELAY * 2 ** (attempts - 1)", "BASE_DELAY * 2 ** attempts"), "off-by-one", "the exponent is not shifted by one, so the first retry waits 20 s instead of BASE_DELAY", ("exponent", "attempts - 1", "BASE_DELAY", "2 **")),
             Bad(_W_BACKOFF.replace("min(MAX_DELAY, BASE_DELAY * 2 ** (attempts - 1))", "BASE_DELAY * 2 ** (attempts - 1)"), "logic", "the delay is no longer capped at MAX_DELAY", ("cap", "MAX_DELAY", "min")),
         ], note="adds `retry_delay()`: exponential backoff, capped, at most five attempts"),
@@ -454,5 +454,10 @@ RELAY = Module(
 )
 
 MODULES = [ROSTER, RELAY]
+
+from ._traps import apply_traps  # noqa: E402
+
+apply_traps(MODULES)
+
 for _m in MODULES:
     validate_module(_m)

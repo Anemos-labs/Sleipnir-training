@@ -81,7 +81,7 @@ def gen(rng, n):                 # rng is a random.Random seeded from the family
 ### Languages and commands
 
 Offline, no package installs, standard library only. Available: python3.11 (`unittest`; **no pytest**), go1.25
-(`go test`; `go.mod` via `fx.langs.go_mod(name)`), node22 (`node --test`, CommonJS or ESM), rust/cargo
+(`go test`; `go.mod` via `fx.langs.go_mod(name)`), node22 (`node --test test/*.test.js`: a bare directory argument fails on this Node, CommonJS or ESM), rust/cargo
 (`cargo test --offline`, no dependencies), java (JDK 17+, plain `TestMain` with asserts; no JUnit), gcc/g++, ruby, php,
 tsc, bash. `fx.langs.VERIFY` has the conventional command per language. Generators may run code while generating
 (`fx.run(files, cmd)` executes a file tree in a temp dir and caches results) — use it to *compute expected values from

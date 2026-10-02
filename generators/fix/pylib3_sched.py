@@ -1112,7 +1112,7 @@ DOCKLEVEL = Lib(
     files={"docklevel/__init__.py": "", "docklevel/level.py": DOCKLEVEL_SRC, "README.md": DOCKLEVEL_README, ".gitignore": GITIGNORE},
     visible_tests={"tests/test_basic.py": DOCKLEVEL_VISIBLE},
     hidden_tests={"tests/test_full.py": DOCKLEVEL_HIDDEN},
-    mutate=["docklevel/level.py"], difficulty=3, tags=["leveling", "resources"],
+    mutate=["docklevel/level.py"], difficulty=2, tags=["leveling", "resources"],
     probes=[
         "level([Task('T3', 1, 3, 0, 4), Task('T2', 2, 3, 0, 3), Task('T1', 2, 4, 0, 0)], 6)",
         "level([Task('loose', 1, 2, 0, 5), Task('tight', 1, 2, 0, 0)], 3)",

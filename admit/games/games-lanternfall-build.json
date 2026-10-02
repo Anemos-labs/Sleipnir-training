@@ -1,0 +1,30 @@
+[
+{
+"id": "games-lanternfall-build-01-limit0-visit1-turns0",
+"ok": true
+},
+{
+"id": "games-lanternfall-build-02-limit5-visit1-turns0",
+"ok": true
+},
+{
+"id": "games-lanternfall-build-03-limit0-visit0-turns12",
+"ok": true
+},
+{
+"id": "games-lanternfall-build-04-limit4-visit2-turns0",
+"ok": true
+},
+{
+"id": "games-lanternfall-build-05-limit6-visit3-turns20",
+"ok": true
+},
+{
+"id": "games-lanternfall-build-06-limit0-visit1-turns8",
+"ok": true
+},
+{
+"id": "games-lanternfall-build-07-limit3-visit1-turns30",
+"ok": true
+}
+]

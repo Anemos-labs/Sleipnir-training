@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-cpp-lotbook-01-cmp",
+"ok": true
+},
+{
+"id": "fix-cpp-lotbook-02-arith",
+"ok": true
+},
+{
+"id": "fix-cpp-lotbook-03-negate",
+"ok": true
+},
+{
+"id": "fix-cpp-lotbook-04-delete",
+"ok": true
+},
+{
+"id": "fix-cpp-lotbook-05-const",
+"ok": true
+},
+{
+"id": "fix-cpp-lotbook-06-cmp",
+"ok": true
+},
+{
+"id": "fix-cpp-lotbook-07-arith",
+"ok": true
+},
+{
+"id": "fix-cpp-lotbook-08-delete",
+"ok": true
+}
+]

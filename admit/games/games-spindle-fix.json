@@ -1,0 +1,54 @@
+[
+{
+"id": "games-spindle-fix-01-echo-triples",
+"ok": true
+},
+{
+"id": "games-spindle-fix-02-spindle-length",
+"ok": true
+},
+{
+"id": "games-spindle-fix-03-formable-duplicates",
+"ok": true
+},
+{
+"id": "games-spindle-fix-04-tie-break",
+"ok": true
+},
+{
+"id": "games-spindle-fix-05-rack-unsorted",
+"ok": true
+},
+{
+"id": "games-spindle-fix-06-rng-bits",
+"ok": true
+},
+{
+"id": "games-spindle-fix-07-skip-returns-tiles",
+"ok": true
+},
+{
+"id": "games-spindle-fix-08-error-order",
+"ok": true
+},
+{
+"id": "games-spindle-fix-09-turn-display",
+"ok": true
+},
+{
+"id": "games-spindle-fix-10-last-turn",
+"ok": true
+},
+{
+"id": "games-spindle-fix-11-mult-length",
+"ok": true
+},
+{
+"id": "games-spindle-fix-12-dictionary-copy",
+"ok": true
+},
+{
+"id": "games-spindle-fix-13-spindle-length-turn-display",
+"ok": true
+}
+]

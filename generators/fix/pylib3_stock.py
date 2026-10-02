@@ -802,7 +802,7 @@ COSTLAYERS = Lib(
         "tests/test_ledger.py": COSTLAYERS_HIDDEN_LEDGER,
     },
     mutate=["costlayers/money.py", "costlayers/layers.py", "costlayers/ledger.py", "costlayers/report.py"],
-    difficulty=3, tags=["inventory", "costing", "multi-module"],
+    difficulty=4, tags=["inventory", "costing", "multi-module"],
     probes=[
         "fmt_cents(100100000)", "fmt_cents(-5)", "round_div(5, 2)",
         f"replay('fifo', {_F} + [('issue', 'A', 15, 'o1')]).cogs()",
@@ -1403,7 +1403,7 @@ CRATELOAD = Lib(
         "tests/test_packer.py": CRATELOAD_HIDDEN_PACKER,
     },
     mutate=["crateload/parcels.py", "crateload/crates.py", "crateload/packer.py", "crateload/report.py"],
-    difficulty=3, tags=["packing", "logistics", "multi-module"],
+    difficulty=2, tags=["packing", "logistics", "multi-module"],
     probes=[
         "parse_manifest('a,1,2,uf\\nb,3,4')", "parse_manifest('# c\\n\\nb,1')",
         f"[[p.id for p in c.parcels] for c in pack(parse_manifest({_CM}), 1000, 1000, 'bfd')]",

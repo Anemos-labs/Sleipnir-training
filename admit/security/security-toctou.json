@@ -1,0 +1,26 @@
+[
+{
+"id": "security-toctou-01-symlink-swap",
+"ok": true
+},
+{
+"id": "security-toctou-02-predictable-temp",
+"ok": true
+},
+{
+"id": "security-toctou-03-chmod-after-write",
+"ok": true
+},
+{
+"id": "security-toctou-04-lock-file-race",
+"ok": true
+},
+{
+"id": "security-toctou-05-duplicate-accounts",
+"ok": true
+},
+{
+"id": "security-toctou-06-double-spend",
+"ok": true
+}
+]

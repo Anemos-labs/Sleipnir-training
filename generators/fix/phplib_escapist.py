@@ -1453,31 +1453,31 @@ H4 = dd(r'''
 
     test('html table', function () use ($HTML) {
         foreach ($HTML as [$in, $want]) {
-            eq(Esc::html($in), $want, 'html(0x' . show_bytes($in) . ')');
+            eq(Esc::html($in), $want, 'html(hex ' . show_bytes($in) . ')');
         }
     });
 
     test('attr table', function () use ($ATTR) {
         foreach ($ATTR as [$in, $want]) {
-            eq(Esc::attr($in), $want, 'attr(0x' . show_bytes($in) . ')');
+            eq(Esc::attr($in), $want, 'attr(hex ' . show_bytes($in) . ')');
         }
     });
 
     test('js table', function () use ($JS) {
         foreach ($JS as [$in, $want]) {
-            eq(Esc::js($in), $want, 'js(0x' . show_bytes($in) . ')');
+            eq(Esc::js($in), $want, 'js(hex ' . show_bytes($in) . ')');
         }
     });
 
     test('url table', function () use ($URL) {
         foreach ($URL as [$in, $want]) {
-            eq(Esc::url($in), $want, 'url(0x' . show_bytes($in) . ')');
+            eq(Esc::url($in), $want, 'url(hex ' . show_bytes($in) . ')');
         }
     });
 
     test('css table', function () use ($CSS) {
         foreach ($CSS as [$in, $want]) {
-            eq(Esc::css($in), $want, 'css(0x' . show_bytes($in) . ')');
+            eq(Esc::css($in), $want, 'css(hex ' . show_bytes($in) . ')');
         }
     });
 

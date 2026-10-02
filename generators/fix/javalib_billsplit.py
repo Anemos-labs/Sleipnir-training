@@ -428,7 +428,7 @@ LIB = Lib(
            "README.md": README, ".gitignore": "build/\n"},
     visible_tests={"test/Check.java": JAVA_CHECK, "test/BasicTests.java": BASIC, "test/TestMain.java": java_test_main("BasicTests")},
     hidden_tests={"test/FullTests.java": FULL, "test/TestMain.java": java_test_main("BasicTests", "FullTests")},
-    mutate=["src/tab/Bill.java", "src/tab/Split.java", "src/tab/Item.java"], difficulty=2, tags=["restaurant", "money", "allocation"],
+    mutate=["src/tab/Bill.java", "src/tab/Split.java", "src/tab/Item.java"], difficulty=1, tags=["restaurant", "money", "allocation"],
     probe_import="import java.util.*;\nimport tab.*;",
     probes=[
         "Split.splitItem(2599, 3)", "Split.splitItem(701, 2)", "Split.splitItem(1, 4)", "Split.splitItem(10, 0)",

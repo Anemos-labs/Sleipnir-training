@@ -1,0 +1,66 @@
+[
+{
+"id": "devops-dockerfile-hygiene-01-latest",
+"ok": true
+},
+{
+"id": "devops-dockerfile-hygiene-02-root",
+"ok": true
+},
+{
+"id": "devops-dockerfile-hygiene-03-copy-order",
+"ok": true
+},
+{
+"id": "devops-dockerfile-hygiene-04-shell-cmd-no-health",
+"ok": true
+},
+{
+"id": "devops-dockerfile-hygiene-05-apt-clean-apt-recs",
+"ok": true
+},
+{
+"id": "devops-dockerfile-hygiene-06-apt-split",
+"ok": true
+},
+{
+"id": "devops-dockerfile-hygiene-07-npm-ignore",
+"ok": true
+},
+{
+"id": "devops-dockerfile-hygiene-08-build-in-final-add",
+"ok": true
+},
+{
+"id": "devops-dockerfile-hygiene-09-env-secret-no-user",
+"ok": true
+},
+{
+"id": "devops-dockerfile-hygiene-10-continuation-pip",
+"ok": true
+},
+{
+"id": "devops-dockerfile-hygiene-11-apk-workdir-rel",
+"ok": true
+},
+{
+"id": "devops-dockerfile-hygiene-12-latest-copy-order",
+"ok": true
+},
+{
+"id": "devops-dockerfile-hygiene-13-apt-split-shell-cmd",
+"ok": true
+},
+{
+"id": "devops-dockerfile-hygiene-14-build-in-final-npm",
+"ok": true
+},
+{
+"id": "devops-dockerfile-hygiene-15-no-expose",
+"ok": true
+},
+{
+"id": "devops-dockerfile-hygiene-16-add-workdir-rel",
+"ok": true
+}
+]

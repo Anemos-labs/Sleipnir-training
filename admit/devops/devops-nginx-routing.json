@@ -1,0 +1,62 @@
+[
+{
+"id": "devops-nginx-routing-alias-root-fix",
+"ok": true
+},
+{
+"id": "devops-nginx-routing-canary-map-routing",
+"ok": true
+},
+{
+"id": "devops-nginx-routing-dotfiles-and-admin",
+"ok": true
+},
+{
+"id": "devops-nginx-routing-full-site-policy",
+"ok": true
+},
+{
+"id": "devops-nginx-routing-header-inheritance-fix",
+"ok": true
+},
+{
+"id": "devops-nginx-routing-https-redirect-acme",
+"ok": true
+},
+{
+"id": "devops-nginx-routing-legacy-redirects",
+"ok": true
+},
+{
+"id": "devops-nginx-routing-location-precedence-fix",
+"ok": true
+},
+{
+"id": "devops-nginx-routing-maintenance-mode",
+"ok": true
+},
+{
+"id": "devops-nginx-routing-proxy-prefix-fix",
+"ok": true
+},
+{
+"id": "devops-nginx-routing-rewrite-last-break-fix",
+"ok": true
+},
+{
+"id": "devops-nginx-routing-spa-fallback",
+"ok": true
+},
+{
+"id": "devops-nginx-routing-status-endpoints",
+"ok": true
+},
+{
+"id": "devops-nginx-routing-vhosts-default",
+"ok": true
+},
+{
+"id": "devops-nginx-routing-www-canonical",
+"ok": true
+}
+]

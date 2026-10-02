@@ -375,7 +375,7 @@ JOBS = Module(
             Bad(_J_POP.replace("if run_at > now:", "if run_at >= now:"), "off-by-one", "a job that is due exactly now is treated as not ready", (">=", "due", "now", "boundary")),
             Bad(_J_POP.replace('''    for item in held:
         heapq.heappush(self.heap, item)
-''', ""), "logic", "jobs that were skipped because they are not ready yet are never pushed back, so they vanish from the heap", ("held", "push back", "lost", "heappush")),
+''', ""), "logic", "jobs that were skipped because they are not ready yet are never pushed back, so they vanish from the heap", ("held", "push back", "pushed back", "lost", "vanish", "skipped", "heappush")),
             Bad(_J_POP.replace('''        if job_id not in self.jobs:
             continue  # cancelled or finished
 ''', ""), "logic", "heap entries of cancelled or finished jobs are not skipped, so they are returned (and `fail`/`done` then raise KeyError)", ("cancelled", "finished", "stale", "KeyError")),
@@ -611,7 +611,7 @@ AUTHKIT = Module(
             '''), "security", "the session token is predictable (user name and login time) instead of random", ("predictable", "random", "token", "secrets")),
         ], note="adds `Accounts.open_session()`"),
         Slot("checksession", "Accounts.session_user", _A_CHECKSESSION, [
-            Bad(_A_CHECKSESSION.replace("now >= entry[1]", "now > entry[1]"), "off-by-one", "a session is valid for one second longer than SESSION_TTL", (">", ">=", "expires", "boundary")),
+            Bad(_A_CHECKSESSION.replace("now >= entry[1]", "now > entry[1]"), "off-by-one", "a session is valid for one second longer than SESSION_TTL", (">", ">=", "expires", "boundary", "SESSION_TTL", "valid")),
             Bad(_A_CHECKSESSION.replace("entry is None or now >= entry[1]", "entry is None"), "security", "sessions never expire", ("expire", "ttl", "SESSION_TTL")),
         ], note="adds `Accounts.session_user()`"),
         Slot("reset", "Accounts.finish_reset", _A_RESET, [
@@ -627,5 +627,10 @@ AUTHKIT = Module(
 )
 
 MODULES = [INVOICE, JOBS, AUTHKIT]
+
+from ._traps import apply_traps  # noqa: E402
+
+apply_traps(MODULES)
+
 for _m in MODULES:
     validate_module(_m)

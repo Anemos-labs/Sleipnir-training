@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-cpp-seatshare-01-logic",
+"ok": true
+},
+{
+"id": "fix-cpp-seatshare-02-arith",
+"ok": true
+},
+{
+"id": "fix-cpp-seatshare-03-negate",
+"ok": true
+},
+{
+"id": "fix-cpp-seatshare-04-cmp",
+"ok": true
+},
+{
+"id": "fix-cpp-seatshare-05-const",
+"ok": true
+},
+{
+"id": "fix-cpp-seatshare-06-logic",
+"ok": true
+},
+{
+"id": "fix-cpp-seatshare-07-arith",
+"ok": true
+},
+{
+"id": "fix-cpp-seatshare-08-negate",
+"ok": true
+}
+]

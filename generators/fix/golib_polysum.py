@@ -510,7 +510,7 @@ LIB = Lib(
     files={"go.mod": langs.go_mod("polysum"), "polysum.go": SRC, "README.md": README},
     visible_tests={"polysum_basic_test.go": VISIBLE},
     hidden_tests={"polysum_full_test.go": HIDDEN},
-    mutate=["polysum.go"], difficulty=3, tags=["checksum", "bits", "crc"],
+    mutate=["polysum.go"], difficulty=2, tags=["checksum", "bits", "crc"],
 )
 
 register_libs([LIB], n=8)

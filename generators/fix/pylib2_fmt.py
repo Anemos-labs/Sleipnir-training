@@ -11,15 +11,13 @@ HF_README = dd(r'''
     Number formatting for the storage dashboard. One module, `humanfmt.py`.
 
     ## `format_size(n, binary=True, precision=1) -> str`
-    `n` is an `int` number of bytes (a `bool` or non-int is a `TypeError`... callers pass ints); `precision` is 0-3, else
-    `ValueError`. A negative `n` is written as `-` followed by the text for `-n`.
+    `n` is an `int` number of bytes; `precision` is 0-3, else `ValueError`. A negative `n` is written as `-` followed by the text for `-n`.
     * Units: binary `B KiB MiB GiB TiB PiB` (steps of 1024), or decimal `B kB MB GB TB PB` (steps of 1000).
     * Below one step: the integer and ` B` (`512 B`).
     * Otherwise the largest unit `k` (at most the last) with `base**k <= n`; the number is `n / base**k` rounded half up to `precision`
       decimals using exact integer arithmetic. If rounding makes it reach `base` (and a larger unit exists) it is shown in the next unit
       instead: `1023.96 KiB` becomes `1 MiB`, not `1024 KiB`; in the last unit there is no promotion.
-    * Trailing zeros of the decimals, and the point when no decimals remain, are removed: `1.5 MiB`, `2 MiB`, `0.25` is never produced
-      (the number is always at least 1 except through promotion rounding, which gives exactly 1).
+    * Trailing zeros of the decimals, and the point when no decimals remain, are removed: `1.5 MiB`, `2 MiB`.
     * Examples: `format_size(1536)` is `1.5 KiB`, `format_size(1000, binary=False)` is `1 kB`, `format_size(999999, binary=False)` is `1 MB`.
 
     ## `parse_size(text) -> int`
@@ -416,7 +414,7 @@ HF = Lib(
     files={"humanfmt.py": HF_SRC, "README.md": HF_README, ".gitignore": "__pycache__/\n*.pyc\n"},
     visible_tests={"tests/test_basic.py": HF_VISIBLE},
     hidden_tests={"tests/test_full.py": HF_HIDDEN},
-    mutate=["humanfmt.py"], difficulty=3, tags=["formatting", "numbers"],
+    mutate=["humanfmt.py"], difficulty=2, tags=["formatting", "numbers"],
     probes=[
         'format_size(1024 * 1024 - 1)',
         'format_size(999950, binary=False)',
@@ -811,9 +809,9 @@ HD_README = dd(r'''
 
     ## `parse_dump(text) -> bytes`
     The inverse of `dump` for any `width`, `group` and `base`. Blank lines are ignored. Every line is one of:
-    * a row `OFFSET  HEX|ASCII|`... exactly as written by `dump`: offset of at least 6 lowercase hex digits, two spaces, bytes as two-digit
-      lowercase hex numbers separated by any amount of spaces (one or more), then at least... the closing bar part `|ASCII|`. The text between the
-      bars must have exactly as many characters as the row has bytes, and a row must have at least one byte;
+    * a row as written by `dump`: an offset of at least 6 lowercase hex digits, two spaces, the bytes as two-digit lowercase hex numbers separated by one
+      or more spaces (the grouping is free-form, padding spaces are allowed), then `|`, the ASCII column and a closing `|`. The ASCII column must have exactly
+      as many characters as the row has bytes, and a row must have at least one byte;
     * a repeat line `*N` (`N` a positive integer): the previous row repeated `N` more times;
     * the end line: only an offset of at least 6 lowercase hex digits; it must be the last non-blank line.
     The rules: the first row's offset is the base; each later row's offset must equal `base` plus the number of bytes read so far; the first row's
@@ -1159,7 +1157,7 @@ HD = Lib(
     files={"hexdump.py": HD_SRC, "README.md": HD_README, ".gitignore": "__pycache__/\n*.pyc\n"},
     visible_tests={"tests/test_basic.py": HD_VISIBLE},
     hidden_tests={"tests/test_full.py": HD_HIDDEN},
-    mutate=["hexdump.py"], difficulty=3, tags=["binary", "formats"],
+    mutate=["hexdump.py"], difficulty=2, tags=["binary", "formats"],
     probes=[
         'dump(b"ABCDEFGH", width=4, group=2)',
         'dump(b"ABCDEF", width=4, group=2)',

@@ -1135,7 +1135,7 @@ def make_cases(rng, p, ns):
 
 
 def prompt(rng, p, api, lang):
-    where = api.where(lang)
+    where = api.short(lang)
     fn = api.name(lang)
     ln = K.LANG_NAME[lang]
     ops = ["validate"] + [o for o, f in (("parse", p["has_parse"]), ("make", p["has_make"]), ("next", p["has_next"])) if f]

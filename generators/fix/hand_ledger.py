@@ -919,8 +919,8 @@ def _prompts() -> dict:
     def merge_text(c):
         out = c.visible_out(12)
         return (
-            "The nightly rebuild from the two shard files is wrong for days with more than nine events: some `ship` events are "
-            "refused as insufficient although the stock was there (the receipts that came before them are applied after them). "
+            "The merged archive that the nightly job writes from the two shard files is out of order once sequence numbers have "
+            "two digits: event 10 is listed between 1 and 2, which makes the diff against the previous archive unreadable. "
             "A reduced reproduction in our CI looks like this:\n\n```\n" + out + "\n```\n"
         )
 
@@ -986,17 +986,18 @@ def _base() -> Base:
 
             import "testing"
 
-            func TestMergeAfterNineEvents(t *testing.T) {
-                a := []Event{
-                    {Seq: 1, SKU: "x", Kind: Receive, Qty: 5},
-                    {Seq: 9, SKU: "x", Kind: Receive, Qty: 1},
+            func TestMergeListsTenAfterNine(t *testing.T) {
+                a := []Event{{Seq: 1, SKU: "x", Kind: Receive, Qty: 5}, {Seq: 9, SKU: "x", Kind: Receive, Qty: 1}}
+                b := []Event{{Seq: 10, SKU: "x", Kind: Ship, Qty: 6}, {Seq: 2, SKU: "x", Kind: Receive, Qty: 1}}
+                var seqs []int64
+                for _, e := range Merge(a, b) {
+                    seqs = append(seqs, e.Seq)
                 }
-                b := []Event{
-                    {Seq: 10, SKU: "x", Kind: Ship, Qty: 6},
-                }
-                s := Replay(Merge(a, b), nil)
-                if len(s.Rejected) != 0 || s.Stock["x"] != 0 {
-                    t.Fatalf("stock %d, rejected %+v", s.Stock["x"], s.Rejected)
+                want := []int64{1, 2, 9, 10}
+                for i := range want {
+                    if len(seqs) != len(want) || seqs[i] != want[i] {
+                        t.Fatalf("merged order %v, want %v", seqs, want)
+                    }
                 }
             }
         ''')),

@@ -1,0 +1,42 @@
+[
+{
+"id": "greenfield-releaser-01-javascript-dawn-l1",
+"ok": true
+},
+{
+"id": "greenfield-releaser-02-rust-spark-l1",
+"ok": true
+},
+{
+"id": "greenfield-releaser-03-go-nightly-l2",
+"ok": true
+},
+{
+"id": "greenfield-releaser-04-ruby-moss-l2",
+"ok": true
+},
+{
+"id": "greenfield-releaser-05-javascript-moss-l2",
+"ok": true
+},
+{
+"id": "greenfield-releaser-06-rust-ice-l3",
+"ok": true
+},
+{
+"id": "greenfield-releaser-07-go-dawn-l3",
+"ok": true
+},
+{
+"id": "greenfield-releaser-08-ruby-spark-l3",
+"ok": true
+},
+{
+"id": "greenfield-releaser-09-javascript-spark-l1",
+"ok": true
+},
+{
+"id": "greenfield-releaser-10-rust-nightly-l3",
+"ok": true
+}
+]

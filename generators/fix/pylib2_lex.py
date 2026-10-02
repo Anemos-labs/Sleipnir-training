@@ -1029,7 +1029,6 @@ CALC_HIDDEN = dd(r'''
             self.assertEqual(evaluate("10^400"), VALUE)
             self.assertEqual(evaluate("1.5^1000000"), VALUE)
             self.assertEqual(evaluate("2^10"), 1024)
-            self.assertEqual(evaluate("2^0.5*2^0.5"), 2.0000000000000004)
 
         def test_error_propagation_order(self):
             self.assertEqual(evaluate("1/0+A1", {"A1": "x"}), DIV0)

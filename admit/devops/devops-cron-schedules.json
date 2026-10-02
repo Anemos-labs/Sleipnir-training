@@ -1,0 +1,50 @@
+[
+{
+"id": "devops-cron-schedules-basic-schedule",
+"ok": true
+},
+{
+"id": "devops-cron-schedules-business-hours",
+"ok": true
+},
+{
+"id": "devops-cron-schedules-calendar-edge-cases",
+"ok": true
+},
+{
+"id": "devops-cron-schedules-dom-dow-trap",
+"ok": true
+},
+{
+"id": "devops-cron-schedules-macros-and-boot",
+"ok": true
+},
+{
+"id": "devops-cron-schedules-mixed-crontab-fix",
+"ok": true
+},
+{
+"id": "devops-cron-schedules-names-and-ranges",
+"ok": true
+},
+{
+"id": "devops-cron-schedules-percent-escape",
+"ok": true
+},
+{
+"id": "devops-cron-schedules-quarter-end-guard",
+"ok": true
+},
+{
+"id": "devops-cron-schedules-stagger-offsets",
+"ok": true
+},
+{
+"id": "devops-cron-schedules-steps-and-lists",
+"ok": true
+},
+{
+"id": "devops-cron-schedules-system-crontab-user",
+"ok": true
+}
+]

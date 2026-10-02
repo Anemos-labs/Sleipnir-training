@@ -977,7 +977,7 @@ def make_cases(rng, p, ns):
 
 
 def prompt(rng, p, api, lang):
-    where = api.where(lang)
+    where = api.short(lang)
     fn = api.name(lang)
     ln = K.LANG_NAME[lang]
     dec = "encoder and decoder" if p["decode"] else "encoder"

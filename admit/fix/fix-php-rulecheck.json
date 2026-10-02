@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-php-rulecheck-01-swap",
+"ok": true
+},
+{
+"id": "fix-php-rulecheck-02-delete",
+"ok": true
+},
+{
+"id": "fix-php-rulecheck-03-logic",
+"ok": true
+},
+{
+"id": "fix-php-rulecheck-04-const",
+"ok": true
+},
+{
+"id": "fix-php-rulecheck-05-cmp",
+"ok": true
+},
+{
+"id": "fix-php-rulecheck-06-swap",
+"ok": true
+},
+{
+"id": "fix-php-rulecheck-07-delete",
+"ok": true
+},
+{
+"id": "fix-php-rulecheck-08-logic",
+"ok": true
+}
+]

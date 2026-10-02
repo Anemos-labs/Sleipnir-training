@@ -637,9 +637,9 @@ INK_README = dd(r'''
       characters after the opener, is not preceded by whitespace or by a backslash, and is followed by the end of the text,
       whitespace or one of `. , ; : ! ? ) ] } " '`. Without such a closer the delimiter is literal text (`a*b*c` and `x = y = z` have no
       spans). The inside of `*` and `~` spans is rendered recursively; the inside of `=` is code: literal, only escaped.
-    * `<<url|label>>` is `<a href="url">label</a>`; `<<url>>` uses the url as label. Both parts are stripped; the label is
+    * `<<url|label>>` is `<a href="url">label</a>`; `<<url>>` uses the url as label. The url ends at the first `|` (the label may contain more of them). Both parts are stripped; the label is
       plain text (escaped, no spans) and a blank label falls back to the url; an empty url (or no closing `>>`) leaves the
-      text as it is. When `base_url` is given and the url is relative, `base_url` without trailing `/`, a `/`, and the url
+      text as it is. When `base_url` is given and the url is relative, `base_url` with all its trailing `/` removed, a `/`, and the url
       are used as href. Relative means: it does not start with `/` or `#` and contains neither `:` nor `//`.
     * A backslash followed by one of `* ~ = < \` outputs that character literally. Any other backslash is literal.
 ''')
@@ -1095,9 +1095,9 @@ SPAN_README = dd(r'''
     * `*` any version: `>=0.0.0`.
     * `>=V`, `>V`, `<=V`, `<V`, `=V`, `!V` (not equal; written `!=`): a bound. `V` may be partial (`1`, `1.2`): padded with zeros.
       Wildcards are not allowed after an operator.
-    * `V~` same minor: `>=V` and `<M.(m+1).0`. `V^` same major: `>=V` and `<(M+1).0.0`; but when `M` is 0 it
+    * `V~` same minor: `>=V` and `<M.(m+1).0` (a full `V` may carry a pre-release, which then belongs to the lower bound). `V^` same major: `>=V` and `<(M+1).0.0`; but when `M` is 0 it
       is `<0.(m+1).0`, and when `M` and `m` are both 0 it is `<0.0.(p+1)`. `V` may be partial (padded) and needs no wildcard.
-    * `A..B` inclusive span: `>=A` and `<=B`, both padded.
+    * `A..B` inclusive span: `>=A` and `<=B`, both padded (either end may be a full version with a pre-release; wildcards are not allowed).
     * A bare full version `1.2.3` (or with pre-release) is exactly that version: `=1.2.3`. A bare partial or wildcard
       version is a family: `1` and `1.x` (`x`, `X` or `*`) are `>=1.0.0` and `<2.0.0`; `1.2` and `1.2.x` are `>=1.2.0` and
       `<1.3.0`; a lone `x` is `>=0.0.0`. A wildcard can only be followed by more wildcards. A pre-release needs a full version.

@@ -1388,7 +1388,7 @@ RD = Lib(
     files={"redactor.py": RD_SRC, "README.md": RD_README, ".gitignore": "__pycache__/\n*.pyc\n"},
     visible_tests={"tests/test_basic.py": RD_VISIBLE},
     hidden_tests={"tests/test_full.py": RD_HIDDEN},
-    mutate=["redactor.py"], difficulty=3, tags=["security", "text", "regex"],
+    mutate=["redactor.py"], difficulty=2, tags=["security", "text", "regex"],
     probes=[
         'redact("mail ada.l@mail.example.org now")',
         'redact("a@b.org,c@d.org (e@f.io)")',

@@ -1,0 +1,26 @@
+[
+{
+"id": "security-redos-01-display-name",
+"ok": true
+},
+{
+"id": "security-redos-02-trailing-whitespace",
+"ok": true
+},
+{
+"id": "security-redos-03-email-regex",
+"ok": true
+},
+{
+"id": "security-redos-04-hostname-regex",
+"ok": true
+},
+{
+"id": "security-redos-05-amount-regex",
+"ok": true
+},
+{
+"id": "security-redos-06-strip-tags",
+"ok": true
+}
+]

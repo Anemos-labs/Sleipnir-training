@@ -38,13 +38,5 @@
 {
 "id": "robust-scope-one-value-10-limits-yaml",
 "ok": true
-},
-{
-"id": "robust-scope-one-value-11-regions-json",
-"ok": true
-},
-{
-"id": "robust-scope-one-value-12-envs-ini",
-"ok": true
 }
 ]

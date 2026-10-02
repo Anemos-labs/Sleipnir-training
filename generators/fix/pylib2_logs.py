@@ -24,7 +24,7 @@ LANTERN_README = dd(r'''
     * `message`: the text after the source up to the first ` | ` (space, pipe, space), stripped. Without that
       separator the whole rest of the line is the message and `fields` is `{}`.
     * `fields`: after the separator, whitespace-separated `key=value` items. A value is either a bare run of
-      non-space characters or a double-quoted string in which a backslash makes the next character literal
+      non-space characters (possibly none: `key=` has the value `""`) or a double-quoted string in which a backslash makes the next character literal
       (`\"`, `\\`); quoted values may contain spaces. An item without `=` is a flag and its value is `True`. When a
       key repeats the last value wins. An unterminated quote is a `ValueError`, as is an empty key.
 

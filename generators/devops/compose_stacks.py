@@ -238,7 +238,7 @@ def d_dep_short(m, ctx, rng):
 
 def d_sexa(m, ctx, rng):
     n, img, port = ctx["c"]["edge"]
-    m["services"][n]["ports"] = [Y.Raw(f"{port}:{port}", port // 1 * 60 + port)]
+    m["services"][n]["ports"] = [Y.Raw(f"{port}:{port}", port * 3600 + port * 60)]
     return {"a": n}
 
 
@@ -366,7 +366,7 @@ def docs(model, ctx):
         # Stack rules for {c["name"]}
 
         `compose.yaml` is validated mechanically with the rules below. The YAML is read with the YAML 1.1 rules of Ruby's Psych
-        (so an unquoted `no` is the boolean false, and an unquoted `22:22` is the number 1342, written in base 60).
+        (so an unquoted `no` is the boolean false, and an unquoted `22:22` is a sexagesimal integer, not a string).
 
         1. **Keep the work.** The stack has exactly the services {", ".join("`" + k + "`" for k in r["keep"])}; each keeps its `image` (or `build` context) and
            nothing may be removed. There is no top-level `version:` key (it is obsolete).

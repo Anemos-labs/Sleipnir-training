@@ -584,7 +584,7 @@ LF = Lib(
     files={"logfold.py": LF_SRC, "README.md": LF_README, ".gitignore": "__pycache__/\n*.pyc\n"},
     visible_tests={"tests/test_basic.py": LF_VISIBLE},
     hidden_tests={"tests/test_full.py": LF_HIDDEN},
-    mutate=["logfold.py"], difficulty=2, tags=["logs", "text"],
+    mutate=["logfold.py"], difficulty=1, tags=["logs", "text"],
     probes=[
         'template("retry 3 after 250 ms  ")',
         'fold_lines(["disk full"] * 4 + ["ok"])',

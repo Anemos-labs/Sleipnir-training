@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-php-escapist-01-const",
+"ok": true
+},
+{
+"id": "fix-php-escapist-02-logic",
+"ok": true
+},
+{
+"id": "fix-php-escapist-03-delete",
+"ok": true
+},
+{
+"id": "fix-php-escapist-04-cmp",
+"ok": true
+},
+{
+"id": "fix-php-escapist-05-arith",
+"ok": true
+},
+{
+"id": "fix-php-escapist-06-const",
+"ok": true
+},
+{
+"id": "fix-php-escapist-07-logic",
+"ok": true
+},
+{
+"id": "fix-php-escapist-08-delete",
+"ok": true
+}
+]

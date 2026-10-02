@@ -1279,7 +1279,7 @@ def make_cases(rng, p, ns):
 
 
 def prompt(rng, p, api, lang):
-    where = api.where(lang)
+    where = api.short(lang)
     fn = api.name(lang)
     ln = K.LANG_NAME[lang]
     feats = ["version constraints", "highest-version-first backtracking"] + (["conflicts"] if p["conflicts"] else []) + (["`after` ordering hints and cycle detection"] if p["after"] else [])

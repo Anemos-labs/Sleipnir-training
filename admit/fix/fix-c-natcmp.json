@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-c-natcmp-01-delete",
+"ok": true
+},
+{
+"id": "fix-c-natcmp-02-logic",
+"ok": true
+},
+{
+"id": "fix-c-natcmp-03-const",
+"ok": true
+},
+{
+"id": "fix-c-natcmp-04-arith",
+"ok": true
+},
+{
+"id": "fix-c-natcmp-05-cmp",
+"ok": true
+},
+{
+"id": "fix-c-natcmp-06-logic",
+"ok": true
+},
+{
+"id": "fix-c-natcmp-07-const",
+"ok": true
+},
+{
+"id": "fix-c-natcmp-08-arith",
+"ok": true
+}
+]

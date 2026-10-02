@@ -419,6 +419,7 @@ HIDDEN = gosrc(dd(r'''
             {Money{math.MaxInt64, "USD"}, "USD 92,233,720,368,547,758.07"}, {Money{math.MinInt64, "USD"}, "USD -92,233,720,368,547,758.08"},
             {Money{999, "JPY"}, "JPY 999"}, {Money{1000, "JPY"}, "JPY 1,000"}, {Money{12345, "KWD"}, "KWD 12.345"},
             {Money{100, "CHF"}, "CHF 1.00"}, {Money{-1, "ISK"}, "ISK -1"}, {Money{10, "GBP"}, "GBP 0.10"},
+            {Money{1500, "KRW"}, "KRW 1,500"}, {Money{-7, "KRW"}, "KRW -7"}, {Money{0, "KRW"}, "KRW 0"},
         }
         for _, c := range cases {
             if got := c.m.String(); got != c.want {
@@ -439,7 +440,7 @@ HIDDEN = gosrc(dd(r'''
             {"BHD 0.007", Money{7, "BHD"}}, {"CLF 12,345.6789", Money{123456789, "CLF"}}, {"USD -0", Money{0, "USD"}}, {"USD 0.0", Money{0, "USD"}},
             {"EUR 0", Money{0, "EUR"}}, {"USD 92,233,720,368,547,758.07", Money{math.MaxInt64, "USD"}},
             {"USD -92,233,720,368,547,758.08", Money{math.MinInt64, "USD"}}, {"KWD 12.3", Money{12300, "KWD"}}, {"ISK 12", Money{12, "ISK"}},
-            {"USD 123,456", Money{12345600, "USD"}},
+            {"USD 123,456", Money{12345600, "USD"}}, {"KRW 1500", Money{1500, "KRW"}}, {"1,500 KRW", Money{1500, "KRW"}}, {"KRW -7", Money{-7, "KRW"}},
         }
         for _, c := range cases {
             got, err := Parse(c.in)
@@ -454,7 +455,7 @@ HIDDEN = gosrc(dd(r'''
             "", "USD", "12.34", "USD 12.34 extra", " USD 12.34", "USD  12.34", "USD 12.34 ", "USD USD", "12 34", "usd 12.34", "US 12.34",
             "USDX 12.34", "USD -", "USD ", "USD .5", "USD 5.", "USD 1,23", "USD 1,2345", "USD ,123", "USD 1234,567", "USD 12,34,567", "USD 1,,000",
             "USD 1.000,5", "USD 1_000", "USD +5", "USD 5e2", "USD --5", "USD 5-", "USD 1.2.3", "USD 0x10", "USD 1,000.", "USD 1,000.a",
-            "USD ٣", "USD 12.3a", "USD - 5", "1,00 USD", "USD 1 000",
+            "USD ٣", "USD 12.3a", "USD - 5", "1,00 USD", "USD 1 000", "USd 12.34", "US1 5", "5 USd", "UsD 5", "12.34 US1",
         }
         for _, s := range bad {
             if got, err := Parse(s); !errors.Is(err, ErrSyntax) {
@@ -622,6 +623,12 @@ HIDDEN = gosrc(dd(r'''
         if got, err := Mul(Money{math.MaxInt64, "USD"}, 1, 1, Floor); err != nil || got.Minor != math.MaxInt64 {
             t.Errorf("identity at max: %+v %v", got, err)
         }
+        if got, err := Mul(Money{1, "USD"}, math.MinInt64, 1, Floor); err != nil || got.Minor != math.MinInt64 {
+            t.Errorf("1 * min: %+v %v", got, err)
+        }
+        if _, err := Mul(Money{2, "USD"}, math.MinInt64, 2, Floor); !errors.Is(err, ErrRange) {
+            t.Errorf("2 * min / 2 overflows the intermediate product: %v", err)
+        }
         if got, err := Mul(Money{math.MinInt64, "USD"}, 1, 1, Floor); err != nil || got.Minor != math.MinInt64 {
             t.Errorf("identity at min: %+v %v", got, err)
         }
@@ -685,6 +692,9 @@ HIDDEN = gosrc(dd(r'''
         }
         if _, err := Convert(Money{1, "CLF"}, "JPY", 1, math.MaxInt64/50, Floor); !errors.Is(err, ErrRange) {
             t.Errorf("den shift overflow: %v", err)
+        }
+        if got, err := Convert(Money{1, "USD"}, "EUR", math.MinInt64, 1, Floor); err != nil || got != (Money{math.MinInt64, "EUR"}) {
+            t.Errorf("1 * min at par: %+v %v", got, err)
         }
     }
 
@@ -811,7 +821,7 @@ HIDDEN = gosrc(dd(r'''
     }
 
     func TestAllocateErrors(t *testing.T) {
-        bad := [][]int64{nil, {}, {0}, {0, 0, 0}, {1, -1}, {-5}, {math.MaxInt64, 1}, {math.MaxInt64, math.MaxInt64}}
+        bad := [][]int64{nil, {}, {0}, {0, 0, 0}, {1, -1}, {-5}, {5, -1}, {-1, 2}, {3, -1, 1}, {7, 0, -3, 9}, {math.MaxInt64, 1}, {math.MaxInt64, math.MaxInt64}}
         for _, w := range bad {
             if got, err := Allocate(Money{100, "USD"}, w); !errors.Is(err, ErrBadWeights) || got != nil {
                 t.Errorf("Allocate(%v) = %v, %v; want ErrBadWeights", w, got, err)

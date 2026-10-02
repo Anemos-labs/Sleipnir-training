@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-undotrail-01-arith",
+"ok": true
+},
+{
+"id": "fix-py-undotrail-02-delete",
+"ok": true
+},
+{
+"id": "fix-py-undotrail-03-swap",
+"ok": true
+},
+{
+"id": "fix-py-undotrail-04-logic",
+"ok": true
+},
+{
+"id": "fix-py-undotrail-05-const",
+"ok": true
+},
+{
+"id": "fix-py-undotrail-06-negate",
+"ok": true
+},
+{
+"id": "fix-py-undotrail-07-cmp",
+"ok": true
+},
+{
+"id": "fix-py-undotrail-08-arith",
+"ok": true
+},
+{
+"id": "fix-py-undotrail-09-delete",
+"ok": true
+},
+{
+"id": "fix-py-undotrail-10-swap",
+"ok": true
+}
+]

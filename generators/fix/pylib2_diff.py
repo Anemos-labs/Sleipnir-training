@@ -870,7 +870,7 @@ PS = Lib(
     files={"pagespec.py": PS_SRC, "README.md": PS_README, ".gitignore": "__pycache__/\n*.pyc\n"},
     visible_tests={"tests/test_basic.py": PS_VISIBLE},
     hidden_tests={"tests/test_full.py": PS_HIDDEN},
-    mutate=["pagespec.py"], difficulty=3, tags=["parsing", "printing"],
+    mutate=["pagespec.py"], difficulty=2, tags=["parsing", "printing"],
     probes=[
         'parse("1-10/3", 10)',
         'parse("10-1/4", 10)',

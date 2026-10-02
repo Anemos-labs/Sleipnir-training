@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-c-regattarank-01-cmp",
+"ok": true
+},
+{
+"id": "fix-c-regattarank-02-logic",
+"ok": true
+},
+{
+"id": "fix-c-regattarank-03-negate",
+"ok": true
+},
+{
+"id": "fix-c-regattarank-04-const",
+"ok": true
+},
+{
+"id": "fix-c-regattarank-05-delete",
+"ok": true
+},
+{
+"id": "fix-c-regattarank-06-arith",
+"ok": true
+},
+{
+"id": "fix-c-regattarank-07-cmp",
+"ok": true
+},
+{
+"id": "fix-c-regattarank-08-negate",
+"ok": true
+}
+]

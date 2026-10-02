@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-frameseq-01-swap",
+"ok": true
+},
+{
+"id": "fix-py-frameseq-02-cmp",
+"ok": true
+},
+{
+"id": "fix-py-frameseq-03-const",
+"ok": true
+},
+{
+"id": "fix-py-frameseq-04-negate",
+"ok": true
+},
+{
+"id": "fix-py-frameseq-05-delete",
+"ok": true
+},
+{
+"id": "fix-py-frameseq-06-arith",
+"ok": true
+},
+{
+"id": "fix-py-frameseq-07-cmp",
+"ok": true
+},
+{
+"id": "fix-py-frameseq-08-const",
+"ok": true
+},
+{
+"id": "fix-py-frameseq-09-negate",
+"ok": true
+},
+{
+"id": "fix-py-frameseq-10-delete",
+"ok": true
+}
+]

@@ -1,0 +1,62 @@
+[
+{
+"id": "fix-hand-cart-flow-01-volume-tiers-add-up",
+"ok": true
+},
+{
+"id": "fix-hand-cart-flow-02-volume-starts-above-the-tier-quantity",
+"ok": true
+},
+{
+"id": "fix-hand-cart-flow-03-percent-coupon-has-no-cap",
+"ok": true
+},
+{
+"id": "fix-hand-cart-flow-04-fixed-coupon-can-exceed-the-goods",
+"ok": true
+},
+{
+"id": "fix-hand-cart-flow-05-weight-tier-excludes-its-bound",
+"ok": true
+},
+{
+"id": "fix-hand-cart-flow-06-form-quantities-stay-text",
+"ok": true
+},
+{
+"id": "fix-hand-cart-flow-07-negative-amounts-round-down",
+"ok": true
+},
+{
+"id": "fix-hand-cart-flow-08-coupon-computed-before-volume-discounts",
+"ok": true
+},
+{
+"id": "fix-hand-cart-flow-09-allocation-drops-the-remainder",
+"ok": true
+},
+{
+"id": "fix-hand-cart-flow-10-tax-rounded-per-line",
+"ok": true
+},
+{
+"id": "fix-hand-cart-flow-11-free-shipping-judged-on-list-prices",
+"ok": true
+},
+{
+"id": "fix-hand-cart-flow-12-shipping-takes-the-class-of-the-first-line",
+"ok": true
+},
+{
+"id": "fix-hand-cart-flow-13-cart-lines-leak-and-pricing-sorts-them",
+"ok": true
+},
+{
+"id": "fix-hand-cart-flow-14-coupon-base-and-allocation",
+"ok": true
+},
+{
+"id": "fix-hand-cart-flow-15-accountant-cent-differences",
+"ok": true
+}
+]

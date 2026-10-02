@@ -1,0 +1,18 @@
+[
+{
+"id": "security-abuse-limits-01-login-lockout",
+"ok": true
+},
+{
+"id": "security-abuse-limits-02-unbounded-upload",
+"ok": true
+},
+{
+"id": "security-abuse-limits-03-forwarded-for-bypass",
+"ok": true
+},
+{
+"id": "security-abuse-limits-04-otp-attempts",
+"ok": true
+}
+]

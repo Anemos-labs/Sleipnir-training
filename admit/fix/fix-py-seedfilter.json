@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-seedfilter-01-negate",
+"ok": true
+},
+{
+"id": "fix-py-seedfilter-02-delete",
+"ok": true
+},
+{
+"id": "fix-py-seedfilter-03-const",
+"ok": true
+},
+{
+"id": "fix-py-seedfilter-04-swap",
+"ok": true
+},
+{
+"id": "fix-py-seedfilter-05-cmp",
+"ok": true
+},
+{
+"id": "fix-py-seedfilter-06-arith",
+"ok": true
+},
+{
+"id": "fix-py-seedfilter-07-logic",
+"ok": true
+},
+{
+"id": "fix-py-seedfilter-08-negate",
+"ok": true
+},
+{
+"id": "fix-py-seedfilter-09-delete",
+"ok": true
+},
+{
+"id": "fix-py-seedfilter-10-const",
+"ok": true
+}
+]

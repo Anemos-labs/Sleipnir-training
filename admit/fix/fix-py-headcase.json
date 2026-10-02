@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-headcase-01-arith",
+"ok": true
+},
+{
+"id": "fix-py-headcase-02-swap",
+"ok": true
+},
+{
+"id": "fix-py-headcase-03-negate",
+"ok": true
+},
+{
+"id": "fix-py-headcase-04-cmp",
+"ok": true
+},
+{
+"id": "fix-py-headcase-05-const",
+"ok": true
+},
+{
+"id": "fix-py-headcase-06-delete",
+"ok": true
+},
+{
+"id": "fix-py-headcase-07-negate",
+"ok": true
+},
+{
+"id": "fix-py-headcase-08-cmp",
+"ok": true
+},
+{
+"id": "fix-py-headcase-09-const",
+"ok": true
+},
+{
+"id": "fix-py-headcase-10-delete",
+"ok": true
+}
+]

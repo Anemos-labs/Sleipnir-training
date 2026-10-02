@@ -1,0 +1,74 @@
+[
+{
+"id": "feature-rb-tidelog-01-mean",
+"ok": true
+},
+{
+"id": "feature-rb-tidelog-02-windows",
+"ok": true
+},
+{
+"id": "feature-rb-tidelog-03-merge",
+"ok": true
+},
+{
+"id": "feature-rb-tidelog-04-between-turning",
+"ok": true
+},
+{
+"id": "feature-rb-tidelog-05-csv",
+"ok": true
+},
+{
+"id": "feature-rb-tidelog-06-alarm",
+"ok": true
+},
+{
+"id": "feature-rb-tidelog-07-corrections",
+"ok": true
+},
+{
+"id": "feature-rb-tidelog-08-datum-corrections",
+"ok": true
+},
+{
+"id": "feature-rb-tidelog-09-interpolate",
+"ok": true
+},
+{
+"id": "feature-rb-tidelog-10-turning",
+"ok": true
+},
+{
+"id": "feature-rb-tidelog-11-csv",
+"ok": true
+},
+{
+"id": "feature-rb-tidelog-12-between-interpolate",
+"ok": true
+},
+{
+"id": "feature-rb-tidelog-13-corrections",
+"ok": true
+},
+{
+"id": "feature-rb-tidelog-14-interpolate",
+"ok": true
+},
+{
+"id": "feature-rb-tidelog-15-windows",
+"ok": true
+},
+{
+"id": "feature-rb-tidelog-16-turning-windows",
+"ok": true
+},
+{
+"id": "feature-rb-tidelog-17-merge",
+"ok": true
+},
+{
+"id": "feature-rb-tidelog-18-mean",
+"ok": true
+}
+]

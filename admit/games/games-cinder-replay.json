@@ -1,0 +1,18 @@
+[
+{
+"id": "games-cinder-replay-01-plain",
+"ok": true
+},
+{
+"id": "games-cinder-replay-02-rle",
+"ok": true
+},
+{
+"id": "games-cinder-replay-03-footer",
+"ok": true
+},
+{
+"id": "games-cinder-replay-04-rewind",
+"ok": true
+}
+]

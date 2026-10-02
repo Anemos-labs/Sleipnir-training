@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-tabstops-01-arith",
+"ok": true
+},
+{
+"id": "fix-py-tabstops-02-const",
+"ok": true
+},
+{
+"id": "fix-py-tabstops-03-delete",
+"ok": true
+},
+{
+"id": "fix-py-tabstops-04-negate",
+"ok": true
+},
+{
+"id": "fix-py-tabstops-05-cmp",
+"ok": true
+},
+{
+"id": "fix-py-tabstops-06-arith",
+"ok": true
+},
+{
+"id": "fix-py-tabstops-07-const",
+"ok": true
+},
+{
+"id": "fix-py-tabstops-08-delete",
+"ok": true
+},
+{
+"id": "fix-py-tabstops-09-negate",
+"ok": true
+},
+{
+"id": "fix-py-tabstops-10-arith",
+"ok": true
+}
+]

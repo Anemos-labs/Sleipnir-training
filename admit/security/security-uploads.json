@@ -1,0 +1,18 @@
+[
+{
+"id": "security-uploads-01-extension-filter",
+"ok": true
+},
+{
+"id": "security-uploads-02-magic-bytes",
+"ok": true
+},
+{
+"id": "security-uploads-03-stored-filename",
+"ok": true
+},
+{
+"id": "security-uploads-04-serve-headers",
+"ok": true
+}
+]

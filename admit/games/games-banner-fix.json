@@ -1,0 +1,62 @@
+[
+{
+"id": "games-banner-fix-01-initiative-tie",
+"ok": true
+},
+{
+"id": "games-banner-fix-02-dice-bits",
+"ok": true
+},
+{
+"id": "games-banner-fix-03-forest-cost",
+"ok": true
+},
+{
+"id": "games-banner-fix-04-pass-through",
+"ok": true
+},
+{
+"id": "games-banner-fix-05-range-adjacent",
+"ok": true
+},
+{
+"id": "games-banner-fix-06-forest-defence",
+"ok": true
+},
+{
+"id": "games-banner-fix-07-counter-damage",
+"ok": true
+},
+{
+"id": "games-banner-fix-08-counter-range",
+"ok": true
+},
+{
+"id": "games-banner-fix-09-move-twice",
+"ok": true
+},
+{
+"id": "games-banner-fix-10-dead-in-order",
+"ok": true
+},
+{
+"id": "games-banner-fix-11-time-limit",
+"ok": true
+},
+{
+"id": "games-banner-fix-12-hp-display",
+"ok": true
+},
+{
+"id": "games-banner-fix-13-hp-display",
+"ok": true
+},
+{
+"id": "games-banner-fix-14-moved-flag",
+"ok": true
+},
+{
+"id": "games-banner-fix-15-hp-display-time-limit",
+"ok": true
+}
+]

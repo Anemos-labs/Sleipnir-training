@@ -1,0 +1,74 @@
+[
+{
+"id": "devops-k8s-manifests-01-selector",
+"ok": true
+},
+{
+"id": "devops-k8s-manifests-02-api-ing",
+"ok": true
+},
+{
+"id": "devops-k8s-manifests-03-indent",
+"ok": true
+},
+{
+"id": "devops-k8s-manifests-04-no-probe-latest",
+"ok": true
+},
+{
+"id": "devops-k8s-manifests-05-req-gt-lim-namespace",
+"ok": true
+},
+{
+"id": "devops-k8s-manifests-06-cm-key-ing-backend",
+"ok": true
+},
+{
+"id": "devops-k8s-manifests-07-hpa-api-pathtype",
+"ok": true
+},
+{
+"id": "devops-k8s-manifests-08-probe-port-target-port",
+"ok": true
+},
+{
+"id": "devops-k8s-manifests-09-root-mount",
+"ok": true
+},
+{
+"id": "devops-k8s-manifests-10-match-labels-pdb",
+"ok": true
+},
+{
+"id": "devops-k8s-manifests-11-hpa-target-replicas-hpa",
+"ok": true
+},
+{
+"id": "devops-k8s-manifests-12-cm-name-pdb-sel",
+"ok": true
+},
+{
+"id": "devops-k8s-manifests-13-indent-selector",
+"ok": true
+},
+{
+"id": "devops-k8s-manifests-14-api-ing-hpa-api",
+"ok": true
+},
+{
+"id": "devops-k8s-manifests-15-hpa-range-bad-qty",
+"ok": true
+},
+{
+"id": "devops-k8s-manifests-16-match-labels-no-resources",
+"ok": true
+},
+{
+"id": "devops-k8s-manifests-17-latest",
+"ok": true
+},
+{
+"id": "devops-k8s-manifests-18-no-resources",
+"ok": true
+}
+]

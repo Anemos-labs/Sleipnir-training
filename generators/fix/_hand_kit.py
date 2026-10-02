@@ -111,6 +111,7 @@ _TIMING = [
     (re.compile(r"\b(finished in|Finished in|Ran \d+ tests? in) \d+(?:\.\d+)?(?:ms|s)\b"), r"\1 0.001s"),
     (re.compile(r"duration_ms:? \d+(?:\.\d+)?"), "duration_ms 0"),
     (re.compile(r"--seed \d+"), "--seed 1"),
+    (re.compile(r'File "/[^"]*?/((?:tests?|test)/[^"]+)"'), r'File "./\1"'),
     (re.compile(r"\d+(?:\.\d+)? runs/s, \d+(?:\.\d+)? assertions/s"), "0 runs/s, 0 assertions/s"),
 ]
 
@@ -203,6 +204,48 @@ def tasks_from(bases: list[Base], picks: list[tuple[int, int]] | None = None, ch
     if problems:
         raise RuntimeError("\n---\n".join(problems))
     return out
+
+
+def with_bugs(base: Base, bugs: list[Bug]) -> Base:
+    """The same project (sources, tests) with a different list of bugs."""
+    from dataclasses import replace
+
+    return replace(base, bugs=bugs)
+
+
+def combo(base: Base, ids: list[str], d: int, bug_id: str, intro: str, outro: str = "Please fix all of them.") -> Bug:
+    """One task that carries several of a base's defects at once (a release with several open tickets): the buggy start has
+    all of their patches, the hidden suite already checks each one, and the prompt lists the component reports."""
+    comps = []
+    for i in ids:
+        found = [b for b in base.bugs if b.id == i]
+        if len(found) != 1:
+            raise ValueError(f"{base.name}: no single bug {i!r}")
+        comps.append(found[0])
+    patches: dict = {}
+    reported: dict[str, str] = {}
+    for c in comps:
+        for path, pairs in c.patches.items():
+            if isinstance(pairs, str) or isinstance(patches.get(path), str):
+                if path in patches:
+                    raise ValueError(f"{base.name}/{c.id}: cannot combine a whole-file bug with another bug of {path}")
+                patches[path] = pairs
+            else:
+                patches.setdefault(path, []).extend(pairs)
+        reported.update(c.reported)
+
+    def prompt(ctx: Ctx) -> str:
+        parts = []
+        for k, c in enumerate(comps, 1):
+            bad = dict(base.good)
+            for path, pairs in c.patches.items():
+                bad[path] = pairs if isinstance(pairs, str) else patch_text(base.good[path], pairs, f"{base.name}/{c.id}:{path}")
+            sub = Ctx(base, c, dict(base.good), bad)
+            text = c.prompt(sub) if callable(c.prompt) else c.prompt
+            parts.append(f"{k}. {text.strip()}")
+        return intro.strip() + "\n\n" + "\n\n".join(parts) + ("\n\n" + outro if outro else "")
+
+    return Bug(bug_id, d, patches, prompt, reported=reported, tags=["multi-ticket"], lang=comps[0].lang, timeout_s=max(c.timeout_s for c in comps))
 
 
 def panic_excerpt(out: str) -> str:

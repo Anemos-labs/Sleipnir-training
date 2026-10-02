@@ -577,7 +577,7 @@ LIB = Lib(
     files={"go.mod": langs.go_mod("unitfmt"), "unitfmt.go": SRC, "README.md": README},
     visible_tests={"unitfmt_basic_test.go": VISIBLE},
     hidden_tests={"unitfmt_full_test.go": HIDDEN},
-    mutate=["unitfmt.go"], difficulty=4, tags=["formatting", "parsing", "rounding"],
+    mutate=["unitfmt.go"], difficulty=3, tags=["formatting", "parsing", "rounding"],
 )
 
 register_libs([LIB], n=8)

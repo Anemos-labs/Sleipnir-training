@@ -482,7 +482,7 @@ LIB = Lib(
            "src/glob.ts": GLOB, "src/match.ts": MATCH, "src/engine.ts": ENGINE, "README.md": README, ".gitignore": "node_modules/\nbuild/\n"},
     visible_tests={"test/basic.test.ts": VISIBLE},
     hidden_tests={"test/full.test.ts": HIDDEN},
-    mutate=["src/engine.ts", "src/match.ts", "src/glob.ts"], difficulty=3, tags=["email", "rules", "glob"],
+    mutate=["src/engine.ts", "src/match.ts", "src/glob.ts"], difficulty=2, tags=["email", "rules", "glob"],
     verify=TS_VERIFY,
     probe_import=("const { globToRegExp, globMatch } = require('./build/src/glob');\nconst { matchCond, header } = require('./build/src/match');\nconst { route } = require('./build/src/engine');"),
     probes=[

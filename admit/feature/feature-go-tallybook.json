@@ -1,0 +1,74 @@
+[
+{
+"id": "feature-go-tallybook-01-entries-for",
+"ok": true
+},
+{
+"id": "feature-go-tallybook-02-budget",
+"ok": true
+},
+{
+"id": "feature-go-tallybook-03-currency",
+"ok": true
+},
+{
+"id": "feature-go-tallybook-04-natural-tags",
+"ok": true
+},
+{
+"id": "feature-go-tallybook-05-natural",
+"ok": true
+},
+{
+"id": "feature-go-tallybook-06-journal",
+"ok": true
+},
+{
+"id": "feature-go-tallybook-07-as-of",
+"ok": true
+},
+{
+"id": "feature-go-tallybook-08-reverse-close",
+"ok": true
+},
+{
+"id": "feature-go-tallybook-09-reverse",
+"ok": true
+},
+{
+"id": "feature-go-tallybook-10-entries-for",
+"ok": true
+},
+{
+"id": "feature-go-tallybook-11-journal",
+"ok": true
+},
+{
+"id": "feature-go-tallybook-12-natural-budget",
+"ok": true
+},
+{
+"id": "feature-go-tallybook-13-tags",
+"ok": true
+},
+{
+"id": "feature-go-tallybook-14-budget",
+"ok": true
+},
+{
+"id": "feature-go-tallybook-15-close",
+"ok": true
+},
+{
+"id": "feature-go-tallybook-16-as-of-reverse-journal",
+"ok": true
+},
+{
+"id": "feature-go-tallybook-17-reverse",
+"ok": true
+},
+{
+"id": "feature-go-tallybook-18-currency",
+"ok": true
+}
+]

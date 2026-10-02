@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-go-cidrplan-01-delete",
+"ok": true
+},
+{
+"id": "fix-go-cidrplan-02-logic",
+"ok": true
+},
+{
+"id": "fix-go-cidrplan-03-arith",
+"ok": true
+},
+{
+"id": "fix-go-cidrplan-04-swap",
+"ok": true
+},
+{
+"id": "fix-go-cidrplan-05-cmp",
+"ok": true
+},
+{
+"id": "fix-go-cidrplan-06-const",
+"ok": true
+},
+{
+"id": "fix-go-cidrplan-07-arith",
+"ok": true
+},
+{
+"id": "fix-go-cidrplan-08-cmp",
+"ok": true
+}
+]

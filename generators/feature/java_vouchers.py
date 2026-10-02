@@ -554,6 +554,400 @@ def make_slices(rng: random.Random):
             }
         ''', D=min_default),
     ))
+
+    S.append(Slice(
+        id="idempotent", title="Safe retries", d=3,
+        pitch=("The till software retries a redemption when the network hiccups and customers have been charged twice.",
+               "A redemption that is sent twice must not take the money twice."),
+        reqs=("`redeemOnce(requestId, code, amountCents, day)` is a `redeem` that is safe to retry. It returns the balance that is left, exactly like `redeem`, and fails like `redeem`. The request id must not be blank (`IllegalArgumentException`).",
+              "When the same request id comes again with the same code, amount and day, nothing is redeemed a second time and the result of the first call is returned again, even if the voucher has been used further in the meantime. The same id with different arguments is an `IllegalStateException`.",
+              "A call that fails does not use up its request id, so the id can be tried again (also with other arguments)."),
+        code={
+            "src/vouchers/VoucherBook.java::fields": "private final Map<String, Done> done = new HashMap<>();",
+            "src/vouchers/VoucherBook.java::methods": '''
+                private record Done(String code, int amountCents, int day, int result) {
+                }
+
+                public int redeemOnce(String requestId, String code, int amountCents, int day) {
+                    if (requestId == null || requestId.isBlank()) {
+                        throw new IllegalArgumentException("request id is required");
+                    }
+                    Done d = done.get(requestId);
+                    if (d != null) {
+                        if (!d.code().equals(code) || d.amountCents() != amountCents || d.day() != day) {
+                            throw new IllegalStateException("request id " + requestId + " was used for another redemption");
+                        }
+                        return d.result();
+                    }
+                    int left = redeem(code, amountCents, day);
+                    done.put(requestId, new Done(code, amountCents, day, left));
+                    return left;
+                }
+            ''',
+        },
+        readme="## Safe retries\n\n`redeemOnce(requestId, code, amount, day)` is a retry-safe `redeem`: the same request id with the same arguments returns the first result without redeeming again; the same id with other arguments is an `IllegalStateException`; failed calls do not use up the id.\n",
+        vtests='''
+            static void testRedeemOnceBasic() {
+                VoucherBook b = book();
+                eq(4900, b.redeemOnce("r1", "A-100", 100, 1), "first call");
+                eq(4900, b.balance("A-100"), "balance");
+            }
+        ''',
+        tests='''
+            static void testRedeemOnceReplay() {
+                VoucherBook b = book();
+                eq(4000, b.redeemOnce("r1", "A-100", 1000, 1), "first");
+                eq(4000, b.redeemOnce("r1", "A-100", 1000, 1), "replay returns the same result");
+                eq(4000, b.balance("A-100"), "nothing was taken twice");
+                eq(1000, b.redeemOnce("r2", "A-100", 3000, 2), "another request");
+                eq(4000, b.redeemOnce("r1", "A-100", 1000, 1), "old replay still returns the old result");
+                eq(1000, b.balance("A-100"), "and takes nothing");
+                eq(0, b.redeemOnce("r3", "A-100", 1000, 3), "use it up");
+                eq(0, b.redeemOnce("r3", "A-100", 1000, 3), "replay of the last one");
+                eq(1000, b.redeemOnce("r2", "A-100", 3000, 2), "replay of an earlier one");
+            }
+
+            static void testRedeemOnceMismatchAndValidation() {
+                VoucherBook b = book();
+                eq(4900, b.redeemOnce("r1", "A-100", 100, 1), "first");
+                expect(IllegalStateException.class, () -> b.redeemOnce("r1", "A-100", 200, 1), "other amount");
+                expect(IllegalStateException.class, () -> b.redeemOnce("r1", "B-200", 100, 1), "other code");
+                expect(IllegalStateException.class, () -> b.redeemOnce("r1", "A-100", 100, 2), "other day");
+                eq(4900, b.balance("A-100"), "nothing changed");
+                expect(IllegalArgumentException.class, () -> b.redeemOnce(null, "A-100", 100, 1), "null id");
+                expect(IllegalArgumentException.class, () -> b.redeemOnce(" ", "A-100", 100, 1), "blank id");
+                expect(java.util.NoSuchElementException.class, () -> b.redeemOnce("r9", "NOPE", 100, 1), "unknown code");
+                expect(IllegalArgumentException.class, () -> b.redeemOnce("r9", "A-100", 0, 1), "bad amount");
+            }
+
+            static void testRedeemOnceFailureKeepsTheId() {
+                VoucherBook b = book();
+                expect(IllegalStateException.class, () -> b.redeemOnce("r5", "B-200", 5000, 1), "too much");
+                expect(IllegalStateException.class, () -> b.redeemOnce("r5", "B-200", 100, 11), "expired");
+                eq(1900, b.redeemOnce("r5", "B-200", 100, 1), "the id was never used up");
+                eq(1900, b.redeemOnce("r5", "B-200", 100, 1), "now it is");
+                eq(1900, b.balance("B-200"), "once");
+            }
+        ''',
+        cross={
+            "holder": {
+                "reqs": ("`redeemOnce` refuses a voucher that has a holder, like plain `redeem` does, and the refusal does not use up the request id.",),
+                "tests": '''
+                    static void testRedeemOnceRefusesBoundVouchers() {
+                        VoucherBook b = book();
+                        b.bind("A-100", "ana");
+                        expect(IllegalStateException.class, () -> b.redeemOnce("r1", "A-100", 100, 1), "bound voucher");
+                        eq(1900, b.redeemOnce("r1", "B-200", 100, 1), "the id is still free");
+                        eq(5000, b.balance("A-100"), "bound voucher untouched");
+                    }
+                '''},
+            "min-spend": {
+                "tests": '''
+                    static void testRedeemOnceHonoursMinimum() {
+                        VoucherBook b = book();
+                        b.setMinimum("A-100", 1000);
+                        expect(IllegalArgumentException.class, () -> b.redeemOnce("r1", "A-100", 100, 1), "below the minimum");
+                        eq(4000, b.redeemOnce("r1", "A-100", 1000, 1), "same id, valid amount");
+                        eq(4000, b.redeemOnce("r1", "A-100", 1000, 1), "replay");
+                    }
+                '''},
+        },
+    ))
+
+    S.append(Slice(
+        id="audit", title="Audit log", d=3,
+        pitch=("When the tills and the ledger disagree nobody can tell which voucher lost its money and when.",
+               "The accountant wants a record of everything that happens to the vouchers."),
+        reqs=("`VoucherBook.auditLog()` returns a copy of the log, oldest entry first, as a list of strings. Each successful `issue` appends `issue CODE VALUE EXPIRES` (value in cents, expiry day; for example `issue A-100 5000 30`) and each successful `redeem` appends `redeem CODE AMOUNT DAY`. Calls that throw append nothing.",
+              "Changing the returned list does not change the log. Anything not listed here is not logged."),
+        code={
+            "src/vouchers/VoucherBook.java::fields": "private final List<String> audit = new ArrayList<>();",
+            "src/vouchers/VoucherBook.java::on_issue": 'audit.add("issue " + code + " " + valueCents + " " + expiresDay);',
+            "src/vouchers/VoucherBook.java::on_redeem": 'audit.add("redeem " + code + " " + amountCents + " " + day);',
+            "src/vouchers/VoucherBook.java::methods": '''
+                public List<String> auditLog() {
+                    return new ArrayList<>(audit);
+                }
+            ''',
+        },
+        readme=dd('''
+            ## Audit log
+
+            `auditLog()` returns a copy of the log: `issue CODE VALUE EXPIRES` for each successful `issue` and
+            `redeem CODE AMOUNT DAY` for each successful `redeem`. Failed calls are not logged.
+        '''),
+        vtests='''
+            static void testAuditBasic() {
+                VoucherBook b = book();
+                b.redeem("A-100", 100, 1);
+                eq(3, b.auditLog().size(), "two issues and a redeem");
+            }
+        ''',
+        tests='''
+            static void testAuditLog() {
+                VoucherBook b = book();
+                eq(list("issue A-100 5000 30", "issue B-200 2000 10"), b.auditLog(), "issues");
+                b.redeem("A-100", 1500, 5);
+                expect(IllegalStateException.class, () -> b.redeem("B-200", 100, 11), "expired");
+                expect(IllegalStateException.class, () -> b.issue("A-100", 1, 1), "duplicate code");
+                expect(IllegalArgumentException.class, () -> b.issue("zz", 1, 1), "bad code");
+                expect(IllegalArgumentException.class, () -> b.redeem("A-100", 0, 5), "bad amount");
+                b.issue("C-300", 700, 9);
+                b.redeem("B-200", 2000, 10);
+                eq(list("issue A-100 5000 30", "issue B-200 2000 10", "redeem A-100 1500 5", "issue C-300 700 9",
+                        "redeem B-200 2000 10"), b.auditLog(), "log");
+                b.auditLog().add("tampered");
+                eq(5, b.auditLog().size(), "the log is a copy");
+            }
+        ''',
+        cross={
+            "idempotent": {
+                "reqs": ("A replayed `redeemOnce` is not logged again.",),
+                "tests": '''
+                    static void testReplayIsNotLogged() {
+                        VoucherBook b = new VoucherBook();
+                        b.issue("ONE-1", 900, 4);
+                        b.redeemOnce("k", "ONE-1", 100, 1);
+                        b.redeemOnce("k", "ONE-1", 100, 1);
+                        eq(list("issue ONE-1 900 4", "redeem ONE-1 100 1"), b.auditLog(), "one redeem entry");
+                    }
+                '''},
+            "batch": {
+                "tests": '''
+                    static void testBatchIsLoggedPerVoucher() {
+                        VoucherBook b = new VoucherBook();
+                        b.issueBatch("PR", 2, 300, 8);
+                        b.issue("PR-002X", 5, 1);
+                        expect(IllegalStateException.class, () -> b.issueBatch("PR", 3, 300, 8), "collision");
+                        eq(list("issue PR-001 300 8", "issue PR-002 300 8", "issue PR-002X 5 1"), b.auditLog(), "log");
+                    }
+                '''},
+            "extend": {
+                "reqs": ("Each successful `extend` appends `extend CODE NEWDAY`.",),
+                "code": {"src/vouchers/VoucherBook.java::on_extend": 'audit.add("extend " + code + " " + newExpiresDay);'},
+                "tests": '''
+                    static void testExtendIsLogged() {
+                        VoucherBook b = book();
+                        b.extend("B-200", 20);
+                        expect(IllegalArgumentException.class, () -> b.extend("B-200", 20), "same day");
+                        b.redeem("B-200", 100, 15);
+                        eq(list("issue A-100 5000 30", "issue B-200 2000 10", "extend B-200 20", "redeem B-200 100 15"),
+                                b.auditLog(), "log");
+                    }
+                '''},
+            "holder": {
+                "reqs": ("Each successful `bind` appends `bind CODE HOLDER`; a `redeemFor` is logged like any other `redeem`.",),
+                "code": {"src/vouchers/VoucherBook.java::on_bind": 'audit.add("bind " + code + " " + holder);'},
+                "tests": '''
+                    static void testBindIsLogged() {
+                        VoucherBook b = book();
+                        b.bind("A-100", "ana");
+                        expect(IllegalStateException.class, () -> b.bind("A-100", "bob"), "rebind");
+                        b.redeemFor("ana", "A-100", 50, 2);
+                        eq(list("issue A-100 5000 30", "issue B-200 2000 10", "bind A-100 ana", "redeem A-100 50 2"),
+                                b.auditLog(), "log");
+                    }
+                '''},
+        },
+    ))
+
+    S.append(Slice(
+        id="transfer", title="Transfers between vouchers", d=4,
+        pitch=("Customers keep asking to merge the leftovers of several vouchers into one, and the shop would rather do it than hand out cash.",
+               "Support wants to move the remaining value from one voucher to another."),
+        reqs=("`transfer(fromCode, toCode, amountCents, day)` moves money from one voucher to another and returns a `Transfer` (a new public record in `src/vouchers/Transfer.java` with `from()` and `to()` (the codes), `amountCents()`, `day()`, `fromBalanceCents()` and `toBalanceCents()`, the two balances after the move).",
+              f"The checks run in this order and a failing call changes nothing: an unknown code (`NoSuchElementException`, the source is looked up first); an amount that is not positive, a negative day or the same code twice (`IllegalArgumentException`); a day after the expiry day of either voucher, an amount larger than the balance of the source, or a balance of the target that would end up above `VoucherBook.MAX_BALANCE` (`IllegalStateException`). `MAX_BALANCE` is a public `int` constant, {cap}.",
+              "Only balances change: the initial values and the expiry days of both vouchers stay as they were. `VoucherBook.transfers()` returns the successful transfers, oldest first, as a new list."),
+        files={
+            "src/vouchers/Transfer.java": '''\
+package vouchers;
+
+/** The receipt of one transfer between two vouchers. */
+public record Transfer(String from, String to, int amountCents, int day, int fromBalanceCents, int toBalanceCents) {
+}
+''',
+        },
+        code={
+            "src/vouchers/VoucherBook.java::fields": fmt('''
+                public static final int MAX_BALANCE = __CAP__;
+                private final List<Transfer> transfers = new ArrayList<>();
+            ''', CAP=cap),
+            "src/vouchers/VoucherBook.java::methods": '''
+                public Transfer transfer(String fromCode, String toCode, int amountCents, int day) {
+                    Voucher src = voucher(fromCode);
+                    Voucher dst = voucher(toCode);
+                    if (amountCents <= 0) {
+                        throw new IllegalArgumentException("amount must be positive");
+                    }
+                    if (day < 0) {
+                        throw new IllegalArgumentException("day must not be negative");
+                    }
+                    if (fromCode.equals(toCode)) {
+                        throw new IllegalArgumentException("cannot transfer to the same voucher");
+                    }
+                    if (day > src.expiresDay() || day > dst.expiresDay()) {
+                        throw new IllegalStateException("a voucher has expired");
+                    }
+                    if (amountCents > src.balanceCents()) {
+                        throw new IllegalStateException("balance is only " + src.balanceCents());
+                    }
+                    if ((long) dst.balanceCents() + amountCents > MAX_BALANCE) {
+                        throw new IllegalStateException("a voucher cannot hold more than " + MAX_BALANCE);
+                    }
+                    @@slot transfer_checks
+                    src.setBalance(src.balanceCents() - amountCents);
+                    dst.setBalance(dst.balanceCents() + amountCents);
+                    Transfer t = new Transfer(fromCode, toCode, amountCents, day, src.balanceCents(), dst.balanceCents());
+                    transfers.add(t);
+                    @@slot on_transfer
+                    return t;
+                }
+
+                public List<Transfer> transfers() {
+                    return new ArrayList<>(transfers);
+                }
+            ''',
+        },
+        readme=fmt(dd('''
+            ## Transfers between vouchers
+
+            `transfer(fromCode, toCode, amountCents, day)` moves money between two vouchers and returns a `Transfer` record
+            (`from()`, `to()`, `amountCents()`, `day()`, `fromBalanceCents()`, `toBalanceCents()`). Both vouchers must be
+            valid on `day`; the target may not end up above `MAX_BALANCE` (__CAP__). Initial values and expiry days do not
+            change. `transfers()` lists the successful transfers.
+        '''), CAP=cap),
+        vtests='''
+            static void testTransferBasic() {
+                VoucherBook b = book();
+                Transfer t = b.transfer("A-100", "B-200", 1000, 5);
+                eq(4000, t.fromBalanceCents(), "source");
+                eq(3000, t.toBalanceCents(), "target");
+            }
+        ''',
+        tests=fmt('''
+            static void testTransfer() {
+                VoucherBook b = book();
+                Transfer t = b.transfer("A-100", "B-200", 1500, 6);
+                eq("A-100", t.from(), "from");
+                eq("B-200", t.to(), "to");
+                eq(1500, t.amountCents(), "amount");
+                eq(6, t.day(), "day");
+                eq(3500, t.fromBalanceCents(), "balance of the source after");
+                eq(3500, t.toBalanceCents(), "balance of the target after");
+                eq(3500, b.balance("A-100"), "source");
+                eq(3500, b.balance("B-200"), "target");
+                eq(5000, b.voucher("A-100").initialCents(), "initial value of the source");
+                eq(2000, b.voucher("B-200").initialCents(), "initial value of the target stays");
+                eq(10, b.voucher("B-200").expiresDay(), "expiry of the target stays");
+                eq(30, b.voucher("A-100").expiresDay(), "expiry of the source stays");
+                Transfer back = b.transfer("B-200", "A-100", 3500, 10);
+                eq(0, back.fromBalanceCents(), "everything can be moved, on the expiry day too");
+                eq(7000, back.toBalanceCents(), "and the target of the second one gets it all");
+                eq(2, b.transfers().size(), "history");
+                eq(1500, b.transfers().get(0).amountCents(), "oldest first");
+                eq(3500, b.transfers().get(1).amountCents(), "then the next");
+                b.transfers().clear();
+                eq(2, b.transfers().size(), "history is a copy");
+            }
+
+            static void testTransferChecks() {
+                VoucherBook b = book();
+                expect(java.util.NoSuchElementException.class, () -> b.transfer("NOPE", "B-200", 0, -1), "unknown source wins");
+                expect(java.util.NoSuchElementException.class, () -> b.transfer("A-100", "NOPE", 100, 1), "unknown target");
+                expect(IllegalArgumentException.class, () -> b.transfer("A-100", "B-200", 0, 1), "zero amount");
+                expect(IllegalArgumentException.class, () -> b.transfer("A-100", "B-200", -5, 1), "negative amount");
+                expect(IllegalArgumentException.class, () -> b.transfer("A-100", "B-200", 5, -1), "negative day");
+                expect(IllegalArgumentException.class, () -> b.transfer("A-100", "A-100", 5, 1), "same voucher");
+                expect(IllegalArgumentException.class, () -> b.transfer("B-200", "B-200", 5, 50), "same voucher beats expiry");
+                expect(IllegalArgumentException.class, () -> b.transfer("B-200", "A-100", 0, 11), "bad amount beats expiry");
+                expect(IllegalStateException.class, () -> b.transfer("A-100", "B-200", 100, 11), "target expired");
+                expect(IllegalStateException.class, () -> b.transfer("B-200", "A-100", 100, 11), "source expired");
+                expect(IllegalStateException.class, () -> b.transfer("A-100", "B-200", 5001, 1), "more than the balance");
+                eq(5000, b.balance("A-100"), "source untouched");
+                eq(2000, b.balance("B-200"), "target untouched");
+                eq(0, b.transfers().size(), "nothing recorded");
+                eq(__CAP__, VoucherBook.MAX_BALANCE, "constant");
+            }
+
+            static void testTransferCap() {
+                VoucherBook b = book();
+                b.issue("BIG-1", VoucherBook.MAX_BALANCE - 100, 40);
+                expect(IllegalStateException.class, () -> b.transfer("A-100", "BIG-1", 101, 1), "one cent too much");
+                eq(5000, b.balance("A-100"), "source untouched");
+                eq(VoucherBook.MAX_BALANCE - 100, b.balance("BIG-1"), "target untouched");
+                Transfer t = b.transfer("A-100", "BIG-1", 100, 1);
+                eq(VoucherBook.MAX_BALANCE, t.toBalanceCents(), "exactly the cap is fine");
+                expect(IllegalStateException.class, () -> b.transfer("B-200", "BIG-1", 1, 1), "full");
+                eq(1, b.transfers().size(), "only the successful one is recorded");
+            }
+        ''', CAP=cap),
+        cross={
+            "holder": {
+                "reqs": ("A `transfer` is only allowed between vouchers with the same holder (both unbound, or both bound to the same person); otherwise `IllegalStateException`. This check comes after all the others.",),
+                "code": {"src/vouchers/VoucherBook.java::transfer_checks": '''
+                    if (!Objects.equals(src.holder(), dst.holder())) {
+                        throw new IllegalStateException("the vouchers belong to different holders");
+                    }
+                '''},
+                "tests": '''
+                    static void testTransferNeedsSameHolder() {
+                        VoucherBook b = book();
+                        b.bind("A-100", "ana");
+                        expect(IllegalStateException.class, () -> b.transfer("A-100", "B-200", 100, 1), "bound to unbound");
+                        expect(IllegalStateException.class, () -> b.transfer("B-200", "A-100", 100, 1), "unbound to bound");
+                        b.bind("B-200", "bob");
+                        expect(IllegalStateException.class, () -> b.transfer("A-100", "B-200", 100, 1), "different people");
+                        eq(5000, b.balance("A-100"), "nothing moved");
+                        b.issue("C-300", 400, 20);
+                        b.bind("C-300", "ana");
+                        eq(5100, b.transfer("C-300", "A-100", 100, 2).toBalanceCents(), "same person");
+                        eq(300, b.balance("C-300"), "moved");
+                        expect(IllegalArgumentException.class, () -> b.transfer("C-300", "C-300", 1, 2), "other checks first");
+                    }
+                '''},
+            "min-spend": {
+                "reqs": ("The source voucher's minimum spend applies to a `transfer` like it does to `redeem`: an amount below it is an `IllegalArgumentException` unless it is the whole remaining balance. This check comes after all the others.",),
+                "code": {"src/vouchers/VoucherBook.java::transfer_checks": '''
+                    if (amountCents < src.minimumCents() && amountCents != src.balanceCents()) {
+                        throw new IllegalArgumentException("minimum spend is " + src.minimumCents());
+                    }
+                '''},
+                "tests": '''
+                    static void testTransferHonoursMinimum() {
+                        VoucherBook b = book();
+                        b.setMinimum("A-100", 1000);
+                        expect(IllegalArgumentException.class, () -> b.transfer("A-100", "B-200", 999, 1), "below the minimum");
+                        eq(5000, b.balance("A-100"), "nothing moved");
+                        eq(4000, b.transfer("A-100", "B-200", 1000, 1).fromBalanceCents(), "the minimum itself");
+                        b.setMinimum("B-200", 4000);
+                        eq(3000, b.transfer("A-100", "B-200", 1000, 1).fromBalanceCents(), "the target's minimum is not involved");
+                        b.setMinimum("A-100", 5000);
+                        eq(0, b.transfer("A-100", "B-200", 3000, 1).fromBalanceCents(), "the whole balance is always allowed");
+                    }
+                '''},
+            "audit": {
+                "reqs": ("Each successful `transfer` appends `transfer FROM TO AMOUNT DAY` to the audit log.",),
+                "code": {"src/vouchers/VoucherBook.java::on_transfer": 'audit.add("transfer " + fromCode + " " + toCode + " " + amountCents + " " + day);'},
+                "tests": '''
+                    static void testTransferIsLogged() {
+                        VoucherBook b = book();
+                        b.transfer("A-100", "B-200", 700, 3);
+                        expect(IllegalStateException.class, () -> b.transfer("A-100", "B-200", 99999, 3), "too much");
+                        eq(list("issue A-100 5000 30", "issue B-200 2000 10", "transfer A-100 B-200 700 3"), b.auditLog(), "log");
+                    }
+                '''},
+            "extend": {
+                "tests": '''
+                    static void testTransferToExtendedVoucher() {
+                        VoucherBook b = book();
+                        expect(IllegalStateException.class, () -> b.transfer("A-100", "B-200", 100, 12), "target expired");
+                        b.extend("B-200", 40);
+                        eq(2100, b.transfer("A-100", "B-200", 100, 12).toBalanceCents(), "now it is valid");
+                        eq(40, b.voucher("B-200").expiresDay(), "expiry is the extended one");
+                    }
+                '''},
+        },
+    ))
     return S
 
 
@@ -568,3 +962,5 @@ APP = App(
     visible={"test/TestMain.java": TEST_HEAD.replace("@@blocks tests", VISIBLE_BASE + "\n    @@blocks tests")},
     hidden={"test/TestMain.java": TEST_HEAD.replace("@@blocks tests", HIDDEN_BASE + "\n    @@blocks tests")},
 )
+
+register_app("feature-java-vouchers", APP, make_slices, n=16, summary="gift vouchers: batches, extensions, holders, minimum spend, safe retries, audit, transfers")

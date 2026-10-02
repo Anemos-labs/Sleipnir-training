@@ -12,7 +12,7 @@ README1 = dd(r'''
     ## Decoding
 
     `int cf_decode(const char *s, size_t n, uint32_t *cp)` decodes one character from the front of `s` (`n` bytes available)
-    and returns the number of bytes it uses; it returns 0 when `n == 0`. Decoding is **strict**:
+    and returns the number of bytes it uses; it returns 0 (without writing `*cp`) when `n == 0`. Decoding is **strict**:
 
     * valid sequences are 1 to 4 bytes: lead byte `00..7F`; `C2..DF` + 1 continuation; `E0..EF` + 2; `F0..F4` + 3, where a
       continuation byte is `80..BF`;

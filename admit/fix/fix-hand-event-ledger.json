@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-hand-event-ledger-01-parse-line-numbers-skip-comments",
+"ok": true
+},
+{
+"id": "fix-hand-event-ledger-02-adjust-adds-instead-of-sets",
+"ok": true
+},
+{
+"id": "fix-hand-event-ledger-03-merge-compares-seq-as-text",
+"ok": true
+},
+{
+"id": "fix-hand-event-ledger-04-replay-reapplies-the-snapshot-event",
+"ok": true
+},
+{
+"id": "fix-hand-event-ledger-05-snapshot-forgets-the-keys",
+"ok": true
+},
+{
+"id": "fix-hand-event-ledger-06-restore-aliases-the-snapshot",
+"ok": true
+},
+{
+"id": "fix-hand-event-ledger-07-rejected-event-uses-up-its-key",
+"ok": true
+},
+{
+"id": "fix-hand-event-ledger-08-ignored-duplicate-does-not-advance-applied",
+"ok": true
+},
+{
+"id": "fix-hand-event-ledger-09-feed-applies-in-arrival-order",
+"ok": true
+},
+{
+"id": "fix-hand-event-ledger-10-refused-retry-lost-live-and-rebuilt",
+"ok": true
+}
+]

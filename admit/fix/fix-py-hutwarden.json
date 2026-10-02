@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-hutwarden-01-swap",
+"ok": true
+},
+{
+"id": "fix-py-hutwarden-02-negate",
+"ok": true
+},
+{
+"id": "fix-py-hutwarden-03-arith",
+"ok": true
+},
+{
+"id": "fix-py-hutwarden-04-logic",
+"ok": true
+},
+{
+"id": "fix-py-hutwarden-05-delete",
+"ok": true
+},
+{
+"id": "fix-py-hutwarden-06-const",
+"ok": true
+},
+{
+"id": "fix-py-hutwarden-07-swap",
+"ok": true
+},
+{
+"id": "fix-py-hutwarden-08-negate",
+"ok": true
+},
+{
+"id": "fix-py-hutwarden-09-arith",
+"ok": true
+},
+{
+"id": "fix-py-hutwarden-10-delete",
+"ok": true
+}
+]

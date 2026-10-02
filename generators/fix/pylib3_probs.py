@@ -816,5 +816,961 @@ PLATEHEAT = Lib(
     probe_import="from fractions import Fraction\nfrom plateheat.cg import dot, axpy, conjugate_gradient\nfrom plateheat.plate import plate_operator, solve_plate, hottest, format_grid\n",
 )
 
-LIBS = [SEEDFILTER, PLATEHEAT]
+# ======================================================================================================================
+# alsobought: "customers also bought" with recency weights and a category cap
+# ======================================================================================================================
+
+ALSOBOUGHT_README = dd('''
+    # alsobought
+
+    Item-to-item recommendations for a bookshop's checkout page, computed from past baskets. All numbers are exact
+    `fractions.Fraction`s.
+
+    ## `weight(age_days, half_life=30) -> Fraction`
+
+    How much a basket still counts: `1 / 2 ** (age_days // half_life)` (whole half-lives only, so a basket that is
+    29 days old counts fully). `ValueError` if `age_days < 0` or `half_life < 1`.
+
+    ## `Model(baskets, today, half_life=30, categories=None)`
+
+    `baskets` is a list of `(day, items)` pairs: the day number of the purchase and the collection of item names bought
+    together. A basket's weight is `weight(today - day, half_life)`; a basket from the future (`day > today`) is a
+    `ValueError`. Duplicate items in a basket count once and an empty basket changes nothing. `categories` maps an item
+    to a category name (items without an entry have no category).
+
+    * `single(item) -> Fraction`: the summed weight of the baskets containing the item (`0` for an unknown item).
+    * `pair(a, b) -> Fraction`: the summed weight of the baskets containing both items (`0` when `a == b` is
+      not asked: `pair(a, a)` is `single(a)`).
+    * `similarity(a, b) -> Fraction`: the weighted Jaccard index `pair / (single(a) + single(b) - pair)`; `0` when the
+      items never occur together (`similarity(a, a)` is `1` for a known item and `0` for an unknown one).
+    * `recommend(history, k, max_per_category=None) -> list[(item, score)]`: for every known item that is not in
+      `history` the score is the sum of `similarity(h, item)` over the history items `h`; items with a score of `0`
+      are dropped. Sort by descending score, then by item name. Walk this list and keep an item unless its category is
+      known and `max_per_category` items of that category are already kept; stop after `k` items. Items without a
+      category are never capped. `k < 0` or `max_per_category < 1` (when given) is a `ValueError`.
+''')
+
+ALSOBOUGHT_SRC = dd('''
+    """Item-to-item recommendations."""
+    from fractions import Fraction
+
+
+    def weight(age_days, half_life=30):
+        if age_days < 0 or half_life < 1:
+            raise ValueError("age must not be negative and the half-life must be at least 1")
+        return Fraction(1, 2 ** (age_days // half_life))
+
+
+    class Model:
+        def __init__(self, baskets, today, half_life=30, categories=None):
+            self._single = {}
+            self._pair = {}
+            self.categories = dict(categories or {})
+            for day, items in baskets:
+                if day > today:
+                    raise ValueError("basket from the future")
+                w = weight(today - day, half_life)
+                names = sorted(set(items))
+                for a in names:
+                    self._single[a] = self._single.get(a, 0) + w
+                for i, a in enumerate(names):
+                    for b in names[i + 1:]:
+                        self._pair[(a, b)] = self._pair.get((a, b), 0) + w
+
+        def single(self, item):
+            return Fraction(self._single.get(item, 0))
+
+        def pair(self, a, b):
+            if a == b:
+                return self.single(a)
+            return Fraction(self._pair.get((min(a, b), max(a, b)), 0))
+
+        def similarity(self, a, b):
+            if a == b:
+                return Fraction(1 if a in self._single else 0)
+            both = self.pair(a, b)
+            if both == 0:
+                return Fraction(0)
+            return both / (self.single(a) + self.single(b) - both)
+
+        def recommend(self, history, k, max_per_category=None):
+            if k < 0 or (max_per_category is not None and max_per_category < 1):
+                raise ValueError("k must not be negative and max_per_category must be at least 1")
+            seen = set(history)
+            scored = []
+            for item in self._single:
+                if item in seen:
+                    continue
+                score = sum((self.similarity(h, item) for h in sorted(seen)), Fraction(0))
+                if score > 0:
+                    scored.append((item, score))
+            scored.sort(key=lambda e: (-e[1], e[0]))
+            kept, used = [], {}
+            for item, score in scored:
+                if len(kept) >= k:
+                    break
+                cat = self.categories.get(item)
+                if max_per_category is not None and cat is not None and used.get(cat, 0) >= max_per_category:
+                    continue
+                kept.append((item, score))
+                if cat is not None:
+                    used[cat] = used.get(cat, 0) + 1
+            return kept
+''')
+
+ALSOBOUGHT_VISIBLE = dd('''
+    import unittest
+    from fractions import Fraction as F
+
+    from alsobought.model import Model, weight
+
+
+    class BasicTests(unittest.TestCase):
+        def test_weight(self):
+            self.assertEqual(weight(0), 1)
+            self.assertEqual(weight(60), F(1, 4))
+
+        def test_similarity(self):
+            m = Model([(10, {"a", "b"}), (10, {"a"})], today=10)
+            self.assertEqual(m.similarity("a", "b"), F(1, 2))
+
+
+    if __name__ == "__main__":
+        unittest.main()
+''')
+
+ALSOBOUGHT_HIDDEN = dd('''
+    import unittest
+    from fractions import Fraction as F
+
+    from alsobought.model import Model, weight
+
+    BASKETS = [(100, {"a", "b", "c"}), (70, {"a", "b"}), (40, {"a", "c"}), (5, {"b", "c", "d"})]
+
+
+    def model(**kw):
+        return Model(BASKETS, 100, **kw)
+
+
+    class Weights(unittest.TestCase):
+        def test_half_lives(self):
+            table = {0: F(1), 29: F(1), 30: F(1, 2), 59: F(1, 2), 60: F(1, 4), 90: F(1, 8), 95: F(1, 8), 300: F(1, 1024)}
+            for age, want in table.items():
+                self.assertEqual(weight(age), want, age)
+            self.assertIsInstance(weight(3), F)
+
+        def test_custom_half_life(self):
+            self.assertEqual(weight(9, 10), 1)
+            self.assertEqual(weight(10, 10), F(1, 2))
+            self.assertEqual(weight(25, 10), F(1, 4))
+            self.assertEqual(weight(5, 1), F(1, 32))
+            self.assertEqual(weight(7, 100), 1)
+
+        def test_errors(self):
+            for args in ((-1,), (5, 0), (5, -3)):
+                with self.assertRaises(ValueError):
+                    weight(*args)
+
+
+    class Counts(unittest.TestCase):
+        def test_single(self):
+            m = model()
+            self.assertEqual(m.single("a"), F(7, 4))
+            self.assertEqual(m.single("b"), F(13, 8))
+            self.assertEqual(m.single("c"), F(11, 8))
+            self.assertEqual(m.single("d"), F(1, 8))
+            self.assertEqual(m.single("zzz"), 0)
+
+        def test_pair(self):
+            m = model()
+            self.assertEqual(m.pair("a", "b"), F(3, 2))
+            self.assertEqual(m.pair("b", "a"), F(3, 2))
+            self.assertEqual(m.pair("a", "c"), F(5, 4))
+            self.assertEqual(m.pair("b", "c"), F(9, 8))
+            self.assertEqual(m.pair("b", "d"), F(1, 8))
+            self.assertEqual(m.pair("c", "d"), F(1, 8))
+            self.assertEqual(m.pair("a", "d"), 0)
+            self.assertEqual(m.pair("a", "a"), F(7, 4))
+            self.assertEqual(m.pair("a", "zzz"), 0)
+
+        def test_duplicates_and_empty_baskets(self):
+            m = Model([(10, ["x", "x", "y"]), (10, []), (10, ["y"])], 10)
+            self.assertEqual(m.single("x"), 1)
+            self.assertEqual(m.single("y"), 2)
+            self.assertEqual(m.pair("x", "y"), 1)
+
+        def test_default_half_life_is_thirty_days(self):
+            m = Model([(71, {"a"}), (70, {"a"})], 100)
+            self.assertEqual(m.single("a"), F(3, 2))
+
+        def test_half_life_parameter(self):
+            m = Model([(100, {"a"}), (90, {"a"})], 100, half_life=10)
+            self.assertEqual(m.single("a"), F(3, 2))
+
+        def test_future_basket(self):
+            with self.assertRaises(ValueError):
+                Model([(11, {"a"})], 10)
+            Model([(10, {"a"})], 10)
+
+        def test_no_baskets(self):
+            m = Model([], 10)
+            self.assertEqual(m.single("a"), 0)
+            self.assertEqual(m.recommend(["a"], 3), [])
+
+
+    class Similarity(unittest.TestCase):
+        def test_values(self):
+            m = model()
+            self.assertEqual(m.similarity("a", "b"), F(4, 5))
+            self.assertEqual(m.similarity("b", "a"), F(4, 5))
+            self.assertEqual(m.similarity("a", "c"), F(2, 3))
+            self.assertEqual(m.similarity("b", "c"), F(3, 5))
+            self.assertEqual(m.similarity("b", "d"), F(1, 13))
+            self.assertEqual(m.similarity("c", "d"), F(1, 11))
+            self.assertEqual(m.similarity("a", "d"), 0)
+
+        def test_identity_and_unknown(self):
+            m = model()
+            self.assertEqual(m.similarity("a", "a"), 1)
+            self.assertEqual(m.similarity("zzz", "zzz"), 0)
+            self.assertEqual(m.similarity("a", "zzz"), 0)
+            self.assertEqual(m.similarity("zzz", "a"), 0)
+
+        def test_always_together_is_one(self):
+            m = Model([(1, {"p", "q"}), (1, {"p", "q"})], 1)
+            self.assertEqual(m.similarity("p", "q"), 1)
+
+
+    class Recommend(unittest.TestCase):
+        def test_single_history_item(self):
+            m = model()
+            self.assertEqual(m.recommend(["a"], 3), [("b", F(4, 5)), ("c", F(2, 3))])
+            self.assertEqual(m.recommend({"a"}, 1), [("b", F(4, 5))])
+            self.assertEqual(m.recommend(["a"], 0), [])
+
+        def test_scores_add_up(self):
+            m = model()
+            self.assertEqual(m.recommend(["a", "b"], 5), [("c", F(19, 15)), ("d", F(1, 13))])
+            self.assertEqual(m.recommend(["b", "a", "a"], 5), [("c", F(19, 15)), ("d", F(1, 13))])
+
+        def test_history_items_are_never_recommended(self):
+            m = model()
+            for h in (["a"], ["b"], ["c"], ["d"], ["a", "c"]):
+                got = [item for item, _ in m.recommend(h, 10)]
+                self.assertTrue(set(got).isdisjoint(h))
+
+        def test_ties_sorted_by_name(self):
+            m = Model([(1, {"h", "x"}), (1, {"h", "y"}), (1, {"h", "a"})], 1)
+            got = m.recommend(["h"], 3)
+            self.assertEqual([i for i, _ in got], ["a", "x", "y"])
+            self.assertEqual({s for _, s in got}, {F(1, 3)})
+
+        def test_zero_scores_dropped(self):
+            m = model()
+            self.assertEqual([i for i, _ in m.recommend(["d"], 10)], ["c", "b"])
+            self.assertEqual(m.recommend(["zzz"], 5), [])
+            self.assertEqual(m.recommend([], 5), [])
+
+        def test_k_limits(self):
+            m = model()
+            self.assertEqual(len(m.recommend(["c"], 2)), 2)
+            self.assertEqual(len(m.recommend(["c"], 10)), 3)
+
+        def test_category_cap(self):
+            cats = {"a": "x", "b": "x", "d": "y"}
+            m = model(categories=cats)
+            self.assertEqual(m.recommend(["c"], 3, max_per_category=1), [("a", F(2, 3)), ("d", F(1, 11))])
+            self.assertEqual(m.recommend(["c"], 3, max_per_category=2), [("a", F(2, 3)), ("b", F(3, 5)), ("d", F(1, 11))])
+            self.assertEqual(m.recommend(["c"], 1, max_per_category=1), [("a", F(2, 3))])
+            self.assertEqual(m.recommend(["c"], 3), [("a", F(2, 3)), ("b", F(3, 5)), ("d", F(1, 11))])
+
+        def test_uncategorised_items_are_not_capped(self):
+            m = model(categories={"a": "x"})
+            self.assertEqual([i for i, _ in m.recommend(["c"], 5, max_per_category=1)], ["a", "b", "d"])
+            m = model(categories={"b": "x"})
+            self.assertEqual([i for i, _ in m.recommend(["d"], 5, max_per_category=1)], ["c", "b"])
+
+        def test_cap_counts_only_kept_items(self):
+            m = model(categories={"a": "x", "b": "x", "c": "x", "d": "y"})
+            got = m.recommend(["d"], 5, max_per_category=1)
+            self.assertEqual(got, [("c", F(1, 11))])
+            self.assertEqual(m.recommend(["d"], 5, max_per_category=2), [("c", F(1, 11)), ("b", F(1, 13))])
+
+        def test_errors(self):
+            m = model()
+            with self.assertRaises(ValueError):
+                m.recommend(["a"], -1)
+            with self.assertRaises(ValueError):
+                m.recommend(["a"], 3, max_per_category=0)
+
+
+    if __name__ == "__main__":
+        unittest.main()
+''')
+
+_BK = "[(100, {'a', 'b', 'c'}), (70, {'a', 'b'}), (40, {'a', 'c'}), (5, {'b', 'c', 'd'})]"
+_M = f"Model({_BK}, 100)"
+
+ALSOBOUGHT = Lib(
+    name="alsobought", lang="python", title="the alsobought recommender (`alsobought/model.py`)",
+    blurb="The bookshop's checkout page uses alsobought to suggest titles that customers with a similar basket also bought.",
+    files={"alsobought/__init__.py": "", "alsobought/model.py": ALSOBOUGHT_SRC, "README.md": ALSOBOUGHT_README, ".gitignore": GITIGNORE},
+    visible_tests={"tests/test_basic.py": ALSOBOUGHT_VISIBLE},
+    hidden_tests={"tests/test_full.py": ALSOBOUGHT_HIDDEN},
+    mutate=["alsobought/model.py"], difficulty=3, tags=["recommendation", "similarity"],
+    probes=[
+        "[weight(n) for n in (0, 29, 30, 59, 60, 95)]", "weight(25, 10)",
+        f"{_M}.single('a')", f"{_M}.pair('b', 'c')", f"{_M}.similarity('a', 'b')", f"{_M}.similarity('c', 'd')",
+        f"{_M}.recommend(['a'], 3)", f"{_M}.recommend(['a', 'b'], 5)", f"{_M}.recommend(['d'], 10)",
+        f"Model({_BK}, 100, categories={{'a': 'x', 'b': 'x', 'd': 'y'}}).recommend(['c'], 3, max_per_category=1)",
+        f"Model({_BK}, 100, categories={{'a': 'x'}}).recommend(['c'], 5, max_per_category=1)",
+        "Model([(100, {'a'}), (90, {'a'})], 100, half_life=10).single('a')",
+    ],
+    probe_import="from alsobought.model import Model, weight\n",
+)
+
+
+# ======================================================================================================================
+# redline: word-level change tracking for contract drafts
+# ======================================================================================================================
+
+REDLINE_README = dd('''
+    # redline
+
+    Word-level change tracking for a contract editor: compare two drafts of a clause and show what changed.
+
+    ## `tokenize(text) -> list[str]`
+
+    The tokens of a text: every maximal run of word characters (`\\w+`) and every other non-space character on its own
+    (`"pay 5% now."` gives `pay`, `5`, `%`, `now`, `.`). Whitespace only separates tokens.
+
+    ## `diff(old, new) -> list[(op, token)]`
+
+    `old` and `new` are lists of tokens. The result is an edit script of `("=", token)` (kept), `("-", token)` (only in
+    `old`) and `("+", token)` (only in `new`) whose `=` entries form a longest common subsequence. Ties are broken by a
+    fixed procedure: let `lcs[i][j]` be the length of a longest common subsequence of `old[i:]` and `new[j:]`; starting at
+    `i = j = 0` repeat: if both lists have tokens left and `old[i] == new[j]`, emit `=` and advance both; otherwise, if
+    both have tokens left and `lcs[i+1][j] >= lcs[i][j+1]`, emit `-` for `old[i]` and advance `i`; otherwise if
+    `new` has tokens left emit `+` for `new[j]` and advance `j` (and if only `old` has tokens left emit its `-`). So in
+    ambiguous cases deletions come before insertions. `diff_text(a, b)` is `diff(tokenize(a), tokenize(b))`.
+
+    ## `apply_ops(ops, side) -> list[str]`
+
+    The tokens of one side: `side="old"` keeps the `=` and `-` tokens, `side="new"` the `=` and `+` tokens (in order).
+    Any other `side` is a `ValueError`.
+
+    ## `render(ops) -> str`
+
+    Markup for people: a maximal run of `-` entries becomes `[-w1 w2-]`, a maximal run of `+` entries becomes
+    `{+w1 w2+}` (words separated by one space), and `=` tokens are written as they are. The pieces are joined by one
+    space, except that a deletion run directly followed by an insertion run is written without a space between them
+    (`[-cat-]{+dog+}`). No ops give an empty string.
+
+    ## `stats(ops) -> dict`
+
+    `{"equal": e, "deleted": d, "inserted": i, "similarity_pct": p}` with `p = 100 * 2e / (2e + d + i)` rounded half up
+    to a whole number (`100` when there are no ops).
+''')
+
+REDLINE_SRC = dd('''
+    """Word-level diff."""
+    import re
+
+
+    def tokenize(text):
+        return re.findall(r"\\w+|[^\\w\\s]", text)
+
+
+    def diff(old, new):
+        n, m = len(old), len(new)
+        lcs = [[0] * (m + 1) for _ in range(n + 1)]
+        for i in range(n - 1, -1, -1):
+            for j in range(m - 1, -1, -1):
+                if old[i] == new[j]:
+                    lcs[i][j] = lcs[i + 1][j + 1] + 1
+                else:
+                    lcs[i][j] = max(lcs[i + 1][j], lcs[i][j + 1])
+        ops = []
+        i = j = 0
+        while i < n and j < m:
+            if old[i] == new[j]:
+                ops.append(("=", old[i]))
+                i += 1
+                j += 1
+            elif lcs[i + 1][j] >= lcs[i][j + 1]:
+                ops.append(("-", old[i]))
+                i += 1
+            else:
+                ops.append(("+", new[j]))
+                j += 1
+        ops.extend(("-", t) for t in old[i:])
+        ops.extend(("+", t) for t in new[j:])
+        return ops
+
+
+    def diff_text(a, b):
+        return diff(tokenize(a), tokenize(b))
+
+
+    def apply_ops(ops, side):
+        if side not in ("old", "new"):
+            raise ValueError("side must be 'old' or 'new'")
+        drop = "+" if side == "old" else "-"
+        return [t for op, t in ops if op != drop]
+
+
+    def render(ops):
+        pieces = []
+        i = 0
+        while i < len(ops):
+            op = ops[i][0]
+            j = i
+            while j < len(ops) and ops[j][0] == op:
+                j += 1
+            words = " ".join(t for _, t in ops[i:j])
+            if op == "=":
+                pieces.append((words, False))
+            elif op == "-":
+                pieces.append(("[-" + words + "-]", True))
+            else:
+                pieces.append(("{+" + words + "+}", False))
+            i = j
+        out = ""
+        prev_is_deletion = False
+        for k, (text, is_deletion) in enumerate(pieces):
+            if k:
+                glued = prev_is_deletion and text.startswith("{+")
+                out += ("" if glued else " ")
+            out += text
+            prev_is_deletion = is_deletion
+        return out
+
+
+    def stats(ops):
+        equal = sum(1 for op, _ in ops if op == "=")
+        deleted = sum(1 for op, _ in ops if op == "-")
+        inserted = sum(1 for op, _ in ops if op == "+")
+        total = 2 * equal + deleted + inserted
+        pct = 100 if total == 0 else (200 * 2 * equal + total) // (2 * total)
+        return {"equal": equal, "deleted": deleted, "inserted": inserted, "similarity_pct": pct}
+''')
+
+REDLINE_VISIBLE = dd('''
+    import unittest
+
+    from redline.diff import diff_text, render
+
+
+    class BasicTests(unittest.TestCase):
+        def test_replace_word(self):
+            self.assertEqual(render(diff_text("the cat sat", "the dog sat")), "the [-cat-]{+dog+} sat")
+
+
+    if __name__ == "__main__":
+        unittest.main()
+''')
+
+REDLINE_HIDDEN = dd('''
+    import unittest
+
+    from redline.diff import apply_ops, diff, diff_text, render, stats, tokenize
+
+
+    class Tokens(unittest.TestCase):
+        def test_tokenize(self):
+            self.assertEqual(tokenize("pay 5% now."), ["pay", "5", "%", "now", "."])
+            self.assertEqual(tokenize("  a   b\\tc\\n"), ["a", "b", "c"])
+            self.assertEqual(tokenize(""), [])
+            self.assertEqual(tokenize("   "), [])
+            self.assertEqual(tokenize("(x,y)"), ["(", "x", ",", "y", ")"])
+            self.assertEqual(tokenize("snake_case 12ab"), ["snake_case", "12ab"])
+            self.assertEqual(tokenize("a--b"), ["a", "-", "-", "b"])
+
+        def test_unicode_words(self):
+            self.assertEqual(tokenize("caf\\u00e9 cr\\u00e8me"), ["caf\\u00e9", "cr\\u00e8me"])
+
+
+    class Diff(unittest.TestCase):
+        def test_identical_and_empty(self):
+            self.assertEqual(diff(["a", "b"], ["a", "b"]), [("=", "a"), ("=", "b")])
+            self.assertEqual(diff([], []), [])
+            self.assertEqual(diff(["a"], []), [("-", "a")])
+            self.assertEqual(diff([], ["a"]), [("+", "a")])
+            self.assertEqual(diff(["a", "b"], []), [("-", "a"), ("-", "b")])
+            self.assertEqual(diff([], ["a", "b"]), [("+", "a"), ("+", "b")])
+
+        def test_replacement(self):
+            self.assertEqual(diff(["the", "cat", "sat"], ["the", "dog", "sat"]), [("=", "the"), ("-", "cat"), ("+", "dog"), ("=", "sat")])
+
+        def test_insert_and_delete(self):
+            self.assertEqual(diff(["a", "c"], ["a", "b", "c"]), [("=", "a"), ("+", "b"), ("=", "c")])
+            self.assertEqual(diff(["a", "b", "c"], ["a", "c"]), [("=", "a"), ("-", "b"), ("=", "c")])
+            self.assertEqual(diff(["x"], ["y", "x"]), [("+", "y"), ("=", "x")])
+            self.assertEqual(diff(["x", "y"], ["x"]), [("=", "x"), ("-", "y")])
+
+        def test_disjoint_deletes_first(self):
+            self.assertEqual(diff(["p", "q"], ["r"]), [("-", "p"), ("-", "q"), ("+", "r")])
+            self.assertEqual(diff(["p"], ["r", "s"]), [("-", "p"), ("+", "r"), ("+", "s")])
+
+        def test_deletion_before_insertion_in_ambiguous_cases(self):
+            self.assertEqual(diff(["x", "y"], ["z", "y"]), [("-", "x"), ("+", "z"), ("=", "y")])
+            self.assertEqual(diff(["a", "b"], ["b", "a"]), [("-", "a"), ("=", "b"), ("+", "a")])
+            self.assertEqual(diff(["b", "a"], ["a", "b"]), [("-", "b"), ("=", "a"), ("+", "b")])
+
+        def test_repeated_tokens(self):
+            self.assertEqual(diff(["a", "a", "b"], ["a", "b"]), [("=", "a"), ("-", "a"), ("=", "b")])
+            self.assertEqual(diff(["a", "b"], ["a", "a", "b"]), [("=", "a"), ("+", "a"), ("=", "b")])
+            self.assertEqual(diff(list("abcabba"), list("cbabac"))[0], ("-", "a"))
+
+        def test_is_a_longest_common_subsequence(self):
+            pairs = [("abcabba", "cbabac"), ("kitten", "sitting"), ("xyz", "zyx"), ("aaaa", "aa"), ("abcdef", "badcfe"), ("", "abc")]
+            for a, b in pairs:
+                ops = diff(list(a), list(b))
+                kept = [t for op, t in ops if op == "="]
+                self.assertEqual(len(kept), self.lcs_len(a, b), (a, b))
+                self.assertEqual(apply_ops(ops, "old"), list(a))
+                self.assertEqual(apply_ops(ops, "new"), list(b))
+
+        @staticmethod
+        def lcs_len(a, b):
+            row = [0] * (len(b) + 1)
+            for x in a:
+                prev = 0
+                for j, y in enumerate(b, 1):
+                    cur = row[j]
+                    row[j] = prev + 1 if x == y else max(row[j], row[j - 1])
+                    prev = cur
+            return row[-1]
+
+        def test_exhaustive_small_cases_follow_the_documented_procedure(self):
+            import itertools
+            from functools import lru_cache
+
+            def reference(old, new):
+                @lru_cache(maxsize=None)
+                def lcs(i, j):
+                    if i == len(old) or j == len(new):
+                        return 0
+                    if old[i] == new[j]:
+                        return 1 + lcs(i + 1, j + 1)
+                    return max(lcs(i + 1, j), lcs(i, j + 1))
+
+                ops, i, j = [], 0, 0
+                while i < len(old) and j < len(new):
+                    if old[i] == new[j]:
+                        ops.append(("=", old[i]))
+                        i, j = i + 1, j + 1
+                    elif lcs(i + 1, j) >= lcs(i, j + 1):
+                        ops.append(("-", old[i]))
+                        i += 1
+                    else:
+                        ops.append(("+", new[j]))
+                        j += 1
+                return ops + [("-", t) for t in old[i:]] + [("+", t) for t in new[j:]]
+
+            words = ["".join(p) for n in range(0, 6) for p in itertools.product("ab", repeat=n)]
+            for a in words:
+                for b in words:
+                    self.assertEqual(diff(list(a), list(b)), reference(tuple(a), tuple(b)), (a, b))
+
+        def test_exhaustive_three_letter_alphabet(self):
+            import itertools
+
+            words = ["".join(p) for n in range(0, 5) for p in itertools.product("abc", repeat=n)]
+            for a in words:
+                for b in words:
+                    ops = diff(list(a), list(b))
+                    self.assertEqual("".join(apply_ops(ops, "old")), a)
+                    self.assertEqual("".join(apply_ops(ops, "new")), b)
+                    self.assertEqual(len([1 for op, _ in ops if op == "="]), self.lcs_len(a, b), (a, b))
+
+        def test_diff_text(self):
+            ops = diff_text("Pay 5% now.", "Pay 7% later.")
+            self.assertEqual(ops, [("=", "Pay"), ("-", "5"), ("+", "7"), ("=", "%"), ("-", "now"), ("+", "later"), ("=", ".")])
+
+        def test_inputs_not_modified(self):
+            a, b = ["a", "b"], ["b", "c"]
+            diff(a, b)
+            self.assertEqual((a, b), (["a", "b"], ["b", "c"]))
+
+
+    class Apply(unittest.TestCase):
+        OPS = [("=", "a"), ("-", "b"), ("+", "c"), ("=", "d")]
+
+        def test_sides(self):
+            self.assertEqual(apply_ops(self.OPS, "old"), ["a", "b", "d"])
+            self.assertEqual(apply_ops(self.OPS, "new"), ["a", "c", "d"])
+            self.assertEqual(apply_ops([], "old"), [])
+
+        def test_bad_side(self):
+            for side in ("both", "", None, "OLD"):
+                with self.assertRaises(ValueError):
+                    apply_ops(self.OPS, side)
+
+
+    class Render(unittest.TestCase):
+        def test_examples(self):
+            self.assertEqual(render(diff_text("the cat sat", "the dog sat")), "the [-cat-]{+dog+} sat")
+            self.assertEqual(render(diff_text("a b c", "a b c")), "a b c")
+            self.assertEqual(render(diff_text("a c", "a b c")), "a {+b+} c")
+            self.assertEqual(render(diff_text("a b c", "a c")), "a [-b-] c")
+            self.assertEqual(render([]), "")
+
+        def test_runs(self):
+            self.assertEqual(render([("-", "p"), ("-", "q"), ("+", "r")]), "[-p q-]{+r+}")
+            self.assertEqual(render([("-", "p"), ("+", "r"), ("+", "s"), ("=", "t")]), "[-p-]{+r s+} t")
+            self.assertEqual(render([("=", "a"), ("=", "b"), ("-", "c"), ("=", "d")]), "a b [-c-] d")
+            self.assertEqual(render([("+", "x"), ("=", "y")]), "{+x+} y")
+            self.assertEqual(render([("=", "y"), ("+", "x")]), "y {+x+}")
+
+        def test_insertion_then_deletion_keeps_a_space(self):
+            self.assertEqual(render([("+", "x"), ("-", "y")]), "{+x+} [-y-]")
+            self.assertEqual(render([("-", "y"), ("=", "m"), ("+", "x")]), "[-y-] m {+x+}")
+            self.assertEqual(render([("-", "a"), ("=", "m"), ("-", "b"), ("+", "c")]), "[-a-] m [-b-]{+c+}")
+
+        def test_full_sentence(self):
+            text = render(diff_text("Pay 5% now.", "Pay 7% later."))
+            self.assertEqual(text, "Pay [-5-]{+7+} % [-now-]{+later+} .")
+
+
+    class Stats(unittest.TestCase):
+        def test_counts(self):
+            ops = diff_text("the cat sat", "the dog sat")
+            self.assertEqual(stats(ops), {"equal": 2, "deleted": 1, "inserted": 1, "similarity_pct": 67})
+
+        def test_edges(self):
+            self.assertEqual(stats([])["similarity_pct"], 100)
+            self.assertEqual(stats([("=", "a")])["similarity_pct"], 100)
+            self.assertEqual(stats([("-", "a"), ("+", "b")]), {"equal": 0, "deleted": 1, "inserted": 1, "similarity_pct": 0})
+            self.assertEqual(stats([("-", "a")]), {"equal": 0, "deleted": 1, "inserted": 0, "similarity_pct": 0})
+
+        def test_rounding(self):
+            # 2*1 / (2 + 1 + 1) = 50 %; 2*1 / (2 + 2 + 3) = 28.57 -> 29 %; 2*3/(6+1) = 85.7 -> 86 %
+            self.assertEqual(stats([("=", "a"), ("-", "b"), ("+", "c")])["similarity_pct"], 50)
+            self.assertEqual(stats([("=", "a"), ("-", "b"), ("-", "c"), ("+", "d"), ("+", "e"), ("+", "f")])["similarity_pct"], 29)
+            self.assertEqual(stats([("=", "a")] * 3 + [("-", "x")])["similarity_pct"], 86)
+            ops = [("=", "a")] + [("-", "x")] * 7
+            self.assertEqual(stats(ops)["similarity_pct"], 22)
+            # exactly 12.5 % and 37.5 % round up
+            self.assertEqual(stats([("=", "a")] + [("-", "x")] * 14)["similarity_pct"], 13)
+            self.assertEqual(stats([("=", "a")] * 3 + [("-", "x")] * 5 + [("+", "y")] * 5)["similarity_pct"], 38)
+
+
+    if __name__ == "__main__":
+        unittest.main()
+''')
+
+REDLINE = Lib(
+    name="redline", lang="python", title="the redline word diff (`redline/diff.py`)",
+    blurb="The contract editor uses redline to show reviewers which words changed between two drafts of a clause.",
+    files={"redline/__init__.py": "", "redline/diff.py": REDLINE_SRC, "README.md": REDLINE_README, ".gitignore": GITIGNORE},
+    visible_tests={"tests/test_basic.py": REDLINE_VISIBLE},
+    hidden_tests={"tests/test_full.py": REDLINE_HIDDEN},
+    mutate=["redline/diff.py"], difficulty=3, tags=["diff", "text"],
+    probes=[
+        "tokenize('pay 5% now.')", "tokenize('a--b')",
+        "diff(['the', 'cat', 'sat'], ['the', 'dog', 'sat'])", "diff(['x', 'y'], ['z', 'y'])",
+        "diff(['a', 'b'], ['b', 'a'])", "diff(['p', 'q'], ['r'])", "diff(['a', 'a', 'b'], ['a', 'b'])",
+        "apply_ops(diff(['a', 'b'], ['b', 'c']), 'new')", "apply_ops(diff(['a', 'b'], ['b', 'c']), 'old')",
+        "render(diff_text('the cat sat', 'the dog sat'))", "render(diff_text('Pay 5% now.', 'Pay 7% later.'))",
+        "render([('+', 'x'), ('-', 'y')])", "render([('-', 'p'), ('-', 'q'), ('+', 'r')])",
+        "stats(diff_text('the cat sat', 'the dog sat'))", "stats([('=', 'a')] + [('-', 'x')] * 3 + [('+', 'y')] * 4)",
+    ],
+    probe_import="from redline.diff import tokenize, diff, diff_text, apply_ops, render, stats\n",
+)
+
+# ======================================================================================================================
+# palette: fuzzy command matching with word-start bonuses
+# ======================================================================================================================
+
+PALETTE_README = dd('''
+    # palette
+
+    The fuzzy matcher behind an editor's command palette. A query matches a candidate when its characters appear in the
+    candidate in the same order (not necessarily next to each other), ignoring case. Several alignments may be
+    possible; the best-scoring one counts.
+
+    ## Scoring one alignment
+
+    An alignment is the list of candidate positions `p0 < p1 < ...` that the query characters are matched to. Every
+    matched character scores:
+
+    * `10` for the match;
+    * `+15` when its position is `0` (the very start of the candidate);
+    * `+10` when it starts a word: position `0`, or the previous candidate character is one of space, `-`, `_`, `/`
+      or `.`, or the previous character is lower case and this one is upper case (a camelCase boundary; judged on the
+      original candidate text);
+    * for the first matched character a penalty of `min(position, 5)` (a late start costs at most 5);
+    * for every later matched character `+5` when it directly follows the previous match (`p == previous + 1`) and a
+      penalty of the number of candidate characters skipped between the two matches (`p - previous - 1`).
+
+    The score of an alignment is the sum over its characters. The score of a candidate is the best alignment's score
+    and its positions are the best alignment's positions; among alignments with the same score the one with the
+    lexicographically smallest list of positions is used.
+
+    ## Functions
+
+    * `match(query, candidate) -> (score, positions) | None`: `None` when the query is not a subsequence of the
+      candidate. An empty query matches everything with `(0, ())`.
+    * `rank(query, candidates, limit=None) -> list[(candidate, score)]`: the candidates that match, ordered by descending
+      score, then by shorter candidate, then alphabetically (plain string order). `limit` keeps only that many entries
+      (`ValueError` if negative).
+    * `highlight(query, candidate) -> str | None`: the candidate with every maximal run of matched positions wrapped
+      in `[` and `]` (`"x[ab]c"`), or `None` when it does not match; with an empty query the candidate is returned as
+      it is.
+''')
+
+PALETTE_SRC = dd('''
+    """Fuzzy command matching."""
+
+    SEPARATORS = " -_/."
+
+
+    def _word_start(cand, i):
+        if i == 0:
+            return True
+        prev = cand[i - 1]
+        return prev in SEPARATORS or (prev.islower() and cand[i].isupper())
+
+
+    def _char_score(cand, i, prev):
+        score = 10
+        if i == 0:
+            score += 15
+        if _word_start(cand, i):
+            score += 10
+        if prev is None:
+            score -= min(i, 5)
+        else:
+            if i == prev + 1:
+                score += 5
+            score -= i - prev - 1
+        return score
+
+
+    def match(query, candidate):
+        q, c = query.lower(), candidate.lower()
+        memo = {}
+
+        def best(qi, start, prev):
+            if qi == len(q):
+                return 0, ()
+            key = (qi, start, prev)
+            if key in memo:
+                return memo[key]
+            found = None
+            for p in range(start, len(c)):
+                if c[p] != q[qi]:
+                    continue
+                rest = best(qi + 1, p + 1, p)
+                if rest is None:
+                    continue
+                total = _char_score(candidate, p, prev) + rest[0]
+                if found is None or total > found[0]:
+                    found = (total, (p,) + rest[1])
+            memo[key] = found
+            return found
+
+        return best(0, 0, None)
+
+
+    def rank(query, candidates, limit=None):
+        if limit is not None and limit < 0:
+            raise ValueError("limit must not be negative")
+        scored = []
+        for cand in candidates:
+            m = match(query, cand)
+            if m is not None:
+                scored.append((cand, m[0]))
+        scored.sort(key=lambda e: (-e[1], len(e[0]), e[0]))
+        return scored if limit is None else scored[:limit]
+
+
+    def highlight(query, candidate):
+        m = match(query, candidate)
+        if m is None:
+            return None
+        marked = set(m[1])
+        out, inside = [], False
+        for i, ch in enumerate(candidate):
+            if i in marked and not inside:
+                out.append("[")
+                inside = True
+            elif i not in marked and inside:
+                out.append("]")
+                inside = False
+            out.append(ch)
+        if inside:
+            out.append("]")
+        return "".join(out)
+''')
+
+PALETTE_VISIBLE = dd('''
+    import unittest
+
+    from palette.fuzzy import match, rank
+
+
+    class BasicTests(unittest.TestCase):
+        def test_exact(self):
+            self.assertEqual(match("ab", "ab"), (50, (0, 1)))
+
+        def test_no_match(self):
+            self.assertIsNone(match("ba", "ab"))
+
+        def test_rank_order(self):
+            self.assertEqual([c for c, _ in rank("ab", ["xab", "ab"])], ["ab", "xab"])
+
+
+    if __name__ == "__main__":
+        unittest.main()
+''')
+
+PALETTE_HIDDEN = dd('''
+    import unittest
+
+    from palette.fuzzy import highlight, match, rank
+
+
+    class Scores(unittest.TestCase):
+        def test_start_of_candidate(self):
+            self.assertEqual(match("ab", "ab"), (50, (0, 1)))
+            self.assertEqual(match("a", "a"), (35, (0,)))
+            self.assertEqual(match("abc", "abc"), (65, (0, 1, 2)))
+
+        def test_leading_penalty(self):
+            self.assertEqual(match("ab", "xab"), (24, (1, 2)))
+            self.assertEqual(match("z", "abcdefgz"), (5, (7,)))
+            self.assertEqual(match("z", "az"), (9, (1,)))
+            self.assertEqual(match("z", "abcdefz"), (5, (6,)))
+            self.assertEqual(match("z", "abcdez"), (5, (5,)))
+            self.assertEqual(match("z", "abcdz"), (6, (4,)))
+
+        def test_word_starts(self):
+            self.assertEqual(match("ab", "a-b"), (54, (0, 2)))
+            self.assertEqual(match("z", "a z"), (18, (2,)))
+            self.assertEqual(match("z", "a_z"), (18, (2,)))
+            self.assertEqual(match("z", "a/z"), (18, (2,)))
+            self.assertEqual(match("z", "a.z"), (18, (2,)))
+            self.assertEqual(match("z", "a-z"), (18, (2,)))
+            self.assertEqual(match("z", "a+z"), (8, (2,)))
+
+        def test_camel_case_boundary(self):
+            self.assertEqual(match("fb", "FooBar"), (53, (0, 3)))
+            self.assertEqual(match("fb", "foobar"), (43, (0, 3)))
+            self.assertEqual(match("fb", "FOOBar"), (43, (0, 3)))       # an upper case letter after an upper case one is no boundary
+            self.assertEqual(match("b", "fooBar"), (10 + 10 - 3, (3,)))
+            self.assertEqual(match("b", "FOOBar"), (10 - 3, (3,)))
+
+        def test_case_insensitive(self):
+            self.assertEqual(match("AB", "ab"), (50, (0, 1)))
+            self.assertEqual(match("ab", "AB"), (50, (0, 1)))
+            self.assertEqual(match("Fb", "foobar"), (43, (0, 3)))
+
+        def test_best_alignment_is_chosen(self):
+            self.assertEqual(match("ab", "aXbab"), (44, (0, 2)))
+            self.assertEqual(match("o", "foo"), (9, (1,)))
+            self.assertEqual(match("aa", "aaa"), (50, (0, 1)))
+
+        def test_alignment_can_skip_an_early_match(self):
+            # the greedy leftmost 'a' (position 0) loses to the 'a' that starts a word
+            self.assertEqual(match("ac", "xa ac"), (32, (3, 4)))
+
+        def test_gaps_cost_one_per_skipped_character(self):
+            self.assertEqual(match("ab", "a..b")[0], 35 + 10 + 10 - 2)
+            self.assertEqual(match("ab", "azzzb")[0], 35 + 10 - 3)
+            self.assertEqual(match("ab", "azzzzzzb")[0], 35 + 10 - 6)
+
+        def test_consecutive_bonus(self):
+            self.assertEqual(match("xyz", "xyz")[0], 35 + 15 + 15)
+            self.assertEqual(match("xz", "xyz")[0], 35 + 10 - 1)
+            self.assertEqual(match("yz", "xyz")[0], (10 - 1) + 15)
+
+        def test_positions_prefer_the_smallest_on_ties(self):
+            self.assertEqual(match("a", "zzzzzzaa"), (5, (6,)))      # both 'a's lose the maximal 5 points for a late start
+            self.assertEqual(match("a", "bab-a"), (16, (4,)))
+            self.assertEqual(match("aa", "aXa")[1], (0, 2))
+
+        def test_empty_query_and_no_match(self):
+            self.assertEqual(match("", "anything"), (0, ()))
+            self.assertEqual(match("", ""), (0, ()))
+            self.assertIsNone(match("a", ""))
+            self.assertIsNone(match("ba", "ab"))
+            self.assertIsNone(match("aa", "a"))
+            self.assertIsNone(match("abc", "ab"))
+            self.assertIsNone(match("x", "abc"))
+
+
+    class Ranking(unittest.TestCase):
+        def test_order(self):
+            got = rank("ab", ["xab", "ab", "a-b", "cab", "zz"])
+            self.assertEqual(got, [("a-b", 54), ("ab", 50), ("cab", 24), ("xab", 24)])
+
+        def test_ties_shorter_then_alphabetical(self):
+            self.assertEqual(rank("a", ["ba", "ab", "a", "aa"]), [("a", 35), ("aa", 35), ("ab", 35), ("ba", 9)])
+            self.assertEqual([c for c, _ in rank("zz", ["zzb", "zza", "zz"])], ["zz", "zza", "zzb"])
+            self.assertEqual([c for c, _ in rank("a", ["xa", "ya", "wa", "a"])], ["a", "wa", "xa", "ya"])
+
+        def test_limit(self):
+            cands = ["ab", "a-b", "xab", "cab"]
+            self.assertEqual([c for c, _ in rank("ab", cands, limit=2)], ["a-b", "ab"])
+            self.assertEqual(rank("ab", cands, limit=0), [])
+            self.assertEqual(len(rank("ab", cands, limit=10)), 4)
+            with self.assertRaises(ValueError):
+                rank("ab", cands, limit=-1)
+
+        def test_empty_query_lists_everything_by_length(self):
+            self.assertEqual(rank("", ["bb", "a", "ab", "c"]), [("a", 0), ("c", 0), ("ab", 0), ("bb", 0)])
+
+        def test_no_candidates(self):
+            self.assertEqual(rank("a", []), [])
+            self.assertEqual(rank("a", ["b", "c"]), [])
+
+        def test_realistic(self):
+            cmds = ["Open File", "Open Folder", "Close File", "toggleFullscreen", "file-explorer.open", "Reload"]
+            got = [c for c, _ in rank("of", cmds)]
+            self.assertEqual(got, ["Open File", "Open Folder", "Close File", "toggleFullscreen"])
+            self.assertEqual([c for c, _ in rank("tf", cmds)], ["toggleFullscreen"])
+
+
+    class Highlight(unittest.TestCase):
+        def test_runs(self):
+            self.assertEqual(highlight("ab", "xabc"), "x[ab]c")
+            self.assertEqual(highlight("fb", "FooBar"), "[F]oo[B]ar")
+            self.assertEqual(highlight("ab", "ab"), "[ab]")
+            self.assertEqual(highlight("abc", "a-b-c"), "[a]-[b]-[c]")
+            self.assertEqual(highlight("a", "a"), "[a]")
+            self.assertEqual(highlight("z", "abcz"), "abc[z]")
+
+        def test_original_case_is_kept(self):
+            self.assertEqual(highlight("OF", "open file"), "[o]pen [f]ile")
+
+        def test_empty_query_and_no_match(self):
+            self.assertEqual(highlight("", "abc"), "abc")
+            self.assertIsNone(highlight("q", "abc"))
+            self.assertIsNone(highlight("ba", "ab"))
+
+
+    if __name__ == "__main__":
+        unittest.main()
+''')
+
+PALETTE = Lib(
+    name="palette", lang="python", title="the palette fuzzy matcher (`palette/fuzzy.py`)",
+    blurb="The editor's command palette uses palette to rank commands against what the user has typed so far.",
+    files={"palette/__init__.py": "", "palette/fuzzy.py": PALETTE_SRC, "README.md": PALETTE_README, ".gitignore": GITIGNORE},
+    visible_tests={"tests/test_basic.py": PALETTE_VISIBLE},
+    hidden_tests={"tests/test_full.py": PALETTE_HIDDEN},
+    mutate=["palette/fuzzy.py"], difficulty=2, tags=["fuzzy", "ranking"],
+    probes=[
+        "match('ab', 'xab')", "match('ab', 'a-b')", "match('z', 'abcdefgz')", "match('fb', 'FooBar')", "match('fb', 'foobar')",
+        "match('ab', 'aXbab')", "match('o', 'foo')", "match('xz', 'xyz')", "match('z', 'a+z')", "match('b', 'fooBar')",
+        "rank('ab', ['xab', 'ab', 'a-b', 'cab', 'zz'])", "rank('zz', ['zzb', 'zza', 'zz'])",
+        "rank('ab', ['ab', 'a-b', 'xab', 'cab'], limit=2)", "rank('', ['bb', 'a', 'ab', 'c'])",
+        "highlight('fb', 'FooBar')", "highlight('abc', 'a-b-c')", "highlight('OF', 'open file')",
+    ],
+    probe_import="from palette.fuzzy import match, rank, highlight\n",
+)
+
+LIBS = [SEEDFILTER, PLATEHEAT, ALSOBOUGHT, REDLINE, PALETTE]
 register_libs3(LIBS, n=10)

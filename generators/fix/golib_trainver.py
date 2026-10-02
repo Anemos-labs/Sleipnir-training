@@ -606,6 +606,12 @@ HIDDEN = gosrc(dd(r'''
         check(t, ">=24.06 pre", []string{"24.06.0-beta.1"}, []string{"24.05.9"})
         check(t, ">24.06 pre", []string{"24.07.0-beta.1"}, []string{"24.06.0-rc.1", "24.06.3"})
         check(t, "<=24.06 pre", []string{"24.06.0-rc.1", "24.06.9"}, []string{"24.07.0-beta.1"})
+        // tilde and caret blocks start at the floor too, and end right before the next month / year
+        check(t, "pre ~24.06", []string{"24.06.0-beta.1", "24.06.0-rc.2", "24.06.7"}, []string{"24.05.9", "24.07.0-beta.1"})
+        check(t, "pre ~24", []string{"24.01.0-beta.1", "24.12.0-rc.1"}, []string{"23.12.9", "25.01.0-beta.1"})
+        check(t, "pre ^24.06", []string{"24.06.0-beta.1", "24.12.3"}, []string{"24.05.9", "25.01.0-beta.1"})
+        check(t, "pre ^24", []string{"24.01.0-beta.1", "24.12.3"}, []string{"23.12.9", "25.01.0-beta.1"})
+        check(t, "pre ^24.06.2", []string{"24.06.2", "24.12.3"}, []string{"24.06.1", "25.01.0-beta.1"})
     }
 
     func TestConstraintErrors(t *testing.T) {
@@ -615,7 +621,7 @@ HIDDEN = gosrc(dd(r'''
                 t.Errorf("ParseConstraint(%q) = %+v, want an error", s, c)
             }
         }
-        versions := []string{">=24.13", ">=24.6", "<24.06.03", "=24.06.0-gamma.1", "~24.06.0-rc", "^4", "24.00.x", "1.x", ">=24.06.0-beta.0", "24.06..24.13", "24.06.1-rc.1"}
+        versions := []string{">=24.13", ">=24.6", "<24.06.03", "=24.06.0-gamma.1", "~24.06.0-rc", "^4", "24.00.x", "1.x", ">=24.06.0-beta.0", "24.06..24.13", "24.06.1-rc.1", ">=24.06.0.1", "=24.06.0.1.2", "~24.06.0.1", "^24.06.0.1", "24.06.0.1", "24.06.0.1..24.07"}
         for _, s := range versions {
             if _, err := ParseConstraint(s); !errors.Is(err, ErrVersion) && !errors.Is(err, ErrSyntax) {
                 t.Errorf("ParseConstraint(%q): err = %v", s, err)

@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-c-bitpack-01-const",
+"ok": true
+},
+{
+"id": "fix-c-bitpack-02-negate",
+"ok": true
+},
+{
+"id": "fix-c-bitpack-03-arith",
+"ok": true
+},
+{
+"id": "fix-c-bitpack-04-delete",
+"ok": true
+},
+{
+"id": "fix-c-bitpack-05-cmp",
+"ok": true
+},
+{
+"id": "fix-c-bitpack-06-const",
+"ok": true
+},
+{
+"id": "fix-c-bitpack-07-negate",
+"ok": true
+},
+{
+"id": "fix-c-bitpack-08-arith",
+"ok": true
+}
+]

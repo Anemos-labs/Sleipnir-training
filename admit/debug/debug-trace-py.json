@@ -142,5 +142,61 @@
 {
 "id": "debug-trace-py-36-portalauth-redirect-wrong",
 "ok": true
+},
+{
+"id": "debug-trace-py-37-lockers-release-wrong",
+"ok": true
+},
+{
+"id": "debug-trace-py-38-quayplan-windows-wrong",
+"ok": true
+},
+{
+"id": "debug-trace-py-39-isleduty-validate-wrong",
+"ok": true
+},
+{
+"id": "debug-trace-py-40-chapterfile-parse-crash",
+"ok": true
+},
+{
+"id": "debug-trace-py-41-shiftroster-rest-wrong",
+"ok": true
+},
+{
+"id": "debug-trace-py-42-hookrelay-verify-wrong",
+"ok": true
+},
+{
+"id": "debug-trace-py-43-printinvoice-late-wrong",
+"ok": true
+},
+{
+"id": "debug-trace-py-44-jobqueue-pop-wrong",
+"ok": true
+},
+{
+"id": "debug-trace-py-45-portalauth-login-wrong",
+"ok": true
+},
+{
+"id": "debug-trace-py-46-lockers-validate-crash",
+"ok": true
+},
+{
+"id": "debug-trace-py-47-quayplan-book-wrong",
+"ok": true
+},
+{
+"id": "debug-trace-py-48-isleduty-bands-wrong",
+"ok": true
+},
+{
+"id": "debug-trace-py-49-chapterfile-fmt-wrong",
+"ok": true
+},
+{
+"id": "debug-trace-py-50-shiftroster-rest-wrong",
+"ok": true
 }
 ]

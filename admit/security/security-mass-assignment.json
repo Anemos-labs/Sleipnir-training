@@ -1,0 +1,22 @@
+[
+{
+"id": "security-mass-assignment-01-profile-form",
+"ok": true
+},
+{
+"id": "security-mass-assignment-02-order-price",
+"ok": true
+},
+{
+"id": "security-mass-assignment-03-setattr-model",
+"ok": true
+},
+{
+"id": "security-mass-assignment-04-csv-import",
+"ok": true
+},
+{
+"id": "security-mass-assignment-05-nested-settings",
+"ok": true
+}
+]

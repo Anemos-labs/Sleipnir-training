@@ -450,6 +450,27 @@ HIDDEN = dd('''
     }
 
     #[test]
+    fn long_junk_is_skipped_not_reframed() {
+        // a very long frame: one TooLong, then everything up to the closing flag is skipped
+        let mut body = vec![FLAG];
+        body.extend(vec![0x41u8; 1000]);
+        body.push(FLAG);
+        let mut d = Decoder::new();
+        assert_eq!(d.push(&body), vec![Event::Error(FrameError::TooLong)]);
+        assert_eq!(d.stats(), Stats { frames: 0, errors: 1, skipped: 742 });
+        // that closing flag started a new frame, so a good frame can be finished right away
+        let mut rest = encode(b"after").unwrap();
+        rest.remove(0);
+        assert_eq!(d.push(&rest), vec![Event::Frame(b"after".to_vec())]);
+        // long noise before the first flag only counts as skipped bytes
+        let mut d = Decoder::new();
+        assert!(d.push(&vec![0x55u8; 600]).is_empty());
+        assert_eq!(d.stats(), Stats { frames: 0, errors: 0, skipped: 600 });
+        assert_eq!(d.push(&encode(b"ok").unwrap()), vec![Event::Frame(b"ok".to_vec())]);
+        assert_eq!(d.stats(), Stats { frames: 1, errors: 0, skipped: 600 });
+    }
+
+    #[test]
     fn length_limit_counts_unescaped_bytes() {
         // 257 escaped bytes (two wire bytes each) are fine, the 258th is too long
         let mut wire = vec![FLAG];
@@ -537,7 +558,7 @@ LIB = Lib(
     files={"Cargo.toml": cargo("stufflink"), "src/lib.rs": SRC, "README.md": README, ".gitignore": "target/\n", ".cargo/config.toml": CARGO_CONFIG},
     visible_tests={"tests/basic.rs": VISIBLE},
     hidden_tests={"tests/full.rs": HIDDEN},
-    mutate=["src/lib.rs"], difficulty=4, tags=["framing", "serial", "state-machine"],
+    mutate=["src/lib.rs"], difficulty=3, tags=["framing", "serial", "state-machine"],
 )
 
 register_libs([LIB], n=8)

@@ -2335,7 +2335,7 @@ out"""
 
 
 def prompt(rng, p, api, lang):
-    where = api.where(lang)
+    where = api.short(lang)
     fn = api.name(lang)
     ln = K.LANG_NAME[lang]
     feats = []

@@ -31,6 +31,9 @@ README1 = dd(r'''
 
     ## API (`include/slotmap.h`)
 
+    The `slotmap` struct of the header is part of the interface: callers may read `cap` and `slots[i].key` / `.value` / `.state` (0 empty, 1 used, 2 gone) directly, for example to print a map.
+
+
     * `int sm_init(slotmap *m, int cap)`: empty map; -1 when `cap` is outside `1..SM_MAX_CAP` (64), else 0.
     * `int sm_put(slotmap *m, const char *key, int32_t value)`: `SM_INSERTED` (0), `SM_UPDATED` (1), `SM_FULL` (-1) or
       `SM_BADKEY` (-2).

@@ -1,0 +1,34 @@
+[
+{
+"id": "greenfield-bitwire-01-c-lsb-l1",
+"ok": true
+},
+{
+"id": "greenfield-bitwire-02-java-msb-l1",
+"ok": true
+},
+{
+"id": "greenfield-bitwire-03-javascript-msb-l2",
+"ok": true
+},
+{
+"id": "greenfield-bitwire-04-java-msb-l2",
+"ok": true
+},
+{
+"id": "greenfield-bitwire-05-c-lsb-l3",
+"ok": true
+},
+{
+"id": "greenfield-bitwire-06-python-msb-l3",
+"ok": true
+},
+{
+"id": "greenfield-bitwire-07-java-msb-l4",
+"ok": true
+},
+{
+"id": "greenfield-bitwire-08-c-msb-l5",
+"ok": true
+}
+]

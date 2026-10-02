@@ -1,0 +1,66 @@
+[
+{
+"id": "games-lanternfall-fix-01-articles",
+"ok": true
+},
+{
+"id": "games-lanternfall-fix-02-alias-case",
+"ok": true
+},
+{
+"id": "games-lanternfall-fix-03-first-visit",
+"ok": true
+},
+{
+"id": "games-lanternfall-fix-04-vault-farming",
+"ok": true
+},
+{
+"id": "games-lanternfall-fix-05-limit-boundary",
+"ok": true
+},
+{
+"id": "games-lanternfall-fix-06-dark-light-room",
+"ok": true
+},
+{
+"id": "games-lanternfall-fix-07-locked-message",
+"ok": true
+},
+{
+"id": "games-lanternfall-fix-08-take-all-order",
+"ok": true
+},
+{
+"id": "games-lanternfall-fix-09-drop-appends",
+"ok": true
+},
+{
+"id": "games-lanternfall-fix-10-exit-order",
+"ok": true
+},
+{
+"id": "games-lanternfall-fix-11-turn-limit",
+"ok": true
+},
+{
+"id": "games-lanternfall-fix-12-go-abbrev",
+"ok": true
+},
+{
+"id": "games-lanternfall-fix-13-examine-order",
+"ok": true
+},
+{
+"id": "games-lanternfall-fix-14-already-have",
+"ok": true
+},
+{
+"id": "games-lanternfall-fix-15-weight-line",
+"ok": true
+},
+{
+"id": "games-lanternfall-fix-16-locked-message-exit-order",
+"ok": true
+}
+]

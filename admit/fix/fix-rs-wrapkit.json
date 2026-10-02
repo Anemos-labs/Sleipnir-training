@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-rs-wrapkit-01-negate",
+"ok": true
+},
+{
+"id": "fix-rs-wrapkit-02-logic",
+"ok": true
+},
+{
+"id": "fix-rs-wrapkit-03-const",
+"ok": true
+},
+{
+"id": "fix-rs-wrapkit-04-cmp",
+"ok": true
+},
+{
+"id": "fix-rs-wrapkit-05-delete",
+"ok": true
+},
+{
+"id": "fix-rs-wrapkit-06-logic",
+"ok": true
+},
+{
+"id": "fix-rs-wrapkit-07-const",
+"ok": true
+},
+{
+"id": "fix-rs-wrapkit-08-cmp",
+"ok": true
+}
+]

@@ -389,6 +389,17 @@ HIDDEN = gosrc(dd(r'''
         expect(t, "deadline", tick(t, s, 0), []string{"c"}, nil, nil)
         expect(t, "next", tick(t, s, 1), []string{"b"}, []string{"c"}, nil)
         expect(t, "last", tick(t, s, 2), []string{"a"}, []string{"b"}, nil)
+        // a job with a deadline beats an equal one without, whatever the submit order
+        s = mustNew(t, 1, 100)
+        submit(t, s, 0, Job{ID: "d", Base: 4, Cost: 1, Deadline: 50}, Job{ID: "n", Base: 4, Cost: 1})
+        expect(t, "deadline job first", tick(t, s, 0), []string{"d"}, nil, nil)
+        // deadlines 1 and 2 both have slack 0 at tick 0: equal priority, the earlier deadline starts
+        s = mustNew(t, 1, 100)
+        submit(t, s, 0, Job{ID: "late", Base: 4, Cost: 2, Deadline: 2}, Job{ID: "early", Base: 4, Cost: 1, Deadline: 1})
+        expect(t, "tight", tick(t, s, 0), []string{"early"}, nil, nil)
+        s = mustNew(t, 1, 100)
+        submit(t, s, 0, Job{ID: "early", Base: 4, Cost: 1, Deadline: 1}, Job{ID: "late", Base: 4, Cost: 2, Deadline: 2})
+        expect(t, "tight, other order", tick(t, s, 0), []string{"early"}, nil, nil)
     }
 
     func TestAgingLetsOldJobsOvertake(t *testing.T) {
@@ -432,6 +443,19 @@ HIDDEN = gosrc(dd(r'''
         submit(t, s, 15, Job{ID: "n", Base: 1, Cost: 5})
         if p, _ := s.Priority("n", 15); p != 1 {
             t.Errorf("no-deadline job: %d", p)
+        }
+    }
+
+    func TestSmallestDeadlines(t *testing.T) {
+        s := mustNew(t, 1, 1000)
+        // deadline 1 is a deadline like any other: this job has slack 0 at tick 0
+        submit(t, s, 0, Job{ID: "one", Base: 2, Cost: 1, Deadline: 1})
+        submit(t, s, 0, Job{ID: "two", Base: 2, Cost: 1, Deadline: 3})
+        if p, ok := s.Priority("one", 0); !ok || p != 22 {
+            t.Errorf("deadline 1: %d, %v; want 22", p, ok)
+        }
+        if p, ok := s.Priority("two", 0); !ok || p != 5 {
+            t.Errorf("deadline 3, slack 2: %d, %v; want 5", p, ok)
         }
     }
 

@@ -1,0 +1,50 @@
+[
+{
+"id": "greenfield-router-01-javascript-l2-strict",
+"ok": true
+},
+{
+"id": "greenfield-router-02-go-l2-strict",
+"ok": true
+},
+{
+"id": "greenfield-router-03-java-l3-strict",
+"ok": true
+},
+{
+"id": "greenfield-router-04-ruby-l3-strict",
+"ok": true
+},
+{
+"id": "greenfield-router-05-javascript-l3-strict",
+"ok": true
+},
+{
+"id": "greenfield-router-06-go-l4-strict",
+"ok": true
+},
+{
+"id": "greenfield-router-07-java-l4-lenient",
+"ok": true
+},
+{
+"id": "greenfield-router-08-ruby-l4-lenient",
+"ok": true
+},
+{
+"id": "greenfield-router-09-javascript-l3-strict",
+"ok": true
+},
+{
+"id": "greenfield-router-10-go-l4-lenient-ci",
+"ok": true
+},
+{
+"id": "greenfield-router-11-java-l2-strict",
+"ok": true
+},
+{
+"id": "greenfield-router-12-ruby-l4-strict",
+"ok": true
+}
+]

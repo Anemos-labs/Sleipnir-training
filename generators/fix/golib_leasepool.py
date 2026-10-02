@@ -302,6 +302,26 @@ HIDDEN = gosrc(dd(r'''
         }
     }
 
+    func TestOneTickLeases(t *testing.T) {
+        p := mustNew(t, 1, 1, 1, 1)
+        l, err := p.Acquire("a", 5)
+        if err != nil || l.Expires != 6 {
+            t.Fatalf("acquire: %+v, %v", l, err)
+        }
+        if owner, ok, _ := p.Holder(0, 5); !ok || owner != "a" {
+            t.Errorf("holder at 5: %q, %v", owner, ok)
+        }
+        if _, err := p.Renew(l, 5); !errors.Is(err, ErrMaxLife) {
+            t.Errorf("renew at the cap: %v", err)
+        }
+        if _, ok, _ := p.Holder(0, 6); ok {
+            t.Errorf("lease should have expired at 6")
+        }
+        if l2, err := p.Acquire("b", 6); err != nil || l2.Expires != 7 || l2.Token != 2 {
+            t.Errorf("second lease: %+v, %v", l2, err)
+        }
+    }
+
     func TestLowestFreeSlotAndTokens(t *testing.T) {
         p := mustNew(t, 3, 10, 50, 3)
         a := acquire(t, p, "a", 0)
@@ -655,7 +675,7 @@ LIB = Lib(
     files={"go.mod": langs.go_mod("leasepool"), "leasepool.go": SRC, "README.md": README},
     visible_tests={"leasepool_basic_test.go": VISIBLE},
     hidden_tests={"leasepool_full_test.go": HIDDEN},
-    mutate=["leasepool.go"], difficulty=2, tags=["pool", "leases", "expiry"],
+    mutate=["leasepool.go"], difficulty=1, tags=["pool", "leases", "expiry"],
 )
 
 register_libs([LIB], n=8)

@@ -488,5 +488,10 @@ TIMESHEET = Module(
 )
 
 MODULES = [CART, RUNNER, TIMESHEET]
+
+from ._traps import apply_traps  # noqa: E402
+
+apply_traps(MODULES)
+
 for _m in MODULES:
     validate_module(_m)

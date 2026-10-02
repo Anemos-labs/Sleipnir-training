@@ -1,0 +1,58 @@
+[
+{
+"id": "games-barnacle-fix-01-shuffle-bound",
+"ok": true
+},
+{
+"id": "games-barnacle-fix-02-shuffle-mod",
+"ok": true
+},
+{
+"id": "games-barnacle-fix-03-rank-order",
+"ok": true
+},
+{
+"id": "games-barnacle-fix-04-follow-suit",
+"ok": true
+},
+{
+"id": "games-barnacle-fix-05-trump-cycle",
+"ok": true
+},
+{
+"id": "games-barnacle-fix-06-trump-ignored",
+"ok": true
+},
+{
+"id": "games-barnacle-fix-07-jack-count",
+"ok": true
+},
+{
+"id": "games-barnacle-fix-08-last-trick",
+"ok": true
+},
+{
+"id": "games-barnacle-fix-09-deal-order",
+"ok": true
+},
+{
+"id": "games-barnacle-fix-10-leader-reset",
+"ok": true
+},
+{
+"id": "games-barnacle-fix-11-draw-detection",
+"ok": true
+},
+{
+"id": "games-barnacle-fix-12-table-render",
+"ok": true
+},
+{
+"id": "games-barnacle-fix-13-rank-order-jack-count",
+"ok": true
+},
+{
+"id": "games-barnacle-fix-14-shuffle-mod-leader-reset-trump-ignored",
+"ok": true
+}
+]

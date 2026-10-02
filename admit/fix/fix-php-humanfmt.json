@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-php-humanfmt-01-arith",
+"ok": true
+},
+{
+"id": "fix-php-humanfmt-02-const",
+"ok": true
+},
+{
+"id": "fix-php-humanfmt-03-delete",
+"ok": true
+},
+{
+"id": "fix-php-humanfmt-04-logic",
+"ok": true
+},
+{
+"id": "fix-php-humanfmt-05-cmp",
+"ok": true
+},
+{
+"id": "fix-php-humanfmt-06-arith",
+"ok": true
+},
+{
+"id": "fix-php-humanfmt-07-const",
+"ok": true
+},
+{
+"id": "fix-php-humanfmt-08-delete",
+"ok": true
+}
+]

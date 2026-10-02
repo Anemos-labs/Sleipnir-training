@@ -1,0 +1,34 @@
+[
+{
+"id": "security-access-control-01-invoice-owner",
+"ok": true
+},
+{
+"id": "security-access-control-02-document-share",
+"ok": true
+},
+{
+"id": "security-access-control-03-admin-functions",
+"ok": true
+},
+{
+"id": "security-access-control-04-invite-escalation",
+"ok": true
+},
+{
+"id": "security-access-control-05-tenant-isolation",
+"ok": true
+},
+{
+"id": "security-access-control-06-bulk-delete",
+"ok": true
+},
+{
+"id": "security-access-control-07-nested-resources",
+"ok": true
+},
+{
+"id": "security-access-control-08-stale-permissions",
+"ok": true
+}
+]

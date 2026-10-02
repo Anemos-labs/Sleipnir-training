@@ -478,6 +478,39 @@ HIDDEN = dd('''
         assert_eq!((h.min(), h.max()), (Some(7), Some(7)));
         assert_eq!(h, hist(3, 1000, &[7]));
     }
+
+    #[test]
+    fn quantile_just_below_the_maximum() {
+        let mut h = Histogram::new(3, 100_000).unwrap();
+        h.record_n(10, 1000).unwrap();
+        h.record(5000).unwrap();
+        assert_eq!(h.quantile(999), Some(10));
+        assert_eq!(h.quantile(1000), Some(5000));
+        assert_eq!(h.quantile(4000), Some(5000));
+        assert_eq!(h.quantile(0), Some(10));
+    }
+
+    #[test]
+    fn zero_values_and_reset() {
+        let mut h = Histogram::new(2, 1000).unwrap();
+        h.record(0).unwrap();
+        assert_eq!((h.min(), h.max(), h.mean()), (Some(0), Some(0), Some(0)));
+        assert_eq!(h.quantile(500), Some(0));
+        h.record(40).unwrap();
+        h.reset();
+        h.record(0).unwrap();
+        assert_eq!((h.count(), h.min(), h.max(), h.mean()), (1, Some(0), Some(0), Some(0)));
+        assert_eq!(h.buckets(), vec![(0, 0, 1)]);
+    }
+
+    #[test]
+    fn single_counts_show_up_in_buckets() {
+        let mut h = Histogram::new(2, 1000).unwrap();
+        for v in [3, 8, 9, 10, 100] {
+            h.record(v).unwrap();
+        }
+        assert_eq!(h.buckets(), vec![(3, 3, 1), (8, 9, 2), (10, 11, 1), (96, 111, 1)]);
+    }
 ''')
 
 LIB = Lib(
@@ -486,7 +519,7 @@ LIB = Lib(
     files={"Cargo.toml": cargo("loghist"), "src/lib.rs": SRC, "README.md": README, ".gitignore": "target/\n", ".cargo/config.toml": CARGO_CONFIG},
     visible_tests={"tests/basic.rs": VISIBLE},
     hidden_tests={"tests/full.rs": HIDDEN},
-    mutate=["src/lib.rs"], difficulty=3, tags=["metrics", "histogram", "percentiles"],
+    mutate=["src/lib.rs"], difficulty=2, tags=["metrics", "histogram", "percentiles"],
 )
 
 register_libs([LIB], n=8)

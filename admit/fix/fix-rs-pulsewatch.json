@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-rs-pulsewatch-01-negate",
+"ok": true
+},
+{
+"id": "fix-rs-pulsewatch-02-cmp",
+"ok": true
+},
+{
+"id": "fix-rs-pulsewatch-03-const",
+"ok": true
+},
+{
+"id": "fix-rs-pulsewatch-04-delete",
+"ok": true
+},
+{
+"id": "fix-rs-pulsewatch-05-logic",
+"ok": true
+},
+{
+"id": "fix-rs-pulsewatch-06-cmp",
+"ok": true
+},
+{
+"id": "fix-rs-pulsewatch-07-const",
+"ok": true
+},
+{
+"id": "fix-rs-pulsewatch-08-delete",
+"ok": true
+}
+]

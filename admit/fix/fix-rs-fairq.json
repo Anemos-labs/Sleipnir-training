@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-rs-fairq-01-logic",
+"ok": true
+},
+{
+"id": "fix-rs-fairq-02-cmp",
+"ok": true
+},
+{
+"id": "fix-rs-fairq-03-swap",
+"ok": true
+},
+{
+"id": "fix-rs-fairq-04-negate",
+"ok": true
+},
+{
+"id": "fix-rs-fairq-05-delete",
+"ok": true
+},
+{
+"id": "fix-rs-fairq-06-arith",
+"ok": true
+},
+{
+"id": "fix-rs-fairq-07-const",
+"ok": true
+},
+{
+"id": "fix-rs-fairq-08-cmp",
+"ok": true
+}
+]

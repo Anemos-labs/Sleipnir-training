@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-cpp-hexwrap-01-negate",
+"ok": true
+},
+{
+"id": "fix-cpp-hexwrap-02-cmp",
+"ok": true
+},
+{
+"id": "fix-cpp-hexwrap-03-const",
+"ok": true
+},
+{
+"id": "fix-cpp-hexwrap-04-arith",
+"ok": true
+},
+{
+"id": "fix-cpp-hexwrap-05-delete",
+"ok": true
+},
+{
+"id": "fix-cpp-hexwrap-06-logic",
+"ok": true
+},
+{
+"id": "fix-cpp-hexwrap-07-cmp",
+"ok": true
+},
+{
+"id": "fix-cpp-hexwrap-08-const",
+"ok": true
+}
+]

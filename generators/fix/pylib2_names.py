@@ -375,7 +375,7 @@ NF = Lib(
     files={"namefmt.py": NF_SRC, "README.md": NF_README, ".gitignore": "__pycache__/\n*.pyc\n"},
     visible_tests={"tests/test_basic.py": NF_VISIBLE},
     hidden_tests={"tests/test_full.py": NF_HIDDEN},
-    mutate=["namefmt.py"], difficulty=3, tags=["names", "text"],
+    mutate=["namefmt.py"], difficulty=2, tags=["names", "text"],
     probes=[
         'parse_name("Dr. John Q. Public Jr.")',
         'parse_name("Vincent van der Berg")',

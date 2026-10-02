@@ -58,6 +58,10 @@ class TLib:
     py_groups: list = field(default_factory=list)  # python: the gold steps (to regenerate the suite with wrong expectations)
     py_imports: str = ""
     py_header: str = ""
+    extra: dict = field(default_factory=dict)  # family specific material (clock: legacy sources and sleepy tests; order: test templates)
+
+    def __post_init__(self):
+        assert self.title.startswith("the "), f"{self.name}: the title must start with 'the ' (prompts rely on it)"
 
     @property
     def comment(self) -> str:
@@ -253,8 +257,8 @@ def write_prompt(lib: TLib, rng: random.Random, k: int, style: int) -> str:
         f"{t[0].upper() + t[1:]} has no tests at all and we are about to change it. {b} Before anybody touches it I want a proper safety net: write the test suite. README.md describes the intended behaviour; read the code too. {w}\n\n{g}",
         f"write tests for {t}. {w} {g}",
         f"I just inherited {t}. {b} The previous owner left a README and one smoke test and nothing else. Could you write the missing tests so that a regression in any documented rule gets caught? {w} {g}",
-        f"Our mutation-testing job reports that the test suite of {t} is practically empty: nearly every mutant survives. Please fix that by writing real tests. {w}\n\nFor reference, what the job does: {g}",
-        f"PR review comment on the {t} change: \"Needs tests before this can merge. The rules in the README are subtle, please pin them down, including the boundaries and the error cases.\" Write them. {w} {g}",
+        f"Our mutation-testing job reports that the test suite of {t} is practically empty: nearly every mutant survives. Please fix that by writing real tests. {w}\n\n{g}",
+        f"PR review comment on {t}: \"Needs tests before this can merge. The rules in the README are subtle, please pin them down, including the boundaries and the error cases.\" Write them. {w} {g}",
         f"README.md is the specification of {t}. Write a unit test suite that pins down every behaviour it documents, boundaries and error cases included, and nothing it does not document. {w}\n\n{g}",
         f"{b} The code is correct today but fragile. I want tests that fail when somebody gets a single comparison, constant or branch wrong. Careful, not exhaustive-for-the-sake-of-it. {w} {g}",
         f"Task: test {t}. Deliverable: test files under the usual test directory, green on the current code. {w} {g}" + (f" Areas that tend to hide bugs: {f}." if f else ""),

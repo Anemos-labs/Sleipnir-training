@@ -522,7 +522,7 @@ def cronlite(rng) -> TLib:
     wrong = [
         ("test/cronlite.gold.test.js", "assert.equal(next('daily at 06:30', '2025-03-10T06:30:00Z'), '2025-03-11T06:30:00.000Z');", "assert.equal(next('daily at 06:30', '2025-03-10T06:30:00Z'), '2025-03-10T06:30:00.000Z');"),
         ("test/cronlite.gold.test.js", "assert.equal(next('monthly on 31 at 12:00', '2025-03-31T12:00:00Z'), '2025-04-30T12:00:00.000Z');", "assert.equal(next('monthly on 31 at 12:00', '2025-03-31T12:00:00Z'), '2025-05-01T12:00:00.000Z');"),
-        ("test/cronlite.gold.test.js", "'2025-03-01T00:00:00Z'), '2025-03-28T18:00:00.000Z');\n      assert.equal(next('monthly on the last fri at 18:00', '2025-03-28T18:00:00Z')", "'2025-03-01T00:00:00Z'), '2025-03-21T18:00:00.000Z');\n      assert.equal(next('monthly on the last fri at 18:00', '2025-03-28T18:00:00Z')"),
+        ("test/cronlite.gold.test.js", "assert.equal(next('monthly on the last fri at 18:00', '2025-03-01T00:00:00Z'), '2025-03-28T18:00:00.000Z');", "assert.equal(next('monthly on the last fri at 18:00', '2025-03-01T00:00:00Z'), '2025-03-21T18:00:00.000Z');"),
         ("test/cronlite.gold.test.js", "['weekly on wed,mon at 09:30', 'weekly on mon,wed at 09:30'],", "['weekly on wed,mon at 09:30', 'weekly on wed,mon at 09:30'],"),
     ]
     return TLib(

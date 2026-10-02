@@ -455,7 +455,7 @@ LIB = Lib(
            "src/money.ts": MONEY, "src/tiers.ts": TIERS, "src/plan.ts": PLAN, "README.md": README, ".gitignore": "node_modules/\nbuild/\n"},
     visible_tests={"test/basic.test.ts": VISIBLE},
     hidden_tests={"test/full.test.ts": HIDDEN},
-    mutate=["src/tiers.ts", "src/plan.ts", "src/money.ts"], difficulty=3, tags=["billing", "tiers", "invoicing"],
+    mutate=["src/tiers.ts", "src/plan.ts", "src/money.ts"], difficulty=2, tags=["billing", "tiers", "invoicing"],
     verify=TS_VERIFY,
     probe_import="const { roundHalfUp, checkUnits } = require('./build/src/money');\nconst { graduated, volume, packages, validateTiers } = require('./build/src/tiers');\nconst { price } = require('./build/src/plan');",
     probes=[

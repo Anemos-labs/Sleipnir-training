@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-c-lapclock-01-cmp",
+"ok": true
+},
+{
+"id": "fix-c-lapclock-02-delete",
+"ok": true
+},
+{
+"id": "fix-c-lapclock-03-const",
+"ok": true
+},
+{
+"id": "fix-c-lapclock-04-arith",
+"ok": true
+},
+{
+"id": "fix-c-lapclock-05-negate",
+"ok": true
+},
+{
+"id": "fix-c-lapclock-06-cmp",
+"ok": true
+},
+{
+"id": "fix-c-lapclock-07-delete",
+"ok": true
+},
+{
+"id": "fix-c-lapclock-08-const",
+"ok": true
+}
+]

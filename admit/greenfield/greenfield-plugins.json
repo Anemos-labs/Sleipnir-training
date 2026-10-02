@@ -1,0 +1,42 @@
+[
+{
+"id": "greenfield-plugins-01-java-l3",
+"ok": true
+},
+{
+"id": "greenfield-plugins-02-rust-l3",
+"ok": true
+},
+{
+"id": "greenfield-plugins-03-go-l4",
+"ok": true
+},
+{
+"id": "greenfield-plugins-04-python-l4",
+"ok": true
+},
+{
+"id": "greenfield-plugins-05-java-l4",
+"ok": true
+},
+{
+"id": "greenfield-plugins-06-rust-l5",
+"ok": true
+},
+{
+"id": "greenfield-plugins-07-go-l5",
+"ok": true
+},
+{
+"id": "greenfield-plugins-08-java-l5",
+"ok": true
+},
+{
+"id": "greenfield-plugins-09-rust-l3",
+"ok": true
+},
+{
+"id": "greenfield-plugins-10-go-l4",
+"ok": true
+}
+]

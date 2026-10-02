@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-palette-01-swap",
+"ok": true
+},
+{
+"id": "fix-py-palette-02-cmp",
+"ok": true
+},
+{
+"id": "fix-py-palette-03-const",
+"ok": true
+},
+{
+"id": "fix-py-palette-04-delete",
+"ok": true
+},
+{
+"id": "fix-py-palette-05-negate",
+"ok": true
+},
+{
+"id": "fix-py-palette-06-logic",
+"ok": true
+},
+{
+"id": "fix-py-palette-07-arith",
+"ok": true
+},
+{
+"id": "fix-py-palette-08-swap",
+"ok": true
+},
+{
+"id": "fix-py-palette-09-const",
+"ok": true
+},
+{
+"id": "fix-py-palette-10-delete",
+"ok": true
+}
+]

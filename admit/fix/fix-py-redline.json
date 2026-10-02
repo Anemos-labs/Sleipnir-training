@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-redline-01-delete",
+"ok": true
+},
+{
+"id": "fix-py-redline-02-negate",
+"ok": true
+},
+{
+"id": "fix-py-redline-03-cmp",
+"ok": true
+},
+{
+"id": "fix-py-redline-04-const",
+"ok": true
+},
+{
+"id": "fix-py-redline-05-arith",
+"ok": true
+},
+{
+"id": "fix-py-redline-06-delete",
+"ok": true
+},
+{
+"id": "fix-py-redline-07-cmp",
+"ok": true
+},
+{
+"id": "fix-py-redline-08-const",
+"ok": true
+},
+{
+"id": "fix-py-redline-09-arith",
+"ok": true
+},
+{
+"id": "fix-py-redline-10-delete",
+"ok": true
+}
+]

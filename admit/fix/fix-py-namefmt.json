@@ -1,0 +1,42 @@
+[
+{
+"id": "fix-py-namefmt-01-delete",
+"ok": true
+},
+{
+"id": "fix-py-namefmt-02-arith",
+"ok": true
+},
+{
+"id": "fix-py-namefmt-03-negate",
+"ok": true
+},
+{
+"id": "fix-py-namefmt-04-const",
+"ok": true
+},
+{
+"id": "fix-py-namefmt-05-swap",
+"ok": true
+},
+{
+"id": "fix-py-namefmt-06-cmp",
+"ok": true
+},
+{
+"id": "fix-py-namefmt-07-delete",
+"ok": true
+},
+{
+"id": "fix-py-namefmt-08-arith",
+"ok": true
+},
+{
+"id": "fix-py-namefmt-09-negate",
+"ok": true
+},
+{
+"id": "fix-py-namefmt-10-const",
+"ok": true
+}
+]

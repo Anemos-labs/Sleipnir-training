@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-c-scalekit-01-const",
+"ok": true
+},
+{
+"id": "fix-c-scalekit-02-negate",
+"ok": true
+},
+{
+"id": "fix-c-scalekit-03-arith",
+"ok": true
+},
+{
+"id": "fix-c-scalekit-04-delete",
+"ok": true
+},
+{
+"id": "fix-c-scalekit-05-cmp",
+"ok": true
+},
+{
+"id": "fix-c-scalekit-06-const",
+"ok": true
+},
+{
+"id": "fix-c-scalekit-07-negate",
+"ok": true
+},
+{
+"id": "fix-c-scalekit-08-arith",
+"ok": true
+}
+]

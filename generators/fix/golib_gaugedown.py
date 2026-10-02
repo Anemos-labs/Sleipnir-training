@@ -579,7 +579,7 @@ LIB = Lib(
     files={"go.mod": langs.go_mod("gaugedown"), "gaugedown.go": SRC, "README.md": README},
     visible_tests={"gaugedown_basic_test.go": VISIBLE},
     hidden_tests={"gaugedown_full_test.go": HIDDEN},
-    mutate=["gaugedown.go"], difficulty=3, tags=["timeseries", "buckets", "aggregation"],
+    mutate=["gaugedown.go"], difficulty=2, tags=["timeseries", "buckets", "aggregation"],
 )
 
 register_libs([LIB], n=8)

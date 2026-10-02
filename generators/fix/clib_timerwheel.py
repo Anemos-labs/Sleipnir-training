@@ -1078,7 +1078,7 @@ H5 = dd(r'''
                 got = tw_advance(&w, s->arg, buf, s->cap);
                 CHECK_INT_CTX(ctx, got, s->nfired);
                 for (k = 0; k < got && k < s->nfired; k++) CHECK_INT_CTX(ctx, buf[k], s->fired[k]);
-                CHECK_INT_CTX(ctx, buf[got] == 0xABABABABu, 1);
+                CHECK_INT_CTX(ctx, buf[s->cap] == 0xABABABABu, 1); /* nothing is written beyond cap */
                 break;
             }
             case 'n':
@@ -1196,15 +1196,16 @@ H5 = dd(r'''
         CHECK_UINT(out[2], 3);
         CHECK_UINT(tw_now(&w), 2);
         CHECK_INT(tw_pending(&w), 2);
-        CHECK_INT(tw_advance(&w, 10, out, 1), 1);
+        CHECK_INT(tw_advance(&w, 10, out, 1), 1);   /* timer 4 at tick 3; the empty ticks after it still pass */
         CHECK_UINT(out[0], 4);
-        CHECK_UINT(tw_now(&w), 3);
+        CHECK_UINT(tw_now(&w), 8);                    /* tick 9 holds timer 5 and there is no room for it */
+        CHECK_INT(tw_pending(&w), 1);
         CHECK_INT(tw_advance(&w, 10, out, 1), 1);
         CHECK_UINT(out[0], 5);
-        CHECK_UINT(tw_now(&w), 9);
+        CHECK_UINT(tw_now(&w), 18);
         CHECK_INT(tw_pending(&w), 0);
         CHECK_INT(tw_advance(&w, 10, out, 0), 0);
-        CHECK_UINT(tw_now(&w), 19);
+        CHECK_UINT(tw_now(&w), 28);
     }
 
     int main(void) {

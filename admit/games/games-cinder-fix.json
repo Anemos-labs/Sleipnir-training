@@ -1,0 +1,50 @@
+[
+{
+"id": "games-cinder-fix-01-speed-step",
+"ok": true
+},
+{
+"id": "games-cinder-fix-02-brick-points",
+"ok": true
+},
+{
+"id": "games-cinder-fix-03-explosion-order",
+"ok": true
+},
+{
+"id": "games-cinder-fix-04-english-edge",
+"ok": true
+},
+{
+"id": "games-cinder-fix-05-serve-parity",
+"ok": true
+},
+{
+"id": "games-cinder-fix-06-paddle-bound",
+"ok": true
+},
+{
+"id": "games-cinder-fix-07-won-explosives",
+"ok": true
+},
+{
+"id": "games-cinder-fix-08-steel-breaks",
+"ok": true
+},
+{
+"id": "games-cinder-fix-09-ceiling-row",
+"ok": true
+},
+{
+"id": "games-cinder-fix-10-axis-order",
+"ok": true
+},
+{
+"id": "games-cinder-fix-11-shrink-floor",
+"ok": true
+},
+{
+"id": "games-cinder-fix-12-lives-check",
+"ok": true
+}
+]

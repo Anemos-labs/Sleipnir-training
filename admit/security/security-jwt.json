@@ -1,0 +1,26 @@
+[
+{
+"id": "security-jwt-01-unsigned-token",
+"ok": true
+},
+{
+"id": "security-jwt-02-alg-none",
+"ok": true
+},
+{
+"id": "security-jwt-03-expiry-ignored",
+"ok": true
+},
+{
+"id": "security-jwt-04-kid-traversal",
+"ok": true
+},
+{
+"id": "security-jwt-05-audience-issuer",
+"ok": true
+},
+{
+"id": "security-jwt-06-algorithm-confusion",
+"ok": true
+}
+]

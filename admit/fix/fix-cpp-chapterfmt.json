@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-cpp-chapterfmt-01-negate",
+"ok": true
+},
+{
+"id": "fix-cpp-chapterfmt-02-cmp",
+"ok": true
+},
+{
+"id": "fix-cpp-chapterfmt-03-arith",
+"ok": true
+},
+{
+"id": "fix-cpp-chapterfmt-04-delete",
+"ok": true
+},
+{
+"id": "fix-cpp-chapterfmt-05-logic",
+"ok": true
+},
+{
+"id": "fix-cpp-chapterfmt-06-swap",
+"ok": true
+},
+{
+"id": "fix-cpp-chapterfmt-07-const",
+"ok": true
+},
+{
+"id": "fix-cpp-chapterfmt-08-cmp",
+"ok": true
+}
+]

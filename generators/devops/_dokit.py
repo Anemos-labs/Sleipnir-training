@@ -124,7 +124,7 @@ def fix_prompt(rng: random.Random, target: str, subject: str, texts: list[str], 
     pol = f"`{doc}` lists the rules that the configuration is checked against"
     style = rng.choice(STYLES)
     if style == "list":
-        return f"The {subject} (`{target}`) has problems:\n" + "\n".join(f"- {t}" for t in texts) + f"\n\nPlease fix them. {pol}.{tail}"
+        return f"Problems with the {subject} (`{target}`):\n" + "\n".join(f"- {t}" for t in texts) + f"\n\nPlease fix them. {pol}.{tail}"
     if style == "para":
         return f"Reports about `{target}`: " + "; ".join(texts) + f". Can you sort it out? {pol}.{tail}"
     return f"{target}: " + "; ".join(texts) + f". Please fix it ({pol[0].lower() + pol[1:]}).{tail}"
@@ -154,15 +154,17 @@ def fix_tasks(rng: random.Random, n: int, *, prefix: str, plan: list, build, ren
             info = defects[k][0](bad_model, ctx, rng) or {}
             if "_post" in info:
                 post.append(info.pop("_post"))
-            applied.append((k, info))
+            applied.append((k, info, info.pop("_phr", None)))
         bad = render(bad_model, ctx)
         for p in post:
             bad = p(bad)
-        texts = [rng.choice(defects[k][1]).format(**{"a": "", "b": "", "c": "", **info}) for k, info in applied]
+        texts = [rng.choice(defects[k][1] if allowed is None else [defects[k][1][j] for j in allowed]).format(**{"a": "", "b": "", "c": "", **info}) for k, info, allowed in applied]
         d = item.get("d") or {1: 2, 2: 3, 3: 4, 4: 4, 5: 5}[min(len(keys), 5)]
+        keys = [k for k, _, _ in applied]
         start = dict(bad)
         start.update(docs(model, ctx))
-        t = devops_task(f"{i + 1:02d}-" + "-".join(keys[:2]), d, prompt(rng, ctx, texts, item.get("vague", False)), start, good, check, hidden(model, ctx), lang=lang,
+        sol = {k: v for k, v in good.items() if bad.get(k) != v}
+        t = devops_task(f"{i + 1:02d}-" + "-".join(keys[:2]), d, prompt(rng, ctx, texts, item.get("vague", False)), start, sol, check, hidden(model, ctx), lang=lang,
                         kind="fix", tags=tags, notes={"defects": keys})
         ws = [{**good, **w} for w in wrong(model, ctx)]
         out.append(finish(t, wrong=[{k: v for k, v in w.items() if good.get(k) != v or True} for w in ws]))

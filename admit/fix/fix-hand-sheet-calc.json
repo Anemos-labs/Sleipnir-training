@@ -1,0 +1,90 @@
+[
+{
+"id": "fix-hand-sheet-calc-01-leading-dot-numbers-rejected",
+"ok": true
+},
+{
+"id": "fix-hand-sheet-calc-02-doubled-quotes-not-unescaped",
+"ok": true
+},
+{
+"id": "fix-hand-sheet-calc-03-lowercase-references-read-nothing",
+"ok": true
+},
+{
+"id": "fix-hand-sheet-calc-04-power-associates-left",
+"ok": true
+},
+{
+"id": "fix-hand-sheet-calc-05-minus-binds-tighter-than-power",
+"ok": true
+},
+{
+"id": "fix-hand-sheet-calc-06-comparison-as-tight-as-plus",
+"ok": true
+},
+{
+"id": "fix-hand-sheet-calc-07-range-corners-must-be-ordered",
+"ok": true
+},
+{
+"id": "fix-hand-sheet-calc-08-power-domain-escapes",
+"ok": true
+},
+{
+"id": "fix-hand-sheet-calc-09-if-evaluates-both-branches",
+"ok": true
+},
+{
+"id": "fix-hand-sheet-calc-10-empties-count-as-zero-in-ranges",
+"ok": true
+},
+{
+"id": "fix-hand-sheet-calc-11-average-divides-by-the-range-size",
+"ok": true
+},
+{
+"id": "fix-hand-sheet-calc-12-show-prints-the-raw-float",
+"ok": true
+},
+{
+"id": "fix-hand-sheet-calc-13-only-direct-readers-are-updated",
+"ok": true
+},
+{
+"id": "fix-hand-sheet-calc-14-only-self-loops-are-cycles",
+"ok": true
+},
+{
+"id": "fix-hand-sheet-calc-15-recalc-in-cell-name-order",
+"ok": true
+},
+{
+"id": "fix-hand-sheet-calc-16-replaced-formulas-keep-their-readers",
+"ok": true
+},
+{
+"id": "fix-hand-sheet-calc-17-range-middle-cells-not-tracked",
+"ok": true
+},
+{
+"id": "fix-hand-sheet-calc-18-formula-language-review",
+"ok": true
+},
+{
+"id": "fix-hand-sheet-calc-19-error-values-review",
+"ok": true
+},
+{
+"id": "fix-hand-sheet-calc-20-typing-and-selecting",
+"ok": true
+},
+{
+"id": "fix-hand-sheet-calc-21-incremental-recalc-review",
+"ok": true
+},
+{
+"id": "fix-hand-sheet-calc-22-cycles-and-stale-edges",
+"ok": true
+}
+]

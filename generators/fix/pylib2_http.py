@@ -760,7 +760,7 @@ CACHE = Lib(
     files={"cachelens.py": CACHE_SRC, "README.md": CACHE_README, ".gitignore": "__pycache__/\n*.pyc\n"},
     visible_tests={"tests/test_basic.py": CACHE_VISIBLE},
     hidden_tests={"tests/test_full.py": CACHE_HIDDEN},
-    mutate=["cachelens.py"], difficulty=3, tags=["http", "cache"],
+    mutate=["cachelens.py"], difficulty=2, tags=["http", "cache"],
     probes=[
         'split_list("a=\\"1,2\\", b,, c")',
         'parse_cache_control("No-Store, MAX-AGE = 5, ext=\\"a, b\\"")',

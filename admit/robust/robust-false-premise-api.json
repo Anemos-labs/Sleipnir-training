@@ -38,13 +38,5 @@
 {
 "id": "robust-false-premise-api-10-tidyfs-cache-dir",
 "ok": true
-},
-{
-"id": "robust-false-premise-api-11-logsift-jobs",
-"ok": true
-},
-{
-"id": "robust-false-premise-api-12-pdfgather-out-dir",
-"ok": true
 }
 ]

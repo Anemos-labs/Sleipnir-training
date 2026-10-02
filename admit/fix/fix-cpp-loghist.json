@@ -1,0 +1,34 @@
+[
+{
+"id": "fix-cpp-loghist-01-delete",
+"ok": true
+},
+{
+"id": "fix-cpp-loghist-02-arith",
+"ok": true
+},
+{
+"id": "fix-cpp-loghist-03-const",
+"ok": true
+},
+{
+"id": "fix-cpp-loghist-04-logic",
+"ok": true
+},
+{
+"id": "fix-cpp-loghist-05-negate",
+"ok": true
+},
+{
+"id": "fix-cpp-loghist-06-cmp",
+"ok": true
+},
+{
+"id": "fix-cpp-loghist-07-delete",
+"ok": true
+},
+{
+"id": "fix-cpp-loghist-08-arith",
+"ok": true
+}
+]

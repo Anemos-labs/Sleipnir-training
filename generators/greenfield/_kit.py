@@ -78,6 +78,10 @@ class Api:
             "c": f"src/{self.mod}.c",
         }[lang]
 
+    def short(self, lang: str) -> str:
+        """Just the implementation file, for prompts (the README has the full placement text)."""
+        return f"`{self.path(lang)}`"
+
     def signature(self, lang: str) -> str:
         a = self.args
         if lang == "python":
@@ -511,13 +515,18 @@ _HARNESS_HEAD = """#!/usr/bin/env bash
 CMD=("$@")
 fail=0
 n=0
-# check NAME EXPECTED_CODE EXPECTED_STDOUT STDIN [ARG...]
+STATE_DIR=$(mktemp -d)
+STATE="$STATE_DIR/state"
+trap 'rm -rf "$STATE_DIR"' EXIT
+newstate() { rm -rf "$STATE_DIR"/*; }
+# check NAME EXPECTED_CODE EXPECTED_STDOUT STDIN [ARG...]   (`@STATE@` inside an argument is replaced by the state file path)
 check() {
   local name=$1 ecode=$2 eout=$3 sin=$4
   shift 4
   n=$((n + 1))
-  local res out code
-  res=$(printf '%s' "$sin" | "${CMD[@]}" "$@" 2>/dev/null; printf '\\n~%d' "$?")
+  local res out code args=() a
+  for a in "$@"; do args+=("${a//@STATE@/$STATE}"); done
+  res=$(printf '%s' "$sin" | "${CMD[@]}" "${args[@]}" 2>/dev/null; printf '\\n~%d' "$?")
   code=${res##*~}
   out=${res%$'\\n'~*}
   if [ "$code" != "$ecode" ] || [ "$(printf '%s' "$out")" != "$(printf '%s' "$eout")" ]; then
@@ -531,16 +540,17 @@ check() {
 """
 
 
-def _cli_call(c: CliCase, i: int, out: str | None, code: int | None) -> str:
+def _cli_call(c: CliCase, i: int, out: str | None, code: int | None, stateful: bool = False) -> str:
     args = " ".join(lit("bash", a) for a in c.args)
-    pre = "newstate\n" if c.fresh else ""
+    pre = "newstate\n" if (c.fresh and stateful) else ""
     return pre + f"check c{i} {code} {lit('bash', out or '')} {lit('bash', c.stdin)}" + (f" {args}" if args else "")
 
 
 def cli_tests(cases: list[CliCase], want: list[tuple[str, int]]) -> dict[str, str]:
     body = [_HARNESS_HEAD]
+    stateful = any("@STATE@" in a for c in cases for a in c.args)
     for i, (c, (o, code)) in enumerate(zip(cases, want)):
-        body.append(_cli_call(c, i, o, code))
+        body.append(_cli_call(c, i, o, code, stateful))
     body.append('\nif [ "$fail" -ne 0 ]; then\n  echo "$fail of $n checks failed"\n  exit 1\nfi\necho "all $n checks passed"\n')
     return {"tests/run.sh": "\n".join(body)}
 

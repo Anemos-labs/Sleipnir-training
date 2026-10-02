@@ -1,0 +1,42 @@
+[
+{
+"id": "greenfield-larder-01-bash-l2-room",
+"ok": true
+},
+{
+"id": "greenfield-larder-02-python-l2-cupboard",
+"ok": true
+},
+{
+"id": "greenfield-larder-03-go-l3-kitchen",
+"ok": true
+},
+{
+"id": "greenfield-larder-04-rust-l3-kitchen",
+"ok": true
+},
+{
+"id": "greenfield-larder-05-bash-l3-cupboard",
+"ok": true
+},
+{
+"id": "greenfield-larder-06-go-l4-kitchen",
+"ok": true
+},
+{
+"id": "greenfield-larder-07-bash-l4-shed",
+"ok": true
+},
+{
+"id": "greenfield-larder-08-rust-l3-room",
+"ok": true
+},
+{
+"id": "greenfield-larder-09-python-l2-kitchen",
+"ok": true
+},
+{
+"id": "greenfield-larder-10-bash-l4-store",
+"ok": true
+}
+]

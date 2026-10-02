@@ -681,7 +681,7 @@ LIB = Lib(
     files={"go.mod": langs.go_mod("retrywin"), "retrywin.go": SRC, "README.md": README},
     visible_tests={"retrywin_basic_test.go": VISIBLE},
     hidden_tests={"retrywin_full_test.go": HIDDEN},
-    mutate=["retrywin.go"], difficulty=3, tags=["backoff", "retry", "jitter"],
+    mutate=["retrywin.go"], difficulty=2, tags=["backoff", "retry", "jitter"],
 )
 
 register_libs([LIB], n=8)

@@ -30,13 +30,5 @@
 {
 "id": "robust-unsatisfiable-plan-08-budget",
 "ok": true
-},
-{
-"id": "robust-unsatisfiable-plan-09-meetings",
-"ok": true
-},
-{
-"id": "robust-unsatisfiable-plan-10-versions",
-"ok": true
 }
 ]
